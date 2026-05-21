@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: security-service
+  namespace: security
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: security-service
+  template:
+    metadata:
+      labels:
+        app: security-service
+    spec:
+      containers:
+        - name: security-service
+          image: smartcito/security-service:latest
+          ports:
+            - containerPort: 8013
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: security-service
+  namespace: security
+spec:
+  selector:
+    app: security-service
+  ports:
+    - port: 80
+      targetPort: 8013

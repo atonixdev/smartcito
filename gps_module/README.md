@@ -13,9 +13,10 @@ GPS and satellite-based positioning integration for SmartCito.
 
 ```
 gps_module/
-├── drivers/         # Device + protocol drivers (NMEA, gpsd, vendor SDKs)
-├── providers/       # Cloud / satellite provider integrations
-├── geofencing/      # Geo-fence engine and alerting
+├── Dockerfile       # Container image for the GPS-domain API
+├── requirements.txt # Python runtime dependencies
+├── nmea.py          # NMEA parsing helpers
+├── service.py       # FastAPI GPS-domain service
 └── README.md
 ```
 
@@ -40,3 +41,26 @@ gps_module/
 GPS streams are joined with camera metadata at the analytics layer to enable
 location-aware surveillance (e.g. "show all detections within 500 m of
 asset X in the last hour").
+
+## Technologies Used
+
+- Python 3.11
+- FastAPI
+- Uvicorn
+- NMEA parsing helpers
+
+## How To Run Its Container
+
+```bash
+docker build -f gps_module/Dockerfile -t smartcito-gps-module .
+docker run --rm -p 8011:8011 smartcito-gps-module
+```
+
+## Example Usage
+
+```bash
+curl http://localhost:8011/standards
+curl -X POST http://localhost:8011/parse \
+  -H 'Content-Type: application/json' \
+  -d '{"sentence":"$GPGGA,123519,4807.038,N,01131.000,E,1,08"}'
+```

@@ -13,10 +13,10 @@ Computer vision and predictive analytics models for SmartCito.
 
 ```
 ai_models/
-├── vision/          # CV models (detection, segmentation, OCR)
-├── analytics/       # Predictive / time-series models
-├── training/        # Training scripts, data prep, experiment configs
-├── inference/       # Inference servers and model wrappers
+├── Dockerfile       # Container image for inference service
+├── requirements.txt # Runtime dependencies
+├── model.py         # Lightweight scoring model
+├── inference.py     # FastAPI inference service
 └── README.md
 ```
 
@@ -40,3 +40,25 @@ written to the database — **raw video is never stored**.
 ## Tests
 
 Add accuracy + smoke tests under [`../tests/ai_models/`](../tests/).
+
+## Technologies Used
+
+- Python 3.11
+- FastAPI
+- Uvicorn
+- Model scoring helpers compatible with TensorFlow / PyTorch expansion
+
+## How To Run Its Container
+
+```bash
+docker build -f ai_models/Dockerfile -t smartcito-ai-models .
+docker run --rm -p 8012:8012 smartcito-ai-models
+```
+
+## Example Usage
+
+```bash
+curl -X POST http://localhost:8012/infer \
+  -H 'Content-Type: application/json' \
+  -d '{"features":[0.2,0.4,0.8]}'
+```

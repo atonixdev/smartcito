@@ -2,6 +2,10 @@
 
 Reference compute profile for SmartCito.
 
+Subfolders:
+- [`classical/`](classical/) — current production backbone guidance
+- [`quantum/`](quantum/) — future-facing simulator, QPU, and PQC integration notes
+
 ## Roles
 
 ### Controller Nodes
@@ -40,3 +44,9 @@ Recommended baseline:
 - `citosmart`, `kafka`, and processing workers can run on compute nodes.
 - control-plane services should avoid GPU hosts unless capacity is abundant.
 - pin GPU workloads with node labels such as `smartcito.role=compute-gpu`.
+
+## Hybrid Compute Strategy
+
+- classical Xeon/EPYC + GPU nodes remain the default execution plane
+- quantum simulators or cloud quantum services are attached through modular APIs
+- no operational dependency on quantum services is allowed in the core path

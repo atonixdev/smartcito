@@ -13,10 +13,10 @@ CCTV and drone feed processing for SmartCito.
 
 ```
 camera_module/
+├── Dockerfile        # Container image for the camera-domain API
+├── requirements.txt  # Python runtime dependencies
+├── service.py        # FastAPI camera-domain service
 ├── drivers/         # Vendor and protocol drivers (ONVIF, RTSP, custom)
-├── sources/         # RTSP, ONVIF, file, drone SDK adapters
-├── processing/      # Frame pre-processing, motion detection
-├── pipelines/       # End-to-end camera → AI → event pipelines
 └── README.md
 ```
 
@@ -44,3 +44,26 @@ Any face / biometric processing requires:
 - documented legal basis and consent model,
 - redaction/blurring options enabled by default,
 - audit logs of every model inference.
+
+## Technologies Used
+
+- Python 3.11
+- FastAPI
+- Uvicorn
+- ONVIF / RTSP protocol helpers
+
+## How To Run Its Container
+
+```bash
+docker build -f camera_module/Dockerfile -t smartcito-camera-module .
+docker run --rm -p 8010:8010 smartcito-camera-module
+```
+
+## Example Usage
+
+```bash
+curl http://localhost:8010/drivers
+curl -X POST http://localhost:8010/probe \
+  -H 'Content-Type: application/json' \
+  -d '{"device_id":"cam-1","host":"camera.local","path":"/stream/main"}'
+```

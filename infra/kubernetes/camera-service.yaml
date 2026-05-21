@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: camera-service
+  namespace: ingestion
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: camera-service
+  template:
+    metadata:
+      labels:
+        app: camera-service
+    spec:
+      containers:
+        - name: camera-service
+          image: smartcito/camera-service:latest
+          ports:
+            - containerPort: 8010
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: camera-service
+  namespace: ingestion
+spec:
+  selector:
+    app: camera-service
+  ports:
+    - port: 80
+      targetPort: 8010

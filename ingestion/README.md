@@ -23,9 +23,10 @@ the SmartCito core for processing, storage, and analytics.
 
 ```
 ingestion/
-├── connectors/      # New source connectors (one folder per source)
-├── pipelines/       # Spark/Kafka Streams transformation jobs
-├── schemas/         # Avro / JSON Schema definitions for events
+├── Dockerfile       # Container image for ingestion jobs
+├── requirements.txt # Runtime dependencies
+├── kafka_producer.py# Simple Kafka producer helper
+├── spark_job.py     # Structured streaming job template
 └── README.md
 ```
 
@@ -43,3 +44,22 @@ ingestion/
 - All brokers must be reached over **TLS**.
 - Credentials are loaded from environment variables — never commit secrets.
 - Apply the project's RBAC policies to any new ingestion endpoint.
+
+## Technologies Used
+
+- Python 3.11
+- kafka-python
+- Spark job templates
+
+## How To Run Its Container
+
+```bash
+docker build -f ingestion/Dockerfile -t smartcito-ingestion .
+docker run --rm smartcito-ingestion
+```
+
+## Example Usage
+
+```bash
+python -m ingestion.spark_job
+```

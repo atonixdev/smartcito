@@ -11,6 +11,8 @@ security posture.
 - UPS and backup generators for continuity
 - tamper switches and secure elements for body and micro camera devices
 - device allow-listing controls for registered camera hardware
+- PQC-capable crypto modules as mature libraries and appliances become available
+- QKD gateway appliances where satellite or fiber deployments justify them
 
 ## Control Mapping
 
@@ -22,3 +24,7 @@ security posture.
   [`../../security/incident_response/playbook.md`](../../security/incident_response/playbook.md).
 - body-camera and micro-camera casings should emit tamper events that map into
   the same audit domain and incident workflow.
+
+Quantum-ready subfolders:
+- [`pqc/`](pqc/) — post-quantum hardware control guidance
+- [`qkd/`](qkd/) — quantum key distribution integration guidance

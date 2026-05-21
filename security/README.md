@@ -19,6 +19,9 @@ Primary operating documents:
 
 ```
 security/
+├── Dockerfile       # Container image for security-domain API
+├── requirements.txt # Runtime dependencies
+├── service.py       # FastAPI encryption/IAM helper service
 ├── iam/             # Identity providers, OIDC/SAML integrations
 ├── rbac/            # Role and permission definitions, policy engine
 ├── crypto/          # Key management, envelope encryption helpers
@@ -46,3 +49,25 @@ security/
 - [ ] Audit log emitted for every state-changing call
 - [ ] Secrets loaded from env / secret manager, never committed
 - [ ] Threat model reviewed in PR description
+
+## Technologies Used
+
+- Python 3.11
+- FastAPI
+- cryptography
+- JWT / RBAC policy artifacts
+
+## How To Run Its Container
+
+```bash
+docker build -f security/Dockerfile -t smartcito-security-domain .
+docker run --rm -p 8013:8013 --env-file .env smartcito-security-domain
+```
+
+## Example Usage
+
+```bash
+curl -X POST http://localhost:8013/encrypt \
+	-H 'Content-Type: application/json' \
+	-d '{"plaintext":"hello","purpose":"demo"}'
+```

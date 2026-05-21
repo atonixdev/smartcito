@@ -119,6 +119,12 @@ smartcito/
 │   ├── micro_cameras/    # Magnetic micro camera designs and event model
 │   ├── gps_modules/      # GNSS hardware guidance for edge devices
 │   └── api_connectors/   # Device registration and heartbeat contracts
+├── services/             # Split-function container services for Kubernetes
+│   ├── api-gateway/      # REST / GraphQL entrypoint container
+│   ├── camera-service/   # Video ingestion microservice container
+│   ├── gps-service/      # GPS stream normalization container
+│   ├── ai-service/       # AI inference and analytics container
+│   └── security-service/ # Encryption and IAM microservice container
 ├── citosmart/              # FastAPI service: APIs, ingestion, security, analytics
 │   └── app/
 │       ├── api/v1/       # HTTP endpoints
@@ -128,6 +134,7 @@ smartcito/
 │       └── dash_app/     # Plotly Dash live analytics side-app
 ├── webapp/             # React + Vite + TypeScript dashboard
 ├── native/               # Optional C11 performance extensions (opt-in build)
+├── infra/                # Puppet, Terraform, Kubernetes, and runtime infra
 ├── docs/                 # Architecture, API, security and contributor docs
 ├── .github/              # CI workflows, issue and PR templates
 ├── docker-compose.yml    # One-command local stack

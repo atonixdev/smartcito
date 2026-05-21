@@ -13,6 +13,8 @@ Related material:
 - [docs/security.md](../docs/security.md) — contributor checklist
 - [security/rbac/policies.yaml](rbac/policies.yaml) — role/permission matrix
 - [security/audit/audit_log_schema.json](audit/audit_log_schema.json)
+- [security/pqc/](pqc/) — post-quantum migration guidance
+- [security/qkd/](qkd/) — QKD integration guidance
 - [security/compliance/](compliance/) — POPIA / GDPR / ISO 27001 mappings
 - [security/incident_response/playbook.md](incident_response/playbook.md)
 
@@ -45,6 +47,13 @@ Related material:
 Key management is centralised. Keys rotate at least every 90 days for
 data-encryption keys and annually for master keys.
 
+### Quantum-Ready Direction
+
+- Begin migration planning with NIST-standardized post-quantum algorithms.
+- Prefer hybrid classical + PQC key exchange during the transition period.
+- Design key-management APIs so QKD-derived keys can enter the approved KMS/HSM
+  pipeline without changing service contracts.
+
 ## 3. Identity & Access Management
 
 - **RBAC** with the role matrix defined in
@@ -66,6 +75,8 @@ data-encryption keys and annually for master keys.
   Schema: [audit/audit_log_schema.json](audit/audit_log_schema.json).
 - **Tamper-evident storage.** Audit logs are append-only and signed in
   batches (hash-chained); shipped off-host within 60 seconds.
+- **Quantum-ready signing roadmap.** Audit chains should be prepared for PQC
+  signatures as mature libraries become operationally viable.
 - **Compliance mappings:**
   - [POPIA](compliance/popia.md) (South Africa)
   - [GDPR](compliance/gdpr.md) (EU)
@@ -109,6 +120,8 @@ data-encryption keys and annually for master keys.
 | [`security/iam/`](iam/)           | OAuth2, OIDC, JWT, MFA configuration        |
 | [`security/rbac/`](rbac/)         | Role + permission matrix                    |
 | [`security/crypto/`](crypto/)     | Encryption standards + key management       |
+| [`security/pqc/`](pqc/)           | Post-quantum cryptography migration         |
+| [`security/qkd/`](qkd/)           | QKD integration policy                      |
 | [`security/audit/`](audit/)       | Audit log schema + sinks                    |
 | [`security/compliance/`](compliance/) | POPIA, GDPR, ISO 27001 mappings         |
 | [`security/incident_response/`](incident_response/) | IR playbook        |

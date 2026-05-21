@@ -27,6 +27,7 @@ Reference implementation steps for a SmartCito pilot or production rack.
 - storage nodes: database, Kafka durability, archive services
 - security appliances: HSM, VPN, IDS/IPS
 - edge devices: body cameras, micro cameras, GNSS modules, and magnetic mount sensors
+- quantum-ready services: PQC libraries, simulators, and optional QKD gateways
 
 ## 5. Deploy Software
 
@@ -50,10 +51,18 @@ Reference implementation steps for a SmartCito pilot or production rack.
 - enforce MFA and RBAC per [`../../security/SECURITY_POSTURE.md`](../../security/SECURITY_POSTURE.md)
 - enable Prometheus/Grafana dashboards and IDS alert routing
 
+## 8. Prepare for Quantum-Safe Migration
+
+- keep the production backbone on classical compute by default
+- validate PQC-capable libraries and hybrid key exchange in staging first
+- route any QKD-derived keys through approved KMS/HSM gateways
+- document rollback plans before enabling any quantum-assisted control in production
+
 ## Exit Criteria
 
 A site is considered ready only when:
 - all services pass health checks,
 - redundant power and network paths are tested,
 - monitoring and alerting are active,
-- incident response contacts are recorded.
+- incident response contacts are recorded,
+- PQC and QKD integration points are documented even if not yet enabled.

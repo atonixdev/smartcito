@@ -35,3 +35,6 @@ exposed only on admin networks.
 
 Use the protocol baseline in [`protocols/`](protocols/) to keep camera, GPS,
 and IoT integrations interoperable across vendors and geographies.
+
+Quantum-ready networking guidance lives in [`quantum_ready/`](quantum_ready/)
+for hybrid PQC migration and future QKD gateway integration.

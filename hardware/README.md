@@ -9,12 +9,16 @@ Docker stack in [`../docker-compose.yml`](../docker-compose.yml).
 
 ```
 hardware/
+├── Dockerfile       # Container image for hardware-domain API
+├── requirements.txt # Runtime dependencies
+├── service.py       # FastAPI hardware-domain service
 ├── camera_module/   # Hardware-facing camera standards, drivers, and docs
 ├── gps_module/      # Hardware-facing GNSS standards and API guidance
 ├── body_cameras/   # Body-worn camera reference builds and firmware notes
 ├── micro_cameras/  # Compact magnetic camera designs and streaming notes
 ├── gps_modules/    # GNSS chip configs and device-side location guidance
 ├── api_connectors/ # Registration, heartbeat, and stream API contracts
+├── quantum/        # Quantum-ready procedures and contributor guidance
 ├── compute/        # Controller + GPU compute node specs
 ├── storage/        # Storage tiers, arrays, RAID, object/block mapping
 ├── networking/     # Switching, firewalling, VPN, rack uplinks
@@ -42,3 +46,23 @@ hardware/
 - Camera device integration: [`docs/camera_hardware_integration.md`](docs/camera_hardware_integration.md)
 - Prototyping notes: [`docs/prototyping.md`](docs/prototyping.md)
 - Open protocol baseline: [`networking/protocols/`](networking/protocols/)
+- Quantum-ready procedures: [`quantum/`](quantum/)
+
+## Technologies Used
+
+- Python 3.11
+- FastAPI
+- monitoring helpers for hardware telemetry
+
+## How To Run Its Container
+
+```bash
+docker build -f hardware/Dockerfile -t smartcito-hardware-domain .
+docker run --rm -p 8014:8014 smartcito-hardware-domain
+```
+
+## Example Usage
+
+```bash
+curl http://localhost:8014/monitoring/sample
+```

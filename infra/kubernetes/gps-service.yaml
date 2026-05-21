@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gps-service
+  namespace: ingestion
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: gps-service
+  template:
+    metadata:
+      labels:
+        app: gps-service
+    spec:
+      containers:
+        - name: gps-service
+          image: smartcito/gps-service:latest
+          ports:
+            - containerPort: 8011
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gps-service
+  namespace: ingestion
+spec:
+  selector:
+    app: gps-service
+  ports:
+    - port: 80
+      targetPort: 8011

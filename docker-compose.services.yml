@@ -1,0 +1,60 @@
+services:
+  api-gateway:
+    build:
+      context: .
+      dockerfile: services/api-gateway/Dockerfile
+    ports:
+      - "8000:8000"
+
+  camera-service:
+    build:
+      context: .
+      dockerfile: camera_module/Dockerfile
+    ports:
+      - "8010:8010"
+
+  gps-service:
+    build:
+      context: .
+      dockerfile: gps_module/Dockerfile
+    ports:
+      - "8011:8011"
+
+  ai-service:
+    build:
+      context: .
+      dockerfile: ai_models/Dockerfile
+    ports:
+      - "8012:8012"
+
+  security-service:
+    build:
+      context: .
+      dockerfile: security/Dockerfile
+    ports:
+      - "8013:8013"
+    env_file: .env
+
+  hardware-agent:
+    build:
+      context: .
+      dockerfile: hardware/Dockerfile
+    ports:
+      - "8014:8014"
+
+  db-service:
+    build:
+      context: .
+      dockerfile: database/Dockerfile
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-smartcito}
+      POSTGRES_USER: ${POSTGRES_USER:-smartcito}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-smartcito}
+    ports:
+      - "5432:5432"
+
+  frontend-service:
+    build:
+      context: ./webapp
+    ports:
+      - "5173:80"

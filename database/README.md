@@ -17,10 +17,9 @@ connectors**.
 
 ```
 database/
-├── schemas/         # SQL DDL, JSON Schema, Avro schemas
-├── migrations/      # Cross-service migration helpers
-├── connectors/      # Adapters for other languages/services
-├── seeds/           # Reference/seed data
+├── Dockerfile       # PostgreSQL-based container image
+├── bootstrap.py     # Local schema bootstrap helper
+├── init/            # SQL bootstrap scripts
 └── README.md
 ```
 
@@ -37,3 +36,26 @@ database/
 
 Backups are configured at the infra layer (see
 [`../infra/`](../infra/)). Never store backups in this repo.
+
+## Technologies Used
+
+- PostgreSQL 16
+- SQL schema bootstrap scripts
+- Python bootstrap helper
+
+## How To Run Its Container
+
+```bash
+docker build -f database/Dockerfile -t smartcito-db-service .
+docker run --rm -p 5432:5432 \
+  -e POSTGRES_DB=smartcito \
+  -e POSTGRES_USER=smartcito \
+  -e POSTGRES_PASSWORD=smartcito \
+  smartcito-db-service
+```
+
+## Example Usage
+
+```bash
+python database/bootstrap.py
+```
