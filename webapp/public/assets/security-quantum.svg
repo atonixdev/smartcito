@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820" role="img" aria-label="Security and quantum-safe controls">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#eef6f2"/>
+      <stop offset="100%" stop-color="#d7e0ee"/>
+    </linearGradient>
+    <style>
+      .title { font: 700 46px Georgia, serif; fill: #173642; }
+      .label { font: 700 24px Georgia, serif; fill: #173642; }
+      .body { font: 400 18px Georgia, serif; fill: #40606e; }
+      .card { fill: #ffffff; stroke: #173642; stroke-width: 3; rx: 26; }
+      .line { stroke: #173642; stroke-width: 4; fill: none; }
+    </style>
+  </defs>
+  <rect width="1400" height="820" fill="url(#bg)"/>
+  <text x="80" y="90" class="title">Security and Quantum-Safe Flow</text>
+  <text x="80" y="130" class="body">Identity, RBAC, encryption, audit, and hybrid envelope protection connected as one control chain.</text>
+  <rect x="120" y="240" width="220" height="130" class="card"/>
+  <text x="155" y="300" class="label">Identity</text>
+  <rect x="420" y="240" width="220" height="130" class="card"/>
+  <text x="470" y="300" class="label">RBAC</text>
+  <rect x="720" y="240" width="220" height="130" class="card"/>
+  <text x="750" y="300" class="label">Encryption</text>
+  <rect x="1020" y="240" width="250" height="130" class="card"/>
+  <text x="1055" y="300" class="label">Audit Events</text>
+  <rect x="570" y="500" width="300" height="150" class="card"/>
+  <text x="610" y="565" class="label">Quantum-Safe Envelope</text>
+  <text x="610" y="600" class="body">PQC metadata + QKD-ready keys</text>
+  <path d="M340 305 L420 305" class="line"/>
+  <path d="M640 305 L720 305" class="line"/>
+  <path d="M940 305 L1020 305" class="line"/>
+  <path d="M1145 370 C1145 460, 980 520, 870 555" class="line"/>
+  <path d="M720 370 L720 500" class="line"/>
+</svg>
