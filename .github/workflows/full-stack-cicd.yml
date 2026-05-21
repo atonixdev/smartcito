@@ -143,10 +143,26 @@ jobs:
     name: Authorized live hardware validation
     if: github.event_name == 'workflow_dispatch' && inputs.hardware_mode == 'live'
     runs-on: ubuntu-latest
-    environment:
-      name: hardware-lab
     steps:
       - uses: actions/checkout@v4
+
+      - name: Enforce hardware trigger RBAC
+        run: |
+          python3 - <<'PY'
+          import os
+
+          actor = os.getenv("GITHUB_ACTOR", "")
+          owner = os.getenv("GITHUB_REPOSITORY_OWNER", "")
+          allowed = set()
+          if owner:
+              allowed.add(owner)
+          if actor not in allowed:
+              raise SystemExit(
+                  f"Actor '{actor}' is not authorized for live hardware validation. "
+                  "Only the repository owner may trigger this workflow by default."
+              )
+          print(f"Authorized actor: {actor}")
+          PY
 
       - name: Set up Python
         uses: actions/setup-python@v5
