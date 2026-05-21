@@ -198,6 +198,8 @@ npm run dev
 
 Detailed walkthroughs live in [`docs/`](docs/).
 
+For a single wiki-style project entry point, start with [`docs/WIKI.md`](docs/WIKI.md).
+
 For pilot or hardware-backed deployments, see [`docs/DOCKER_DEPLOYMENT.md`](docs/DOCKER_DEPLOYMENT.md)
 and [`hardware/`](hardware/).
 
