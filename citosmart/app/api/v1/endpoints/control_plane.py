@@ -14,7 +14,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import require_role
 from app.db.session import get_session
-from app.schemas.control_plane import ControlPlaneOverview, OperatorControl, OperatorControlUpdateIn
+from app.schemas.control_plane import (
+    ControlPlaneOverview,
+    MapDevice,
+    MapDeviceRegistrationIn,
+    MapOverview,
+    OperatorControl,
+    OperatorControlUpdateIn,
+)
 from app.services.control_plane import control_plane_service
 
 router = APIRouter()
@@ -55,3 +62,31 @@ async def update_operator_control(
             detail=f"Unknown operator control '{control_id}'",
         )
     return control
+
+
+@router.get(
+    "/map",
+    response_model=MapOverview,
+    dependencies=[Depends(require_role("viewer"))],
+    summary="Return verified IoT, GPS, and camera devices for the dashboard map",
+)
+async def get_map_overview(session: AsyncSession = Depends(get_session)) -> MapOverview:
+    return await control_plane_service.map_overview(session)
+
+
+@router.post(
+    "/map/register",
+    response_model=MapDevice,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_role("operator"))],
+    summary="Register a Raspberry Pi or IoT edge node for map display",
+)
+async def register_map_device(
+    registration: MapDeviceRegistrationIn,
+    session: AsyncSession = Depends(get_session),
+) -> MapDevice:
+    return await control_plane_service.register_map_device(
+        session,
+        registration=registration,
+        actor="api:map-device-register",
+    )

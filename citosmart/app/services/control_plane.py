@@ -23,6 +23,10 @@ from app.schemas.control_plane import (
     DataFlowStage,
     DeviceCategory,
     DeviceTrustLevel,
+    MapDevice,
+    MapDeviceRegistrationIn,
+    MapHeatPoint,
+    MapOverview,
     ManagedDevice,
     OperatorControl,
     OperatorControlState,
@@ -50,6 +54,7 @@ class ControlPlaneService:
             "usb-service": OperatorControlState.RUNNING,
             "security-policies": OperatorControlState.RUNNING,
         }
+        self._map_devices: dict[str, MapDevice] = {}
 
     async def overview(self, session: AsyncSession) -> ControlPlaneOverview:
         cameras = await camera_registry_service.list_devices(session)
@@ -223,14 +228,174 @@ class ControlPlaneService:
         overview = await self.overview(session)
         return next(control for control in overview.controls if control.id == control_id)
 
+    async def map_overview(self, session: AsyncSession) -> MapOverview:
+        cameras = await camera_registry_service.list_devices(session)
+        if not cameras:
+            cameras = await camera_registry_service.seed_demo_devices(session)
+
+        devices: list[MapDevice] = []
+        for index, device in enumerate(cameras):
+            latitude, longitude = self._camera_location(device.location, index)
+            trust_score = 0 if device.tamper_detected else 96
+            if trust_score > 80:
+                devices.append(
+                    MapDevice(
+                        id=str(device.id),
+                        device_id=device.device_id,
+                        name=device.device_id,
+                        device_type=DeviceCategory.CAMERA,
+                        latitude=latitude,
+                        longitude=longitude,
+                        trust_score=trust_score,
+                        trust_level=DeviceTrustLevel.VERIFIED,
+                        camera_feed_url=f"rtsp://fleet/{device.device_id}",
+                        sensor_type="camera-feed",
+                        sensor_value=device.battery_level,
+                        gps_path=self._path_around(latitude, longitude),
+                        last_seen_at=device.last_seen_at,
+                    )
+                )
+
+        for index, usb in enumerate(detect_usb_devices()):
+            trust_score = self._trust_score(DeviceTrustLevel(usb.trust_level))
+            if trust_score > 80:
+                latitude, longitude = self._usb_location(index)
+                devices.append(
+                    MapDevice(
+                        id=usb.id,
+                        device_id=usb.id,
+                        name=usb.name,
+                        device_type=DeviceCategory(usb.category),
+                        latitude=latitude,
+                        longitude=longitude,
+                        trust_score=trust_score,
+                        trust_level=DeviceTrustLevel(usb.trust_level),
+                        camera_feed_url=None,
+                        sensor_type="gps" if usb.category == "gps" else "iot-sensor",
+                        sensor_value=0.68,
+                        gps_path=self._path_around(latitude, longitude),
+                        last_seen_at=usb.last_seen_at,
+                    )
+                )
+
+        if "raspi-edge-001" not in self._map_devices:
+            now = datetime.now(UTC)
+            self._map_devices["raspi-edge-001"] = MapDevice(
+                id="raspi-edge-001",
+                device_id="raspi-edge-001",
+                name="Raspberry Pi Edge Node",
+                device_type=DeviceCategory.IOT,
+                latitude=-25.7461,
+                longitude=28.1881,
+                trust_score=92,
+                trust_level=DeviceTrustLevel.VERIFIED,
+                camera_feed_url="rtsp://edge/raspi-edge-001/camera",
+                sensor_type="air-quality",
+                sensor_value=0.74,
+                gps_path=[(-25.7472, 28.1868), (-25.7467, 28.1875), (-25.7461, 28.1881)],
+                last_seen_at=now,
+            )
+
+        devices.extend(device for device in self._map_devices.values() if device.trust_score > 80)
+        devices = sorted(devices, key=self._last_seen_sort_key, reverse=True)
+        heatmap = [
+            MapHeatPoint(
+                latitude=device.latitude,
+                longitude=device.longitude,
+                intensity=min(max((device.sensor_value or 0.45), 0.15), 1),
+                label=f"{device.name} {device.sensor_type}",
+            )
+            for device in devices
+        ]
+
+        return MapOverview(
+            devices=devices,
+            heatmap=heatmap,
+            visible_layers=["verified-devices", "camera-overlays", "gps-paths", "sensor-heatmap"],
+            security_policy="verified devices only; trust score must be greater than 80; registration and map updates are audited",
+        )
+
+    async def register_map_device(
+        self,
+        session: AsyncSession,
+        *,
+        registration: MapDeviceRegistrationIn,
+        actor: str,
+    ) -> MapDevice:
+        trust_level = self._trust_level(registration.trust_score)
+        device = MapDevice(
+            id=registration.device_id,
+            device_id=registration.device_id,
+            name=registration.name,
+            device_type=registration.device_type,
+            latitude=registration.latitude,
+            longitude=registration.longitude,
+            trust_score=registration.trust_score,
+            trust_level=trust_level,
+            camera_feed_url=registration.camera_feed_url,
+            sensor_type=registration.sensor_type,
+            sensor_value=registration.sensor_value,
+            gps_path=self._path_around(registration.latitude, registration.longitude),
+            last_seen_at=datetime.now(UTC),
+        )
+        self._map_devices[registration.device_id] = device
+        session.add(
+            AuditEventORM(
+                id=str(uuid4()),
+                entity_type="map_device",
+                entity_id=registration.device_id,
+                action="control-plane.map-device.registered",
+                actor=actor,
+                payload={
+                    "trust_score": registration.trust_score,
+                    "device_type": registration.device_type.value,
+                    "mqtt_topic": registration.mqtt_topic,
+                    "shown_on_map": registration.trust_score > 80,
+                },
+            )
+        )
+        await session.commit()
+        return device
+
     def _action_label(self, state: OperatorControlState) -> str:
         return "stop" if state == OperatorControlState.RUNNING else "start"
 
-    def _last_seen_sort_key(self, device: ManagedDevice) -> float:
+    def _last_seen_sort_key(self, device: ManagedDevice | MapDevice) -> float:
         timestamp = device.last_seen_at
         if timestamp.tzinfo is None:
             timestamp = timestamp.replace(tzinfo=UTC)
         return timestamp.timestamp()
+
+    def _trust_score(self, trust_level: DeviceTrustLevel) -> int:
+        if trust_level == DeviceTrustLevel.VERIFIED:
+            return 100
+        if trust_level == DeviceTrustLevel.UNVERIFIED:
+            return 50
+        return 0
+
+    def _trust_level(self, trust_score: int) -> DeviceTrustLevel:
+        if trust_score > 80:
+            return DeviceTrustLevel.VERIFIED
+        if trust_score > 0:
+            return DeviceTrustLevel.UNVERIFIED
+        return DeviceTrustLevel.BLOCKED
+
+    def _camera_location(self, location: dict[str, float] | None, index: int) -> tuple[float, float]:
+        if location and "lat" in location and "lon" in location:
+            return float(location["lat"]), float(location["lon"])
+        demo_locations = [(-25.7479, 28.2293), (-26.2041, 28.0473)]
+        return demo_locations[index % len(demo_locations)]
+
+    def _usb_location(self, index: int) -> tuple[float, float]:
+        demo_locations = [(-25.7469, 28.2299), (-25.7491, 28.2268)]
+        return demo_locations[index % len(demo_locations)]
+
+    def _path_around(self, latitude: float, longitude: float) -> list[tuple[float, float]]:
+        return [
+            (latitude - 0.0011, longitude - 0.0012),
+            (latitude - 0.0004, longitude - 0.0005),
+            (latitude, longitude),
+        ]
 
 
 control_plane_service = ControlPlaneService()

@@ -14,11 +14,14 @@ import DeviceManagerPanel from "@/components/DeviceManagerPanel";
 import OperatorControlsPanel from "@/components/OperatorControlsPanel";
 import RegisteredCamerasPanel from "@/components/RegisteredCamerasPanel";
 import SecurityMonitorPanel from "@/components/SecurityMonitorPanel";
+import SmartMapPanel from "@/components/SmartMapPanel";
 import TrafficSummaryPanel from "@/components/TrafficSummaryPanel";
 import { useControlPlaneOverview, useUpdateOperatorControl } from "@/api/controlPlane";
+import { useSmartMapOverview } from "@/api/map";
 
 export default function Dashboard() {
   const { data } = useControlPlaneOverview();
+  const { data: mapData } = useSmartMapOverview();
   const updateControl = useUpdateOperatorControl();
 
   return (
@@ -29,6 +32,7 @@ export default function Dashboard() {
       </p>
 
       <div className="dashboard-grid">
+        <SmartMapPanel devices={mapData?.devices ?? []} />
         <DeviceManagerPanel devices={data?.devices ?? []} />
         <RegisteredCamerasPanel />
         <SecurityMonitorPanel

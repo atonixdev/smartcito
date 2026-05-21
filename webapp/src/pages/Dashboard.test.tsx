@@ -58,6 +58,33 @@ vi.mock("@/api/cameras", () => ({
   demoCameraFleet: [],
 }));
 
+vi.mock("@/api/map", () => ({
+  useSmartMapOverview: () => ({
+    data: {
+      devices: [
+        {
+          id: "raspi-edge-001",
+          device_id: "raspi-edge-001",
+          name: "Raspberry Pi Edge Node",
+          device_type: "iot",
+          latitude: -25.7461,
+          longitude: 28.1881,
+          trust_score: 92,
+          trust_level: "verified",
+          camera_feed_url: "rtsp://edge/raspi-edge-001/camera",
+          sensor_type: "air-quality",
+          sensor_value: 0.74,
+          gps_path: [[-25.7472, 28.1868], [-25.7461, 28.1881]],
+          last_seen_at: new Date().toISOString(),
+        },
+      ],
+      heatmap: [],
+      visible_layers: ["verified-devices"],
+      security_policy: "verified devices only",
+    },
+  }),
+}));
+
 describe("Dashboard", () => {
   it("renders control-plane modules", () => {
     const queryClient = new QueryClient();
@@ -69,6 +96,7 @@ describe("Dashboard", () => {
     );
 
     expect(screen.getByRole("heading", { name: /Device Manager/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /SmartCito Map Integration/i })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /Security Monitor/i })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /Data Flow View/i })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /Operator Controls/i })).toBeInTheDocument();

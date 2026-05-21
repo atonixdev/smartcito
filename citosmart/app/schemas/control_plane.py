@@ -93,6 +93,51 @@ class OperatorControlUpdateIn(BaseModel):
     desired_state: OperatorControlState = Field(...)
 
 
+class MapDeviceRegistrationIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    device_id: str = Field(..., min_length=3, max_length=80)
+    device_type: DeviceCategory
+    name: str = Field(..., min_length=3, max_length=120)
+    latitude: float = Field(..., ge=-90, le=90)
+    longitude: float = Field(..., ge=-180, le=180)
+    trust_score: int = Field(..., ge=0, le=100)
+    camera_feed_url: str | None = None
+    sensor_type: str = Field(default="edge-node", max_length=80)
+    sensor_value: float | None = None
+    mqtt_topic: str | None = None
+
+
+class MapDevice(BaseModel):
+    id: str
+    device_id: str
+    name: str
+    device_type: DeviceCategory
+    latitude: float
+    longitude: float
+    trust_score: int
+    trust_level: DeviceTrustLevel
+    camera_feed_url: str | None = None
+    sensor_type: str
+    sensor_value: float | None = None
+    gps_path: list[tuple[float, float]]
+    last_seen_at: datetime
+
+
+class MapHeatPoint(BaseModel):
+    latitude: float
+    longitude: float
+    intensity: float = Field(..., ge=0, le=1)
+    label: str
+
+
+class MapOverview(BaseModel):
+    devices: list[MapDevice]
+    heatmap: list[MapHeatPoint]
+    visible_layers: list[str]
+    security_policy: str
+
+
 class ControlPlaneOverview(BaseModel):
     devices: list[ManagedDevice]
     security: SecurityMonitorStatus

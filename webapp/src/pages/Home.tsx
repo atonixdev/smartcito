@@ -32,6 +32,20 @@ const coreFeatures = [
   },
 ];
 
+const proofPoints = [
+  { value: "5", label: "architecture layers" },
+  { value: "4", label: "dashboard control modules" },
+  { value: "PQC", label: "quantum-ready security" },
+  { value: "CI", label: "hardware-aware validation" },
+];
+
+const governanceSignals = [
+  "Apache 2.0 open-source licensing",
+  "GitFlow branch governance and CI checks",
+  "Security posture documented with audit trails",
+  "Hardware, cloud, and dashboard modules validated together",
+];
+
 const architectureLayers = [
   "City devices and systems",
   "Ingestion and protocol adapters",
@@ -53,6 +67,12 @@ export default function Home() {
             IoT devices, hardware services, and cloud systems into one unified
             backbone designed for transparency, security, and innovation.
           </p>
+
+          <div className="foundation-strip" aria-label="Project positioning">
+            <span>Open foundation ambition</span>
+            <span>Security-first engineering</span>
+            <span>City-scale control plane</span>
+          </div>
 
           <div className="hero-actions">
             <Link className="btn primary" to="/dashboard">
@@ -76,15 +96,54 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="proof-band" aria-label="SmartCito proof points">
+        {proofPoints.map((item) => (
+          <div className="proof-item" key={item.label}>
+            <strong>{item.value}</strong>
+            <span>{item.label}</span>
+          </div>
+        ))}
+      </section>
+
       <section className="content-section intro-section">
         <div>
           <span className="eyebrow">Mission</span>
           <h3>Open, collaborative, and future-proof by design.</h3>
+          <p className="section-copy">
+            The project is shaped like a professional open infrastructure
+            program: public architecture, validated code paths, documented
+            security posture, and a dashboard that operators can actually use.
+          </p>
         </div>
         <div className="statement-list">
           <p>Create a foundation for smart cities that is open, collaborative, and future-proof.</p>
           <p>Ensure data security with post-quantum cryptography and strong audit controls.</p>
           <p>Empower developers, governments, and communities with open dashboards and APIs.</p>
+        </div>
+      </section>
+
+      <section className="content-section foundation-section">
+        <div className="section-heading">
+          <span className="eyebrow">Foundation-grade posture</span>
+          <h3>Built to look and operate like serious open infrastructure.</h3>
+        </div>
+        <div className="governance-grid">
+          <article className="governance-panel primary-panel">
+            <h4>Open governance baseline</h4>
+            <p>
+              SmartCito is positioned as an open project with clear contribution
+              surfaces, visible security controls, modular infrastructure, and
+              documentation that can grow into a foundation-style program.
+            </p>
+          </article>
+          <div className="governance-list">
+            {governanceSignals.map((signal) => (
+              <div className="governance-item" key={signal}>
+                <span />
+                <strong>{signal}</strong>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -126,7 +185,7 @@ export default function Home() {
       <section className="content-section split-section">
         <div>
           <span className="eyebrow">Community</span>
-          <h3>Built so many kinds of contributors can participate.</h3>
+          <h3>Built so every discipline has a real place to contribute.</h3>
           <p>
             Developers can contribute services and containers. Designers can
             improve diagrams and Wiki visuals. Cloud engineers can expand

@@ -10,6 +10,7 @@
 - [Ingestion and Protocol Adapters](INGESTION_AND_PROTOCOL_ADAPTERS)
 - [Storage and Event Backbone](STORAGE_AND_EVENT_BACKBONE)
 - [Dashboards and Operator Views](DASHBOARDS_AND_OPERATOR_VIEWS)
+- [SmartCito Map Integration](SMARTCITO_MAP_INTEGRATION)
 - [City Devices and Systems](CITY_DEVICES_AND_SYSTEMS)
 
 ## Infrastructure
