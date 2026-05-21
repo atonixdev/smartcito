@@ -30,6 +30,7 @@ be reasoned about together.
 - compute nodes run analytics and service workloads,
 - storage systems back the database and event flows,
 - networks carry camera, GPS, and API traffic,
+- USB adapters bridge portable field devices into the secured ingest path,
 - security appliances protect keys and access,
 - CI validates key rack and hardware assumptions.
 
@@ -56,6 +57,7 @@ flowchart TD
 ## Related Folders
 
 - [../../hardware/README.md](../../hardware/README.md)
+- [../../hardware/usb_module/README.md](../../hardware/usb_module/README.md)
 - [../../hardware/compute/README.md](../../hardware/compute/README.md)
 - [../../hardware/storage/README.md](../../hardware/storage/README.md)
 - [../../hardware/networking/README.md](../../hardware/networking/README.md)
@@ -75,4 +77,15 @@ flowchart TD
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.hardware.yml up --build
 pytest hardware/compute/test_compute_nodes.py hardware/racks/test_power_distribution.py -q
+```
+
+## USB Driver Mapping Flow
+
+```mermaid
+flowchart TD
+  A[USB GPS or Sensor Adapter] --> B[hardware/usb_module detector]
+  B --> C[usb-service container]
+  C --> D[FastAPI control-plane overview]
+  D --> E[Dashboard device manager]
+  C --> F[Security policy engine]
 ```

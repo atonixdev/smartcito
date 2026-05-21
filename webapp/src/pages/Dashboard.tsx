@@ -9,10 +9,18 @@
  */
 
 import RecentReadingsPanel from "@/components/RecentReadingsPanel";
+import DataFlowViewPanel from "@/components/DataFlowViewPanel";
+import DeviceManagerPanel from "@/components/DeviceManagerPanel";
+import OperatorControlsPanel from "@/components/OperatorControlsPanel";
 import RegisteredCamerasPanel from "@/components/RegisteredCamerasPanel";
+import SecurityMonitorPanel from "@/components/SecurityMonitorPanel";
 import TrafficSummaryPanel from "@/components/TrafficSummaryPanel";
+import { useControlPlaneOverview, useUpdateOperatorControl } from "@/api/controlPlane";
 
 export default function Dashboard() {
+  const { data } = useControlPlaneOverview();
+  const updateControl = useUpdateOperatorControl();
+
   return (
     <section className="dashboard">
       <h2>Operations Dashboard</h2>
@@ -21,8 +29,28 @@ export default function Dashboard() {
       </p>
 
       <div className="dashboard-grid">
+        <DeviceManagerPanel devices={data?.devices ?? []} />
         <RegisteredCamerasPanel />
+        <SecurityMonitorPanel
+          security={
+            data?.security ?? {
+              encryption_status: "loading",
+              iam_status: "loading",
+              audit_pipeline_status: "loading",
+              quantum_safe_status: "loading",
+              intrusion_alerts: [],
+            }
+          }
+        />
         <TrafficSummaryPanel />
+        <OperatorControlsPanel
+          controls={data?.controls ?? []}
+          isPending={updateControl.isPending}
+          onToggle={(controlId, desiredState) =>
+            updateControl.mutate({ controlId, desiredState })
+          }
+        />
+        <DataFlowViewPanel stages={data?.data_flow ?? []} />
         <RecentReadingsPanel />
       </div>
     </section>
