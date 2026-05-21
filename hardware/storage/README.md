@@ -27,3 +27,9 @@ compete with archives and analytics.
 - Kafka logs belong on high-write SSD-backed volumes.
 - raw video should not be retained by default; metadata belongs in the
   database and approved archives only.
+
+## CI Coverage
+
+- `test_storage_arrays.py` validates storage firmware, redundancy mode,
+  throughput, thermal envelope, and immutable snapshot status.
+- `ci_manifest.yaml` records the storage metrics required by CI.

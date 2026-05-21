@@ -1,0 +1,9 @@
+name: storage-hardware-ci
+coverage:
+  - test_storage_arrays.py
+metrics:
+  - firmware_version
+  - temperature_c
+  - power_kw
+  - throughput_mbps
+  - raid_mode

@@ -1,0 +1,9 @@
+name: rack-hardware-ci
+coverage:
+  - test_power_distribution.py
+metrics:
+  - firmware_version
+  - temperature_c
+  - power_kw
+  - feed_redundancy
+  - ups_runtime_minutes

@@ -50,3 +50,9 @@ Recommended baseline:
 - classical Xeon/EPYC + GPU nodes remain the default execution plane
 - quantum simulators or cloud quantum services are attached through modular APIs
 - no operational dependency on quantum services is allowed in the core path
+
+## CI Coverage
+
+- `test_compute_nodes.py` validates endpoint reachability, firmware baseline,
+  thermal envelope, power draw, and compute throughput.
+- `ci_manifest.yaml` defines the metrics exported by the hardware CI stage.

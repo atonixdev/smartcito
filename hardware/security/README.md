@@ -28,3 +28,9 @@ security posture.
 Quantum-ready subfolders:
 - [`pqc/`](pqc/) — post-quantum hardware control guidance
 - [`qkd/`](qkd/) — quantum key distribution integration guidance
+
+## CI Coverage
+
+- `test_hsm_integrity.py` validates HSM reachability, firmware baseline,
+  tamper state, slot availability, and PQC readiness.
+- `ci_manifest.yaml` captures the mandatory hardware security metrics.

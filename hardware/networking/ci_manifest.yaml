@@ -1,0 +1,9 @@
+name: networking-hardware-ci
+coverage:
+  - test_network_transmission.py
+metrics:
+  - firmware_version
+  - temperature_c
+  - throughput_mbps
+  - latency_ms
+  - quantum_ready
