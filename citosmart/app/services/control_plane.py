@@ -31,6 +31,9 @@ from app.schemas.control_plane import (
     OperatorControl,
     OperatorControlState,
     PipelineState,
+    SceneDevice,
+    SceneOverview,
+    SceneThreat,
     SecurityAlert,
     SecurityMonitorStatus,
 )
@@ -315,6 +318,46 @@ class ControlPlaneService:
             security_policy="verified devices only; trust score must be greater than 80; registration and map updates are audited",
         )
 
+    async def scene_overview(self, session: AsyncSession, *, actor: str) -> SceneOverview:
+        map_overview = await self.map_overview(session)
+        scene_devices = [self._scene_device(device) for device in map_overview.devices]
+        threats = [
+            SceneThreat(
+                id=f"threat-{device.device_id}",
+                x=device.x,
+                y=0.04,
+                z=device.z,
+                severity="medium" if (device.sensor_value or 0) < 0.8 else "high",
+                radius=1.7 + (device.sensor_value or 0.5),
+                source_device_id=device.device_id,
+                label=f"AI watch zone: {device.sensor_type}",
+            )
+            for device in scene_devices
+            if (device.sensor_value or 0) >= 0.7 or device.device_type == DeviceCategory.CAMERA
+        ]
+        session.add(
+            AuditEventORM(
+                id=str(uuid4()),
+                entity_type="dashboard_scene",
+                entity_id="3d-control-plane",
+                action="control-plane.scene.visualized",
+                actor=actor,
+                payload={
+                    "device_count": len(scene_devices),
+                    "threat_count": len(threats),
+                    "policy": "jwt-rbac-and-trust-score",
+                },
+            )
+        )
+        await session.commit()
+        return SceneOverview(
+            devices=scene_devices,
+            threats=threats,
+            layers=["city-map", "iot-devices", "gps-paths", "camera-overlays", "threat-waves"],
+            camera_overlay_mode="popup-texture-ready",
+            security_policy="JWT + RBAC required; objects are color-coded by trust score and visible only after map trust policy validation",
+        )
+
     async def register_map_device(
         self,
         session: AsyncSession,
@@ -396,6 +439,44 @@ class ControlPlaneService:
             (latitude - 0.0004, longitude - 0.0005),
             (latitude, longitude),
         ]
+
+    def _scene_device(self, device: MapDevice) -> SceneDevice:
+        x_position, _, z_position = self._scene_coordinates(device.latitude, device.longitude)
+        return SceneDevice(
+            id=device.id,
+            device_id=device.device_id,
+            name=device.name,
+            device_type=device.device_type,
+            x=x_position,
+            y=0.35,
+            z=z_position,
+            latitude=device.latitude,
+            longitude=device.longitude,
+            trust_score=device.trust_score,
+            trust_level=device.trust_level,
+            status_color=self._status_color(device.trust_score),
+            camera_feed_url=device.camera_feed_url,
+            sensor_type=device.sensor_type,
+            sensor_value=device.sensor_value,
+            gps_path_3d=[
+                (*self._scene_coordinates(latitude, longitude),)
+                for latitude, longitude in device.gps_path
+            ],
+        )
+
+    def _scene_coordinates(self, latitude: float, longitude: float) -> tuple[float, float, float]:
+        anchor_latitude = -25.7479
+        anchor_longitude = 28.2293
+        x_position = (longitude - anchor_longitude) * 180
+        z_position = (latitude - anchor_latitude) * -180
+        return x_position, 0.05, z_position
+
+    def _status_color(self, trust_score: int) -> str:
+        if trust_score > 80:
+            return "#67d5a5"
+        if trust_score > 0:
+            return "#f1c96b"
+        return "#f87171"
 
 
 control_plane_service = ControlPlaneService()

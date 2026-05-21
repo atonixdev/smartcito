@@ -21,6 +21,7 @@ from app.schemas.control_plane import (
     MapOverview,
     OperatorControl,
     OperatorControlUpdateIn,
+    SceneOverview,
 )
 from app.services.control_plane import control_plane_service
 
@@ -90,3 +91,13 @@ async def register_map_device(
         registration=registration,
         actor="api:map-device-register",
     )
+
+
+@router.get(
+    "/scene",
+    response_model=SceneOverview,
+    dependencies=[Depends(require_role("viewer"))],
+    summary="Return 3D-ready city scene data for IoT, GPS, cameras, and threats",
+)
+async def get_scene_overview(session: AsyncSession = Depends(get_session)) -> SceneOverview:
+    return await control_plane_service.scene_overview(session, actor="api:scene-overview")

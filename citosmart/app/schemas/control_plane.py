@@ -138,6 +138,44 @@ class MapOverview(BaseModel):
     security_policy: str
 
 
+class SceneDevice(BaseModel):
+    id: str
+    device_id: str
+    name: str
+    device_type: DeviceCategory
+    x: float
+    y: float
+    z: float
+    latitude: float
+    longitude: float
+    trust_score: int
+    trust_level: DeviceTrustLevel
+    status_color: str
+    camera_feed_url: str | None = None
+    sensor_type: str
+    sensor_value: float | None = None
+    gps_path_3d: list[tuple[float, float, float]]
+
+
+class SceneThreat(BaseModel):
+    id: str
+    x: float
+    y: float
+    z: float
+    severity: str
+    radius: float
+    source_device_id: str
+    label: str
+
+
+class SceneOverview(BaseModel):
+    devices: list[SceneDevice]
+    threats: list[SceneThreat]
+    layers: list[str]
+    camera_overlay_mode: str
+    security_policy: str
+
+
 class ControlPlaneOverview(BaseModel):
     devices: list[ManagedDevice]
     security: SecurityMonitorStatus

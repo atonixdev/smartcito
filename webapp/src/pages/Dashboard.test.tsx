@@ -4,6 +4,14 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Dashboard from "./Dashboard";
 
+vi.mock("@/components/ThreeDashboardPanel", () => ({
+  default: () => (
+    <section aria-label="SmartCito 3D control plane">
+      <h3>SmartCito 3D Dashboard</h3>
+    </section>
+  ),
+}));
+
 vi.mock("@/api/controlPlane", () => ({
   useControlPlaneOverview: () => ({
     data: {
@@ -59,6 +67,7 @@ vi.mock("@/api/cameras", () => ({
 }));
 
 vi.mock("@/api/map", () => ({
+  demoSmartMapDevices: [],
   useSmartMapOverview: () => ({
     data: {
       devices: [
@@ -85,8 +94,57 @@ vi.mock("@/api/map", () => ({
   }),
 }));
 
+vi.mock("@/api/scene", () => ({
+  demoSceneOverview: {
+    devices: [],
+    threats: [],
+    layers: ["iot-devices", "gps-paths", "camera-overlays", "threat-waves"],
+    camera_overlay_mode: "popup-texture-ready",
+    security_policy: "verified devices only",
+  },
+  useSceneOverview: () => ({
+    data: {
+      devices: [
+        {
+          id: "scene-raspi-edge-001",
+          device_id: "scene-raspi-edge-001",
+          name: "Raspberry Pi Edge Node",
+          device_type: "iot",
+          x: 1,
+          y: 0.4,
+          z: 1,
+          latitude: -25.7461,
+          longitude: 28.1881,
+          trust_score: 92,
+          trust_level: "verified",
+          status_color: "#67d5a5",
+          camera_feed_url: "rtsp://edge/scene-raspi-edge-001/camera",
+          sensor_type: "air-quality",
+          sensor_value: 0.74,
+          gps_path_3d: [[0, 0.05, 0], [1, 0.05, 1]],
+        },
+      ],
+      threats: [
+        {
+          id: "threat-scene-raspi-edge-001",
+          x: 1,
+          y: 0.04,
+          z: 1,
+          severity: "high",
+          radius: 2.5,
+          source_device_id: "scene-raspi-edge-001",
+          label: "AI watch zone",
+        },
+      ],
+      layers: ["iot-devices", "gps-paths", "camera-overlays", "threat-waves"],
+      camera_overlay_mode: "popup-texture-ready",
+      security_policy: "verified devices only",
+    },
+  }),
+}));
+
 describe("Dashboard", () => {
-  it("renders control-plane modules", () => {
+  it("renders control-plane modules", async () => {
     const queryClient = new QueryClient();
 
     render(
@@ -96,6 +154,7 @@ describe("Dashboard", () => {
     );
 
     expect(screen.getByRole("heading", { name: /Device Manager/i })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: /SmartCito 3D Dashboard/i })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /SmartCito Map Integration/i })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /Security Monitor/i })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /Data Flow View/i })).toBeInTheDocument();

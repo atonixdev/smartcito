@@ -85,3 +85,14 @@ def test_raspberry_pi_registration_is_audited_and_visible_when_verified(client: 
 
     overview = client.get("/api/v1/control-plane/map", headers=_auth_headers("viewer")).json()
     assert "raspi-mobile-002" in {device["device_id"] for device in overview["devices"]}
+
+
+def test_scene_overview_returns_3d_ready_devices_and_threats(client: TestClient) -> None:
+    res = client.get("/api/v1/control-plane/scene", headers=_auth_headers("viewer"))
+    assert res.status_code == 200
+    body = res.json()
+    assert body["devices"]
+    assert body["threats"]
+    assert "threat-waves" in body["layers"]
+    first_device = body["devices"][0]
+    assert {"x", "y", "z", "gps_path_3d", "status_color"} <= set(first_device)

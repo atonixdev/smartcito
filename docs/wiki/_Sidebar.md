@@ -11,6 +11,7 @@
 - [Storage and Event Backbone](STORAGE_AND_EVENT_BACKBONE)
 - [Dashboards and Operator Views](DASHBOARDS_AND_OPERATOR_VIEWS)
 - [SmartCito Map Integration](SMARTCITO_MAP_INTEGRATION)
+- [SmartCito 3D Dashboard](SMARTCITO_3D_DASHBOARD)
 - [City Devices and Systems](CITY_DEVICES_AND_SYSTEMS)
 
 ## Infrastructure

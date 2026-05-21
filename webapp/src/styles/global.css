@@ -516,6 +516,127 @@ code {
   padding: 1.25rem;
 }
 
+.three-dashboard-stage {
+  background: #06111b;
+  border: 1px solid rgba(87, 199, 212, 0.24);
+  border-radius: 8px;
+  margin-top: 1.5rem;
+  overflow: hidden;
+}
+
+.three-stage-loading {
+  align-items: center;
+  background: #06111b;
+  border: 1px solid rgba(87, 199, 212, 0.24);
+  border-radius: 8px;
+  color: var(--fg-muted);
+  display: flex;
+  min-height: 260px;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.three-stage-copy {
+  display: grid;
+  gap: 0.4rem;
+  padding: 1.25rem 1.4rem 0;
+}
+
+.three-stage-copy h3 {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  letter-spacing: 0;
+  line-height: 1;
+  margin: 0;
+}
+
+.three-stage-copy p {
+  color: var(--fg-muted);
+  margin: 0;
+  max-width: 760px;
+}
+
+.three-stage-layout {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  padding: 1.25rem;
+}
+
+.three-stage-canvas {
+  background: #07111b;
+  border: 1px solid rgba(87, 199, 212, 0.22);
+  border-radius: 8px;
+  height: min(62vh, 620px);
+  min-height: 420px;
+  overflow: hidden;
+  position: relative;
+}
+
+.three-stage-canvas canvas {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.three-stage-controls {
+  display: grid;
+  gap: 1rem;
+  grid-template-rows: auto auto 1fr;
+  min-width: 0;
+}
+
+.three-layer-controls,
+.three-selected-device,
+.three-scene-list {
+  background: rgba(18, 34, 54, 0.78);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.three-layer-controls {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.three-layer-controls label {
+  align-items: center;
+  display: flex;
+  gap: 0.55rem;
+  font-size: 0.9rem;
+}
+
+.three-layer-controls input {
+  accent-color: var(--accent-green);
+}
+
+.three-selected-device {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.three-selected-device span {
+  color: var(--fg-muted);
+  font-size: 0.86rem;
+}
+
+.three-scene-list {
+  display: grid;
+  gap: 0.55rem;
+  max-height: 260px;
+  overflow: auto;
+}
+
+.three-scene-list button {
+  background: rgba(87, 199, 212, 0.08);
+  border: 1px solid rgba(87, 199, 212, 0.24);
+  border-radius: 6px;
+  color: var(--fg);
+  cursor: pointer;
+  padding: 0.55rem 0.7rem;
+  text-align: left;
+}
+
 /* ----- Dashboard ----- */
 .dashboard-grid {
   display: grid;
@@ -752,7 +873,8 @@ code {
   .landing-hero,
   .intro-section,
   .split-section,
-  .governance-grid {
+  .governance-grid,
+  .three-stage-layout {
     grid-template-columns: 1fr;
   }
 
@@ -786,6 +908,11 @@ code {
   .smart-map {
     height: 360px;
   }
+
+  .three-stage-canvas {
+    height: 460px;
+    min-height: 360px;
+  }
 }
 
 @media (max-width: 540px) {
@@ -814,5 +941,14 @@ code {
   .data-table {
     display: block;
     overflow-x: auto;
+  }
+
+  .three-stage-layout {
+    padding: 1rem;
+  }
+
+  .three-stage-canvas {
+    height: 360px;
+    min-height: 320px;
   }
 }
