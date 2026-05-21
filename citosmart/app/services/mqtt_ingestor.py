@@ -1,6 +1,6 @@
 """
 ================================================================================
- File: backend/app/services/mqtt_ingestor.py
+ File: citosmart/app/services/mqtt_ingestor.py
  Purpose:
    Bridge MQTT-published sensor messages into the SmartCito ingestion
    pipeline. Subscribes to a topic, parses each JSON payload into a

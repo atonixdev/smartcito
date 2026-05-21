@@ -1,6 +1,6 @@
 """
 ================================================================================
- File: backend/app/dash_app/server.py
+ File: citosmart/app/dash_app/server.py
  Purpose:
    Live sensor dashboard built with Plotly Dash. Intended for analysts and
    data engineers who want a quick, code-defined view of the data flowing

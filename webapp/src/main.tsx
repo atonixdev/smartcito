@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * File: frontend/src/main.tsx
+ * File: webapp/src/main.tsx
  * Purpose:
  *   React application entrypoint. Wraps the app in providers shared by
  *   every page: React Query, Router, and global styles.

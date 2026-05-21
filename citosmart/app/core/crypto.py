@@ -1,6 +1,6 @@
 """
 ================================================================================
- File: backend/app/core/crypto.py
+ File: citosmart/app/core/crypto.py
  Purpose:
    Symmetric (AES-256-GCM) helpers built on the `cryptography` library.
    Used to encrypt sensitive fields at rest (e.g. device secrets, audit

@@ -1,6 +1,6 @@
 """
 ================================================================================
- File: backend/app/services/frame_parser.py
+ File: citosmart/app/services/frame_parser.py
  Purpose:
    Pure-Python implementation of the SmartCito binary sensor frame parser.
    This is the reference implementation; the C extension in `native/`

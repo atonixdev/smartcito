@@ -1,6 +1,6 @@
 {
   "//": "==========================================================================",
-  "//file": "frontend/tsconfig.json",
+  "//file": "webapp/tsconfig.json",
   "//purpose": "TypeScript compiler options — strict by default.",
   "//": "==========================================================================",
 

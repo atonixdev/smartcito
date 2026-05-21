@@ -1,6 +1,6 @@
 """
 ================================================================================
- File: backend/app/api/v1/router.py
+ File: citosmart/app/api/v1/router.py
  Purpose:
    Aggregates every v1 endpoint module under a single APIRouter so that
    `app.main` only needs to include one router. Adding a new module is a

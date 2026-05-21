@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * File: frontend/src/App.tsx
+ * File: webapp/src/App.tsx
  * Purpose:
  *   Top-level component. Owns the route table and the persistent shell
  *   (header, navigation). Keep this file small — routes pull in their own

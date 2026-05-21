@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * File: frontend/src/pages/Home.tsx
+ * File: webapp/src/pages/Home.tsx
  * Purpose:
  *   Landing page describing what SmartCito is and pointing visitors at the
  *   dashboard, docs, and GitHub.

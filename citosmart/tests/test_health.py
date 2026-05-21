@@ -1,6 +1,6 @@
 """
 ================================================================================
- File: backend/tests/test_health.py
+ File: citosmart/tests/test_health.py
  Purpose: Smoke tests for the health endpoints. These tests double as the
           canary that proves the FastAPI app can boot in CI.
 ================================================================================

@@ -1,6 +1,6 @@
 """
 ================================================================================
- File: backend/app/core/config.py
+ File: citosmart/app/core/config.py
  Purpose:
    Centralized, type-safe configuration loaded from environment variables
    (and an optional .env file) via pydantic-settings.

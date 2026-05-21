@@ -1,6 +1,6 @@
 """
 ================================================================================
- File: backend/app/api/v1/endpoints/__init__.py
+ File: citosmart/app/api/v1/endpoints/__init__.py
  Purpose: Marker for endpoint modules.
 ================================================================================
 """

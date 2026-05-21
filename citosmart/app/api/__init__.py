@@ -1,6 +1,6 @@
 """
 ================================================================================
- File: backend/app/api/__init__.py
+ File: citosmart/app/api/__init__.py
  Purpose: API package marker. Real routes live under app.api.v1.*
 ================================================================================
 """

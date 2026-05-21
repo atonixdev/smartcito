@@ -1,5 +1,5 @@
 # ============================================================================
-# File: frontend/Dockerfile
+# File: webapp/Dockerfile
 # Purpose:
 #   Two-stage build: compile the React app with Vite, then serve the static
 #   bundle from a tiny nginx image. Suitable for behind-a-reverse-proxy

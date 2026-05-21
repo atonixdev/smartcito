@@ -1,6 +1,6 @@
 """
 ================================================================================
- File: backend/app/services/kafka_stream.py
+ File: citosmart/app/services/kafka_stream.py
  Purpose:
    Thin async wrappers around aiokafka for publishing and consuming sensor
    events on the SmartCito event bus.

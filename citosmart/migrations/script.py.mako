@@ -1,5 +1,5 @@
 # ============================================================================
-# File: backend/migrations/script.py.mako
+# File: citosmart/migrations/script.py.mako
 # Purpose:
 #   Template used by `alembic revision` to scaffold new migration files.
 #   Keep the header so generated files document their purpose.

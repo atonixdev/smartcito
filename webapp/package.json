@@ -1,11 +1,11 @@
 {
   "//": "============================================================================",
-  "//file": "frontend/package.json",
+  "//file": "webapp/package.json",
   "//purpose": "NPM manifest for the SmartCito React dashboard (Vite + TypeScript).",
   "//note": "Comment keys above are ignored by npm and serve as inline documentation.",
   "//": "============================================================================",
 
-  "name": "smartcito-frontend",
+  "name": "smartcito-webapp",
   "private": true,
   "version": "0.1.0",
   "description": "SmartCito Urban Data Backbone — operator dashboard.",

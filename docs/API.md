@@ -76,4 +76,4 @@ All errors use the FastAPI default shape:
 { "detail": "Human-readable error message" }
 ```
 
-The frontend `api/client.ts` normalizes these into `{ status, message }`.
+The webapp `api/client.ts` normalizes these into `{ status, message }`.

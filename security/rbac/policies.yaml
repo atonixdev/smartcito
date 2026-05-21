@@ -1,0 +1,103 @@
+# SmartCito RBAC policy matrix.
+#
+# Source of truth for roles and permissions across the platform.
+# Changes require Governance Council approval (see SECURITY_POSTURE.md).
+#
+# Conventions:
+#   - Permissions are "<resource>:<action>".
+#   - Roles inherit from parents listed under `inherits`.
+#   - Default is DENY. Only listed permissions are granted.
+
+version: 1
+
+actions:
+  - read
+  - write
+  - delete
+  - stream
+  - export
+  - admin
+
+resources:
+  - sensors
+  - traffic
+  - cameras
+  - gps
+  - users
+  - roles
+  - audit
+  - models
+  - system
+
+roles:
+  viewer:
+    description: Read-only access to non-sensitive operational data.
+    mfa_required: false
+    permissions:
+      - sensors:read
+      - traffic:read
+      - cameras:read       # metadata only, no stream
+      - gps:read
+
+  operator:
+    description: Day-to-day city operator. Can act on alerts and assets.
+    mfa_required: true
+    inherits: [viewer]
+    permissions:
+      - sensors:write
+      - traffic:write
+      - cameras:stream     # live view, subject to consent policy
+      - gps:write
+      - audit:read
+
+  analyst:
+    description: Data analyst / data scientist. Can export aggregates.
+    mfa_required: true
+    inherits: [viewer]
+    permissions:
+      - sensors:export
+      - traffic:export
+      - models:read
+
+  admin:
+    description: Platform administrator. Full control except break-glass.
+    mfa_required: true
+    inherits: [operator, analyst]
+    permissions:
+      - users:read
+      - users:write
+      - roles:read
+      - roles:write
+      - models:write
+      - audit:export
+      - system:admin
+
+  break_glass:
+    description: Emergency access. Time-boxed, fully audited, paged on use.
+    mfa_required: true
+    max_session_minutes: 60
+    requires_approval: true
+    inherits: [admin]
+    permissions:
+      - users:delete
+      - roles:admin
+      - system:admin
+
+policy_rules:
+  - id: deny-by-default
+    effect: deny
+    description: All requests denied unless an explicit allow matches.
+
+  - id: audit-export-requires-mfa
+    effect: require
+    when: "permission == 'audit:export'"
+    require: ["amr contains mfa"]
+
+  - id: cameras-stream-requires-consent
+    effect: require
+    when: "permission == 'cameras:stream'"
+    require: ["consent.active == true", "subject.region_policy_satisfied == true"]
+
+  - id: production-write-window
+    effect: deny
+    when: "env == 'prod' and permission endswith ':delete' and amr not contains mfa"

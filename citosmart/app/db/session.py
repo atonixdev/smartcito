@@ -1,6 +1,6 @@
 """
 ================================================================================
- File: backend/app/db/session.py
+ File: citosmart/app/db/session.py
  Purpose:
    Async SQLAlchemy engine + session factory. Exposes a FastAPI
    dependency (`get_session`) that hands out a per-request session and

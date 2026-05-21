@@ -1,6 +1,6 @@
 """
 ================================================================================
- File: backend/app/services/analytics.py
+ File: citosmart/app/services/analytics.py
  Purpose:
    Lightweight, dependency-light analytics primitives for SmartCito.
 

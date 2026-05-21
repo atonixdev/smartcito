@@ -1,6 +1,6 @@
 """
 ================================================================================
- File: backend/app/dash_app/__init__.py
+ File: citosmart/app/dash_app/__init__.py
  Purpose:
    Plotly Dash side-app that runs as a separate process from the FastAPI
    API. Polls `/api/v1/sensors/recent` and renders a live line chart.

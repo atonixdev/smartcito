@@ -1,6 +1,6 @@
 """
 ================================================================================
- File: backend/app/api/v1/endpoints/auth.py
+ File: citosmart/app/api/v1/endpoints/auth.py
  Purpose:
    OAuth2 password-flow authentication for first-party clients (city ops
    dashboard, mobile). In production, swap to an external IdP (Keycloak,
@@ -9,6 +9,8 @@
  NOTE:
    The user store here is an in-memory stub for demonstration only.
    Replace `FAKE_USERS` with a real DB lookup before any real deployment.
+     Production deployments must delegate to an external IdP with MFA and
+     short-lived RS256-signed tokens as documented in `security/iam/oauth2.md`.
 ================================================================================
 """
 
@@ -84,5 +86,5 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()) -> TokenRespon
 
 @router.get("/me", response_model=MeResponse, summary="Return the current caller")
 async def whoami(current: TokenPayload = Depends(get_current_user)) -> MeResponse:
-    """Echo the decoded token. Useful for debugging frontends."""
+    """Echo the decoded token. Useful for debugging webapps."""
     return MeResponse(username=current.sub, role=current.role)

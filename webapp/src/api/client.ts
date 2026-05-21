@@ -1,11 +1,11 @@
 /**
  * ============================================================================
- * File: frontend/src/api/client.ts
+ * File: webapp/src/api/client.ts
  * Purpose:
  *   Thin axios wrapper that:
- *     - Points at the FastAPI backend (proxied in dev).
+ *     - Points at the FastAPI citosmart (proxied in dev).
  *     - Attaches the JWT from localStorage when present.
- *     - Surfaces backend errors in a normalized shape.
+ *     - Surfaces citosmart errors in a normalized shape.
  * ============================================================================
  */
 

@@ -114,14 +114,14 @@ See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full deep dive.
 
 ```
 smartcito/
-├── backend/              # FastAPI service: APIs, ingestion, security, analytics
+├── citosmart/              # FastAPI service: APIs, ingestion, security, analytics
 │   └── app/
 │       ├── api/v1/       # HTTP endpoints
 │       ├── core/         # Config, logging, security, AES-GCM helpers
 │       ├── db/           # SQLAlchemy async engine + ORM models
 │       ├── services/     # MQTT, Kafka, analytics, frame parser
 │       └── dash_app/     # Plotly Dash live analytics side-app
-├── frontend/             # React + Vite + TypeScript dashboard
+├── webapp/             # React + Vite + TypeScript dashboard
 ├── native/               # Optional C11 performance extensions (opt-in build)
 ├── docs/                 # Architecture, API, security and contributor docs
 ├── .github/              # CI workflows, issue and PR templates
@@ -144,8 +144,8 @@ inputs, outputs, and design decisions — making the codebase easy to learn.
 ### Prerequisites
 
 - **Docker** ≥ 24 and **Docker Compose** ≥ 2.20
-- **Python** 3.11+ (for local backend dev)
-- **Node.js** 20+ and **pnpm** or **npm** (for local frontend dev)
+- **Python** 3.11+ (for local citosmart dev)
+- **Node.js** 20+ and **pnpm** or **npm** (for local webapp dev)
 
 ### One-Command Local Stack
 
@@ -160,25 +160,25 @@ This launches:
 
 | Service     | URL                        | Purpose                       |
 |-------------|----------------------------|-------------------------------|
-| Frontend    | http://localhost:5173      | React dashboard               |
-| Backend API | http://localhost:8000      | FastAPI (OpenAPI at `/docs`)  |
+| Webapp    | http://localhost:5173      | React dashboard               |
+| Citosmart API | http://localhost:8000      | FastAPI (OpenAPI at `/docs`)  |
 | PostgreSQL  | localhost:5432             | Relational store              |
 | Redis       | localhost:6379             | Cache & pub/sub               |
 | Kafka       | localhost:9092             | Event streaming               |
 
-### Local Backend Development
+### Local Citosmart Development
 
 ```bash
-cd backend
+cd citosmart
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-### Local Frontend Development
+### Local Webapp Development
 
 ```bash
-cd frontend
+cd webapp
 npm install
 npm run dev
 ```
@@ -194,12 +194,12 @@ Detailed walkthroughs live in [`docs/`](docs/).
 
 | Layer            | Tools                                                                              |
 |------------------|------------------------------------------------------------------------------------|
-| Backend API      | **Python 3.11**, **FastAPI**, Pydantic v2, SQLAlchemy 2 (asyncpg)                  |
+| Citosmart API      | **Python 3.11**, **FastAPI**, Pydantic v2, SQLAlchemy 2 (asyncpg)                  |
 | IoT Ingestion    | **paho-mqtt**, **kafka-python** / aiokafka, asyncio                                |
 | Streaming / ML   | scikit-learn (default); **PySpark** or **Dask** for big-data scale; TensorFlow opt.|
 | Storage          | PostgreSQL (SQLAlchemy), MongoDB (pymongo), HBase (happybase) optional             |
 | Cache            | Redis (default), Memcached (optional)                                              |
-| Frontend         | **React 18**, **TypeScript**, Vite, TanStack Query, D3.js                          |
+| Webapp         | **React 18**, **TypeScript**, Vite, TanStack Query, D3.js                          |
 | Analytics UI     | **Plotly Dash** side-app at `:8050`                                                |
 | AuthN / AuthZ    | OAuth2 / OIDC, **PyJWT**, RBAC                                                     |
 | Security         | **cryptography** (AES-256-GCM, HKDF), TLS, audit logs                              |

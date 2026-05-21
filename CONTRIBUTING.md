@@ -54,10 +54,10 @@ Look for issues labeled `good first issue` and `help wanted`.
 
 ## Development Environment
 
-### Backend (Python / FastAPI)
+### Citosmart (Python / FastAPI)
 
 ```bash
-cd backend
+cd citosmart
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -74,10 +74,10 @@ mypy app
 pytest
 ```
 
-### Frontend (React / Vite / TypeScript)
+### Webapp (React / Vite / TypeScript)
 
 ```bash
-cd frontend
+cd webapp
 npm install
 npm run dev      # http://localhost:5173
 npm run lint
@@ -103,7 +103,7 @@ docker compose up --build
   - `chore/<short-description>` for tooling
 - Commits follow **[Conventional Commits](https://www.conventionalcommits.org/)**:
   - `feat(api): add traffic ingestion endpoint`
-  - `fix(frontend): correct sensor map zoom`
+  - `fix(webapp): correct sensor map zoom`
   - `docs: clarify Kafka setup`
 
 Conventional commits power our automated changelog.
@@ -163,8 +163,8 @@ Public APIs and complex functions require docstrings / JSDoc.
 
 ## Testing
 
-- Backend uses **pytest** with `pytest-asyncio`.
-- Frontend uses **Vitest** and **React Testing Library**.
+- Citosmart uses **pytest** with `pytest-asyncio`.
+- Webapp uses **Vitest** and **React Testing Library**.
 - New features must ship with tests.
 - Bug fixes must include a regression test.
 

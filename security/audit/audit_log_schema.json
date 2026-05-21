@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://smartcito.org/schemas/audit-log.v1.json",
+  "title": "SmartCito Audit Log Event v1",
+  "description": "Tamper-evident audit event emitted for every state-changing API call and every data export.",
+  "type": "object",
+  "required": [
+    "event_id",
+    "timestamp",
+    "service",
+    "actor",
+    "action",
+    "resource",
+    "outcome",
+    "request",
+    "hash_chain"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Globally unique identifier for this audit event."
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "RFC 3339 UTC timestamp from a trusted clock source."
+    },
+    "service": {
+      "type": "string",
+      "description": "Emitting service, e.g. 'citosmart-api', 'camera-ingestor'."
+    },
+    "env": {
+      "type": "string",
+      "enum": ["dev", "staging", "prod"]
+    },
+    "actor": {
+      "type": "object",
+      "required": ["type", "id"],
+      "properties": {
+        "type": { "type": "string", "enum": ["user", "service", "system"] },
+        "id": { "type": "string" },
+        "role": { "type": "string" },
+        "mfa": { "type": "boolean" },
+        "ip": { "type": "string" },
+        "user_agent": { "type": "string" }
+      }
+    },
+    "action": {
+      "type": "string",
+      "description": "Verb form, e.g. 'sensors:write', 'audit:export', 'auth:login'."
+    },
+    "resource": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": { "type": "string" },
+        "id": { "type": "string" },
+        "attributes": { "type": "object" }
+      }
+    },
+    "outcome": {
+      "type": "string",
+      "enum": ["success", "denied", "error"]
+    },
+    "reason": {
+      "type": "string",
+      "description": "Short machine-readable code, e.g. 'rbac_denied', 'mfa_required'."
+    },
+    "request": {
+      "type": "object",
+      "required": ["method", "path", "request_id"],
+      "properties": {
+        "method": { "type": "string" },
+        "path": { "type": "string" },
+        "request_id": { "type": "string" },
+        "trace_id": { "type": "string" },
+        "status_code": { "type": "integer" }
+      }
+    },
+    "data": {
+      "type": "object",
+      "description": "Action-specific structured details. MUST NOT contain secrets, raw PII, or full payloads — only stable identifiers and sizes."
+    },
+    "compliance_tags": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["POPIA", "GDPR", "ISO27001"] }
+    },
+    "hash_chain": {
+      "type": "object",
+      "required": ["prev_hash", "this_hash", "algorithm"],
+      "properties": {
+        "prev_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "this_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "algorithm": { "type": "string", "enum": ["sha-256"] }
+      }
+    },
+    "signature": {
+      "type": "object",
+      "description": "Optional Ed25519 signature over this_hash, applied when batches are sealed.",
+      "properties": {
+        "key_id": { "type": "string" },
+        "value": { "type": "string" }
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
 """
 ================================================================================
- File: backend/app/core/security.py
+ File: citosmart/app/core/security.py
  Purpose:
    Authentication and authorization primitives for the SmartCito API.
 

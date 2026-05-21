@@ -1,6 +1,6 @@
 """
 ================================================================================
- File: backend/app/core/logging.py
+ File: citosmart/app/core/logging.py
  Purpose:
    Configure structured (JSON-friendly) logging via the standard library.
    Structured logs are essential for shipping to ELK/Loki/Datadog and for

@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * File: frontend/src/test/setup.ts
+ * File: webapp/src/test/setup.ts
  * Purpose: Vitest setup file. Registers jest-dom matchers globally.
  * ============================================================================
  */

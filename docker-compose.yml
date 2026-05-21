@@ -10,10 +10,10 @@
 # ============================================================================
 
 services:
-  backend:
+  citosmart:
     build:
-      context: ./backend
-    container_name: smartcito-backend
+      context: ./citosmart
+    container_name: smartcito-citosmart
     env_file: .env
     ports:
       - "8000:8000"
@@ -26,14 +26,14 @@ services:
         condition: service_started
     restart: unless-stopped
 
-  frontend:
+  webapp:
     build:
-      context: ./frontend
-    container_name: smartcito-frontend
+      context: ./webapp
+    container_name: smartcito-webapp
     ports:
       - "5173:80"
     depends_on:
-      - backend
+      - citosmart
     restart: unless-stopped
 
   postgres:
@@ -87,18 +87,18 @@ services:
     restart: unless-stopped
 
   dash:
-    # Plotly Dash analytics side-app. Shares the backend image; only the
+    # Plotly Dash analytics side-app. Shares the citosmart image; only the
     # command differs.
     build:
-      context: ./backend
+      context: ./citosmart
     container_name: smartcito-dash
     command: ["python", "-m", "app.dash_app.server"]
     environment:
-      SMARTCITO_API_BASE: "http://backend:8000/api/v1"
+      SMARTCITO_API_BASE: "http://citosmart:8000/api/v1"
     ports:
       - "8050:8050"
     depends_on:
-      - backend
+      - citosmart
     restart: unless-stopped
 
 volumes:

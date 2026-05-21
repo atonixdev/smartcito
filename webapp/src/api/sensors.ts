@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * File: frontend/src/api/sensors.ts
+ * File: webapp/src/api/sensors.ts
  * Purpose:
  *   Typed API helpers for the /sensors and /traffic endpoints, plus React
  *   Query hooks that components can drop in without touching axios.

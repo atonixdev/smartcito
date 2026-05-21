@@ -1,6 +1,6 @@
 """
 ================================================================================
- File: backend/app/schemas/__init__.py
+ File: citosmart/app/schemas/__init__.py
  Purpose: Pydantic schemas (DTOs) for request/response bodies.
 ================================================================================
 """

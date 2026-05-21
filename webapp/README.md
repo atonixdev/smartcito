@@ -1,11 +1,11 @@
 <!--
 ================================================================================
- File: frontend/README.md
+ File: webapp/README.md
  Purpose: Dev quickstart for the SmartCito React dashboard.
 ================================================================================
 -->
 
-# SmartCito Frontend (React + Vite)
+# SmartCito Webapp (React + Vite)
 
 The operator dashboard for the Urban Data Backbone.
 
@@ -17,13 +17,13 @@ npm run dev          # http://localhost:5173
 ```
 
 The dev server proxies `/api` to `http://localhost:8000`, so start the
-backend with `uvicorn app.main:app --reload` in another shell (or use
+citosmart with `uvicorn app.main:app --reload` in another shell (or use
 `docker compose up` from the repo root).
 
 ## Project Layout
 
 ```
-frontend/
+webapp/
 ├── index.html                 # Vite entry HTML
 ├── vite.config.ts             # Vite + Vitest config
 ├── tsconfig.json              # Strict TypeScript options

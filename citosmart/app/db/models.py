@@ -1,6 +1,6 @@
 """
 ================================================================================
- File: backend/app/db/models.py
+ File: citosmart/app/db/models.py
  Purpose:
    SQLAlchemy ORM models. Right now there is one table — `sensor_readings`
    — that mirrors the wire-format Pydantic schema. Keeping schemas and

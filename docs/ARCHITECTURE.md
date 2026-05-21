@@ -60,7 +60,7 @@ Dashboard ──REST/WS──> API Gateway ──read──> Redis + Storage
   validation, and TypeScript codegen.
 - **PyJWT + cryptography** for auth and at-rest encryption (AES-256-GCM,
   HKDF-derived per-purpose keys).
-- **React Query** on the frontend → centralized cache, automatic refetch.
+- **React Query** on the webapp → centralized cache, automatic refetch.
 - **Kafka** as the durable bus → decouples ingestion from analytics.
 - **PostgreSQL first, HBase/Mongo later** → start simple, scale when justified.
 
@@ -68,10 +68,10 @@ Dashboard ──REST/WS──> API Gateway ──read──> Redis + Storage
 
 | Want to add...      | Touch these files                                |
 |---------------------|--------------------------------------------------|
-| A new sensor type   | `backend/app/schemas/sensor.py` (extend `SensorKind`) |
-| A new endpoint      | `backend/app/api/v1/endpoints/<name>.py` + register in `router.py` |
-| A new dashboard panel | `frontend/src/components/<Name>Panel.tsx`      |
-| A new connector     | `backend/app/services/connectors/<name>.py` (planned) |
+| A new sensor type   | `citosmart/app/schemas/sensor.py` (extend `SensorKind`) |
+| A new endpoint      | `citosmart/app/api/v1/endpoints/<name>.py` + register in `router.py` |
+| A new dashboard panel | `webapp/src/components/<Name>Panel.tsx`      |
+| A new connector     | `citosmart/app/services/connectors/<name>.py` (planned) |
 
 ## Future Work
 

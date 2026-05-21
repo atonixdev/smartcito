@@ -1,6 +1,6 @@
 """
 ================================================================================
- File: backend/app/schemas/sensor.py
+ File: citosmart/app/schemas/sensor.py
  Purpose:
    Pydantic models that define the JSON contract for sensor data flowing
    between IoT producers, the SmartCito API, and dashboard consumers.

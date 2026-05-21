@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * File: frontend/src/App.test.tsx
+ * File: webapp/src/App.test.tsx
  * Purpose: Smoke test ensuring the app renders without crashing.
  * ============================================================================
  */

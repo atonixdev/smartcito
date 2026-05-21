@@ -1,6 +1,6 @@
 """
 ================================================================================
- File: backend/app/db/base.py
+ File: citosmart/app/db/base.py
  Purpose:
    Declarative base for SQLAlchemy 2.0 ORM models.
 

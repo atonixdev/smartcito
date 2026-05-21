@@ -1,6 +1,6 @@
 """
 ================================================================================
- File: backend/app/api/v1/endpoints/health.py
+ File: citosmart/app/api/v1/endpoints/health.py
  Purpose:
    Liveness and readiness probes for orchestrators (Docker, Kubernetes).
 

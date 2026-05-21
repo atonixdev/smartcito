@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * File: frontend/src/components/RecentReadingsPanel.tsx
+ * File: webapp/src/components/RecentReadingsPanel.tsx
  * Purpose:
  *   Display the most recent sensor readings as a compact table. Uses the
  *   `useRecentSensors` hook so polling and caching are handled centrally.

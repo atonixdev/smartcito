@@ -1,6 +1,6 @@
 """
 ================================================================================
- File: backend/migrations/env.py
+ File: citosmart/migrations/env.py
  Purpose:
    Alembic environment script. Two key differences from the default
    template:
@@ -10,7 +10,7 @@
      2. `target_metadata` points at our SQLAlchemy `Base.metadata` so
         autogenerate sees every ORM model imported in `app.db.models`.
 
- Run from `backend/`:
+ Run from `citosmart/`:
      alembic upgrade head
      alembic revision --autogenerate -m "describe change"
 ================================================================================

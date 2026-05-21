@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * File: frontend/src/pages/Dashboard.tsx
+ * File: webapp/src/pages/Dashboard.tsx
  * Purpose:
  *   Operator dashboard. Composes domain panels (recent readings, traffic
  *   summary) into a responsive grid. Each panel manages its own data

@@ -1,6 +1,6 @@
 """
 ================================================================================
- File: backend/app/api/v1/endpoints/traffic.py
+ File: citosmart/app/api/v1/endpoints/traffic.py
  Purpose:
    Domain-specific traffic endpoint that derives a real-time summary
    (per-intersection vehicle counts, average speed proxy) from the

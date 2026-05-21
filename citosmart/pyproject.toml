@@ -1,5 +1,5 @@
 # ============================================================================
-# File: backend/pyproject.toml
+# File: citosmart/pyproject.toml
 # Purpose: Tooling configuration for Black, Ruff, mypy, and pytest.
 # ============================================================================
 

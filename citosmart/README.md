@@ -1,11 +1,11 @@
 <!--
 ================================================================================
- File: backend/README.md
- Purpose: Dev quickstart for the SmartCito Python backend.
+ File: citosmart/README.md
+ Purpose: Dev quickstart for the SmartCito Python citosmart.
 ================================================================================
 -->
 
-# SmartCito Backend (FastAPI)
+# SmartCito Citosmart (FastAPI)
 
 The Python service that powers the SmartCito Urban Data Backbone API.
 
@@ -28,7 +28,7 @@ Visit:
 ## Project Layout
 
 ```
-backend/
+citosmart/
 ├── app/
 │   ├── main.py                # ASGI entrypoint + middleware
 │   ├── core/                  # Config, logging, security

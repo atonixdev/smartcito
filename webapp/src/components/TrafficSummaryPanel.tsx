@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * File: frontend/src/components/TrafficSummaryPanel.tsx
+ * File: webapp/src/components/TrafficSummaryPanel.tsx
  * Purpose: Aggregated traffic-sensor summary card.
  * ============================================================================
  */

@@ -1,6 +1,6 @@
 """
 ================================================================================
- File: backend/app/api/v1/endpoints/sensors.py
+ File: citosmart/app/api/v1/endpoints/sensors.py
  Purpose:
    CRUD-lite endpoints for generic IoT sensor ingestion and retrieval.
    This is the most-used path on the platform; keep it tiny, well-typed,

@@ -1,13 +1,13 @@
 """
 ================================================================================
- File: backend/app/main.py
+ File: citosmart/app/main.py
  Purpose:
    ASGI entrypoint for the SmartCito Urban Data Backbone API.
 
    This module wires together:
      - Application configuration (env-driven, see app.core.config).
      - Structured logging.
-     - CORS for the React frontend.
+     - CORS for the React webapp.
      - The versioned API router (/api/v1).
      - Liveness and readiness probes (/health/*).
      - Prometheus metrics endpoint (/metrics).
@@ -139,7 +139,7 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
-    # CORS — restrict to known frontends in production.
+    # CORS — restrict to known webapps in production.
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_allowed_origins_list,

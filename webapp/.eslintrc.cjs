@@ -1,5 +1,5 @@
 /* ============================================================================
-   File: frontend/.eslintrc.cjs
+   File: webapp/.eslintrc.cjs
    Purpose: ESLint config — strict on hooks and refresh rules.
    ============================================================================ */
 module.exports = {
