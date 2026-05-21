@@ -13,6 +13,7 @@ services:
   citosmart:
     build:
       context: ./citosmart
+    image: smartcito/api-gateway:local
     container_name: smartcito-citosmart
     env_file: .env
     ports:
@@ -29,6 +30,7 @@ services:
   webapp:
     build:
       context: ./webapp
+    image: smartcito/frontend-service:local
     container_name: smartcito-webapp
     ports:
       - "5173:80"
@@ -36,8 +38,61 @@ services:
       - citosmart
     restart: unless-stopped
 
+  camera-service:
+    build:
+      context: .
+      dockerfile: camera_module/Dockerfile
+    image: smartcito/camera-service:local
+    container_name: smartcito-camera-service
+    ports:
+      - "8010:8010"
+    restart: unless-stopped
+
+  gps-service:
+    build:
+      context: .
+      dockerfile: gps_module/Dockerfile
+    image: smartcito/gps-service:local
+    container_name: smartcito-gps-service
+    ports:
+      - "8011:8011"
+    restart: unless-stopped
+
+  ai-service:
+    build:
+      context: .
+      dockerfile: ai_models/Dockerfile
+    image: smartcito/ai-service:local
+    container_name: smartcito-ai-service
+    ports:
+      - "8012:8012"
+    restart: unless-stopped
+
+  security-service:
+    build:
+      context: .
+      dockerfile: security/Dockerfile
+    image: smartcito/security-service:local
+    container_name: smartcito-security-service
+    env_file: .env
+    ports:
+      - "8013:8013"
+    depends_on:
+      - citosmart
+    restart: unless-stopped
+
+  hardware-agent:
+    build:
+      context: .
+      dockerfile: hardware/Dockerfile
+    image: smartcito/hardware-agent:local
+    container_name: smartcito-hardware-agent
+    ports:
+      - "8014:8014"
+    restart: unless-stopped
+
   postgres:
-    image: postgres:16-alpine
+    image: cgr.dev/chainguard/postgres:latest@sha256:34a4d686aa44583457bbdbdeb662243e7ab29e89e5c9b40df8e33baa6b75dc47
     container_name: smartcito-postgres
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-smartcito}
@@ -46,6 +101,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
+      - ./database/init/001_schema.sql:/docker-entrypoint-initdb.d/001_schema.sql:ro
       - pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-smartcito}"]
@@ -91,6 +147,7 @@ services:
     # command differs.
     build:
       context: ./citosmart
+    image: smartcito/dash:local
     container_name: smartcito-dash
     command: ["python", "-m", "app.dash_app.server"]
     environment:

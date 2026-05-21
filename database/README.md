@@ -46,12 +46,12 @@ Backups are configured at the infra layer (see
 ## How To Run Its Container
 
 ```bash
-docker build -f database/Dockerfile -t smartcito-db-service .
 docker run --rm -p 5432:5432 \
   -e POSTGRES_DB=smartcito \
   -e POSTGRES_USER=smartcito \
   -e POSTGRES_PASSWORD=smartcito \
-  smartcito-db-service
+  -v "$PWD/database/init/001_schema.sql:/docker-entrypoint-initdb.d/001_schema.sql:ro" \
+  cgr.dev/chainguard/postgres:latest@sha256:34a4d686aa44583457bbdbdeb662243e7ab29e89e5c9b40df8e33baa6b75dc47
 ```
 
 ## Example Usage

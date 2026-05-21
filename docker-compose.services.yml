@@ -43,15 +43,15 @@ services:
       - "8014:8014"
 
   db-service:
-    build:
-      context: .
-      dockerfile: database/Dockerfile
+    image: cgr.dev/chainguard/postgres:latest@sha256:34a4d686aa44583457bbdbdeb662243e7ab29e89e5c9b40df8e33baa6b75dc47
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-smartcito}
       POSTGRES_USER: ${POSTGRES_USER:-smartcito}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-smartcito}
     ports:
       - "5432:5432"
+    volumes:
+      - ./database/init/001_schema.sql:/docker-entrypoint-initdb.d/001_schema.sql:ro
 
   frontend-service:
     build:
