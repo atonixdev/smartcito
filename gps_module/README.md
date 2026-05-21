@@ -25,11 +25,15 @@ gps_module/
 - Time is stored in **UTC**.
 - All location events publish to the Kafka topic configured in
   `citosmart`'s settings.
+- NMEA 0183 and NMEA 2000 are the preferred interoperability standards for
+  incoming GNSS data.
 - GPS payloads must be protected in transit with TLS and per-message
   integrity tags as defined in
   [`../security/crypto/STANDARDS.md`](../security/crypto/STANDARDS.md).
 - Access to location data must be controlled through RBAC policies in
   [`../security/rbac/policies.yaml`](../security/rbac/policies.yaml).
+- Contributor-facing hardware guidance lives in
+  [`../hardware/gps_module/`](../hardware/gps_module/).
 
 ## Fusion with Cameras
 

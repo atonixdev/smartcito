@@ -17,7 +17,7 @@ from __future__ import annotations
 from datetime import datetime
 from uuid import UUID, uuid4
 
-from sqlalchemy import JSON, Float, Index, String, DateTime
+from sqlalchemy import JSON, Boolean, DateTime, Float, Index, Integer, String
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -45,4 +45,46 @@ class SensorReadingORM(Base):
     __table_args__ = (
         # Composite index for common time-bounded queries per sensor.
         Index("ix_sensor_readings_sensor_observed", "sensor_id", "observed_at"),
+    )
+
+
+class CameraDeviceORM(Base):
+    """Persistent representation of a registered camera device."""
+
+    __tablename__ = "camera_devices"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    device_id: Mapped[str] = mapped_column(String(128), unique=True, index=True, nullable=False)
+    device_type: Mapped[str] = mapped_column(String(32), nullable=False)
+    firmware_version: Mapped[str] = mapped_column(String(64), nullable=False)
+    capabilities: Mapped[dict] = mapped_column(JSON, default=dict, nullable=False)
+    network: Mapped[dict] = mapped_column(JSON, default=dict, nullable=False)
+    security: Mapped[dict] = mapped_column(JSON, default=dict, nullable=False)
+    mounting: Mapped[dict] = mapped_column(JSON, default=dict, nullable=False)
+    stream_status: Mapped[str] = mapped_column(String(32), nullable=False, default="offline")
+    location: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    battery_level: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    mounted: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    tamper_detected: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    registered_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.utcnow, nullable=False
+    )
+    last_seen_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.utcnow, nullable=False
+    )
+
+
+class AuditEventORM(Base):
+    """Persistent audit trail for camera registration and telemetry changes."""
+
+    __tablename__ = "audit_events"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    entity_type: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    entity_id: Mapped[str] = mapped_column(String(128), index=True, nullable=False)
+    action: Mapped[str] = mapped_column(String(64), nullable=False)
+    actor: Mapped[str] = mapped_column(String(128), nullable=False)
+    payload: Mapped[dict] = mapped_column(JSON, default=dict, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.utcnow, nullable=False
     )

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://smartcito.org/schemas/hardware/gps-ingest.v1.json",
+  "title": "SmartCito GPS Ingest Event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["device_id", "timestamp", "lat", "lon", "source_standard"],
+  "properties": {
+    "device_id": { "type": "string" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "lat": { "type": "number", "minimum": -90, "maximum": 90 },
+    "lon": { "type": "number", "minimum": -180, "maximum": 180 },
+    "altitude_m": { "type": "number" },
+    "speed_mps": { "type": "number", "minimum": 0 },
+    "heading_deg": { "type": "number", "minimum": 0, "maximum": 360 },
+    "accuracy_m": { "type": "number", "minimum": 0 },
+    "fix_quality": { "type": "string" },
+    "source_standard": {
+      "type": "string",
+      "enum": ["nmea0183", "nmea2000", "json"]
+    }
+  }
+}

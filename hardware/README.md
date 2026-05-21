@@ -9,6 +9,12 @@ Docker stack in [`../docker-compose.yml`](../docker-compose.yml).
 
 ```
 hardware/
+├── camera_module/   # Hardware-facing camera standards, drivers, and docs
+├── gps_module/      # Hardware-facing GNSS standards and API guidance
+├── body_cameras/   # Body-worn camera reference builds and firmware notes
+├── micro_cameras/  # Compact magnetic camera designs and streaming notes
+├── gps_modules/    # GNSS chip configs and device-side location guidance
+├── api_connectors/ # Registration, heartbeat, and stream API contracts
 ├── compute/        # Controller + GPU compute node specs
 ├── storage/        # Storage tiers, arrays, RAID, object/block mapping
 ├── networking/     # Switching, firewalling, VPN, rack uplinks
@@ -33,3 +39,6 @@ hardware/
 - Hardware-aware container overlay: [`../docker-compose.hardware.yml`](../docker-compose.hardware.yml)
 - Security posture: [`../security/SECURITY_POSTURE.md`](../security/SECURITY_POSTURE.md)
 - Deployment guide: [`docs/deployment.md`](docs/deployment.md)
+- Camera device integration: [`docs/camera_hardware_integration.md`](docs/camera_hardware_integration.md)
+- Prototyping notes: [`docs/prototyping.md`](docs/prototyping.md)
+- Open protocol baseline: [`networking/protocols/`](networking/protocols/)

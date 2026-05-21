@@ -9,6 +9,7 @@
  */
 
 import RecentReadingsPanel from "@/components/RecentReadingsPanel";
+import RegisteredCamerasPanel from "@/components/RegisteredCamerasPanel";
 import TrafficSummaryPanel from "@/components/TrafficSummaryPanel";
 
 export default function Dashboard() {
@@ -20,6 +21,7 @@ export default function Dashboard() {
       </p>
 
       <div className="dashboard-grid">
+        <RegisteredCamerasPanel />
         <TrafficSummaryPanel />
         <RecentReadingsPanel />
       </div>

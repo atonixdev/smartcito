@@ -115,6 +115,10 @@ See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full deep dive.
 ```
 smartcito/
 ├── hardware/             # Reference hardware footprint and deployment runbooks
+│   ├── body_cameras/     # Body camera concepts, firmware notes, and telemetry
+│   ├── micro_cameras/    # Magnetic micro camera designs and event model
+│   ├── gps_modules/      # GNSS hardware guidance for edge devices
+│   └── api_connectors/   # Device registration and heartbeat contracts
 ├── citosmart/              # FastAPI service: APIs, ingestion, security, analytics
 │   └── app/
 │       ├── api/v1/       # HTTP endpoints

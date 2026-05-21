@@ -26,6 +26,7 @@ Reference implementation steps for a SmartCito pilot or production rack.
 - compute nodes: analytics, inference, stream processing
 - storage nodes: database, Kafka durability, archive services
 - security appliances: HSM, VPN, IDS/IPS
+- edge devices: body cameras, micro cameras, GNSS modules, and magnetic mount sensors
 
 ## 5. Deploy Software
 
@@ -40,6 +41,8 @@ Reference implementation steps for a SmartCito pilot or production rack.
 - verify GPS and IoT device streams reach Kafka and MQTT
 - check storage persistence and dashboard visibility
 - confirm audit logs and security alerts are generated
+- verify body camera registration, GPS telemetry, and tamper events
+- verify micro camera mount and removal events update dashboard state
 
 ## 7. Secure and Monitor
 

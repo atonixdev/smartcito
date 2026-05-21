@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://smartcito.org/schemas/hardware/camera-metadata.v1.json",
+  "title": "SmartCito Camera Metadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["device_id", "timestamp", "protocol", "stream_uri"],
+  "properties": {
+    "device_id": { "type": "string" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "protocol": {
+      "type": "string",
+      "enum": ["onvif", "rtsp", "http2", "webrtc"]
+    },
+    "stream_uri": { "type": "string", "minLength": 1 },
+    "vendor": { "type": "string" },
+    "model": { "type": "string" },
+    "gps": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "lat": { "type": "number" },
+        "lon": { "type": "number" },
+        "accuracy_m": { "type": "number", "minimum": 0 }
+      }
+    }
+  }
+}

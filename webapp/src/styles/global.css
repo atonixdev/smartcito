@@ -92,10 +92,42 @@ code {
   border-radius: var(--radius);
   padding: 1rem 1.25rem;
 }
+.panel-wide { grid-column: 1 / -1; }
 .panel-header { display: flex; justify-content: space-between; align-items: baseline; }
 .panel h3 { margin: 0 0 0.5rem 0; }
 .muted { color: var(--fg-muted); font-size: 0.875rem; }
 .error { color: var(--error); }
+.stack-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border: 1px solid var(--border);
+}
+.status-pill.live {
+  background: rgba(34, 197, 94, 0.12);
+  color: #86efac;
+  border-color: rgba(34, 197, 94, 0.35);
+}
+.status-pill.connecting {
+  background: rgba(250, 204, 21, 0.12);
+  color: #fde68a;
+  border-color: rgba(250, 204, 21, 0.35);
+}
+.status-pill.offline,
+.status-pill.degraded {
+  background: rgba(248, 113, 113, 0.12);
+  color: #fca5a5;
+  border-color: rgba(248, 113, 113, 0.35);
+}
 
 /* ----- Tables ----- */
 .data-table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }

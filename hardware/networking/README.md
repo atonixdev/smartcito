@@ -30,3 +30,8 @@ The base compose stack is for local development only. For pilots and hardware
 installs, use [`../../docker-compose.hardware.yml`](../../docker-compose.hardware.yml)
 with reverse proxies, internal-only service networks, and monitoring endpoints
 exposed only on admin networks.
+
+## Protocol Standardization
+
+Use the protocol baseline in [`protocols/`](protocols/) to keep camera, GPS,
+and IoT integrations interoperable across vendors and geographies.

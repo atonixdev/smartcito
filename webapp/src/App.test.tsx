@@ -23,6 +23,8 @@ describe("App", () => {
       </QueryClientProvider>,
     );
 
-    expect(screen.getByText(/SmartCito/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /SmartCito/i, level: 1 }),
+    ).toBeInTheDocument();
   });
 });
