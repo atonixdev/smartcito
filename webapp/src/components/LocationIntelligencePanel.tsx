@@ -91,19 +91,8 @@ export default function LocationIntelligencePanel() {
   }
 
   return (
-    <section className="panel panel-wide location-intelligence">
-      <div className="location-header">
-        <div>
-          <p className="location-eyebrow">Location Intelligence</p>
-          <h3>Country, Region, Area Code, IP, GPS, and Fusion Engine</h3>
-          <p className="muted">
-            SmartCito chooses the highest-confidence verified location and renders it on the operations map.
-          </p>
-        </div>
-        <span className="status-pill live">{status}</span>
-      </div>
-
-      <div className="location-grid">
+    <article className="panel panel-wide location-intelligence-panel">
+      <div className="location-form-grid">
         <label>
           Country
           <select value={country} onChange={(e) => setCountry(e.target.value)}>
@@ -180,6 +169,6 @@ export default function LocationIntelligencePanel() {
           </span>
         ))}
       </div>
-    </section>
+    </article>
   );
 }

@@ -8,7 +8,7 @@
  * ============================================================================
  */
 
-import { Link, Navigate, Route, Routes } from "react-router-dom";
+import { Link, Navigate, Route, Routes, useLocation } from "react-router-dom";
 
 import Home from "./pages/Home";
 import Architecture from "./pages/Architecture";
@@ -19,19 +19,24 @@ import NotFound from "./pages/NotFound";
 import Roadmap from "./pages/Roadmap";
 
 export default function App() {
+  const location = useLocation();
+  const isDashboardRoute = location.pathname.startsWith("/dashboard");
+
   return (
-    <div className="app-shell">
-      <header className="app-header">
-        <h1 className="app-title">SmartCito</h1>
-        <nav className="app-nav">
-          <Link to="/home">Home</Link>
-          <Link to="/mission">Mission</Link>
-          <Link to="/architecture">Architecture</Link>
-          <Link to="/community">Community</Link>
-          <Link to="/roadmap">Roadmap</Link>
-          <Link to="/dashboard">Dashboard</Link>
-        </nav>
-      </header>
+    <div className={`app-shell ${isDashboardRoute ? "dashboard-shell-route" : ""}`}>
+      {!isDashboardRoute && (
+        <header className="app-header">
+          <h1 className="app-title">SmartCito</h1>
+          <nav className="app-nav">
+            <Link to="/home">Home</Link>
+            <Link to="/mission">Mission</Link>
+            <Link to="/architecture">Architecture</Link>
+            <Link to="/community">Community</Link>
+            <Link to="/roadmap">Roadmap</Link>
+            <Link to="/dashboard">Dashboard</Link>
+          </nav>
+        </header>
+      )}
 
       <main className="app-main">
         <Routes>
@@ -46,18 +51,20 @@ export default function App() {
         </Routes>
       </main>
 
-      <footer className="app-footer">
-        <small>
-          SmartCito · Urban Data Backbone · Apache 2.0 ·{" "}
-          <a
-            href="https://github.com/atonixdev/smartcito"
-            target="_blank"
-            rel="noreferrer"
-          >
-            GitHub
-          </a>
-        </small>
-      </footer>
+      {!isDashboardRoute && (
+        <footer className="app-footer">
+          <small>
+            SmartCito · Urban Data Backbone · Apache 2.0 ·{" "}
+            <a
+              href="https://github.com/atonixdev/smartcito"
+              target="_blank"
+              rel="noreferrer"
+            >
+              GitHub
+            </a>
+          </small>
+        </footer>
+      )}
     </div>
   );
 }
