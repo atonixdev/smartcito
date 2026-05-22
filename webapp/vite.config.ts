@@ -2,54 +2,15 @@
  * ============================================================================
  * File: webapp/vite.config.ts
  * Purpose:
- *   Vite build configuration. We:
- *     - Enable the React Fast Refresh plugin.
- *     - Expose `@` as an alias for `src/` (matches tsconfig paths).
- *     - Proxy `/api` to the FastAPI citosmart in dev so the webapp never
- *       sees CORS during local development.
- *     - Configure Vitest with jsdom for component tests.
+ *   Vite build configuration for React, aliases, dev proxying, offline
+ *   dashboard-log fallback, and Vitest.
  * ============================================================================
  */
 
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "node:path";
 import type { IncomingMessage, ServerResponse } from "node:http";
-
-export default defineConfig({
-  envPrefix: ["VITE_"],
-  base: process.env.GITHUB_PAGES === "true" ? "/smartcito/" : "/",
-  plugins: [react()],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "src"),
-    },
-  },
-  server: {
-    host: "0.0.0.0",
-    port: 5173,
-    proxy: {
-      "/api/location": {
-        target: "http://localhost:4010",
-        changeOrigin: true,
-      },
-      "/api/v1": {
-        target: "http://localhost:8000",
-        changeOrigin: true,
-      },
-      "/api/gps": {
-        target: "http://localhost:8020",
-        changeOrigin: true,
-        rewrite: (p) => p.replace(/^\/api\/gps/, ""),
-      },
-    },
-  },
-  test: {
-    globals: true,
-    environment: "jsdom",
-    setupFiles: ["./src/test/setup.ts"],
-  },
-});
 
 const backendEnabled = process.env.VITE_ENABLE_BACKEND === "true";
 
@@ -81,12 +42,13 @@ function writeJson(res: ServerResponse, payload: unknown) {
   res.end(JSON.stringify(payload));
 }
 
-function offlineDashboardLogsPlugin() {
+function offlineDashboardLogsPlugin(): Plugin {
   return {
     name: "smartcito-offline-dashboard-logs",
-    configureServer(server: { middlewares: { use: (handler: (req: IncomingMessage, res: ServerResponse, next: () => void) => void) => void } }) {
-      server.middlewares.use((req, res, next) => {
+    configureServer(server) {
+      server.middlewares.use((req: IncomingMessage, res: ServerResponse, next) => {
         const pathname = req.url?.split("?")[0];
+
         if (!backendEnabled && pathname === "/api/location/dashboard/logs") {
           writeJson(res, {
             ...demoDashboardLogsPayload,

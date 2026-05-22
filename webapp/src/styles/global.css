@@ -69,131 +69,296 @@ code {
   min-height: 100%;
 }
 .app-header {
-  display: grid;
-  grid-template-columns: minmax(160px, 1fr) auto minmax(160px, 1fr);
   align-items: center;
-  gap: var(--space-6);
-  min-height: 72px;
-  padding: 0 var(--space-8);
-  background: rgba(9, 21, 32, 0.96);
-  border-bottom: 1px solid var(--enterprise-border);
+  backdrop-filter: blur(8px);
+  background: var(--header-bg);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  gap: var(--space-8);
+  height: 80px;
+  justify-content: space-between;
+  left: 0;
+  padding: 16px 24px;
   position: sticky;
+  right: 0;
   top: 0;
-  z-index: 50;
-  backdrop-filter: blur(12px);
+  transition:
+    height 200ms ease,
+    padding 200ms ease,
+    background-color 200ms ease,
+    box-shadow 200ms ease;
+  width: 100%;
+  z-index: 9999;
 }
-.app-title {
-  justify-self: start;
-  color: #f7fbfc;
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
+
+.app-header.is-collapsed {
+  background: var(--header-bg-solid);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+  height: 60px;
+  padding-bottom: 8px;
+  padding-top: 8px;
+}
+
+.app-brand {
+  align-items: center;
+  color: var(--header-text);
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 24px;
+  min-width: 220px;
   text-decoration: none;
 }
 
-.app-title:hover {
+.app-brand:hover {
   text-decoration: none;
+}
+
+.app-logo {
+  align-items: center;
+  background: transparent;
+  border-radius: 6px;
+  color: var(--header-text);
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: 32px;
+  justify-content: center;
+  transition: transform 180ms ease-out, opacity 180ms ease-out;
+  width: 32px;
+}
+
+.app-icon-svg {
+  display: block;
+  height: 32px;
+  overflow: visible;
+  width: 32px;
+}
+
+.app-icon-frame {
+  fill: rgba(10, 15, 31, 0.72);
+  stroke: var(--header-text);
+  stroke-width: 3;
+}
+
+.app-icon-grid {
+  fill: none;
+  stroke: var(--smartcito-steel);
+  stroke-linecap: round;
+  stroke-width: 2;
+}
+
+.app-icon-links {
+  fill: none;
+  stroke: var(--smartcito-blue);
+  stroke-linecap: round;
+  stroke-width: 2;
+}
+
+.app-icon-node {
+  fill: var(--smartcito-blue);
+}
+
+.app-wordmark {
+  align-items: baseline;
+  display: inline-flex;
+  font-family: var(--font);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  line-height: 1;
+  transition: opacity 180ms ease-out;
+}
+
+.app-wordmark-smart {
+  color: #ffffff;
+}
+
+.app-wordmark-cito {
+  color: var(--smartcito-blue);
+}
+
+.app-title {
+  color: var(--header-text);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
 }
 
 .app-nav {
-  display: flex;
   align-items: center;
+  display: flex;
+  flex: 1 1 auto;
+  gap: 32px;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: var(--space-4);
-  justify-self: center;
 }
 
-.app-nav a,
-.dashboard-tabs button,
-.btn,
-button {
-  font-weight: 500;
-  letter-spacing: 0.3px;
+.app-nav-link {
+  color: var(--header-muted);
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  padding: 12px 0;
+  position: relative;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 160ms ease;
+  white-space: nowrap;
 }
 
-.app-profile {
-  justify-self: end;
-  color: var(--fg-muted);
-  font-size: 14px;
-  font-weight: 500;
+.app-nav-link::after {
+  background: var(--header-accent);
+  bottom: 4px;
+  content: "";
+  height: 2px;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  transform: scaleX(0.4);
+  transform-origin: center;
+  transition: opacity 160ms ease, transform 160ms ease;
+  width: 100%;
 }
 
-.page-title-row {
-  display: grid;
-  gap: var(--space-2);
-  margin-bottom: var(--space-8);
+.app-nav-link:hover,
+.app-nav-link.active {
+  color: var(--header-text);
+  text-decoration: none;
 }
 
-.breadcrumb {
-  color: var(--fg-muted);
+.app-nav-link:hover::after,
+.app-nav-link.active::after {
+  opacity: 1;
+  transform: scaleX(1);
 }
 
-.content-grid-12 {
-  display: grid;
-  gap: var(--space-8);
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-}
-
-.btn,
-button.btn,
-.dashboard-control-actions button,
-.control-button,
-.dashboard-tabs button {
-  min-height: 44px;
-  border-radius: 6px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
-}
-
-.panel,
-.feature-card,
-.outcome-panel,
-.architecture-item,
-.roadmap-item,
-.governance-panel,
-.governance-item,
-.statement-list p,
-.map-layer-controls,
-.map-device-list,
-.three-layer-controls,
-.three-selected-device,
-.three-scene-list,
-.alert-card,
-.control-card,
-.pipeline-card,
-.ai-threat-card,
-.log-event-card {
-  background: var(--enterprise-card-bg);
-  border: 1px solid var(--enterprise-border);
-  border-radius: 10px;
-  padding: var(--space-6);
-}
-
-.content-section,
-.page-shell {
-  padding-top: var(--space-12);
-  padding-bottom: var(--space-12);
-}
-
-.dashboard-topbar {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  min-height: 72px;
-  display: flex;
+.app-actions {
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-6);
-  padding: 0 var(--space-8);
-  border-bottom: 1px solid rgba(0, 224, 255, 0.16);
-  background: rgba(10, 26, 47, 0.96);
-  backdrop-filter: blur(12px);
+  display: flex;
+  flex: 0 0 auto;
+  gap: 8px;
+  justify-content: flex-end;
+  min-width: 180px;
 }
 
-.app-footer {
-  font-size: 14px;
-  font-weight: 300;
-  color: rgba(237, 246, 248, 0.58);
+.app-icon-button,
+.app-menu-toggle {
+  align-items: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--header-muted);
+  cursor: pointer;
+  display: inline-flex;
+  height: 44px;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0;
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+  width: 44px;
+}
+
+.app-icon-button:hover,
+.app-menu-toggle:hover {
+  background: var(--header-hover);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: var(--header-text);
+}
+
+.app-icon-button svg,
+.app-menu-toggle svg {
+  height: 22px;
+  width: 22px;
+}
+
+.app-icon-button path,
+.app-menu-toggle path {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.app-menu-toggle {
+  display: none;
+}
+
+@media (max-width: 960px) {
+  .app-header {
+    display: grid;
+    grid-template-columns: auto 44px;
+    gap: 16px;
+    height: auto;
+    min-height: 72px;
+  }
+
+  .app-header.is-collapsed {
+    min-height: 60px;
+  }
+
+  .app-brand {
+    gap: 16px;
+    min-width: 0;
+  }
+
+  .app-logo,
+  .app-icon-svg {
+    height: 24px;
+    width: 24px;
+  }
+
+  .app-icon-frame {
+    stroke-width: 3;
+  }
+
+  .app-icon-grid,
+  .app-icon-links {
+    stroke-width: 2;
+  }
+
+  .app-icon-node {
+    r: 4px;
+  }
+
+  .app-wordmark {
+    font-size: 1rem;
+  }
+
+  .app-nav,
+  .app-actions {
+    display: none;
+  }
+
+  .app-header.is-menu-open .app-nav,
+  .app-header.is-menu-open .app-actions {
+    display: flex;
+    grid-column: 1 / -1;
+  }
+
+  .app-header.is-menu-open .app-nav {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: flex-start;
+    padding-top: 8px;
+  }
+
+  .app-header.is-menu-open .app-nav-link {
+    border-radius: 6px;
+    padding: 12px;
+  }
+
+  .app-header.is-menu-open .app-nav-link:hover,
+  .app-header.is-menu-open .app-nav-link.active {
+    background: var(--header-hover);
+  }
+
+  .app-header.is-menu-open .app-actions {
+    justify-content: flex-start;
+    min-width: 0;
+    padding-top: 8px;
+  }
 }
 
 /* ----- Shared page surfaces ----- */
@@ -1825,4 +1990,259 @@ button.btn,
   .threat-intel-layout {
     grid-template-columns: 1fr;
   }
+}
+
+/* ----- Enterprise SmartCito Header ----- */
+:root {
+  --header-bg: rgba(10, 15, 31, 0.95);
+  --header-bg-solid: #0a0f1f;
+  --header-text: #ffffff;
+  --header-muted: #aab2c5;
+  --header-hover: rgba(255, 255, 255, 0.12);
+  --header-accent: #3fa9f5;
+  --smartcito-blue: #3fa9f5;
+  --smartcito-deep-navy: #0a0f1f;
+  --smartcito-steel: #aab2c5;
+}
+
+html[data-theme="light"] {
+  --bg: #f7fafc;
+  --bg-elev: #ffffff;
+  --bg-soft: #eef4f8;
+  --fg: #0f172a;
+  --fg-muted: #475569;
+  --border: #d8e2ea;
+  --enterprise-card-bg: #ffffff;
+  --enterprise-panel-bg: #f8fafc;
+  --enterprise-border: rgba(15, 23, 42, 0.12);
+
+  --theme-page-bg: #f7fafc;
+  --theme-page-bg-2: #eef4f8;
+  --theme-surface: #ffffff;
+  --theme-surface-2: #f1f5f9;
+  --theme-card: #ffffff;
+  --theme-card-soft: #f8fafc;
+  --theme-text: #0f172a;
+  --theme-heading: #020617;
+  --theme-muted: #475569;
+  --theme-border: rgba(15, 23, 42, 0.12);
+  --theme-input: #ffffff;
+  --theme-input-text: #0f172a;
+  --theme-hero: #eef4f8;
+  --theme-light-panel: #ffffff;
+  --theme-light-panel-text: #0f172a;
+
+  --header-bg: rgba(255, 255, 255, 0.95);
+  --header-bg-solid: #ffffff;
+  --header-text: #0a0f1f;
+  --header-muted: #475569;
+  --header-hover: rgba(15, 23, 42, 0.08);
+}
+
+html[data-theme="light"] body {
+  background:
+    linear-gradient(180deg, rgba(247, 250, 252, 0.98), rgba(238, 244, 248, 1)),
+    var(--theme-page-bg);
+  color: var(--theme-text);
+}
+
+html[data-theme="light"] .app-wordmark-smart {
+  color: var(--header-text);
+}
+
+html[data-theme="light"] .app-footer,
+html[data-theme="light"] .app-header,
+html[data-theme="light"] .dashboard-topbar {
+  border-color: var(--theme-border);
+}
+
+html[data-theme="light"] .landing-hero {
+  background:
+    linear-gradient(135deg, rgba(247, 250, 252, 0.96), rgba(231, 241, 247, 0.98)),
+    var(--theme-hero);
+}
+
+html[data-theme="light"] .landing-hero::before {
+  border-color: rgba(15, 23, 42, 0.12);
+}
+
+html[data-theme="light"] .hero-copy h2,
+html[data-theme="light"] .content-section h3,
+html[data-theme="light"] .narrative-page h2,
+html[data-theme="light"] .section-heading h3,
+html[data-theme="light"] .feature-card h3,
+html[data-theme="light"] .feature-card h4,
+html[data-theme="light"] .roadmap-item h3,
+html[data-theme="light"] .architecture-item h3 {
+  color: var(--theme-heading);
+}
+
+html[data-theme="light"] .hero-copy p,
+html[data-theme="light"] .lead-text,
+html[data-theme="light"] .section-copy,
+html[data-theme="light"] .feature-card p,
+html[data-theme="light"] .outcome-panel p,
+html[data-theme="light"] .architecture-item p,
+html[data-theme="light"] .roadmap-item p,
+html[data-theme="light"] .muted,
+html[data-theme="light"] .metric-key {
+  color: var(--theme-muted);
+}
+
+html[data-theme="light"] .foundation-strip span {
+  border-color: rgba(63, 169, 245, 0.28);
+  color: #0f172a;
+}
+
+html[data-theme="light"] .city-scene,
+html[data-theme="light"] .three-stage-canvas,
+html[data-theme="light"] .smart-map,
+html[data-theme="light"] .operations-viz-map {
+  background: #eaf2f8;
+  border-color: var(--theme-border);
+}
+
+html[data-theme="light"] .scene-grid,
+html[data-theme="light"] .css-three-grid,
+html[data-theme="light"] .operations-grid {
+  background-image:
+    linear-gradient(rgba(63, 169, 245, 0.22) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(63, 169, 245, 0.22) 1px, transparent 1px);
+}
+
+html[data-theme="light"] .scene-node,
+html[data-theme="light"] .scene-core,
+html[data-theme="light"] .css-three-core {
+  background: #ffffff;
+  color: #0f172a;
+  border-color: rgba(63, 169, 245, 0.45);
+}
+
+html[data-theme="light"] .proof-band {
+  background: #d8e2ea;
+  color: #0f172a;
+}
+
+html[data-theme="light"] .proof-item,
+html[data-theme="light"] .primary-panel {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+html[data-theme="light"] .statement-list p,
+html[data-theme="light"] .outcome-panel,
+html[data-theme="light"] .feature-card,
+html[data-theme="light"] .architecture-item,
+html[data-theme="light"] .roadmap-item,
+html[data-theme="light"] .governance-panel,
+html[data-theme="light"] .governance-item,
+html[data-theme="light"] .panel,
+html[data-theme="light"] .map-layer-controls,
+html[data-theme="light"] .map-device-list,
+html[data-theme="light"] .three-layer-controls,
+html[data-theme="light"] .three-selected-device,
+html[data-theme="light"] .three-scene-list,
+html[data-theme="light"] .alert-card,
+html[data-theme="light"] .control-card,
+html[data-theme="light"] .pipeline-card,
+html[data-theme="light"] .ai-threat-card,
+html[data-theme="light"] .log-event-card,
+html[data-theme="light"] .connection-card,
+html[data-theme="light"] .location-output-card {
+  background: var(--theme-card);
+  border-color: var(--theme-border);
+  color: var(--theme-text);
+}
+
+html[data-theme="light"] .foundation-section,
+html[data-theme="light"] .architecture-preview,
+html[data-theme="light"] .three-dashboard-stage,
+html[data-theme="light"] .location-intelligence-panel,
+html[data-theme="light"] .operations-viz-panel,
+html[data-theme="light"] .unified-threat-panel {
+  background: var(--theme-page-bg-2);
+  border-color: var(--theme-border);
+}
+
+html[data-theme="light"] .dashboard-shell-route {
+  background: var(--theme-page-bg);
+}
+
+html[data-theme="light"] .dashboard-topbar {
+  background: rgba(255, 255, 255, 0.96);
+}
+
+html[data-theme="light"] .dashboard-brand,
+html[data-theme="light"] .dashboard-tabs button,
+html[data-theme="light"] .operations-viz-header h3,
+html[data-theme="light"] .unified-threat-header h3,
+html[data-theme="light"] .dashboard-control-panel label,
+html[data-theme="light"] .location-output-card strong,
+html[data-theme="light"] .ai-threat-card strong,
+html[data-theme="light"] .log-event-meta strong,
+html[data-theme="light"] .log-event-meta b {
+  color: var(--theme-heading);
+}
+
+html[data-theme="light"] .dashboard-tabs button:hover,
+html[data-theme="light"] .dashboard-tabs button.active,
+html[data-theme="light"] .viz-mode-toggle button.active,
+html[data-theme="light"] .viz-topic-tabs button.active {
+  background: rgba(63, 169, 245, 0.12);
+  border-color: rgba(63, 169, 245, 0.35);
+  color: #0f172a;
+}
+
+html[data-theme="light"] .dashboard-control-panel select,
+html[data-theme="light"] .dashboard-control-panel input,
+html[data-theme="light"] .log-filter-bar input,
+html[data-theme="light"] .log-filter-bar select,
+html[data-theme="light"] .log-filter-bar button {
+  background: var(--theme-input);
+  border-color: var(--theme-border);
+  color: var(--theme-input-text);
+}
+
+html[data-theme="light"] .viz-mode-toggle button,
+html[data-theme="light"] .viz-topic-tabs button,
+html[data-theme="light"] .viz-zone,
+html[data-theme="light"] .viz-weather,
+html[data-theme="light"] .viz-traffic,
+html[data-theme="light"] .three-scene-list button {
+  background: #ffffff;
+  border-color: var(--theme-border);
+  color: var(--theme-text);
+}
+
+html[data-theme="light"] .data-table th,
+html[data-theme="light"] .data-table td,
+html[data-theme="light"] .metric-list li,
+html[data-theme="light"] .map-device-card {
+  border-color: var(--theme-border);
+}
+
+html[data-theme="light"] code {
+  background: rgba(63, 169, 245, 0.12);
+  color: #0f172a;
+}
+
+html[data-theme="light"] .wide-visual,
+html[data-theme="light"] .visual-grid img {
+  background: #ffffff;
+  border-color: var(--theme-border);
+}
+
+html[data-theme="light"] .app-icon-frame {
+  fill: #ffffff;
+  stroke: #0a0f1f;
+}
+
+html[data-theme="light"] .app-icon-grid {
+  stroke: #64748b;
+}
+
+html[data-theme="light"] .app-icon-links,
+html[data-theme="light"] .app-icon-node {
+  stroke: var(--smartcito-blue);
+  fill: var(--smartcito-blue);
 }

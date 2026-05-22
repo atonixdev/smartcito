@@ -118,3 +118,18 @@ Layout follows an 8-point spacing grid:
 
 Use existing `.panel`, `.feature-card`, `.page-title-row`, `.content-grid-12`,
 `.btn`, and dashboard tab styles before adding new component-specific spacing.
+
+## Header System
+
+The primary SmartCito header is implemented in `src/App.tsx` and styled in
+`src/styles/global.css`.
+
+Behavior:
+
+- full-width enterprise layout,
+- SmartCito logo and wordmark on the left,
+- uppercase navigation centered,
+- search, profile, and theme actions on the right,
+- sticky top position with `z-index: 9999`,
+- smooth scroll-down collapse from 80px to 60px,
+- responsive mobile menu with ARIA labels.
