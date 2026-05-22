@@ -1,0 +1,9 @@
+name: security-hardware-ci
+coverage:
+  - test_hsm_integrity.py
+metrics:
+  - firmware_version
+  - temperature_c
+  - tamper_state
+  - slot_count
+  - quantum_ready

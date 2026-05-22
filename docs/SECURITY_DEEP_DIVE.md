@@ -46,8 +46,8 @@
 
 ## Compliance
 
-- **GDPR** (EU): right of access, right to erasure, data-processing register.
-- **POPIA** (South Africa): consent records, breach notification within 72h.
+- **GDPR**: right of access, right to erasure, data-processing register.
+- **POPIA**: consent records, breach notification within 72h.
 - **ISO/IEC 27001**: SmartCito does not certify, but maps controls to A.5–A.18.
 
 ## Operational Practices

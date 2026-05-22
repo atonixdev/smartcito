@@ -24,3 +24,9 @@ Reference rack placement for SmartCito installations.
 
 Store diagrams, rack elevations, and power schedules in this folder as the
 hardware footprint evolves.
+
+## CI Coverage
+
+- `test_power_distribution.py` validates rack telemetry, firmware baseline,
+  power redundancy, UPS runtime, and thermal envelope.
+- `ci_manifest.yaml` records the rack and power metrics required in CI.

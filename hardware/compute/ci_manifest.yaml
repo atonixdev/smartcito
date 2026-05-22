@@ -1,0 +1,9 @@
+name: compute-hardware-ci
+coverage:
+  - test_compute_nodes.py
+metrics:
+  - firmware_version
+  - temperature_c
+  - power_kw
+  - throughput_mbps
+  - gpu_model

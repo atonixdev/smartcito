@@ -28,7 +28,7 @@ scikit-learn==1.5.2               # Classical ML / anomaly detection
 
 # ---- Databases & ORM ----
 SQLAlchemy==2.0.36                # Sync + async ORM
-asyncpg==0.29.0                   # PostgreSQL async driver
+asyncpg==0.31.0                   # PostgreSQL async driver (Python 3.13 compatible)
 psycopg2-binary==2.9.10           # PostgreSQL sync driver (used by Spark/tools)
 pymongo==4.10.1                   # MongoDB (optional document store)
 happybase==1.2.0                  # HBase client (optional — Thrift gateway)
@@ -41,6 +41,7 @@ redis==5.1.1
 cryptography==43.0.3              # AES, RSA, X.509, key derivation
 PyJWT[crypto]==2.9.0              # JWT issuance + verification
 passlib[bcrypt]==1.7.4            # Password hashing
+bcrypt==4.0.1                     # Passlib-compatible bcrypt backend
 
 # ---- HTTP / utilities ----
 httpx==0.27.2

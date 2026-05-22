@@ -1,10 +1,9 @@
 {
-  "//": "============================================================================",
+  "//header": "============================================================================",
   "//file": "webapp/package.json",
   "//purpose": "NPM manifest for the SmartCito React dashboard (Vite + TypeScript).",
   "//note": "Comment keys above are ignored by npm and serve as inline documentation.",
-  "//": "============================================================================",
-
+  "//footer": "============================================================================",
   "name": "smartcito-webapp",
   "private": true,
   "version": "0.1.0",
@@ -23,15 +22,20 @@
   "dependencies": {
     "@tanstack/react-query": "^5.59.0",
     "axios": "^1.7.7",
+    "leaflet": "^1.9.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.27.0"
+    "react-router-dom": "^6.27.0",
+    "three": "^0.184.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/react": "^16.0.1",
+    "@types/leaflet": "^1.9.21",
+    "@types/node": "^22.10.1",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.0",
+    "@types/three": "^0.184.1",
     "@typescript-eslint/eslint-plugin": "^8.8.1",
     "@typescript-eslint/parser": "^8.8.1",
     "@vitejs/plugin-react": "^4.3.2",

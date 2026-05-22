@@ -14,7 +14,6 @@ export default function TrafficSummaryPanel() {
     <article className="panel">
       <header className="panel-header">
         <h3>Traffic Summary</h3>
-        <span className="muted">auto-refresh · 10s</span>
       </header>
 
       {isLoading && <p>Computing summary…</p>}
@@ -32,10 +31,7 @@ export default function TrafficSummaryPanel() {
           </p>
 
           {data.sensors.length === 0 ? (
-            <p className="muted">
-              No traffic data yet. Push readings with{" "}
-              <code>kind: &quot;traffic&quot;</code> to get started.
-            </p>
+            <p className="muted">No traffic data available yet.</p>
           ) : (
             <ul className="metric-list">
               {data.sensors.map((s) => (

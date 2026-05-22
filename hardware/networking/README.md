@@ -38,3 +38,9 @@ and IoT integrations interoperable across vendors and geographies.
 
 Quantum-ready networking guidance lives in [`quantum_ready/`](quantum_ready/)
 for hybrid PQC migration and future QKD gateway integration.
+
+## CI Coverage
+
+- `test_network_transmission.py` validates reachability, firmware version,
+  secure throughput, latency, and quantum-ready transport status.
+- `ci_manifest.yaml` documents the networking metrics exported to CI.

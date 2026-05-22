@@ -16,7 +16,6 @@ export default function RecentReadingsPanel() {
     <article className="panel">
       <header className="panel-header">
         <h3>Recent Sensor Readings</h3>
-        <span className="muted">auto-refresh · 5s</span>
       </header>
 
       {isLoading && <p>Loading readings…</p>}
@@ -27,10 +26,7 @@ export default function RecentReadingsPanel() {
       )}
 
       {data && data.length === 0 && (
-        <p className="muted">
-          No readings yet. POST one to <code>/api/v1/sensors</code> to see it
-          appear here.
-        </p>
+        <p className="muted">No readings available yet.</p>
       )}
 
       {data && data.length > 0 && (

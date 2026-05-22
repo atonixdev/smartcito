@@ -24,7 +24,6 @@ export default function RegisteredCamerasPanel() {
     <article className="panel panel-wide">
       <header className="panel-header">
         <h3>Registered Cameras</h3>
-        <span className="muted">stream + gps · 5s</span>
       </header>
 
       {isLoading && <p>Loading camera fleet…</p>}
@@ -35,10 +34,7 @@ export default function RegisteredCamerasPanel() {
       )}
 
       {!isLoading && cameras.length === 0 && (
-        <p className="muted">
-          No cameras registered yet. POST to <code>/api/v1/cameras/register</code>
-          to add a body or micro camera.
-        </p>
+        <p className="muted">No cameras available yet.</p>
       )}
 
       {cameras.length > 0 && (

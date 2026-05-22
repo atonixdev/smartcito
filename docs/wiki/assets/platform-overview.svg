@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-label="SmartCito platform overview">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#f6f8ef"/>
+      <stop offset="100%" stop-color="#d7e7df"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" x2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f2f5f7"/>
+    </linearGradient>
+    <style>
+      .title { font: 700 52px Georgia, serif; fill: #17313a; }
+      .subtitle { font: 400 24px Georgia, serif; fill: #34505b; }
+      .label { font: 700 24px Georgia, serif; fill: #17313a; }
+      .body { font: 400 18px Georgia, serif; fill: #3d5863; }
+      .line { stroke: #294752; stroke-width: 4; fill: none; }
+      .box { fill: url(#card); stroke: #294752; stroke-width: 3; rx: 28; }
+    </style>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <text x="90" y="110" class="title">SmartCito Platform Overview</text>
+  <text x="90" y="155" class="subtitle">City devices, software services, hardware infrastructure, dashboards, and security operating as one governed backbone.</text>
+  <rect x="95" y="240" width="270" height="160" class="box"/>
+  <text x="130" y="295" class="label">City Devices</text>
+  <text x="130" y="330" class="body">Cameras</text>
+  <text x="130" y="360" class="body">GPS</text>
+  <text x="130" y="390" class="body">IoT Sensors</text>
+  <rect x="445" y="240" width="300" height="160" class="box"/>
+  <text x="485" y="295" class="label">Ingestion Layer</text>
+  <text x="485" y="330" class="body">RTSP, MQTT, CoAP</text>
+  <text x="485" y="360" class="body">ONVIF, NMEA</text>
+  <text x="485" y="390" class="body">Protocol adapters</text>
+  <rect x="825" y="220" width="320" height="190" class="box"/>
+  <text x="865" y="280" class="label">API and Control Plane</text>
+  <text x="865" y="320" class="body">FastAPI, auth, orchestration</text>
+  <text x="865" y="350" class="body">camera registry, quantum APIs</text>
+  <text x="865" y="380" class="body">audit-aware operations</text>
+  <rect x="1225" y="240" width="280" height="160" class="box"/>
+  <text x="1265" y="295" class="label">Dashboards</text>
+  <text x="1265" y="330" class="body">React</text>
+  <text x="1265" y="360" class="body">Dash</text>
+  <text x="1265" y="390" class="body">Grafana views</text>
+  <rect x="460" y="520" width="300" height="160" class="box"/>
+  <text x="500" y="575" class="label">Storage Backbone</text>
+  <text x="500" y="610" class="body">PostgreSQL</text>
+  <text x="500" y="640" class="body">Kafka and Redis</text>
+  <text x="500" y="670" class="body">Swift and Cinder alignment</text>
+  <rect x="860" y="515" width="310" height="170" class="box"/>
+  <text x="900" y="570" class="label">Security and Audit</text>
+  <text x="900" y="605" class="body">RBAC and encryption</text>
+  <text x="900" y="635" class="body">audit trails</text>
+  <text x="900" y="665" class="body">quantum-safe envelopes</text>
+  <rect x="1195" y="520" width="310" height="170" class="box"/>
+  <text x="1235" y="575" class="label">Hardware Infrastructure</text>
+  <text x="1235" y="610" class="body">racks, power, cooling</text>
+  <text x="1235" y="640" class="body">compute, storage, networking</text>
+  <text x="1235" y="670" class="body">hardware CI validation</text>
+  <path d="M365 320 L445 320" class="line"/>
+  <path d="M745 320 L825 320" class="line"/>
+  <path d="M1145 320 L1225 320" class="line"/>
+  <path d="M985 410 L985 515" class="line"/>
+  <path d="M825 330 C720 360, 680 430, 610 520" class="line"/>
+  <path d="M1145 345 C1220 390, 1280 455, 1325 520" class="line"/>
+</svg>

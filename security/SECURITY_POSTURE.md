@@ -78,8 +78,8 @@ data-encryption keys and annually for master keys.
 - **Quantum-ready signing roadmap.** Audit chains should be prepared for PQC
   signatures as mature libraries become operationally viable.
 - **Compliance mappings:**
-  - [POPIA](compliance/popia.md) (South Africa)
-  - [GDPR](compliance/gdpr.md) (EU)
+  - [POPIA](compliance/popia.md)
+  - [GDPR](compliance/gdpr.md)
   - [ISO 27001](compliance/iso27001.md)
 - **Automated compliance checks** run in CI
   ([.github/workflows/security.yml](../.github/workflows/security.yml))

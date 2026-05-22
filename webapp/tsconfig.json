@@ -1,8 +1,8 @@
 {
-  "//": "==========================================================================",
+  "//header": "==========================================================================",
   "//file": "webapp/tsconfig.json",
   "//purpose": "TypeScript compiler options — strict by default.",
-  "//": "==========================================================================",
+  "//footer": "==========================================================================",
 
   "compilerOptions": {
     "target": "ES2022",
@@ -22,10 +22,9 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["vitest/globals", "@testing-library/jest-dom"],
-    "baseUrl": ".",
+    "types": ["node", "vite/client", "vitest/globals", "@testing-library/jest-dom"],
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     },
     "noEmit": true
   },

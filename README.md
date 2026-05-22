@@ -58,7 +58,41 @@ The **Map module** (`/map`) powers SmartCito's sovereign location intelligence: 
 | Area Code | 0.4 | Country → region → city → coords |
 | User Selection | 0.3 | Country / region fallback |
 
+
 See [`map/README.md`](map/README.md) for full API and usage.
+
+| Service     | URL                        | Purpose                       |
+|-------------|----------------------------|-------------------------------|
+| Webapp    | http://localhost:5173      | React dashboard               |
+| Citosmart API | http://localhost:8000      | FastAPI (OpenAPI at `/docs`)  |
+| PostgreSQL  | localhost:5432             | Relational store              |
+| Redis       | localhost:6379             | Cache & pub/sub               |
+| Kafka       | localhost:9092             | Event streaming               |
+
+### Local Citosmart Development
+
+```bash
+cd citosmart
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+### Local Webapp Development
+
+```bash
+cd webapp
+npm install
+npm run dev
+```
+
+Detailed walkthroughs live in [`docs/`](docs/).
+
+For a single wiki-style project entry point, start with [`docs/WIKI.md`](docs/WIKI.md).
+
+For pilot or hardware-backed deployments, see [`docs/DOCKER_DEPLOYMENT.md`](docs/DOCKER_DEPLOYMENT.md)
+and [`hardware/`](hardware/).
+
 
 ---
 
@@ -97,7 +131,19 @@ The dashboard renders:
 
 ## Releases
 
+
 - [SmartCito Edge v1.0](docs/SMARTCITO_EDGE_V1_RELEASE.md) — IoT, GPS, Map & Camera Integration
+
+If you find a vulnerability, please **do not open a public issue**. Follow the
+disclosure process in [`SECURITY.md`](SECURITY.md).
+
+SmartCito targets compatibility with:
+
+- **GDPR**
+- **POPIA**
+- **ISO/IEC 27001** practices
+- **NIST Cybersecurity Framework** controls
+
 
 ---
 
