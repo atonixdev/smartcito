@@ -22,6 +22,7 @@ Sovereign location intelligence for SmartCito: country selection, region/area-co
 | GET | `/api/location/ip/:ip` | IP geolocation |
 | POST | `/api/location/fuse` | Fuse multiple location sources |
 | POST | `/api/location/log` | Log location event to ATP ledger |
+| GET | `/api/location/dashboard/logs` | Dashboard operational logs and correlated security cases |
 
 ## Source Priority
 
@@ -37,3 +38,30 @@ npm install
 npm start
 npm test
 ```
+
+## 3D Map Engine Expectations
+
+The frontend map is designed for a WebGL engine such as Mapbox GL JS or
+CesiumJS. The current webapp integration uses Mapbox GL JS when
+`VITE_MAPBOX_TOKEN` is configured.
+
+The frontend must render a real WebGL map. Configure Mapbox before running the
+dashboard:
+
+```bash
+cd ../webapp
+VITE_MAPBOX_TOKEN=pk_your_mapbox_token npm run dev
+```
+
+No CSS-only map mockup should be used for the dashboard map route.
+
+Required behavior:
+
+- full world coverage,
+- dark basemap,
+- country click and fly-to zoom,
+- point click reverse-geocoding,
+- 2D / 3D mode toggle,
+- 3D terrain and building extrusion,
+- address-level marker tracking,
+- device, GPS, camera, weather, traffic, and threat overlays.

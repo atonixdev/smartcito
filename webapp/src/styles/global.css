@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap");
+
 /* ============================================================================
    File: webapp/src/styles/global.css
    Purpose: Minimal, dependency-free design system for the SmartCito UI.
@@ -19,7 +21,20 @@
   --error: #f87171;
   --border: #29445a;
   --radius: 8px;
-  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+
+  --enterprise-card-bg: #111827;
+  --enterprise-panel-bg: #0d1117;
+  --enterprise-border: rgba(255, 255, 255, 0.08);
 }
 
 * { box-sizing: border-box; }
@@ -32,6 +47,8 @@ body {
     var(--bg);
   color: var(--fg);
   font-family: var(--font);
+  font-size: 16px;
+  font-weight: 400;
   line-height: 1.5;
 }
 
@@ -52,41 +69,131 @@ code {
   min-height: 100%;
 }
 .app-header {
+  display: grid;
+  grid-template-columns: minmax(160px, 1fr) auto minmax(160px, 1fr);
+  align-items: center;
+  gap: var(--space-6);
+  min-height: 72px;
+  padding: 0 var(--space-8);
+  background: rgba(9, 21, 32, 0.96);
+  border-bottom: 1px solid var(--enterprise-border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(12px);
+}
+.app-title {
+  justify-self: start;
+  color: #f7fbfc;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-decoration: none;
+}
+
+.app-title:hover {
+  text-decoration: none;
+}
+
+.app-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  justify-self: center;
+}
+
+.app-nav a,
+.dashboard-tabs button,
+.btn,
+button {
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.app-profile {
+  justify-self: end;
+  color: var(--fg-muted);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.page-title-row {
+  display: grid;
+  gap: var(--space-2);
+  margin-bottom: var(--space-8);
+}
+
+.breadcrumb {
+  color: var(--fg-muted);
+}
+
+.content-grid-12 {
+  display: grid;
+  gap: var(--space-8);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+.btn,
+button.btn,
+.dashboard-control-actions button,
+.control-button,
+.dashboard-tabs button {
+  min-height: 44px;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
+}
+
+.panel,
+.feature-card,
+.outcome-panel,
+.architecture-item,
+.roadmap-item,
+.governance-panel,
+.governance-item,
+.statement-list p,
+.map-layer-controls,
+.map-device-list,
+.three-layer-controls,
+.three-selected-device,
+.three-scene-list,
+.alert-card,
+.control-card,
+.pipeline-card,
+.ai-threat-card,
+.log-event-card {
+  background: var(--enterprise-card-bg);
+  border: 1px solid var(--enterprise-border);
+  border-radius: 10px;
+  padding: var(--space-6);
+}
+
+.content-section,
+.page-shell {
+  padding-top: var(--space-12);
+  padding-bottom: var(--space-12);
+}
+
+.dashboard-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  min-height: 72px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 0.9rem 2rem;
-  background: rgba(9, 21, 32, 0.94);
-  border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 0;
-  z-index: 20;
+  gap: var(--space-6);
+  padding: 0 var(--space-8);
+  border-bottom: 1px solid rgba(0, 224, 255, 0.16);
+  background: rgba(10, 26, 47, 0.96);
+  backdrop-filter: blur(12px);
 }
-.app-title {
-  color: #f7fbfc;
-  margin: 0;
-  font-size: 1.25rem;
-  letter-spacing: 0.02em;
-}
-.app-nav {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 0.35rem 1rem;
-}
-.app-nav a {
-  color: #dcebee;
-  font-size: 0.92rem;
-  font-weight: 600;
-}
-.app-main { flex: 1; width: 100%; }
+
 .app-footer {
-  padding: 1rem 2rem;
-  text-align: center;
-  color: var(--fg-muted);
-  border-top: 1px solid var(--border);
-  background: #07111b;
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(237, 246, 248, 0.58);
 }
 
 /* ----- Shared page surfaces ----- */
@@ -271,6 +378,10 @@ code {
 .node-camera { left: 14%; top: 18%; }
 .node-gps { right: 12%; top: 20%; }
 .node-iot { bottom: 16%; left: 24%; }
+.node-map {
+  right: 14%;
+  bottom: 18%;
+}
 
 .scene-line {
   background: rgba(87, 199, 212, 0.6);
@@ -859,8 +970,16 @@ code {
 
 @media (max-width: 860px) {
   .app-header {
+    grid-template-columns: 1fr;
     align-items: flex-start;
-    flex-direction: column;
+    gap: var(--space-4);
+    padding: var(--space-4);
+  }
+
+  .app-title,
+  .app-nav,
+  .app-profile {
+    justify-self: start;
   }
 
   .app-nav {

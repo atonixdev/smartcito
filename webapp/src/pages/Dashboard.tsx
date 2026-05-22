@@ -8,6 +8,7 @@
  */
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import LocationIntelligencePanel from "@/components/LocationIntelligencePanel";
 import OperationsVisualizationPanel, {
@@ -27,6 +28,7 @@ const dashboardTabs: Array<{ key: OperationsTopic; label: string }> = [
 
 export default function Dashboard() {
   const [activeTopic, setActiveTopic] = useState<OperationsTopic>("map");
+  const navigate = useNavigate();
 
   return (
     <section className="dashboard operations-dashboard">
@@ -34,12 +36,12 @@ export default function Dashboard() {
         <button
           className="dashboard-brand"
           type="button"
-          onClick={() => setActiveTopic("map")}
+          onClick={() => navigate("/")}
         >
           SmartCito Dashboard
         </button>
 
-        <nav className="dashboard-tabs" aria-label="Dashboard visualization layers">
+        <nav className="dashboard-tabs" aria-label="Dashboard map and data layers">
           {dashboardTabs.map((tab) => (
             <button
               key={tab.key}

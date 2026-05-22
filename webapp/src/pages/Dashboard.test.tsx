@@ -13,7 +13,11 @@ vi.mock("@/components/OperationsVisualizationPanel", () => ({
 }));
 
 vi.mock("@/components/UnifiedLogsThreatPanel", () => ({
-  default: () => <section><h3>Unified Logs & AI Threat Analysis</h3></section>,
+  default: () => <section><h3>Unified Logs & Security Analysis</h3></section>,
+}));
+
+vi.mock("@/components/RecentReadingsPanel", () => ({
+  default: () => <section><h3>Recent Readings</h3></section>,
 }));
 
 vi.mock("@/api/sensors", () => ({
@@ -36,8 +40,13 @@ describe("Dashboard", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: /SmartCito Operations Visualization/i }),
+      screen.getByRole("button", { name: /SmartCito Dashboard/i }),
     ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Map/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Security/i })).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: /SmartCito Operations Visualization/i }),
+    ).not.toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: /Sovereign Location Intelligence/i }),
     ).toBeInTheDocument();
@@ -45,10 +54,10 @@ describe("Dashboard", () => {
       screen.getByRole("heading", { name: /Map Visualization/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: /Operations Logs/i }),
+      screen.getByRole("heading", { name: /Recent Readings/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: /Unified Logs & AI Threat Analysis/i }),
+      screen.getByRole("heading", { name: /Unified Logs & Security Analysis/i }),
     ).toBeInTheDocument();
   });
 });

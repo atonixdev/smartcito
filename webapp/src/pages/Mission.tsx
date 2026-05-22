@@ -16,8 +16,11 @@ const principles = [
 export default function Mission() {
   return (
     <section className="page-shell narrative-page">
-      <span className="eyebrow">Mission statement</span>
-      <h2>Build a future-proof foundation for secure smart cities.</h2>
+      <div className="page-title-row">
+        <span className="breadcrumb">Home / Mission</span>
+        <span className="eyebrow">Mission statement</span>
+        <h2>Build a future-proof foundation for secure smart cities.</h2>
+      </div>
       <p className="lead-text">
         SmartCito exists to connect cameras, GPS, IoT devices, cloud systems,
         and hardware validation into one open backbone that communities can
@@ -37,9 +40,9 @@ export default function Mission() {
           <h3>What makes it different</h3>
           <p>
             The project is not only a dashboard. It combines FastAPI services,
-            React operator views, camera and GPS modules, USB device detection,
-            quantum-safe APIs, infrastructure-as-code, hardware tests, and
-            Wiki-ready documentation.
+            React operator views, 2D/3D world maps, camera and GPS modules, USB
+            device detection, quantum-safe APIs, infrastructure-as-code,
+            hardware tests, and Wiki-ready documentation.
           </p>
         </div>
         <div className="outcome-panel">

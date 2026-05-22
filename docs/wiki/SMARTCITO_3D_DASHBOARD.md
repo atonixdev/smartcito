@@ -51,7 +51,7 @@ The endpoint returns:
 - Camera-capable devices rendered as camera-style objects.
 - GPS paths rendered as 3D lines.
 - Threat waves rendered as animated rings.
-- Operator layer toggles for IoT, GPS paths, camera overlays, and threats.
+- Operator layer toggles for IoT, GPS paths, camera overlays, and threat zones.
 - Clickable 3D markers select device metadata in the side rail.
 
 ## Security Rules
@@ -86,3 +86,18 @@ npm run build
 
 Browser validation confirms the WebGL canvas is nonblank and lists verified
 demo devices when the backend API is unavailable.
+
+## 2D / 3D World Map Capability
+
+The dashboard map should use Mapbox GL JS or CesiumJS for a WebGL map
+experience. The implemented webapp path uses Mapbox GL JS when
+`VITE_MAPBOX_TOKEN` is present and falls back to the built-in CSS map otherwise.
+
+Required operator behavior:
+
+- click a country to fly into that country,
+- click any point to show country, region, city, street, and coordinates,
+- switch between flat 2D and tilted 3D mode,
+- render terrain and extruded buildings in 3D,
+- zoom to address-level fused GPS or IP locations,
+- overlay devices, GPS trails, camera feeds, traffic, weather, and threat zones.

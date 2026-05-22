@@ -13,7 +13,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import App from "./App";
 
 describe("App", () => {
-  it("opens the dashboard by default", async () => {
+  it("opens the homepage by default", async () => {
     const qc = new QueryClient();
     render(
       <QueryClientProvider client={qc}>
@@ -23,11 +23,10 @@ describe("App", () => {
       </QueryClientProvider>,
     );
 
+    expect(screen.getByRole("link", { name: /SmartCito/i })).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: /SmartCito/i, level: 1 }),
+      screen.getByRole("heading", { name: /SmartCito/i, level: 2 }),
     ).toBeInTheDocument();
-    expect(
-      await screen.findByRole("heading", { name: /Operations Dashboard/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Open dashboard/i })).toBeInTheDocument();
   });
 });

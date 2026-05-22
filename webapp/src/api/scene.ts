@@ -2,7 +2,7 @@
  * ============================================================================
  * File: webapp/src/api/scene.ts
  * Purpose:
- *   Typed client for the SmartCito 3D dashboard control-plane scene.
+ *   Typed client for SmartCito 3D operations scene data.
  * ============================================================================
  */
 
@@ -96,7 +96,7 @@ export const demoSceneOverview: SceneOverview = {
       severity: "high",
       radius: 2.4,
       source_device_id: "demo-raspi-edge-001",
-      label: "AI watch zone: air-quality",
+      label: "Operational watch zone: air-quality",
     },
   ],
   layers: ["city-map", "iot-devices", "gps-paths", "camera-overlays", "threat-waves"],

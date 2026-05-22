@@ -155,6 +155,15 @@ See [`docs/GITFLOW.md`](docs/GITFLOW.md) for the branch map and release flow.
 - ESLint + Prettier enforced in CI.
 - Co-locate component, styles, and tests.
 
+### Enterprise UI Standards
+
+- Use `IBM Plex Sans` for product UI and `IBM Plex Mono` for logs, code, and technical values.
+- Follow the 8-point grid: 4, 8, 16, 24, 32, and 48px.
+- Buttons should be 44px high, 6px radius, medium weight, and use subtle shadows.
+- Cards and panels should use 24px padding, 10px radius, and a low-contrast border.
+- Do not introduce random colors, mixed fonts, or one-off spacing values.
+- Prefer shared classes in `webapp/src/styles/global.css` before adding new styles.
+
 ### General
 
 - No commented-out code in PRs.

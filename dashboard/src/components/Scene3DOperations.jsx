@@ -116,6 +116,11 @@ export default function Scene3DOperations({ devices = [], threats = [] }) {
       arcs.push({ curve, packet, t: Math.random() });
     });
 
+    const threatPoints = threats.length > 0 ? threats : [
+      { id: 'risk-1', severity: 'medium', x: -18, z: 12 },
+      { id: 'risk-2', severity: 'high', x: 36, z: -18 }
+    ];
+
     threatPoints.forEach((t) => {
       const color = t.severity === 'high' ? 0xef476f : 0xffd166;
       const wave = new THREE.Mesh(
@@ -137,6 +142,12 @@ export default function Scene3DOperations({ devices = [], threats = [] }) {
       hub.rotation.y += dt * 0.5;
 
       arcs.forEach((a) => {
+        if (a.packet && a.curve) {
+          a.t += dt * 0.45;
+          if (a.t > 1) a.t = 0;
+          a.packet.position.copy(a.curve.getPoint(a.t));
+        }
+
         if (a.wave) {
           a.t += dt * 0.6;
           if (a.t > 1) a.t = 0;
@@ -170,7 +181,9 @@ export default function Scene3DOperations({ devices = [], threats = [] }) {
       cancelAnimationFrame(frame);
       window.removeEventListener('resize', onResize);
       renderer.dispose();
-      mount.removeChild(renderer.domElement);
+      if (renderer.domElement.parentNode === mount) {
+        mount.removeChild(renderer.domElement);
+      }
     };
   }, [devices, threats]);
 

@@ -8,7 +8,7 @@
  * ============================================================================
  */
 
-import { Link, Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { Link, Route, Routes, useLocation } from "react-router-dom";
 
 import Home from "./pages/Home";
 import Architecture from "./pages/Architecture";
@@ -26,8 +26,10 @@ export default function App() {
     <div className={`app-shell ${isDashboardRoute ? "dashboard-shell-route" : ""}`}>
       {!isDashboardRoute && (
         <header className="app-header">
-          <h1 className="app-title">SmartCito</h1>
-          <nav className="app-nav">
+          <Link className="app-title" to="/">
+            SmartCito
+          </Link>
+          <nav className="app-nav" aria-label="Primary navigation">
             <Link to="/home">Home</Link>
             <Link to="/mission">Mission</Link>
             <Link to="/architecture">Architecture</Link>
@@ -35,12 +37,15 @@ export default function App() {
             <Link to="/roadmap">Roadmap</Link>
             <Link to="/dashboard">Dashboard</Link>
           </nav>
+          <div className="app-profile" aria-label="Current profile">
+            Operator
+          </div>
         </header>
       )}
 
       <main className="app-main">
         <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
           <Route path="/mission" element={<Mission />} />
           <Route path="/architecture" element={<Architecture />} />

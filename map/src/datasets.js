@@ -11,6 +11,10 @@ function getCountries() {
   return countries;
 }
 
+function getCountry(iso2) {
+  return countries.find((country) => country.iso2 === iso2) || null;
+}
+
 function getRegions(iso2) {
   return regions[iso2] || [];
 }
@@ -34,6 +38,7 @@ function resolveAreaCode(iso2, code) {
 
 module.exports = {
   getCountries,
+  getCountry,
   getRegions,
   getAreaCodes,
   resolveAreaCode

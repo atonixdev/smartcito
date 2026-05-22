@@ -18,6 +18,11 @@ export interface SmartMapDevice {
   device_type: "usb" | "camera" | "gps" | "iot";
   latitude: number;
   longitude: number;
+  country?: string;
+  region?: string;
+  city?: string;
+  street?: string;
+  address_label?: string;
   trust_score: number;
   trust_level: "verified" | "unverified" | "blocked";
   camera_feed_url?: string | null;
@@ -49,6 +54,11 @@ export const demoSmartMapDevices: SmartMapDevice[] = [
     device_type: "camera",
     latitude: -25.7479,
     longitude: 28.2293,
+    country: "South Africa",
+    region: "Gauteng",
+    city: "Pretoria",
+    street: "Stanza Bopape Street",
+    address_label: "Pretoria camera corridor",
     trust_score: 96,
     trust_level: "verified",
     camera_feed_url: "rtsp://demo/pretoria-camera-001",
@@ -64,6 +74,11 @@ export const demoSmartMapDevices: SmartMapDevice[] = [
     device_type: "iot",
     latitude: -25.7461,
     longitude: 28.1881,
+    country: "South Africa",
+    region: "Gauteng",
+    city: "Pretoria",
+    street: "Church Square area",
+    address_label: "Air-quality edge node",
     trust_score: 92,
     trust_level: "verified",
     camera_feed_url: "rtsp://demo/raspi-edge-001/camera",
@@ -79,6 +94,11 @@ export const demoSmartMapDevices: SmartMapDevice[] = [
     device_type: "gps",
     latitude: -25.7469,
     longitude: 28.2299,
+    country: "South Africa",
+    region: "Gauteng",
+    city: "Pretoria",
+    street: "Arcadia route",
+    address_label: "Mobile GPS receiver",
     trust_score: 100,
     trust_level: "verified",
     camera_feed_url: null,

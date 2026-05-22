@@ -312,6 +312,17 @@ app.get('/api/location/dashboard/visualization', (req, res) => {
   });
 });
 
+app.get('/api/location/dashboard/logs', requireDashboardAuth, (req, res) => {
+  res.json({
+    generated_at: new Date().toISOString(),
+    logs: unifiedLogEvents.map((event) => ({
+      ...event,
+      timestamp: new Date().toISOString()
+    })),
+    threats: aiThreatCases
+  });
+});
+
 app.get('/api/v1/sensors/recent', (req, res) => {
   const limit = Number(req.query.limit || 20);
 

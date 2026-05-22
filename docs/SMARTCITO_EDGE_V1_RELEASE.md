@@ -25,7 +25,11 @@ This release establishes the foundation for SmartCito’s real-time city-intelli
 
 ### 2D/3D Map Rendering
 
-- WebGL-powered map support
+- WebGL-powered world map support
+- Country click detection with smooth fly-to zoom
+- Point click popups for country, region, city, street, latitude, and longitude
+- 2D / 3D toggle
+- 3D terrain and building extrusion
 - Device position rendering
 - Movement path visualization
 - Event overlays for alerts and incidents
@@ -109,7 +113,7 @@ With this release, SmartCito can:
 | GET | `/api/location/ip/:ip` | IP geolocation lookup |
 | POST | `/api/location/fuse` | Fuse GPS + IP + area code + user-selected |
 | POST | `/api/location/log` | Append signed location event to ATP ledger |
-| GET | `/api/location/dashboard/3d` | Return 3D-ready devices, threats, GPS paths, and map metadata |
+| GET | `/api/location/dashboard/3d` | Return 3D-ready devices, threat zones, GPS paths, and map metadata |
 | POST | `/api/location/dashboard/audit` | Record operator visualization events |
 
 ### Source Priority

@@ -15,7 +15,7 @@ const layerLabels = [
   ["iot-devices", "IoT"],
   ["gps-paths", "GPS paths"],
   ["camera-overlays", "Cameras"],
-  ["threat-waves", "Threat waves"],
+  ["threat-waves", "Threat zones"],
 ] as const;
 
 function projectDevice(device: SceneDevice) {
@@ -51,10 +51,10 @@ export default function ThreeDashboardPanel({ scene }: { scene: SceneOverview })
   return (
     <section className="three-dashboard-stage" aria-label="SmartCito 3D control plane">
       <div className="three-stage-copy">
-        <h3>SmartCito 3D Dashboard</h3>
+        <h3>SmartCito 3D Operations Scene</h3>
         <p>
-          Verified IoT, GPS, camera, and edge devices rendered in a 3D-style
-          city control plane without external rendering dependencies.
+          Verified IoT, GPS, camera, and edge devices rendered with GPS paths,
+          camera overlays, and risk zones for operational context.
         </p>
       </div>
 

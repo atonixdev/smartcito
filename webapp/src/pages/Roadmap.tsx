@@ -26,8 +26,11 @@ const roadmap = [
 export default function Roadmap() {
   return (
     <section className="page-shell narrative-page">
-      <span className="eyebrow">Roadmap</span>
-      <h2>From practical foundation to advanced smart city platform.</h2>
+      <div className="page-title-row">
+        <span className="breadcrumb">Home / Roadmap</span>
+        <span className="eyebrow">Roadmap</span>
+        <h2>From practical foundation to advanced smart city platform.</h2>
+      </div>
       <p className="lead-text">
         The roadmap keeps near-term engineering grounded while leaving room for
         the larger vision: a transparent, visual, collaborative platform for

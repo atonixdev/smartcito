@@ -96,15 +96,20 @@ and [`hardware/`](hardware/).
 
 ---
 
-## Dashboard — 2D / 3D Map View
+## Dashboard — 2D / 3D World Map View
 
 ![SmartCito Dashboard Map View](docs/diagrams/dashboard-map-view.svg)
 
 The dashboard renders:
 
+- Full-world WebGL map coverage when `VITE_MAPBOX_TOKEN` is configured
+- Country click detection with smooth fly-to zoom
+- Reverse-geocoded popups for country, region, city, street, and coordinates
+- 2D / 3D toggle with terrain and 3D building extrusion
 - Authenticated device pins (IoT, cameras, GPS, edge Pis)
 - Live camera popups linked to GPS coordinates
 - Confidence-scored unified location
+- GPS trails, weather, traffic, and threat overlay toggles
 - 3D operational scene (`dashboard/src/components/Scene3DOperations.jsx`)
 - Webapp 3D control plane (`webapp/src/components/SmartCito3DControlPlane.tsx`)
 - Backend 3D-ready data from `/api/location/dashboard/3d`

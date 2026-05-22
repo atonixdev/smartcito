@@ -88,6 +88,25 @@ print(response.json())
 - Layer toggles let operators enable or disable pins, camera overlays, paths,
   and heatmap views.
 
+## WebGL 3D World Map Requirements
+
+SmartCito map integration uses a WebGL-capable map surface when a Mapbox token
+is configured. The map must support:
+
+- full world coverage,
+- smooth zoom from world to country, city, street, and building,
+- country click detection with fly-to zoom,
+- reverse-geocoded point popups,
+- 2D / 3D toggle,
+- dark basemap,
+- satellite overlay,
+- 3D terrain,
+- 3D building extrusion,
+- verified device markers,
+- GPS trails,
+- camera overlays,
+- weather, traffic, and threat overlays.
+
 ## Security Notes
 
 - Device registration requires an operator JWT.
@@ -108,5 +127,8 @@ npm run dev -- --host 0.0.0.0
 open http://localhost:5174/dashboard
 ```
 
-The panel titled `SmartCito Map Integration` shows the live Leaflet map with
-verified device pins, camera overlays, GPS paths, and sensor heatmap layers.
+The panel titled `SmartCito 3D World Map` renders a real Mapbox GL JS WebGL map
+when `VITE_MAPBOX_TOKEN` is configured. It does not use a styled-background
+mockup. The map supports country click zoom, reverse-geocoded popups, address
+labels, terrain, 3D buildings, device overlays, GPS trails, camera badges, and
+risk zones.

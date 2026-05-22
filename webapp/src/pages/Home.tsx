@@ -27,7 +27,7 @@ const coreFeatures = [
   },
   {
     title: "Operator Dashboard",
-    body: "The React control plane brings devices, security posture, data flow, and operator actions into one live interface.",
+    body: "The React control plane brings devices, security posture, data flow, 2D/3D world maps, and operator actions into one live interface.",
   },
 ];
 
@@ -63,8 +63,9 @@ export default function Home() {
           <p>
             SmartCito is an open project dedicated to building secure,
             quantum-ready smart city infrastructure. It connects cameras, GPS,
-            IoT devices, hardware services, and cloud systems into one unified
-            backbone designed for transparency, security, and innovation.
+            IoT devices, hardware services, cloud systems, and a 3D global map
+            into one unified backbone designed for transparency, security, and
+            innovation.
           </p>
 
           <div className="foundation-strip" aria-label="Project positioning">
@@ -87,7 +88,8 @@ export default function Home() {
           <div className="scene-grid" />
           <div className="scene-node node-camera">CAM</div>
           <div className="scene-node node-gps">GPS</div>
-          <div className="scene-node node-iot">IOT</div>
+          <div className="scene-node node-iot">CONNECTOR</div>
+          <div className="scene-node node-map">CITY MAP</div>
           <div className="scene-core">SmartEdge</div>
           <div className="scene-line line-a" />
           <div className="scene-line line-b" />

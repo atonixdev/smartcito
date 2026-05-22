@@ -24,7 +24,7 @@ const layers = [
   },
   {
     title: "SmartEdge Dashboard",
-    body: "React pages expose the device manager, security monitor, data-flow view, traffic summaries, and operator controls.",
+    body: "React pages expose the device manager, 2D/3D world map, security monitor, data-flow view, traffic summaries, and operator controls.",
   },
 ];
 
