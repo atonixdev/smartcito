@@ -13,9 +13,12 @@ export default function RecentReadingsPanel() {
   const { data, isLoading, isError, error } = useRecentSensors(20);
 
   return (
-    <article className="panel">
+    <article className="panel panel-wide operations-log-panel">
       <header className="panel-header">
-        <h3>Recent Sensor Readings</h3>
+        <div>
+          <h3>Operations Logs</h3>
+          <p className="muted">Live sensor, GPS, device, and traffic events.</p>
+        </div>
       </header>
 
       {isLoading && <p>Loading readings…</p>}
