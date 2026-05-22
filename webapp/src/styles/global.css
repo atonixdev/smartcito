@@ -641,9 +641,10 @@ code {
 .dashboard-grid {
   display: grid;
   gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: 1fr;
   margin-top: 1rem;
 }
+
 .panel {
   background: var(--bg-elev);
   border: 1px solid var(--border);
@@ -707,7 +708,6 @@ code {
 }
 .metric-key { color: var(--fg-muted); }
 
-<<<<<<< HEAD
 .connection-grid {
   display: grid;
   gap: 0.75rem;
@@ -734,7 +734,8 @@ code {
 
 .backend-connection-panel {
   border-color: rgba(56, 189, 248, 0.35);
-=======
+}
+
 .alert-list,
 .control-list {
   display: grid;
@@ -979,7 +980,6 @@ code {
     height: 360px;
     min-height: 320px;
   }
->>>>>>> ea3017204e60172cfb4e16dd253e4f0dcb8566a1
 }
 
 .css-smart-map {
