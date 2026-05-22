@@ -26,6 +26,7 @@
 | Cache            | Hot path lookups, pub/sub fan-out                | Redis                         |
 | API Gateway      | AuthN/Z, rate limit, audit, schema validation    | FastAPI + PyJWT               |
 | Visualization    | Operator + analyst dashboards                    | React, Plotly Dash, Grafana   |
+| 3D Control Plane | IoT/GPS/camera pins, GPS paths, threat waves, trust-colored device objects | React, CSS 3D, Three.js-ready scene components |
 | Security         | Encryption, key management, audit                | cryptography (AES-GCM, HKDF)  |
 | Native (opt-in)  | Hot-path packet parsing, IoT drivers             | C11 (`native/`)               |
 | Observability    | Metrics, logs, traces                            | Prometheus, OTEL              |
@@ -79,3 +80,21 @@ Dashboard ──REST/WS──> API Gateway ──read──> Redis + Storage
 - Real anomaly-detection pipeline (Spark ML).
 - Identity federation via Keycloak/OIDC.
 - Data residency tags for cross-border compliance.
+
+## 3D Dashboard Data Flow
+
+```text
+IoT / GPS / Camera / Raspberry Pi
+        │
+        ├── MQTT / HTTP ingestion
+        │
+Location + Map API ──> /api/location/dashboard/3d
+        │
+        ├── devices[] with coordinates, type, status, trust score
+        ├── threats[] with severity and map position
+        └── gps_paths[] with path coordinates
+        │
+React Dashboard ──> 3D Control Plane ──> operator device inspection
+        │
+        └── /api/location/dashboard/audit
+```

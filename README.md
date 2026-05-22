@@ -72,6 +72,8 @@ The dashboard renders:
 - Live camera popups linked to GPS coordinates
 - Confidence-scored unified location
 - 3D operational scene (`dashboard/src/components/Scene3DOperations.jsx`)
+- Webapp 3D control plane (`webapp/src/components/SmartCito3DControlPlane.tsx`)
+- Backend 3D-ready data from `/api/location/dashboard/3d`
 
 ---
 
@@ -115,3 +117,20 @@ See [`.gitlab-ci.yml`](.gitlab-ci.yml).
 - All location events are HMAC-signed into the ATP ledger
 - Only authenticated, validated devices appear on the map
 - Containers are Debian-based for OpenStack and Kubernetes compatibility
+
+---
+
+## Local Development Services
+
+| Service | URL | Purpose |
+| ------- | --- | ------- |
+| Webapp | `http://localhost:5173` | React frontend |
+| FastAPI Backend | `http://localhost:8000/api/v1` | Sensors, auth, traffic |
+| Location / Map API | `http://localhost:4010/api/location` | Countries, regions, area codes, fusion, 3D dashboard data |
+| GPS Service | `http://localhost:8020` | GPS normalization |
+
+The webapp connects through Vite proxies:
+
+- `/api/v1/*` → FastAPI backend
+- `/api/location/*` → Location / Map API
+- `/api/gps/*` → GPS service

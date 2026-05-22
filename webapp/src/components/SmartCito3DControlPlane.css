@@ -1,0 +1,290 @@
+.smartcito-3d-control {
+  overflow: hidden;
+}
+
+.smartcito-3d-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.smartcito-3d-eyebrow {
+  margin: 0 0 0.35rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.smartcito-3d-layout {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.smartcito-3d-sidebar {
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+}
+
+.smartcito-3d-layer-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.smartcito-3d-layer-list button,
+.smartcito-3d-device-card,
+.popup-close {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(15, 23, 42, 0.8);
+  color: var(--fg);
+  cursor: pointer;
+}
+
+.smartcito-3d-layer-list button {
+  padding: 0.45rem 0.65rem;
+}
+
+.smartcito-3d-layer-list button.active {
+  border-color: var(--accent);
+  background: rgba(56, 189, 248, 0.18);
+}
+
+.smartcito-3d-device-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.smartcito-3d-device-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.1rem 0.5rem;
+  padding: 0.65rem;
+  text-align: left;
+}
+
+.smartcito-3d-device-card small {
+  color: var(--fg-muted);
+}
+
+.trust-dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-top: 0.25rem;
+  border-radius: 999px;
+  grid-row: span 2;
+}
+
+.trust-dot.verified {
+  background: #22c55e;
+  box-shadow: 0 0 18px #22c55e;
+}
+
+.trust-dot.unverified {
+  background: #facc15;
+  box-shadow: 0 0 18px #facc15;
+}
+
+.trust-dot.blocked {
+  background: #ef4444;
+  box-shadow: 0 0 18px #ef4444;
+}
+
+.smartcito-3d-map-shell {
+  position: relative;
+  min-height: 620px;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 8px);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at center, rgba(56, 189, 248, 0.18), transparent 34%),
+    linear-gradient(135deg, #07111f, #101827);
+}
+
+.smartcito-3d-map {
+  position: absolute;
+  inset: 0;
+  perspective: 900px;
+}
+
+.city-grid {
+  position: absolute;
+  inset: 8%;
+  border-radius: 1rem;
+  background-image:
+    linear-gradient(rgba(56, 189, 248, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.15) 1px, transparent 1px);
+  background-size: 42px 42px;
+  transform: rotateX(58deg) scale(1.25);
+  transform-origin: center bottom;
+  box-shadow: inset 0 0 80px rgba(56, 189, 248, 0.12);
+}
+
+.city-road {
+  position: absolute;
+  width: 72%;
+  height: 4px;
+  left: 14%;
+  background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.8), transparent);
+  border-radius: 999px;
+  opacity: 0.75;
+}
+
+.road-one {
+  top: 44%;
+  transform: rotate(-17deg);
+}
+
+.road-two {
+  top: 62%;
+  transform: rotate(22deg);
+}
+
+.city-hub {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4rem;
+  height: 4rem;
+  display: grid;
+  place-items: center;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #22c55e;
+  color: #04111f;
+  font-weight: 900;
+  box-shadow: 0 0 38px rgba(34, 197, 94, 0.75);
+}
+
+.smartcito-3d-pin {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  gap: 0.2rem;
+  transform: translate(-50%, -50%);
+  border: 0;
+  background: transparent;
+  color: var(--fg);
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 0.65rem;
+}
+
+.smartcito-3d-pin span {
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  background: #38bdf8;
+  box-shadow: 0 0 0 0.7rem rgba(56, 189, 248, 0.16), 0 0 24px #38bdf8;
+}
+
+.smartcito-3d-pin.camera span {
+  background: #ef4444;
+  box-shadow: 0 0 0 0.7rem rgba(239, 68, 68, 0.16), 0 0 24px #ef4444;
+}
+
+.smartcito-3d-pin.gps span {
+  background: #facc15;
+  box-shadow: 0 0 0 0.7rem rgba(250, 204, 21, 0.16), 0 0 24px #facc15;
+}
+
+.smartcito-3d-pin.edge span {
+  background: #22c55e;
+  box-shadow: 0 0 0 0.7rem rgba(34, 197, 94, 0.16), 0 0 24px #22c55e;
+}
+
+.smartcito-3d-pin.blocked span {
+  background: #991b1b;
+  box-shadow: 0 0 0 0.7rem rgba(239, 68, 68, 0.14), 0 0 24px #ef4444;
+}
+
+.threat-wave {
+  position: absolute;
+  width: 2.25rem;
+  height: 2.25rem;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  border: 2px solid #facc15;
+  animation: threatPulse 1.8s infinite ease-out;
+}
+
+.threat-wave.high {
+  border-color: #ef4444;
+}
+
+.gps-path-point {
+  position: absolute;
+  width: 0.55rem;
+  height: 0.55rem;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #facc15;
+  box-shadow: 0 0 16px #facc15;
+}
+
+.smartcito-3d-popup {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  width: min(360px, calc(100% - 2rem));
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 8px);
+  background: rgba(15, 23, 42, 0.94);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
+}
+
+.popup-close {
+  position: absolute;
+  right: 0.7rem;
+  top: 0.7rem;
+  width: 2rem;
+  height: 2rem;
+}
+
+.camera-overlay {
+  margin-top: 0.75rem;
+  min-height: 110px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  border-radius: var(--radius);
+  color: #fca5a5;
+  background:
+    linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(56, 189, 248, 0.08)),
+    #020617;
+}
+
+.camera-overlay small {
+  color: var(--fg-muted);
+}
+
+@keyframes threatPulse {
+  from {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(0.65);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(2.6);
+  }
+}
+
+@media (max-width: 900px) {
+  .smartcito-3d-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .smartcito-3d-header {
+    flex-direction: column;
+  }
+}

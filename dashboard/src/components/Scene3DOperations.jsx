@@ -7,7 +7,7 @@ import * as THREE from 'three';
  * - Glowing pins = devices (IoT/Camera/GPS)
  * - Animated arcs = data flowing to the dashboard hub
  */
-export default function Scene3DOperations({ devices = [] }) {
+export default function Scene3DOperations({ devices = [], threats = [] }) {
   const mountRef = useRef(null);
 
   useEffect(() => {
@@ -54,12 +54,18 @@ export default function Scene3DOperations({ devices = [] }) {
 
     // Default demo devices if none provided
     const points = devices.length > 0 ? devices : [
-      { id: 'iot-1', type: 'iot', x: -40, z: -20 },
-      { id: 'cam-1', type: 'camera', x: 30, z: -35 },
-      { id: 'gps-1', type: 'gps', x: 50, z: 20 },
-      { id: 'pi-1', type: 'edge', x: -30, z: 40 },
-      { id: 'iot-2', type: 'iot', x: 10, z: 55 }
+      { id: 'iot-1', type: 'iot', status: 'verified', x: -40, z: -20 },
+      { id: 'cam-1', type: 'camera', status: 'verified', x: 30, z: -35 },
+      { id: 'gps-1', type: 'gps', status: 'unverified', x: 50, z: 20 },
+      { id: 'pi-1', type: 'edge', status: 'verified', x: -30, z: 40 },
+      { id: 'blocked-1', type: 'iot', status: 'blocked', x: 10, z: 55 }
     ];
+
+    const trustOverrides = {
+      verified: null,
+      unverified: 0xffd166,
+      blocked: 0xef476f
+    };
 
     const colors = {
       iot: 0x4cc9f0,
@@ -71,7 +77,7 @@ export default function Scene3DOperations({ devices = [] }) {
     const arcs = [];
 
     points.forEach((p) => {
-      const color = colors[p.type] || 0xffffff;
+      const color = trustOverrides[p.status] || colors[p.type] || 0xffffff;
 
       const pin = new THREE.Mesh(
         new THREE.SphereGeometry(1.6, 16, 16),
@@ -110,6 +116,18 @@ export default function Scene3DOperations({ devices = [] }) {
       arcs.push({ curve, packet, t: Math.random() });
     });
 
+    threatPoints.forEach((t) => {
+      const color = t.severity === 'high' ? 0xef476f : 0xffd166;
+      const wave = new THREE.Mesh(
+        new THREE.RingGeometry(3, 3.5, 64),
+        new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.8, side: THREE.DoubleSide })
+      );
+      wave.rotation.x = -Math.PI / 2;
+      wave.position.set(t.x, 0.2, t.z);
+      scene.add(wave);
+      arcs.push({ wave, t: Math.random() });
+    });
+
     let frame;
     const clock = new THREE.Clock();
 
@@ -119,10 +137,13 @@ export default function Scene3DOperations({ devices = [] }) {
       hub.rotation.y += dt * 0.5;
 
       arcs.forEach((a) => {
-        a.t += dt * 0.25;
-        if (a.t > 1) a.t = 0;
-        const pos = a.curve.getPoint(a.t);
-        a.packet.position.copy(pos);
+        if (a.wave) {
+          a.t += dt * 0.6;
+          if (a.t > 1) a.t = 0;
+          const scale = 1 + a.t * 3;
+          a.wave.scale.set(scale, scale, scale);
+          a.wave.material.opacity = 0.8 * (1 - a.t);
+        }
       });
 
       // Orbit camera slowly
@@ -151,7 +172,7 @@ export default function Scene3DOperations({ devices = [] }) {
       renderer.dispose();
       mount.removeChild(renderer.domElement);
     };
-  }, [devices]);
+  }, [devices, threats]);
 
   return (
     <div

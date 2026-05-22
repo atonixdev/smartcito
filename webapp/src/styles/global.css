@@ -148,3 +148,31 @@ code {
   border-bottom: 1px dashed var(--border);
 }
 .metric-key { color: var(--fg-muted); }
+
+.connection-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  margin-top: 1rem;
+}
+
+.connection-card {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(15, 23, 42, 0.55);
+}
+
+.connection-card strong {
+  font-size: 0.95rem;
+}
+
+.connection-card small {
+  color: var(--fg-muted);
+}
+
+.backend-connection-panel {
+  border-color: rgba(56, 189, 248, 0.35);
+}

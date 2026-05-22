@@ -13,18 +13,56 @@ import axios, { AxiosError, AxiosInstance } from "axios";
 
 const TOKEN_STORAGE_KEY = "smartcito.jwt";
 
-export const api: AxiosInstance = axios.create({
-  baseURL: "/api/v1",
-  timeout: 10_000,
-});
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "/api/v1";
+const LOCATION_API_BASE_URL =
+  import.meta.env.VITE_LOCATION_API_BASE_URL ?? "/api/location";
+const GPS_API_BASE_URL = import.meta.env.VITE_GPS_API_BASE_URL ?? "/api/gps";
 
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem(TOKEN_STORAGE_KEY);
+function getStoredToken() {
+  if (typeof localStorage === "undefined") return null;
+  return localStorage.getItem(TOKEN_STORAGE_KEY);
+}
+
+function attachAuth(
+  config: Parameters<AxiosInstance["interceptors"]["request"]["use"]>[0] extends (arg: infer A) => unknown ? A : never,
+) {
+  const token = getStoredToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
+}
+
+function normalizeApiError(error: AxiosError<{ detail?: string; error?: string }>) {
+  const normalized: ApiError = {
+    status: error.response?.status ?? 0,
+    message:
+      error.response?.data?.detail ??
+      error.response?.data?.error ??
+      error.message ??
+      "Unknown network error",
+  };
+  return Promise.reject(normalized);
+}
+
+export const api: AxiosInstance = axios.create({
+  baseURL: API_BASE_URL,
+  timeout: 10_000,
 });
+
+export const locationApi: AxiosInstance = axios.create({
+  baseURL: LOCATION_API_BASE_URL,
+  timeout: 10_000,
+});
+
+export const gpsApi: AxiosInstance = axios.create({
+  baseURL: GPS_API_BASE_URL,
+  timeout: 10_000,
+});
+
+api.interceptors.request.use(attachAuth);
+locationApi.interceptors.request.use(attachAuth);
+gpsApi.interceptors.request.use(attachAuth);
 
 /** Normalized error shape used across the UI. */
 export interface ApiError {
@@ -32,22 +70,12 @@ export interface ApiError {
   message: string;
 }
 
-api.interceptors.response.use(
-  (response) => response,
-  (error: AxiosError<{ detail?: string }>) => {
-    const normalized: ApiError = {
-      status: error.response?.status ?? 0,
-      message:
-        error.response?.data?.detail ??
-        error.message ??
-        "Unknown network error",
-    };
-    return Promise.reject(normalized);
-  },
-);
+api.interceptors.response.use((response) => response, normalizeApiError);
+locationApi.interceptors.response.use((response) => response, normalizeApiError);
+gpsApi.interceptors.response.use((response) => response, normalizeApiError);
 
 export const tokenStorage = {
-  get: () => localStorage.getItem(TOKEN_STORAGE_KEY),
+  get: () => getStoredToken(),
   set: (token: string) => localStorage.setItem(TOKEN_STORAGE_KEY, token),
   clear: () => localStorage.removeItem(TOKEN_STORAGE_KEY),
 };

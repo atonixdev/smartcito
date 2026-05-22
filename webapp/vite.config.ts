@@ -26,9 +26,18 @@ export default defineConfig({
     host: "0.0.0.0",
     port: 5173,
     proxy: {
-      "/api": {
+      "/api/location": {
+        target: "http://localhost:4010",
+        changeOrigin: true,
+      },
+      "/api/v1": {
         target: "http://localhost:8000",
         changeOrigin: true,
+      },
+      "/api/gps": {
+        target: "http://localhost:8020",
+        changeOrigin: true,
+        rewrite: (p) => p.replace(/^\/api\/gps/, ""),
       },
     },
   },

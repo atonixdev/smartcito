@@ -45,6 +45,8 @@ export interface TrafficSummary {
 
 // ---------- Raw fetchers ----------
 
+// These calls resolve to:
+// frontend /api/v1/sensors/recent -> Vite proxy -> http://localhost:8000/api/v1/sensors/recent
 export async function fetchRecentSensors(limit = 50): Promise<SensorReading[]> {
   const { data } = await api.get<SensorReading[]>("/sensors/recent", {
     params: { limit },

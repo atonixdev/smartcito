@@ -21,6 +21,9 @@
 - [ ] OpenAPI-generated TypeScript client
 
 ## Phase 2 — Live Dashboard
+- [x] 3D control-plane dashboard for IoT, GPS, cameras, threats, and Raspberry Pi edge nodes
+- [x] Backend 3D-ready dashboard API (`/api/location/dashboard/3d`)
+- [x] Trust-colored device visualization and visualization audit events
 - [ ] Map view (Leaflet or Mapbox GL)
 - [ ] Time-series charts (D3 + downsampling)
 - [ ] Role-based dashboard views

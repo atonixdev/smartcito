@@ -13,6 +13,7 @@ import { Link, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
+import BackendConnectionPanel from "@/components/BackendConnectionPanel";
 
 export default function App() {
   return (

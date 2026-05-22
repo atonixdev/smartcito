@@ -29,6 +29,10 @@ This release establishes the foundation for SmartCito’s real-time city-intelli
 - Device position rendering
 - Movement path visualization
 - Event overlays for alerts and incidents
+- 3D control-plane dashboard with IoT, GPS, camera, Raspberry Pi, and threat layers
+- Trust-colored objects: green verified, yellow unverified, red blocked
+- Camera stream popups attached to camera pins
+- ATP visualization audit events when operators inspect devices
 
 ### Camera Streaming Integration
 
@@ -105,6 +109,8 @@ With this release, SmartCito can:
 | GET | `/api/location/ip/:ip` | IP geolocation lookup |
 | POST | `/api/location/fuse` | Fuse GPS + IP + area code + user-selected |
 | POST | `/api/location/log` | Append signed location event to ATP ledger |
+| GET | `/api/location/dashboard/3d` | Return 3D-ready devices, threats, GPS paths, and map metadata |
+| POST | `/api/location/dashboard/audit` | Record operator visualization events |
 
 ### Source Priority
 
