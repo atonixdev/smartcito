@@ -8,7 +8,7 @@
  */
 
 import { useQuery } from "@tanstack/react-query";
-import { api } from "./client";
+import { apiClient } from "@/lib/apiClient";
 
 export type SensorKind =
   | "traffic"
@@ -112,10 +112,9 @@ export async function fetchRecentSensors(limit = 50): Promise<SensorReading[]> {
   }
 
   try {
-    const { data } = await api.get<SensorReading[]>("/sensors/recent", {
+    return await apiClient.get<SensorReading[]>("/sensors/recent", {
       params: { limit },
     });
-    return data;
   } catch {
     return demoSensorReadings.slice(0, limit);
   }
@@ -127,8 +126,7 @@ export async function fetchTrafficSummary(): Promise<TrafficSummary> {
   }
 
   try {
-    const { data } = await api.get<TrafficSummary>("/traffic/summary");
-    return data;
+    return await apiClient.get<TrafficSummary>("/traffic/summary");
   } catch {
     return demoTrafficSummary;
   }

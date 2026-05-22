@@ -35,6 +35,39 @@ const demoDashboardLogsPayload = {
   threats: [],
 };
 
+const demoDevicesPayload = {
+  status: "success",
+  timestamp: new Date().toISOString(),
+  request_id: "vite-offline-devices",
+  data: {
+    devices: [
+      {
+        id: "cam-001",
+        type: "camera",
+        status: "online",
+        location: { lat: -26.2041, lng: 28.0473 },
+        trust_score: 96,
+      },
+      {
+        id: "gps-001",
+        type: "gps",
+        status: "online",
+        location: { lat: -26.205, lng: 28.048 },
+        trust_score: 92,
+      },
+    ],
+  },
+  meta: { version: "v1", source: "smartcito-vite-offline" },
+};
+
+const demoEventsPayload = {
+  status: "success",
+  timestamp: new Date().toISOString(),
+  request_id: "vite-offline-events",
+  data: { events: [] },
+  meta: { version: "v1", source: "smartcito-vite-offline" },
+};
+
 function writeJson(res: ServerResponse, payload: unknown) {
   res.statusCode = 200;
   res.setHeader("Content-Type", "application/json");
@@ -53,6 +86,22 @@ function offlineDashboardLogsPlugin(): Plugin {
           writeJson(res, {
             ...demoDashboardLogsPayload,
             generated_at: new Date().toISOString(),
+          });
+          return;
+        }
+
+        if (!backendEnabled && pathname === "/api/v1/devices") {
+          writeJson(res, {
+            ...demoDevicesPayload,
+            timestamp: new Date().toISOString(),
+          });
+          return;
+        }
+
+        if (!backendEnabled && pathname === "/api/v1/events") {
+          writeJson(res, {
+            ...demoEventsPayload,
+            timestamp: new Date().toISOString(),
           });
           return;
         }

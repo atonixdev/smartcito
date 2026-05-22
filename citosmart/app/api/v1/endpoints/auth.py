@@ -16,7 +16,7 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
 
@@ -27,6 +27,7 @@ from app.core.security import (
     verify_password,
     TokenPayload,
 )
+from app.schemas.api_response import api_envelope
 
 router = APIRouter()
 
@@ -88,3 +89,26 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()) -> TokenRespon
 async def whoami(current: TokenPayload = Depends(get_current_user)) -> MeResponse:
     """Echo the decoded token. Useful for debugging webapps."""
     return MeResponse(username=current.sub, role=current.role)
+
+
+@router.post("/login", summary="Login and return a traced API envelope")
+async def login_envelope(
+    request: Request,
+    form_data: OAuth2PasswordRequestForm = Depends(),
+):
+    token = await login(form_data)
+    return api_envelope(request, token.model_dump())
+
+
+@router.post("/refresh", summary="Refresh the current JWT")
+async def refresh_token(
+    request: Request,
+    current: TokenPayload = Depends(get_current_user),
+):
+    token = create_access_token(subject=current.sub, role=current.role)
+    return api_envelope(request, {"access_token": token, "token_type": "bearer"})
+
+
+@router.post("/logout", summary="Client-side token logout acknowledgement")
+async def logout(request: Request, current: TokenPayload = Depends(get_current_user)):
+    return api_envelope(request, {"username": current.sub, "logged_out": True})

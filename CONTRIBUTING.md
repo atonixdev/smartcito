@@ -155,6 +155,19 @@ See [`docs/GITFLOW.md`](docs/GITFLOW.md) for the branch map and release flow.
 - ESLint + Prettier enforced in CI.
 - Co-locate component, styles, and tests.
 
+### Enterprise Frontend Checklist
+
+Before merging frontend changes, verify:
+
+- spacing uses only the 8-point scale: 4, 8, 16, 24, 32, 40, 48px,
+- typography follows the SmartCito hierarchy,
+- cards use the shared 12px radius / 24px padding rule,
+- header behavior remains sticky, aligned, and collapsible,
+- icons are SVG and use the SmartCito blue accent,
+- dark and light modes are both readable,
+- pages use `PageTitle`, `SectionContainer`, `Grid`, and `Card` where practical,
+- no one-off colors or random spacing values are introduced.
+
 ### Enterprise UI Standards
 
 - Use `IBM Plex Sans` for product UI and `IBM Plex Mono` for logs, code, and technical values.

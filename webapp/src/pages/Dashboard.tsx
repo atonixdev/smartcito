@@ -9,6 +9,7 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDevices, useEvents } from "@/api/platform";
 
 import LocationIntelligencePanel from "@/components/LocationIntelligencePanel";
 import OperationsVisualizationPanel, {
@@ -29,17 +30,24 @@ const dashboardTabs: Array<{ key: OperationsTopic; label: string }> = [
 export default function Dashboard() {
   const [activeTopic, setActiveTopic] = useState<OperationsTopic>("map");
   const navigate = useNavigate();
+  const { data: devices = [] } = useDevices();
+  const { data: events = [] } = useEvents();
 
   return (
     <section className="dashboard operations-dashboard">
       <header className="dashboard-topbar">
-        <button
-          className="dashboard-brand"
-          type="button"
-          onClick={() => navigate("/")}
-        >
-          SmartCito Dashboard
-        </button>
+        <div className="dashboard-brand-group">
+          <button
+            className="dashboard-brand"
+            type="button"
+            onClick={() => navigate("/")}
+          >
+            SmartCito Dashboard
+          </button>
+          <span className="dashboard-api-status">
+            API · {devices.length} devices · {events.length} events
+          </span>
+        </div>
 
         <nav className="dashboard-tabs" aria-label="Dashboard map and data layers">
           {dashboardTabs.map((tab) => (

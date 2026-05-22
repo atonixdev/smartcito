@@ -93,3 +93,9 @@ python -m app.dash_app.server            # Plotly Dash analytics on :8050
 5. Add tests in `tests/`.
 
 Every new file MUST begin with a documentation header (see existing files).
+
+## Frontend Integration Note
+
+Frontend layout, typography, theme, and component-quality rules live in
+[`../webapp/README.md`](../webapp/README.md). Backend API changes that affect
+the dashboard should preserve those frontend contracts and typed data shapes.

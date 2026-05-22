@@ -11,10 +11,11 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Request, status
 from pydantic import BaseModel
 
 from app import __version__
+from app.schemas.api_response import api_envelope
 
 router = APIRouter()
 
@@ -51,3 +52,13 @@ async def readiness() -> HealthResponse:
     return 503 if any required dependency is down.
     """
     return HealthResponse(status="ready")
+
+
+@router.get("/status/live", summary="Envelope liveness probe")
+async def liveness_envelope(request: Request):
+    return api_envelope(request, {"status": "alive", "service": "smartcito-api"})
+
+
+@router.get("/status/ready", summary="Envelope readiness probe")
+async def readiness_envelope(request: Request):
+    return api_envelope(request, {"status": "ready", "service": "smartcito-api"})

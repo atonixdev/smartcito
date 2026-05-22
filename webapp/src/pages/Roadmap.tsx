@@ -23,19 +23,17 @@ const roadmap = [
   },
 ];
 
+import { PageTitle } from "@/components/ui";
+
 export default function Roadmap() {
   return (
     <section className="page-shell narrative-page">
-      <div className="page-title-row">
-        <span className="breadcrumb">Home / Roadmap</span>
-        <span className="eyebrow">Roadmap</span>
-        <h2>From practical foundation to advanced smart city platform.</h2>
-      </div>
-      <p className="lead-text">
-        The roadmap keeps near-term engineering grounded while leaving room for
-        the larger vision: a transparent, visual, collaborative platform for
-        secure smart city infrastructure.
-      </p>
+      <PageTitle
+        breadcrumb="Home / Roadmap"
+        eyebrow="Roadmap"
+        title="From practical foundation to advanced smart city platform."
+        subtitle="The roadmap keeps near-term engineering grounded while leaving room for a transparent, visual, collaborative platform for secure smart city infrastructure."
+      />
 
       <div className="roadmap-track">
         {roadmap.map((item) => (

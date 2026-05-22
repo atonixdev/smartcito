@@ -24,27 +24,27 @@ const contributionPaths = [
   },
 ];
 
+import { Card, Grid, PageTitle, SectionContainer } from "@/components/ui";
+
 export default function Community() {
   return (
     <section className="page-shell narrative-page">
-      <span className="eyebrow">Community and contribution</span>
-      <h2>Open to everyone who wants cities to be safer and more transparent.</h2>
-      <p className="lead-text">
-        SmartCito is built for practical contribution. The repo contains active
-        backend code, frontend pages, hardware modules, security services,
-        infrastructure automation, CI validation, and Wiki-ready documentation.
-      </p>
+      <PageTitle
+        breadcrumb="Home / Community"
+        eyebrow="Community"
+        title="Open to everyone who wants cities to be safer and more transparent."
+        subtitle="SmartCito is built for practical contribution across backend code, frontend pages, hardware modules, security services, infrastructure automation, CI validation, and documentation."
+      />
 
-      <div className="feature-grid">
+      <Grid columns={4}>
         {contributionPaths.map((path) => (
-          <article className="feature-card" key={path.title}>
-            <h3>{path.title}</h3>
+          <Card key={path.title} title={path.title}>
             <p>{path.body}</p>
-          </article>
+          </Card>
         ))}
-      </div>
+      </Grid>
 
-      <div className="content-section split-section inset-section">
+      <SectionContainer className="split-section inset-section">
         <div>
           <h3>How collaboration stays grounded</h3>
           <p>
@@ -70,7 +70,7 @@ export default function Community() {
             Open GitHub repository
           </a>
         </div>
-      </div>
+      </SectionContainer>
     </section>
   );
 }

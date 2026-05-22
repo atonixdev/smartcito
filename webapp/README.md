@@ -98,6 +98,27 @@ The 3D map supports:
 - camera overlays,
 - weather, traffic, and threat layer toggles.
 
+## Backend → Frontend API Contract
+
+All dashboard-facing backend routes must live under `/api/v1` and return the
+standard SmartCito envelope:
+
+```json
+{
+  "status": "success",
+  "timestamp": "2026-05-22T09:03:00Z",
+  "request_id": "uuid",
+  "data": {},
+  "meta": {
+    "version": "v1",
+    "source": "smartcito-backend"
+  }
+}
+```
+
+Frontend code must use `src/lib/apiClient.ts` for token injection, retries,
+error normalization, envelope unwrapping, and WebSocket URL construction.
+
 ## Enterprise UI System
 
 The webapp uses IBM Plex as the primary UI typeface:
@@ -133,3 +154,31 @@ Behavior:
 - sticky top position with `z-index: 9999`,
 - smooth scroll-down collapse from 80px to 60px,
 - responsive mobile menu with ARIA labels.
+
+## Frontend Quality Blueprint
+
+SmartCito frontend work must follow:
+
+- 8-point spacing only: `4px`, `8px`, `16px`, `24px`, `32px`, `40px`, `48px`
+- max page width: `1440px`
+- dark-first theme with full light-mode visibility
+- H1 `32px / 600`, H2 `24px / 600`, H3 `20px / 500`, body `16px / 400`, small `14px / 400`
+- cards: `12px` radius, `24px` padding, `#111827`, `1px solid rgba(255,255,255,0.08)`
+- header: `80px`, sticky, centered nav, right icon actions, scroll collapse to `60px`
+- SVG-only icons
+
+Reusable primitives live in `src/components/ui.tsx`:
+
+- `PageTitle`
+- `SectionContainer`
+- `Grid`
+- `Card`
+- `Button`
+- `Input`
+- `IconWrapper`
+- `Sidebar`
+- `MapContainer`
+- `DeviceList`
+- `AlertBanner`
+
+Use these before adding new layout-specific markup.

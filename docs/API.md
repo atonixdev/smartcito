@@ -60,6 +60,39 @@ Example request body:
 |--------|-----------------------|---------------|------------------------------|
 | GET    | `/traffic/summary`    | viewer        | Aggregated traffic snapshot  |
 
+## Response Envelope
+
+All SmartCito application APIs should return this traceable JSON envelope:
+
+```json
+{
+  "status": "success",
+  "timestamp": "2026-05-22T09:03:00Z",
+  "request_id": "uuid",
+  "data": {},
+  "meta": {
+    "version": "v1",
+    "source": "smartcito-backend"
+  }
+}
+```
+
+## Platform Resources
+
+| Method | Path | Role required | Description |
+|---|---|---|---|
+| GET | `/devices` | viewer | List registered devices |
+| POST | `/devices` | operator | Register a device |
+| GET | `/devices/{device_id}` | viewer | Fetch one device |
+| PATCH | `/devices/{device_id}/status` | operator | Update device status |
+| GET | `/cameras` | viewer | List cameras with stream/health state |
+| GET | `/gps/live` | viewer | Current GPS coordinates |
+| GET | `/gps/{device_id}/history` | viewer | GPS route history |
+| GET | `/events` | viewer | Operational events and alerts |
+| GET | `/map/layers` | viewer | GeoJSON and marker data |
+| WS | `/ws/gps` | token | Live GPS updates |
+| WS | `/ws/events` | token | Live event stream |
+
 ## Roles
 
 | Role     | Can read | Can ingest | Can administer |

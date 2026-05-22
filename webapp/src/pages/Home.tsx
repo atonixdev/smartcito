@@ -106,7 +106,7 @@ export default function Home() {
         ))}
       </section>
 
-      <section className="content-section intro-section">
+      <section className="content-section intro-section section-container">
         <div>
           <span className="eyebrow">Mission</span>
           <h3>Open, collaborative, and future-proof by design.</h3>
@@ -123,7 +123,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="content-section foundation-section">
+      <section className="content-section foundation-section section-container">
         <div className="section-heading">
           <span className="eyebrow">Foundation-grade posture</span>
           <h3>Built to look and operate like serious open infrastructure.</h3>
@@ -148,7 +148,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="content-section">
+      <section className="content-section section-container">
         <div className="section-heading">
           <span className="eyebrow">Core features</span>
           <h3>Everything the platform has grown into.</h3>
@@ -163,7 +163,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="content-section architecture-preview">
+      <section className="content-section architecture-preview section-container">
         <div className="section-heading">
           <span className="eyebrow">Architecture overview</span>
           <h3>A layered backbone for real city operations.</h3>
@@ -183,7 +183,7 @@ export default function Home() {
         />
       </section>
 
-      <section className="content-section split-section">
+      <section className="content-section split-section section-container">
         <div>
           <span className="eyebrow">Community</span>
           <h3>Built so every discipline has a real place to contribute.</h3>

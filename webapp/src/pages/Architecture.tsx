@@ -5,6 +5,8 @@
  * ============================================================================
  */
 
+import { PageTitle } from "@/components/ui";
+
 const layers = [
   {
     title: "City Devices and Systems",
@@ -31,13 +33,12 @@ const layers = [
 export default function Architecture() {
   return (
     <section className="page-shell narrative-page">
-      <span className="eyebrow">Architecture overview</span>
-      <h2>Layered from field devices to operator decisions.</h2>
-      <p className="lead-text">
-        SmartCito is built as a layered architecture so protocol adapters,
-        storage, security, cloud orchestration, and dashboards can evolve
-        independently while still operating as one backbone.
-      </p>
+      <PageTitle
+        breadcrumb="Home / Architecture"
+        eyebrow="Architecture overview"
+        title="Layered from field devices to operator decisions."
+        subtitle="SmartCito is built as a layered architecture so protocol adapters, storage, security, cloud orchestration, and dashboards can evolve independently while still operating as one backbone."
+      />
 
       <img
         className="wide-visual"

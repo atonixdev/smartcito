@@ -9,7 +9,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import { api } from "./client";
+import { apiClient } from "@/lib/apiClient";
 
 export interface SmartMapDevice {
   id: string;
@@ -110,8 +110,21 @@ export const demoSmartMapDevices: SmartMapDevice[] = [
 ];
 
 export async function fetchSmartMapOverview(): Promise<SmartMapOverview> {
-  const { data } = await api.get<SmartMapOverview>("/control-plane/map");
-  return data;
+  try {
+    return await apiClient.get<SmartMapOverview>("/control-plane/map");
+  } catch {
+    return {
+      devices: demoSmartMapDevices,
+      heatmap: demoSmartMapDevices.map((device) => ({
+        latitude: device.latitude,
+        longitude: device.longitude,
+        intensity: device.sensor_value ?? 0.5,
+        label: device.name,
+      })),
+      visible_layers: ["verified-devices", "camera-overlays", "gps-paths", "sensor-heatmap"],
+      security_policy: "offline demo map data; backend unavailable",
+    };
+  }
 }
 
 export function useSmartMapOverview() {

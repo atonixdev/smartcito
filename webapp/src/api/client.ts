@@ -45,6 +45,19 @@ function normalizeApiError(error: AxiosError<{ detail?: string; error?: string }
   return Promise.reject(normalized);
 }
 
+function unwrapApiEnvelope(response: { data: unknown }) {
+  if (
+    response.data &&
+    typeof response.data === "object" &&
+    "status" in response.data &&
+    "data" in response.data &&
+    "meta" in response.data
+  ) {
+    response.data = (response.data as { data: unknown }).data;
+  }
+  return response;
+}
+
 export const api: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10_000,
@@ -70,9 +83,9 @@ export interface ApiError {
   message: string;
 }
 
-api.interceptors.response.use((response) => response, normalizeApiError);
-locationApi.interceptors.response.use((response) => response, normalizeApiError);
-gpsApi.interceptors.response.use((response) => response, normalizeApiError);
+api.interceptors.response.use(unwrapApiEnvelope, normalizeApiError);
+locationApi.interceptors.response.use(unwrapApiEnvelope, normalizeApiError);
+gpsApi.interceptors.response.use(unwrapApiEnvelope, normalizeApiError);
 
 export const tokenStorage = {
   get: () => getStoredToken(),

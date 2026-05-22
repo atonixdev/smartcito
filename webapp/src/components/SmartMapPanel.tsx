@@ -482,7 +482,11 @@ export default function SmartMapPanel({ devices }: { devices: SmartMapDevice[] }
       </header>
 
       <div className="map-layout">
-        <div ref={mapContainerRef} className="smart-map css-smart-map" aria-label="SmartCito real 3D world map">
+        <div
+          ref={mapContainerRef}
+          className="smart-map css-smart-map map-container"
+          aria-label="SmartCito real 3D world map"
+        >
           {!token && (
             <div className="empty-state">
               Set <code>VITE_MAPBOX_TOKEN</code> and restart Vite to load the real WebGL world map.
@@ -491,7 +495,7 @@ export default function SmartMapPanel({ devices }: { devices: SmartMapDevice[] }
           {mapError && <div className="empty-state">{mapError}</div>}
         </div>
 
-        <aside className="map-sidebar">
+        <aside className="map-sidebar ui-sidebar">
           <div className="map-layer-controls" aria-label="Map layer controls">
             {[
               ["devices", "Device markers"],
@@ -513,7 +517,7 @@ export default function SmartMapPanel({ devices }: { devices: SmartMapDevice[] }
             ))}
           </div>
 
-          <div className="map-device-list">
+          <div className="map-device-list device-list">
             {verifiedDevices.map((device) => (
               <button
                 className="map-device-card"
