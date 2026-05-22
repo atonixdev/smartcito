@@ -171,6 +171,114 @@ const operationsVisualizationPayload = {
   ]
 };
 
+const unifiedLogEvents = [
+  {
+    id: 'log-001',
+    timestamp: new Date().toISOString(),
+    type: 'device',
+    severity: 'info',
+    device_id: 'PI-NBO-01',
+    country: 'KE',
+    region: 'NBO',
+    area_code: '020',
+    ip: '10.10.20.12',
+    gps: { latitude: -1.2921, longitude: 36.8219 },
+    message: 'Raspberry Pi edge node heartbeat normal',
+    incident_id: null
+  },
+  {
+    id: 'log-002',
+    timestamp: new Date().toISOString(),
+    type: 'security',
+    severity: 'warning',
+    device_id: 'CAM-12',
+    country: 'KE',
+    region: 'NBO',
+    area_code: '020',
+    ip: '41.90.12.44',
+    gps: { latitude: -1.2864, longitude: 36.8172 },
+    message: 'Repeated token validation failures from camera network path',
+    incident_id: 'INC-001'
+  },
+  {
+    id: 'log-003',
+    timestamp: new Date().toISOString(),
+    type: 'network',
+    severity: 'critical',
+    device_id: 'CAM-12',
+    country: 'KE',
+    region: 'NBO',
+    area_code: '020',
+    ip: '41.90.12.44',
+    gps: { latitude: -1.2864, longitude: 36.8172 },
+    message: 'Suspicious IP burst detected against stream endpoint',
+    incident_id: 'INC-001'
+  },
+  {
+    id: 'log-004',
+    timestamp: new Date().toISOString(),
+    type: 'sensor',
+    severity: 'warning',
+    device_id: 'GPS-07',
+    country: 'KE',
+    region: 'NBO',
+    area_code: '020',
+    ip: '10.10.31.7',
+    gps: { latitude: -1.2655, longitude: 36.8054 },
+    message: 'GPS path deviation exceeded expected corridor',
+    incident_id: 'INC-002'
+  },
+  {
+    id: 'log-005',
+    timestamp: new Date().toISOString(),
+    type: 'operations',
+    severity: 'info',
+    device_id: 'IOT-44',
+    country: 'KE',
+    region: 'NBO',
+    area_code: '020',
+    ip: '10.10.44.9',
+    gps: { latitude: -1.3102, longitude: 36.8388 },
+    message: 'Air quality value within normal operating range',
+    incident_id: null
+  }
+];
+
+const aiThreatCases = [
+  {
+    id: 'INC-001',
+    label: 'Camera Stream Token Abuse',
+    threat_score: 91,
+    severity: 'critical',
+    devices: ['CAM-12'],
+    country: 'KE',
+    region: 'NBO',
+    area_code: '020',
+    ip: '41.90.12.44',
+    gps: { latitude: -1.2864, longitude: 36.8172 },
+    time_window: 'last 10 minutes',
+    key_log_ids: ['log-002', 'log-003'],
+    explanation: 'Token failures and network bursts are correlated against the same camera stream endpoint.',
+    suggested_action: 'Block IP and rotate camera stream token'
+  },
+  {
+    id: 'INC-002',
+    label: 'GPS Path Deviation',
+    threat_score: 67,
+    severity: 'warning',
+    devices: ['GPS-07'],
+    country: 'KE',
+    region: 'NBO',
+    area_code: '020',
+    ip: '10.10.31.7',
+    gps: { latitude: -1.2655, longitude: 36.8054 },
+    time_window: 'last 15 minutes',
+    key_log_ids: ['log-004'],
+    explanation: 'GPS movement diverged from the expected corridor while device trust is not fully verified.',
+    suggested_action: 'Monitor only and request fresh GPS attestation'
+  }
+];
+
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'location-api' });
 });

@@ -12,6 +12,10 @@ vi.mock("@/components/OperationsVisualizationPanel", () => ({
   default: () => <section><h3>Map Visualization</h3></section>,
 }));
 
+vi.mock("@/components/UnifiedLogsThreatPanel", () => ({
+  default: () => <section><h3>Unified Logs & AI Threat Analysis</h3></section>,
+}));
+
 vi.mock("@/api/sensors", () => ({
   useRecentSensors: () => ({
     data: [],
@@ -42,6 +46,9 @@ describe("Dashboard", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: /Operations Logs/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /Unified Logs & AI Threat Analysis/i }),
     ).toBeInTheDocument();
   });
 });

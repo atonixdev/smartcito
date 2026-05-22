@@ -7,25 +7,59 @@
  * ============================================================================
  */
 
+import { useState } from "react";
+
 import LocationIntelligencePanel from "@/components/LocationIntelligencePanel";
-import OperationsVisualizationPanel from "@/components/OperationsVisualizationPanel";
+import OperationsVisualizationPanel, {
+  type OperationsTopic,
+} from "@/components/OperationsVisualizationPanel";
+import UnifiedLogsThreatPanel from "@/components/UnifiedLogsThreatPanel";
 import RecentReadingsPanel from "@/components/RecentReadingsPanel";
 
+const dashboardTabs: Array<{ key: OperationsTopic; label: string }> = [
+  { key: "map", label: "Map" },
+  { key: "gps", label: "GPS" },
+  { key: "traffic", label: "Traffic" },
+  { key: "threat", label: "Threat" },
+  { key: "weather", label: "Weather" },
+  { key: "device", label: "Device" },
+];
+
 export default function Dashboard() {
+  const [activeTopic, setActiveTopic] = useState<OperationsTopic>("map");
+
   return (
     <section className="dashboard operations-dashboard">
-      <header className="operations-dashboard-header">
-        <span className="eyebrow">SmartCito Operations</span>
-        <h2>SmartCito Operations Visualization</h2>
-        <p>
-          Map Visualization — city zones, roads, regions, GPS, weather, devices,
-          and risk areas.
-        </p>
+      <header className="dashboard-topbar">
+        <button
+          className="dashboard-brand"
+          type="button"
+          onClick={() => setActiveTopic("map")}
+        >
+          SmartCito Operations
+        </button>
+
+        <nav className="dashboard-tabs" aria-label="Dashboard visualization layers">
+          {dashboardTabs.map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              className={activeTopic === tab.key ? "active" : ""}
+              onClick={() => setActiveTopic(tab.key)}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </nav>
       </header>
 
       <div className="dashboard-grid">
         <LocationIntelligencePanel />
-        <OperationsVisualizationPanel />
+        <OperationsVisualizationPanel
+          activeTopic={activeTopic}
+          onTopicChange={setActiveTopic}
+        />
+        <UnifiedLogsThreatPanel onThreatSelect={() => setActiveTopic("threat")} />
         <RecentReadingsPanel />
       </div>
     </section>
