@@ -20,7 +20,7 @@ const dashboardTabs: Array<{ key: OperationsTopic; label: string }> = [
   { key: "map", label: "Map" },
   { key: "gps", label: "GPS" },
   { key: "traffic", label: "Traffic" },
-  { key: "threat", label: "Threat" },
+  { key: "threat", label: "Security" },
   { key: "weather", label: "Weather" },
   { key: "device", label: "Device" },
 ];
@@ -36,7 +36,7 @@ export default function Dashboard() {
           type="button"
           onClick={() => setActiveTopic("map")}
         >
-          SmartCito Operations
+          SmartCito Dashboard
         </button>
 
         <nav className="dashboard-tabs" aria-label="Dashboard visualization layers">
