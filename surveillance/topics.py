@@ -18,6 +18,9 @@ def env_topic(name: str, default: str) -> str:
 DRONE_TELEMETRY_TOPIC = env_topic("KAFKA_DRONE_TELEMETRY_TOPIC", "smartcito.drone.telemetry")
 DRONE_EVENTS_TOPIC = env_topic("KAFKA_DRONE_EVENTS_TOPIC", "smartcito.drone.events")
 DRONE_MISSIONS_TOPIC = env_topic("KAFKA_DRONE_MISSIONS_TOPIC", "smartcito.drone.missions")
+ROBOT_TELEMETRY_TOPIC = env_topic("KAFKA_ROBOT_TELEMETRY_TOPIC", "smartcito.robot.telemetry")
+ROBOT_EVENTS_TOPIC = env_topic("KAFKA_ROBOT_EVENTS_TOPIC", "smartcito.robot.events")
+ROBOT_MISSIONS_TOPIC = env_topic("KAFKA_ROBOT_MISSIONS_TOPIC", "smartcito.robot.missions")
 DRONE_CAMERA_FRAMES_TOPIC = env_topic("KAFKA_DRONE_CAMERA_FRAMES_TOPIC", "smartcito.drone.camera.frames")
 DRONE_CAMERA_ALERTS_TOPIC = env_topic("KAFKA_DRONE_CAMERA_ALERTS_TOPIC", "smartcito.drone.camera.alerts")
 SENSOR_READINGS_TOPIC = env_topic("KAFKA_SENSOR_READINGS_TOPIC", "smartcito.sensors.raw")
@@ -29,6 +32,9 @@ SURVEILLANCE_TOPICS = {
     "drone_telemetry": DRONE_TELEMETRY_TOPIC,
     "drone_events": DRONE_EVENTS_TOPIC,
     "drone_missions": DRONE_MISSIONS_TOPIC,
+    "robot_telemetry": ROBOT_TELEMETRY_TOPIC,
+    "robot_events": ROBOT_EVENTS_TOPIC,
+    "robot_missions": ROBOT_MISSIONS_TOPIC,
     "drone_camera_frames": DRONE_CAMERA_FRAMES_TOPIC,
     "drone_camera_alerts": DRONE_CAMERA_ALERTS_TOPIC,
     "sensor_readings": SENSOR_READINGS_TOPIC,

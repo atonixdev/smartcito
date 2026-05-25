@@ -14,14 +14,16 @@ import Home from "./pages/Home";
 import Architecture from "./pages/Architecture";
 import Community from "./pages/Community";
 import Dashboard from "./pages/Dashboard";
+import DroneDashboard from "./pages/DroneDashboard";
 import Mission from "./pages/Mission";
 import NotFound from "./pages/NotFound";
+import RobotDashboard from "./pages/RobotDashboard";
 import Roadmap from "./pages/Roadmap";
 import Visualization from "./pages/Visualization";
 
 export default function App() {
   const location = useLocation();
-  const isCommandCenterRoute = location.pathname === "/dashboard";
+  const isCommandCenterRoute = location.pathname === "/dashboard" || location.pathname.startsWith("/dashboard/");
 
   return (
     <div className={isCommandCenterRoute ? "app-shell app-shell-dashboard" : "app-shell"}>
@@ -34,7 +36,7 @@ export default function App() {
             <Link to="/architecture">Architecture</Link>
             <Link to="/community">Community</Link>
             <Link to="/roadmap">Roadmap</Link>
-            <Link to="/dashboard">Dashboard</Link>
+            <Link to="/dashboard/drone">Dashboard</Link>
             <Link to="/visualization">Visualization</Link>
           </nav>
         </header>
@@ -42,13 +44,16 @@ export default function App() {
 
       <main className={isCommandCenterRoute ? "app-main app-main-dashboard" : "app-main"}>
         <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/" element={<Navigate to="/dashboard/drone" replace />} />
           <Route path="/home" element={<Home />} />
           <Route path="/mission" element={<Mission />} />
           <Route path="/architecture" element={<Architecture />} />
           <Route path="/community" element={<Community />} />
           <Route path="/roadmap" element={<Roadmap />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Navigate to="/dashboard/drone" replace />} />
+          <Route path="/dashboard/drone" element={<DroneDashboard />} />
+          <Route path="/dashboard/robot" element={<RobotDashboard />} />
+          <Route path="/dashboard/cityview" element={<Dashboard />} />
           <Route path="/visualization" element={<Visualization />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

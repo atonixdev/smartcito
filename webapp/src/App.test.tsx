@@ -12,12 +12,16 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import App from "./App";
 
-vi.mock("@/components/CommandCenterMap", () => ({
-  default: () => <div aria-label="SmartCito city command map" />,
+vi.mock("./pages/DroneDashboard", () => ({
+  default: () => <div>Drone Dashboard Route</div>,
 }));
 
-vi.mock("@/api/realtime", () => ({
-  useRealtimeCommandCenter: () => ({ snapshot: null, connected: false }),
+vi.mock("./pages/RobotDashboard", () => ({
+  default: () => <div>Robot Dashboard Route</div>,
+}));
+
+vi.mock("./pages/Dashboard", () => ({
+  default: () => <div>City Map Dashboard Route</div>,
 }));
 
 describe("App", () => {
@@ -32,7 +36,20 @@ describe("App", () => {
     );
 
     expect(
-      await screen.findByRole("heading", { name: /Pretoria Command Center/i }),
+      await screen.findByText(/Drone Dashboard Route/i),
     ).toBeInTheDocument();
+  });
+
+  it("routes the robot dashboard", async () => {
+    const qc = new QueryClient();
+    render(
+      <QueryClientProvider client={qc}>
+        <MemoryRouter initialEntries={["/dashboard/robot"]}>
+          <App />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText(/Robot Dashboard Route/i)).toBeInTheDocument();
   });
 });

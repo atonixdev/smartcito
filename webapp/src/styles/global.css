@@ -1344,6 +1344,70 @@ code {
   margin-top: 1rem;
 }
 
+.operations-switcher {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.operations-switcher-link {
+  display: grid;
+  gap: 0.2rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(131, 180, 195, 0.18);
+  background: rgba(5, 18, 27, 0.74);
+  box-shadow: 0 24px 40px rgba(2, 8, 12, 0.22);
+  backdrop-filter: blur(12px);
+  border-radius: 24px;
+  color: #f6fcff;
+}
+
+.operations-switcher-link span {
+  color: var(--fg-muted);
+}
+
+.operations-switcher-link.is-active {
+  outline: 1px solid rgba(239, 202, 114, 0.8);
+  box-shadow: 0 0 0 1px rgba(239, 202, 114, 0.3);
+}
+
+.operations-switcher-link:hover {
+  text-decoration: none;
+}
+
+.operations-page {
+  display: grid;
+  gap: 1rem;
+}
+
+.operations-status-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.operations-status-card {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.95rem 1rem;
+  border-radius: 20px;
+  border: 1px solid rgba(131, 180, 195, 0.18);
+  background: rgba(5, 18, 27, 0.74);
+  box-shadow: 0 24px 40px rgba(2, 8, 12, 0.22);
+}
+
+.operations-status-card span,
+.city-search-card p,
+.robot-sensor-card span,
+.robot-slam-overlay p {
+  color: var(--fg-muted);
+}
+
+.operations-status-card strong {
+  color: #f6fcff;
+}
+
 .command-tab,
 .command-panel-shell {
   border: 1px solid rgba(131, 180, 195, 0.18);
@@ -1465,6 +1529,116 @@ code {
   display: grid;
   grid-template-columns: 320px minmax(0, 1fr) 360px;
   gap: 1rem;
+}
+
+.robot-dashboard-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) 360px;
+  gap: 1rem;
+}
+
+.robot-dashboard-layout.secondary {
+  grid-template-columns: minmax(0, 1.2fr) 340px;
+}
+
+.robot-primary-panel,
+.robot-map-panel,
+.robot-telemetry-panel,
+.robot-sensor-panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.robot-selector {
+  min-width: 220px;
+}
+
+.robot-camera-stage,
+.robot-slam-stage {
+  position: relative;
+  min-height: 320px;
+  border-radius: 20px;
+  border: 1px solid rgba(105, 156, 173, 0.24);
+  background:
+    radial-gradient(circle at top right, rgba(143, 182, 255, 0.18), transparent 18%),
+    linear-gradient(180deg, rgba(6, 17, 27, 0.96), rgba(10, 28, 43, 0.96));
+  overflow: hidden;
+}
+
+.robot-camera-stage {
+  display: grid;
+  place-content: center;
+  text-align: center;
+  gap: 0.5rem;
+}
+
+.robot-camera-stage span,
+.robot-slam-overlay span {
+  color: var(--fg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.74rem;
+}
+
+.robot-camera-stage strong,
+.robot-slam-overlay strong {
+  color: #f6fcff;
+  font-size: 1.05rem;
+}
+
+.robot-control-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.robot-control-grid button,
+.robot-action-stack button {
+  border: 1px solid rgba(105, 156, 173, 0.22);
+  border-radius: 14px;
+  background: rgba(11, 29, 42, 0.82);
+  color: #f4fbff;
+  padding: 0.72rem 0.86rem;
+}
+
+.robot-slam-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(143, 182, 255, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(143, 182, 255, 0.16) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.robot-slam-overlay {
+  position: absolute;
+  inset: auto 1rem 1rem 1rem;
+  display: grid;
+  gap: 0.4rem;
+  padding: 1rem;
+  border-radius: 18px;
+  background: rgba(5, 18, 27, 0.82);
+  border: 1px solid rgba(131, 180, 195, 0.18);
+}
+
+.robot-map-shell .command-leaflet-map {
+  min-height: 320px;
+}
+
+.robot-sensor-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.robot-sensor-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 0.9rem;
+  border-radius: 16px;
+  border: 1px solid rgba(105, 156, 173, 0.18);
+  background: rgba(8, 20, 31, 0.84);
 }
 
 .command-map-stage-panel {
@@ -1748,6 +1922,23 @@ code {
   border: 1px solid rgba(131, 180, 195, 0.18);
 }
 
+.command-three-map {
+  min-height: 560px;
+  border-radius: 28px;
+  overflow: hidden;
+  border: 1px solid rgba(131, 180, 195, 0.18);
+  background:
+    radial-gradient(circle at 18% 16%, rgba(95, 181, 214, 0.14), transparent 22%),
+    radial-gradient(circle at 82% 30%, rgba(241, 201, 107, 0.12), transparent 26%),
+    linear-gradient(180deg, rgba(7, 21, 32, 0.98), rgba(8, 27, 39, 0.94));
+}
+
+.command-three-map canvas {
+  display: block;
+  width: 100%;
+  height: 560px;
+}
+
 .command-map-grid,
 .command-map-roads,
 .command-draw-overlay {
@@ -1986,13 +2177,17 @@ code {
 
 @media (max-width: 1320px) {
   .command-tab-nav,
+  .operations-switcher,
+  .operations-status-grid,
   .command-log-filter-grid {
     grid-template-columns: 1fr;
   }
 
   .command-drone-layout,
   .command-map-layout,
-  .command-log-grid {
+  .command-log-grid,
+  .robot-dashboard-layout,
+  .robot-dashboard-layout.secondary {
     grid-template-columns: 1fr;
   }
 
@@ -2073,11 +2268,16 @@ code {
   }
 
   .command-tab-nav,
+  .operations-switcher,
+  .operations-status-grid,
   .command-drone-layout,
   .command-map-layout,
   .command-log-grid,
   .command-log-filter-grid,
-  .command-flight-controls-grid {
+  .command-flight-controls-grid,
+  .robot-dashboard-layout,
+  .robot-dashboard-layout.secondary,
+  .robot-control-grid {
     grid-template-columns: 1fr;
   }
 

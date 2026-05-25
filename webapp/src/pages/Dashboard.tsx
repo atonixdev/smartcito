@@ -1,6 +1,7 @@
 import { startTransition, useDeferredValue, useEffect, useMemo, useState } from "react";
 
 import CommandCenterMap from "@/components/CommandCenterMap";
+import OperationsSwitcher from "@/components/OperationsSwitcher";
 
 import { useCameras, demoCameraFleet } from "@/api/cameras";
 import { useControlPlaneOverview } from "@/api/controlPlane";
@@ -23,15 +24,19 @@ import {
 } from "@/api/droneGateway";
 import { useAlerts, useLiveEvents } from "@/api/events";
 import { demoSmartMapDevices, useSmartMapOverview, type SmartMapDevice } from "@/api/map";
+import { useCreateCityMission, useCityMissions } from "@/api/missionControl";
 import { useRealtimeCommandCenter } from "@/api/realtime";
+import { demoRobotFleet, useRobotFleet } from "@/api/robotGateway";
+import { demoSceneOverview, useSceneOverview } from "@/api/scene";
 import { useRecentSensors, type SensorReading } from "@/api/sensors";
 
-type AssetKind = "drone" | "camera" | "sensor" | "deterrent" | "alert";
+type AssetKind = "drone" | "robot" | "camera" | "sensor" | "deterrent" | "alert";
 type DashboardScreen = "drone" | "map" | "logs";
 type DrawMode = "mission" | "geofence" | "alert-zone" | null;
 type FeedMode = "rgb" | "thermal" | "zoom";
 type LogFilter = "all" | "telemetry" | "mission" | "camera" | "sensor" | "alert" | "command";
 type LogSeverity = "info" | "warning" | "critical";
+type CityMapMode = "2d" | "3d" | "street";
 
 interface SelectedAsset {
   kind: AssetKind;
@@ -63,6 +68,17 @@ interface DeterrentAsset {
   linkedSensorIds: string[];
   authorizedRoles: string[];
   rule: string;
+}
+
+interface RobotAsset {
+  id: string;
+  name: string;
+  status: "nominal" | "degraded" | "offline";
+  mission: string;
+  batteryPercent: number;
+  latitude: number;
+  longitude: number;
+  routeLabel: string;
 }
 
 interface ZoneOverlay {
@@ -104,6 +120,53 @@ interface AssetListItem {
 
 const cityName = "Pretoria Command Center";
 const operatorName = "Primary Operator";
+
+const demoRobots: RobotAsset[] = [
+  {
+    id: "robot-patrol-007",
+    name: "UGV Patrol 007",
+    status: "nominal",
+    mission: "Perimeter route alpha",
+    batteryPercent: 81,
+    latitude: -25.7462,
+    longitude: 28.2372,
+    routeLabel: "North gate to transit plaza",
+  },
+  {
+    id: "robot-tunnel-003",
+    name: "Tunnel Robot 003",
+    status: "degraded",
+    mission: "Tunnel inspection",
+    batteryPercent: 63,
+    latitude: -25.7481,
+    longitude: 28.2329,
+    routeLabel: "Utility tunnel south loop",
+  },
+];
+
+const citySearchPresets = [
+  {
+    id: "joburg-winchester",
+    city: "Johannesburg",
+    district: "Winchester",
+    radiusKm: 5,
+    detail: "Street-level sweep of Winchester logistics and arterial roads.",
+  },
+  {
+    id: "pretoria-cbd",
+    city: "Pretoria",
+    district: "CBD",
+    radiusKm: 4,
+    detail: "Command-center focus around civic district cameras and air corridors.",
+  },
+  {
+    id: "cape-town-foreshore",
+    city: "Cape Town",
+    district: "Foreshore",
+    radiusKm: 6,
+    detail: "Waterfront perimeter, transport nodes, and public-safety sensors.",
+  },
+] as const;
 
 const demoDeterrents: DeterrentAsset[] = [
   {
@@ -268,7 +331,7 @@ function downloadTextFile(filename: string, content: string, mimeType: string) {
 
 export default function Dashboard() {
   const [clock, setClock] = useState(() => new Date());
-  const [activeScreen, setActiveScreen] = useState<DashboardScreen>("drone");
+  const [activeScreen, setActiveScreen] = useState<DashboardScreen>("map");
   const [selectedAsset, setSelectedAsset] = useState<SelectedAsset | null>(null);
   const [selectedDroneId, setSelectedDroneId] = useState("");
   const [selectedMissionId, setSelectedMissionId] = useState("");
@@ -283,6 +346,8 @@ export default function Dashboard() {
   const [selectedLogId, setSelectedLogId] = useState("");
   const [localLogs, setLocalLogs] = useState<CommandLogEntry[]>([]);
   const [assetFilter, setAssetFilter] = useState("");
+  const [mapMode, setMapMode] = useState<CityMapMode>("3d");
+  const [selectedSearchId, setSelectedSearchId] = useState(citySearchPresets[0].id);
   const deferredAssetFilter = useDeferredValue(assetFilter);
   const [recordingEnabled, setRecordingEnabled] = useState(false);
   const realtime = useRealtimeCommandCenter(true);
@@ -301,6 +366,10 @@ export default function Dashboard() {
   const sendDroneCommand = useSendDroneCommand();
   const uploadMission = useUploadDroneMission();
   const smartMapQuery = useSmartMapOverview();
+  const sceneOverviewQuery = useSceneOverview();
+  const robotFleetQuery = useRobotFleet();
+  const cityMissionsQuery = useCityMissions();
+  const createCityMission = useCreateCityMission();
 
   const realtimeSurveillance = realtime.snapshot?.surveillance;
   const realtimeControlPlane = realtime.snapshot?.control_plane as {
@@ -364,6 +433,13 @@ export default function Dashboard() {
       : demoThreatAlerts;
   const eventAlerts = realtimeAlerts ?? eventAlertsQuery.data ?? [];
   const liveEvents = realtimeEvents ?? liveEventsQuery.data ?? [];
+  const robotFleet = robotFleetQuery.data && robotFleetQuery.data.registry.length > 0 ? robotFleetQuery.data : demoRobotFleet;
+  const robotRegistry = robotFleet.registry;
+  const robotTelemetries = robotFleet.robots;
+  const robotRoutes = robotFleet.routes;
+  const sceneOverview = sceneOverviewQuery.data && sceneOverviewQuery.data.devices.length > 0
+    ? sceneOverviewQuery.data
+    : demoSceneOverview;
   const overlayCounts = realtimeSurveillance?.mapping_overlays && typeof realtimeSurveillance.mapping_overlays === "object"
     ? (realtimeSurveillance.mapping_overlays as { drones: unknown[]; sensors: unknown[]; threats: unknown[]; geofences: unknown[] })
     : mappingOverlaysQuery.data ?? { drones: [], sensors: [], threats: [], geofences: [] };
@@ -447,9 +523,52 @@ export default function Dashboard() {
     longitude: device.longitude,
   }));
 
+  const robotAssets: AssetListItem[] = robotRegistry.map((robot) => {
+    const telemetry = robotTelemetries.find((candidate) => candidate.robot_id === robot.robot_id);
+    const route = robotRoutes.find((candidate) => candidate.robot_id === robot.robot_id);
+    return {
+      id: robot.robot_id,
+      kind: "robot",
+      label: robot.model,
+      status: robot.status,
+      subtitle: `${route?.name ?? telemetry?.autonomy_state ?? "route follow"} · ${Math.round(telemetry?.battery_percent ?? 0)}% battery`,
+      latitude: telemetry?.position.latitude ?? -25.7462,
+      longitude: telemetry?.position.longitude ?? 28.2372,
+    };
+  });
+
+  const cameraCorridors = useMemo(
+    () => mapDevices
+      .filter((device) => device.device_type === "camera")
+      .map((device) => {
+        const origin = { latitude: device.latitude, longitude: device.longitude };
+        const target = device.gps_path[0]
+          ? { latitude: device.gps_path[0][0], longitude: device.gps_path[0][1] }
+          : { latitude: device.latitude + 0.0012, longitude: device.longitude + 0.0018 };
+        const deltaLatitude = target.latitude - origin.latitude;
+        const deltaLongitude = target.longitude - origin.longitude;
+        const length = Math.max(Math.hypot(deltaLatitude, deltaLongitude), 0.0008);
+        const normalLatitude = -deltaLongitude / length;
+        const normalLongitude = deltaLatitude / length;
+        const width = 0.00045;
+
+        return {
+          id: `${device.id}-corridor`,
+          label: `${device.name} corridor`,
+          polygon: [
+            [origin.latitude + normalLatitude * width, origin.longitude + normalLongitude * width],
+            [origin.latitude - normalLatitude * width, origin.longitude - normalLongitude * width],
+            [target.latitude - normalLatitude * width * 1.6, target.longitude - normalLongitude * width * 1.6],
+            [target.latitude + normalLatitude * width * 1.6, target.longitude + normalLongitude * width * 1.6],
+          ] as Array<[number, number]>,
+        };
+      }),
+    [mapDevices],
+  );
+
   const assetCatalog = useMemo(
-    () => [...drones, ...cameras, ...sensorAssets, ...deterrentAssets],
-    [cameras, deterrentAssets, drones, sensorAssets],
+    () => [...drones, ...robotAssets, ...cameras, ...sensorAssets, ...deterrentAssets],
+    [cameras, deterrentAssets, drones, robotAssets, sensorAssets],
   );
 
   const filteredAssets = deferredAssetFilter.trim().length === 0
@@ -566,7 +685,8 @@ export default function Dashboard() {
   }
 
   function handleQuickMissionUpload() {
-    if (!activeDroneRegistry || drawPoints.length < 2) {
+    const primaryRobot = robotRegistry[0];
+    if (!activeDroneRegistry || !primaryRobot || drawPoints.length < 2) {
       appendLocalLog("mission", "Quick mission requires at least two map points.", {
         severity: "critical",
         assetId: focusedDroneId,
@@ -574,15 +694,29 @@ export default function Dashboard() {
       return;
     }
 
-    uploadMission.mutate({
-      drone_id: activeDroneRegistry.drone_id,
-      name: `Quick mission ${new Date().toLocaleTimeString("en-ZA")}`,
-      altitude_m: activeDroneTelemetry?.position.altitude_m ?? 90,
-      speed_mps: activeDroneTelemetry?.speed_mps ?? 8,
-      waypoints: drawPoints,
+    createCityMission.mutate({
+      name: `${selectedSearch.city} ${selectedSearch.district} coordinated patrol`,
+      city: selectedSearch.city,
+      district: selectedSearch.district,
+      radius_km: selectedSearch.radiusKm,
+      assignments: [
+        {
+          asset_type: "drone",
+          asset_id: activeDroneRegistry.drone_id,
+          altitude_m: activeDroneTelemetry?.position.altitude_m ?? 90,
+          speed_mps: activeDroneTelemetry?.speed_mps ?? 8,
+          path: drawPoints,
+        },
+        {
+          asset_type: "robot",
+          asset_id: primaryRobot.robot_id,
+          speed_mps: Math.min(primaryRobot.max_speed_mps, 2),
+          path: drawPoints.map((point) => ({ latitude: point.latitude, longitude: point.longitude, altitude_m: 0 })),
+        },
+      ],
     });
 
-    appendLocalLog("mission", `Quick mission uploaded for ${activeDroneRegistry.drone_id}`, {
+    appendLocalLog("mission", `City mission dispatched to ${activeDroneRegistry.drone_id} and ${primaryRobot.robot_id}`, {
       assetId: activeDroneRegistry.drone_id,
       sourceLabel: activeDroneRegistry.model,
     });
@@ -713,11 +847,16 @@ export default function Dashboard() {
 
   const selectedLog = filteredLogs.find((entry) => entry.id === selectedLogId) ?? filteredLogs[0] ?? null;
   const selectedAssetSummary = selectedAsset ? assetCatalog.find((asset) => asset.id === selectedAsset.id) ?? null : null;
-  const mapAssets = useMemo(() => [...drones, ...cameras, ...sensorAssets, ...deterrentAssets], [cameras, deterrentAssets, drones, sensorAssets]);
+  const mapAssets = useMemo(
+    () => [...drones, ...robotAssets, ...cameras, ...sensorAssets, ...deterrentAssets],
+    [cameras, deterrentAssets, drones, robotAssets, sensorAssets],
+  );
+  const selectedSearch = citySearchPresets.find((preset) => preset.id === selectedSearchId) ?? citySearchPresets[0];
 
   const systemHealthCards = [
     { label: "Realtime bus", value: realtime.connected ? "streaming" : "fallback polling" },
     { label: "Drone Gateway", value: gatewayReady.data || realtimeSurveillance?.drones ? "online" : "degraded" },
+    { label: "Robot Gateway", value: robotRegistry.some((robot) => robot.status !== "offline") ? "online" : "watch" },
     { label: "Kafka", value: (realtimeControlPlane?.data_flow ?? serviceHealth?.data_flow)?.some((stage) => stage.destination === "kafka" && stage.state === "healthy") ? "healthy" : "watch" },
     { label: "Database", value: realtimeControlPlane?.security?.audit_pipeline_status ?? serviceHealth?.security.audit_pipeline_status ?? "watch" },
     { label: "Mission Control", value: missionItems.length > 0 ? "ready" : "watch" },
@@ -741,9 +880,9 @@ export default function Dashboard() {
     <section className="command-center" aria-label="City command center dashboard">
       <header className="command-topbar">
         <div className="command-topbar-block">
-          <span className="command-kicker">City command center</span>
+          <span className="command-kicker">City map dashboard</span>
           <h2>{cityName}</h2>
-          <p>Three dedicated operator views for drone flight, mission mapping, and downloadable logs.</p>
+          <p>Strategic command view for city-wide mapping, device search, geofences, alert zones, drones, robots, cameras, and deterrent assets.</p>
         </div>
 
         <div className="command-topbar-meta">
@@ -752,8 +891,8 @@ export default function Dashboard() {
             <strong>{gatewayReady.data ? "Nominal" : "Partial visibility"}</strong>
           </div>
           <div>
-            <span>Operator</span>
-            <strong>{operatorName}</strong>
+            <span>Coverage</span>
+            <strong>{selectedSearch.city} · {selectedSearch.district}</strong>
           </div>
           <div>
             <span>Local time</span>
@@ -765,11 +904,12 @@ export default function Dashboard() {
         </div>
       </header>
 
+      <OperationsSwitcher />
+
       <nav className="command-tab-nav" aria-label="Dashboard screens">
         {([
-          { id: "drone", label: "Drone Screen", description: "Flight view" },
-          { id: "map", label: "Map Screen", description: "Mission + GPS" },
-          { id: "logs", label: "Logs Screen", description: "Exports + analysis" },
+          { id: "map", label: "City Map", description: "2D / 3D command view" },
+          { id: "logs", label: "Operations Logs", description: "Exports + analysis" },
         ] as const).map((tab) => (
           <button
             key={tab.id}
@@ -953,13 +1093,13 @@ export default function Dashboard() {
             <aside className="command-panel-shell command-map-tools">
               <div className="command-panel-header">
                 <div>
-                  <span className="command-kicker">Map Screen</span>
-                  <h3>Mission tools</h3>
+                  <span className="command-kicker">City search</span>
+                  <h3>Command tools</h3>
                 </div>
               </div>
 
               <label className="command-form-block">
-                <span>Mission drone</span>
+                <span>Mission anchor drone</span>
                 <select value={focusedDroneId} onChange={(event) => selectAsset("drone", event.target.value)}>
                   {droneRegistry.map((drone) => (
                     <option key={drone.drone_id} value={drone.drone_id}>{drone.model}</option>
@@ -967,11 +1107,30 @@ export default function Dashboard() {
                 </select>
               </label>
 
+              <label className="command-form-block">
+                <span>City search</span>
+                <select value={selectedSearchId} onChange={(event) => setSelectedSearchId(event.target.value)}>
+                  {citySearchPresets.map((preset) => (
+                    <option key={preset.id} value={preset.id}>{preset.city} → {preset.district} → {preset.radiusKm} km</option>
+                  ))}
+                </select>
+              </label>
+
+              <section className="command-context-card city-search-card">
+                <h4>Search corridor</h4>
+                <p>{selectedSearch.detail}</p>
+                <div className="command-chip-row">
+                  <span>{selectedSearch.city}</span>
+                  <span>{selectedSearch.district}</span>
+                  <span>{selectedSearch.radiusKm} km radius</span>
+                </div>
+              </section>
+
               <div className="command-action-stack">
-                <button type="button" onClick={() => { setDrawMode("mission"); appendLocalLog("mission", "Mission drawing mode enabled", { assetId: focusedDroneId }); }}>Create mission</button>
-                <button type="button" onClick={() => { setDrawMode("mission"); appendLocalLog("mission", "Mission edit mode enabled", { assetId: focusedDroneId, severity: "warning" }); }}>Edit mission</button>
-                <button type="button" onClick={handleQuickMissionUpload}>Upload mission</button>
-                <button type="button" onClick={handleGoHere}>Quick Go Here</button>
+                <button type="button" onClick={() => { setDrawMode("mission"); appendLocalLog("mission", "City mission planning enabled", { assetId: focusedDroneId }); }}>Create mission</button>
+                <button type="button" onClick={() => { setDrawMode("mission"); appendLocalLog("mission", "City patrol route editing enabled", { assetId: focusedDroneId, severity: "warning" }); }}>Edit routes</button>
+                <button type="button" onClick={handleQuickMissionUpload}>Assign mission</button>
+                <button type="button" onClick={handleGoHere}>Dispatch nearest drone</button>
               </div>
 
               <label className="command-search">
@@ -979,7 +1138,7 @@ export default function Dashboard() {
                 <input
                   value={assetFilter}
                   onChange={(event) => setAssetFilter(event.target.value)}
-                  placeholder="Drone, camera, sensor, deterrent"
+                  placeholder="Drone, robot, camera, sensor, deterrent"
                 />
               </label>
 
@@ -996,10 +1155,13 @@ export default function Dashboard() {
             <main className="command-panel-shell command-map-stage-panel">
               <div className="command-panel-header">
                 <div>
-                  <span className="command-kicker">Mission + GPS view</span>
-                  <h3>Full map</h3>
+                  <span className="command-kicker">CityView</span>
+                  <h3>Strategic city map</h3>
                 </div>
                 <div className="command-map-actions">
+                  <button type="button" className={mapMode === "2d" ? "is-active" : ""} onClick={() => setMapMode("2d")}>2D</button>
+                  <button type="button" className={mapMode === "3d" ? "is-active" : ""} onClick={() => setMapMode("3d")}>3D</button>
+                  <button type="button" className={mapMode === "street" ? "is-active" : ""} onClick={() => setMapMode("street")}>Street</button>
                   <button type="button" className={drawMode === "mission" ? "is-active" : ""} onClick={() => setDrawMode("mission")}>Mission route</button>
                   <button type="button" className={drawMode === "geofence" ? "is-active" : ""} onClick={() => setDrawMode("geofence")}>Geofences</button>
                   <button type="button" className={drawMode === "alert-zone" ? "is-active" : ""} onClick={() => setDrawMode("alert-zone")}>Alert zones</button>
@@ -1008,10 +1170,11 @@ export default function Dashboard() {
               </div>
 
               <div className="command-layer-row">
-                <span>Drone position, mission route, geofences, alert zones, sensors, and cameras</span>
+                <span>{mapMode.toUpperCase()} city view with drones, robots, patrol routes, geofences, cameras, sensors, and deterrents.</span>
                 <div>
                   <CommandStatusBadge label={`${overlayCounts.geofences.length || zoneOverlays.length} zones`} />
                   <CommandStatusBadge label={`${threatAlerts.length} alerts`} />
+                  <CommandStatusBadge label={`${robotAssets.length} robots`} />
                   <CommandStatusBadge label={`${sensorAssets.length} sensors`} />
                 </div>
               </div>
@@ -1023,6 +1186,9 @@ export default function Dashboard() {
                   zones={zoneOverlays}
                   selectedAssetId={selectedAsset?.id ?? focusedDroneId}
                   drawPoints={drawPoints}
+                  mode={mapMode}
+                  sceneOverview={sceneOverview}
+                  cameraCorridors={cameraCorridors}
                   onMapClick={handleMapClick}
                   onSelectAsset={(kind, id) => selectAsset(kind, id)}
                 />
@@ -1032,27 +1198,40 @@ export default function Dashboard() {
             <aside className="command-panel-shell command-map-side">
               <div className="command-panel-header">
                 <div>
-                  <span className="command-kicker">Mission details</span>
-                  <h3>Mission details</h3>
+                  <span className="command-kicker">City summary</span>
+                  <h3>Strategic details</h3>
                 </div>
               </div>
 
               <div className="command-metrics-grid">
-                <div><span>Mission name</span><strong>{activeDroneMission?.name ?? "No mission assigned"}</strong></div>
-                <div><span>Progress</span><strong>{activeDroneMission?.progress_percent ?? 0}%</strong></div>
-                <div><span>ETA</span><strong>{Math.max(6, Math.round((100 - (activeDroneMission?.progress_percent ?? 0)) / 8))} min</strong></div>
-                <div><span>Waypoints</span><strong>{activeDroneMission?.waypoints.length ?? 0}</strong></div>
+                <div><span>City focus</span><strong>{selectedSearch.city}</strong></div>
+                <div><span>District</span><strong>{selectedSearch.district}</strong></div>
+                <div><span>Radius</span><strong>{selectedSearch.radiusKm} km</strong></div>
+                <div><span>Map mode</span><strong>{mapMode.toUpperCase()}</strong></div>
+                <div><span>Robots online</span><strong>{robotAssets.length}</strong></div>
+                <div><span>Cameras online</span><strong>{cameras.length}</strong></div>
+                <div><span>Sensors online</span><strong>{sensorAssets.length}</strong></div>
+                <div><span>City missions</span><strong>{cityMissionsQuery.data?.length ?? 0}</strong></div>
               </div>
 
               <section className="command-context-card">
-                <h4>Waypoint list</h4>
+                <h4>Patrol routes</h4>
                 <div className="command-history-list">
-                  {(activeDroneMission?.waypoints ?? []).map((waypoint, index) => (
-                    <div key={`${waypoint.latitude}-${waypoint.longitude}-${index}`} className="command-history-row">
-                      <span>WP {index + 1}</span>
-                      <strong>{waypoint.latitude.toFixed(4)}, {waypoint.longitude.toFixed(4)}</strong>
+                  {(robotRoutes.length > 0 ? robotRoutes : demoRobotFleet.routes).slice(0, 4).map((robot, index) => (
+                    <div key={robot.route_id} className="command-history-row">
+                      <span>Route {index + 1}</span>
+                      <strong>{robot.name}</strong>
                     </div>
                   ))}
+                </div>
+              </section>
+
+              <section className="command-context-card">
+                <h4>Street-level navigation</h4>
+                <div className="command-map-summary">
+                  <strong>{selectedSearch.city} → {selectedSearch.district}</strong>
+                  <span>{mapMode === "street" ? "Street camera corridors and curb-level navigation are active." : "Switch to Street mode for curb-level navigation lanes."}</span>
+                  <CommandStatusBadge label={mapMode === "street" ? "street ready" : "3d overview"} />
                 </div>
               </section>
 
@@ -1096,7 +1275,7 @@ export default function Dashboard() {
           <section className="command-panel-shell command-log-toolbar">
             <div className="command-panel-header">
               <div>
-                <span className="command-kicker">Logs Screen</span>
+                <span className="command-kicker">Operations logs</span>
                 <h3>Telemetry logs and exports</h3>
               </div>
               <div className="command-export-row">

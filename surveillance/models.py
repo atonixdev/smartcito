@@ -155,6 +155,113 @@ class DroneCommandAck(BaseModel):
     publish: PublishResult
 
 
+class RobotStatus(str, Enum):
+    IDLE = "idle"
+    PATROLLING = "patrolling"
+    HOLDING = "holding"
+    INSPECTING = "inspecting"
+    DOCKING = "docking"
+    OFFLINE = "offline"
+    ERROR = "error"
+
+
+class RobotCommandAction(str, Enum):
+    MOVE_FORWARD = "move_forward"
+    MOVE_REVERSE = "move_reverse"
+    TURN_LEFT = "turn_left"
+    TURN_RIGHT = "turn_right"
+    HOLD = "hold"
+    DOCK = "dock"
+    SET_WAYPOINT = "set_waypoint"
+    FOLLOW_ROUTE = "follow_route"
+
+
+class RobotRegistryStatus(str, Enum):
+    ONLINE = "online"
+    DEGRADED = "degraded"
+    OFFLINE = "offline"
+    MAINTENANCE = "maintenance"
+
+
+class RobotTelemetry(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    robot_id: str = Field(..., min_length=2, max_length=80)
+    protocol: str = Field(default="simulated", max_length=40)
+    position: GeoPoint
+    speed_mps: float = Field(default=0, ge=0)
+    heading_deg: float = Field(default=0, ge=0, le=360)
+    battery_percent: float = Field(..., ge=0, le=100)
+    autonomy_state: str = Field(default="manual", max_length=60)
+    status: RobotStatus = RobotStatus.IDLE
+    slam_state: str = Field(default="mapping", max_length=60)
+    health_flags: list[str] = Field(default_factory=list)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(UTC))
+
+
+class RobotCommand(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    robot_id: str = Field(..., min_length=2, max_length=80)
+    action: RobotCommandAction
+    target: GeoPoint | None = None
+    path: list[GeoPoint] = Field(default_factory=list)
+    requested_by: str = Field(default="operator", max_length=80)
+
+    @field_validator("path")
+    @classmethod
+    def validate_path(cls, value: list[GeoPoint]) -> list[GeoPoint]:
+        if len(value) > 200:
+            raise ValueError("path cannot contain more than 200 waypoints")
+        return value
+
+
+class RobotConnectionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    robot_id: str = Field(..., min_length=2, max_length=80)
+    protocol: Literal["rest", "websocket", "vendor-sdk", "simulated"] = "simulated"
+    endpoint: str | None = Field(default=None, max_length=300)
+    auth_profile: str | None = Field(default=None, max_length=80)
+
+
+class RobotCapabilities(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    robot_id: str = Field(..., min_length=2, max_length=80)
+    model: str = Field(..., min_length=2, max_length=120)
+    firmware_version: str = Field(..., min_length=1, max_length=80)
+    max_speed_mps: float = Field(..., ge=0)
+    battery_capacity_mah: int = Field(..., ge=0)
+    camera_ids: list[str] = Field(default_factory=list)
+    sensors: list[str] = Field(default_factory=list)
+    autonomy_modes: list[str] = Field(default_factory=list)
+    lidar_supported: bool = True
+    status: RobotRegistryStatus = RobotRegistryStatus.ONLINE
+    protocol: str = Field(default="simulated", max_length=40)
+    last_seen_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+
+
+class RobotCommandAck(BaseModel):
+    command_id: str
+    robot_id: str
+    action: RobotCommandAction
+    accepted: bool
+    adapter_status: str
+    event: NormalizedEvent
+    publish: PublishResult
+
+
+class RobotPatrolRoute(BaseModel):
+    route_id: str = Field(default_factory=lambda: str(uuid4()))
+    robot_id: str = Field(..., min_length=2, max_length=80)
+    name: str = Field(..., min_length=3, max_length=120)
+    status: Literal["draft", "assigned", "running", "paused", "completed"] = "assigned"
+    checkpoints: list[str] = Field(default_factory=list)
+    path: list[GeoPoint] = Field(default_factory=list)
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+
+
 class MissionStatus(str, Enum):
     DRAFT = "draft"
     UPLOADED = "uploaded"
@@ -162,6 +269,51 @@ class MissionStatus(str, Enum):
     PAUSED = "paused"
     COMPLETED = "completed"
     FAILED = "failed"
+
+
+class MissionAssetType(str, Enum):
+    DRONE = "drone"
+    ROBOT = "robot"
+
+
+class CityMissionAssignmentIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    asset_type: MissionAssetType
+    asset_id: str = Field(..., min_length=2, max_length=80)
+    path: list[MissionWaypoint] = Field(..., min_length=2, max_length=200)
+    altitude_m: float | None = Field(default=None, ge=0, le=500)
+    speed_mps: float | None = Field(default=None, ge=0, le=40)
+
+
+class CityMissionDispatchResult(BaseModel):
+    asset_type: MissionAssetType
+    asset_id: str
+    accepted: bool
+    adapter_status: str
+
+
+class CityMissionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    name: str = Field(..., min_length=3, max_length=120)
+    city: str = Field(..., min_length=2, max_length=80)
+    district: str = Field(..., min_length=2, max_length=80)
+    radius_km: float = Field(..., gt=0, le=100)
+    assignments: list[CityMissionAssignmentIn] = Field(..., min_length=1, max_length=16)
+
+
+class CityMission(BaseModel):
+    mission_id: str = Field(default_factory=lambda: str(uuid4()))
+    name: str = Field(..., min_length=3, max_length=120)
+    city: str = Field(..., min_length=2, max_length=80)
+    district: str = Field(..., min_length=2, max_length=80)
+    radius_km: float = Field(..., gt=0, le=100)
+    status: MissionStatus = MissionStatus.DRAFT
+    assignments: list[CityMissionAssignmentIn]
+    dispatch_results: list[CityMissionDispatchResult] = Field(default_factory=list)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
 
 class MissionWaypoint(GeoPoint):

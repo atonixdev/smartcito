@@ -9,6 +9,7 @@ from surveillance.drone_camera_service import app as camera_app
 from surveillance.drone_gateway_service import app as drone_app
 from surveillance.mapping_service import app as mapping_app
 from surveillance.mission_control_service import app as mission_app
+from surveillance.robot_gateway_service import app as robot_app
 from surveillance.sensor_gateway_service import app as sensor_app
 from surveillance.threat_detection_service import app as threat_app
 
@@ -80,6 +81,49 @@ def test_drone_gateway_metrics_endpoint() -> None:
 
     assert response.status_code == 200
     assert "smartcito_drone_gateway_events_total" in response.text
+
+
+def test_robot_gateway_discovers_capabilities_and_accepts_command() -> None:
+    client = TestClient(robot_app)
+    connected = client.post(
+        "/connect",
+        json={"robot_id": "robot-cap-001", "protocol": "simulated", "endpoint": "sim://robot-cap-001"},
+    )
+    assert connected.status_code == 200
+    capabilities = connected.json()
+    assert capabilities["robot_id"] == "robot-cap-001"
+    assert "lidar" in capabilities["sensors"]
+
+    telemetry = client.post(
+        "/telemetry",
+        json={
+            "robot_id": "robot-cap-001",
+            "protocol": "simulated",
+            "position": {"latitude": -25.7462, "longitude": 28.2372, "altitude_m": 0},
+            "speed_mps": 1.4,
+            "heading_deg": 118,
+            "battery_percent": 74,
+            "autonomy_state": "route_follow",
+            "status": "patrolling",
+            "slam_state": "locked",
+        },
+    )
+    assert telemetry.status_code == 200
+    assert telemetry.json()["event"]["topic"] == "smartcito.robot.telemetry"
+
+    command = client.post(
+        "/robots/robot-cap-001/commands",
+        json={
+            "robot_id": "robot-cap-001",
+            "action": "set_waypoint",
+            "target": {"latitude": -25.7460, "longitude": 28.2376, "altitude_m": 0},
+            "requested_by": "robot-dashboard",
+        },
+    )
+    assert command.status_code == 200
+    payload = command.json()
+    assert payload["accepted"] is True
+    assert payload["event"]["event_type"] == "robot.command.set_waypoint"
 
 
 def test_sensor_gateway_splits_alert_topics() -> None:
@@ -158,6 +202,50 @@ def test_mission_control_validates_and_uploads_patrol() -> None:
     assert payload["validation"]["zones"]
 
     missions = client.get("/missions")
+    assert missions.status_code == 200
+    assert len(missions.json()) >= 1
+
+
+def test_mission_control_creates_city_mission() -> None:
+    client = TestClient(mission_app)
+
+    response = client.post(
+        "/city-missions",
+        json={
+            "name": "Pretoria CBD coordinated patrol",
+            "city": "Pretoria",
+            "district": "CBD",
+            "radius_km": 4,
+            "assignments": [
+                {
+                    "asset_type": "drone",
+                    "asset_id": "drone-safe-001",
+                    "altitude_m": 90,
+                    "speed_mps": 8,
+                    "path": [
+                        {"latitude": -25.7480, "longitude": 28.1800, "altitude_m": 90},
+                        {"latitude": -25.7460, "longitude": 28.1820, "altitude_m": 90},
+                    ],
+                },
+                {
+                    "asset_type": "robot",
+                    "asset_id": "robot-cap-001",
+                    "speed_mps": 1.5,
+                    "path": [
+                        {"latitude": -25.7480, "longitude": 28.1800, "altitude_m": 0},
+                        {"latitude": -25.7460, "longitude": 28.1820, "altitude_m": 0},
+                    ],
+                },
+            ],
+        },
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["status"] in {"uploaded", "failed"}
+    assert len(payload["dispatch_results"]) == 2
+
+    missions = client.get("/city-missions")
     assert missions.status_code == 200
     assert len(missions.json()) >= 1
 

@@ -37,6 +37,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (requestPath) => requestPath.replace(/^\/drone-gateway/, ""),
       },
+      "/robot-gateway": {
+        target: "http://localhost:8026",
+        changeOrigin: true,
+        rewrite: (requestPath) => requestPath.replace(/^\/robot-gateway/, ""),
+      },
       "/mission-control": {
         target: "http://localhost:8025",
         changeOrigin: true,

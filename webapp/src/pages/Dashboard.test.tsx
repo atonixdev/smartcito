@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { MemoryRouter } from "react-router-dom";
 
 import Dashboard from "./Dashboard";
 
@@ -332,23 +333,187 @@ vi.mock("@/api/realtime", () => ({
   useRealtimeCommandCenter: () => ({ snapshot: null, connected: false }),
 }));
 
+vi.mock("@/api/robotGateway", () => ({
+  demoRobotFleet: {
+    robots: [
+      {
+        robot_id: "robot-patrol-007",
+        protocol: "simulated",
+        position: { latitude: -25.7462, longitude: 28.2372, altitude_m: 0 },
+        speed_mps: 1.4,
+        heading_deg: 118,
+        battery_percent: 81,
+        autonomy_state: "route_follow",
+        status: "patrolling",
+        slam_state: "locked",
+        timestamp: new Date().toISOString(),
+      },
+      {
+        robot_id: "robot-tunnel-003",
+        protocol: "simulated",
+        position: { latitude: -25.7481, longitude: 28.2329, altitude_m: 0 },
+        speed_mps: 1.1,
+        heading_deg: 92,
+        battery_percent: 63,
+        autonomy_state: "inspection",
+        status: "degraded",
+        slam_state: "limited",
+        timestamp: new Date().toISOString(),
+      },
+    ],
+    registry: [
+      {
+        robot_id: "robot-patrol-007",
+        model: "UGV Patrol 007",
+        firmware_version: "sim-1.0.0",
+        max_speed_mps: 3,
+        battery_capacity_mah: 10000,
+        sensors: ["lidar"],
+        payload_supported: true,
+        status: "online",
+        protocol: "simulated",
+        last_seen_at: new Date().toISOString(),
+      },
+      {
+        robot_id: "robot-tunnel-003",
+        model: "Tunnel Robot 003",
+        firmware_version: "sim-1.0.0",
+        max_speed_mps: 2,
+        battery_capacity_mah: 9200,
+        sensors: ["lidar"],
+        payload_supported: false,
+        status: "degraded",
+        protocol: "simulated",
+        last_seen_at: new Date().toISOString(),
+      },
+    ],
+    routes: [
+      {
+        route_id: "route-robot-1",
+        robot_id: "robot-patrol-007",
+        name: "North gate to transit plaza",
+        checkpoints: ["north gate", "transit plaza"],
+        path: [
+          { latitude: -25.7462, longitude: 28.2372, altitude_m: 0 },
+          { latitude: -25.7471, longitude: 28.2351, altitude_m: 0 },
+        ],
+        updated_at: new Date().toISOString(),
+      },
+    ],
+  },
+  useRobotFleet: () => ({
+    data: {
+      robots: [
+        {
+          robot_id: "robot-patrol-007",
+          protocol: "simulated",
+          position: { latitude: -25.7462, longitude: 28.2372, altitude_m: 0 },
+          speed_mps: 1.4,
+          heading_deg: 118,
+          battery_percent: 81,
+          autonomy_state: "route_follow",
+          status: "patrolling",
+          slam_state: "locked",
+          timestamp: new Date().toISOString(),
+        },
+        {
+          robot_id: "robot-tunnel-003",
+          protocol: "simulated",
+          position: { latitude: -25.7481, longitude: 28.2329, altitude_m: 0 },
+          speed_mps: 1.1,
+          heading_deg: 92,
+          battery_percent: 63,
+          autonomy_state: "inspection",
+          status: "degraded",
+          slam_state: "limited",
+          timestamp: new Date().toISOString(),
+        },
+      ],
+      registry: [
+        {
+          robot_id: "robot-patrol-007",
+          model: "UGV Patrol 007",
+          firmware_version: "sim-1.0.0",
+          max_speed_mps: 3,
+          battery_capacity_mah: 10000,
+          sensors: ["lidar"],
+          payload_supported: true,
+          status: "online",
+          protocol: "simulated",
+          last_seen_at: new Date().toISOString(),
+        },
+        {
+          robot_id: "robot-tunnel-003",
+          model: "Tunnel Robot 003",
+          firmware_version: "sim-1.0.0",
+          max_speed_mps: 2,
+          battery_capacity_mah: 9200,
+          sensors: ["lidar"],
+          payload_supported: false,
+          status: "degraded",
+          protocol: "simulated",
+          last_seen_at: new Date().toISOString(),
+        },
+      ],
+      routes: [
+        {
+          route_id: "route-robot-1",
+          robot_id: "robot-patrol-007",
+          name: "North gate to transit plaza",
+          checkpoints: ["north gate", "transit plaza"],
+          path: [
+            { latitude: -25.7462, longitude: 28.2372, altitude_m: 0 },
+            { latitude: -25.7471, longitude: 28.2351, altitude_m: 0 },
+          ],
+          updated_at: new Date().toISOString(),
+        },
+      ],
+    },
+  }),
+}));
+
+vi.mock("@/api/missionControl", () => ({
+  useCityMissions: () => ({ data: [] }),
+  useCreateCityMission: () => ({ isPending: false, mutate: vi.fn() }),
+}));
+
+vi.mock("@/api/scene", () => ({
+  demoSceneOverview: {
+    devices: [],
+    threats: [],
+    layers: ["city-map"],
+    camera_overlay_mode: "corridor",
+    security_policy: "verified-devices",
+  },
+  useSceneOverview: () => ({
+    data: {
+      devices: [],
+      threats: [],
+      layers: ["city-map"],
+      camera_overlay_mode: "corridor",
+      security_policy: "verified-devices",
+    },
+  }),
+}));
+
 describe("Dashboard", () => {
   it("renders the command center layout", () => {
     const queryClient = new QueryClient();
 
     render(
       <QueryClientProvider client={queryClient}>
-        <Dashboard />
+        <MemoryRouter initialEntries={["/dashboard/cityview"]}>
+          <Dashboard />
+        </MemoryRouter>
       </QueryClientProvider>,
     );
 
     expect(screen.getByRole("heading", { name: /pretoria command center/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Drone Screen/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Map Screen/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Logs Screen/i })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /Primary flight view/i })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /Full camera feed/i })).toBeInTheDocument();
-    expect(screen.getByText(/flight controls/i)).toBeInTheDocument();
-    expect(screen.getByText(/RGB camera stream/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /City Map/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Operations Logs/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /Strategic city map/i })).toBeInTheDocument();
+    expect(screen.getByText(/Johannesburg → Winchester → 5 km/i)).toBeInTheDocument();
+    expect(screen.getByText(/Street-level navigation/i)).toBeInTheDocument();
+    expect(screen.getByText(/2 robots/i)).toBeInTheDocument();
   });
 });

@@ -15,7 +15,7 @@ export interface SmartMapDevice {
   id: string;
   device_id: string;
   name: string;
-  device_type: "usb" | "camera" | "gps" | "iot" | "drone" | "sensor";
+  device_type: "usb" | "camera" | "gps" | "iot" | "drone" | "robot" | "sensor";
   latitude: number;
   longitude: number;
   trust_score: number;
@@ -100,6 +100,21 @@ export const demoSmartMapDevices: SmartMapDevice[] = [
     sensor_type: "drone-telemetry",
     sensor_value: 0.88,
     gps_path: [[-25.7479, 28.2293], [-25.7461, 28.2361], [-25.7454, 28.2438]],
+    last_seen_at: new Date().toISOString(),
+  },
+  {
+    id: "demo-robot-patrol-007",
+    device_id: "demo-robot-patrol-007",
+    name: "UGV Patrol 007",
+    device_type: "robot",
+    latitude: -25.7462,
+    longitude: 28.2372,
+    trust_score: 89,
+    trust_level: "verified",
+    camera_feed_url: "rtsp://demo/robot-patrol-007/front-camera",
+    sensor_type: "lidar-slam",
+    sensor_value: 0.81,
+    gps_path: [[-25.7472, 28.2364], [-25.7468, 28.2369], [-25.7462, 28.2372]],
     last_seen_at: new Date().toISOString(),
   },
   {

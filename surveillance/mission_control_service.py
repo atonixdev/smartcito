@@ -21,18 +21,33 @@ from fastapi import FastAPI, HTTPException
 
 from surveillance.geospatial import resolve_zone
 from surveillance.kafka import get_publisher
-from surveillance.models import DroneMission, MissionStatus, MissionUploadRequest, MissionValidationResult, NormalizedEvent
-from surveillance.topics import DRONE_EVENTS_TOPIC, DRONE_MISSIONS_TOPIC
+from surveillance.models import (
+    CityMission,
+    CityMissionDispatchResult,
+    CityMissionRequest,
+    DroneMission,
+    MissionAssetType,
+    MissionStatus,
+    MissionUploadRequest,
+    MissionValidationResult,
+    NormalizedEvent,
+)
+from surveillance.topics import DRONE_EVENTS_TOPIC, DRONE_MISSIONS_TOPIC, ROBOT_EVENTS_TOPIC
 
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
 
 app = FastAPI(title="SmartCito Mission Control Service")
 _missions: dict[str, DroneMission] = {}
+_city_missions: dict[str, CityMission] = {}
 
 
 def _gateway_base_url() -> str:
     return os.getenv("DRONE_GATEWAY_URL", "http://drone-gateway:8020").rstrip("/")
+
+
+def _robot_gateway_base_url() -> str:
+    return os.getenv("ROBOT_GATEWAY_URL", "http://robot-gateway:8026").rstrip("/")
 
 
 def _validate(request_payload: MissionUploadRequest, *, mission_id: str | None = None) -> MissionValidationResult:
@@ -122,6 +137,103 @@ def _publish_mission_event(mission: DroneMission, event_type: str, upload_status
     return {"event": event.model_dump(mode="json"), "publish": publish.model_dump(mode="json")}
 
 
+def _dispatch_city_assignment(assignment: CityMissionRequest) -> CityMissionDispatchResult:  # type: ignore[type-arg]
+    raise RuntimeError("unreachable helper signature")
+
+
+def _dispatch_assignment_payload(asset_type: MissionAssetType, asset_id: str, path: list[object]) -> tuple[str, dict[str, object]]:
+    if asset_type == MissionAssetType.DRONE:
+        return (
+            f"{_gateway_base_url()}/drones/{asset_id}/commands",
+            {
+                "drone_id": asset_id,
+                "action": "follow_path",
+                "path": path,
+                "requested_by": "mission-control",
+            },
+        )
+
+    return (
+        f"{_robot_gateway_base_url()}/robots/{asset_id}/commands",
+        {
+            "robot_id": asset_id,
+            "action": "follow_route",
+            "path": path,
+            "requested_by": "mission-control",
+        },
+    )
+
+
+def _dispatch_city_mission(mission: CityMission) -> list[CityMissionDispatchResult]:
+    dispatch_results: list[CityMissionDispatchResult] = []
+    for assignment in mission.assignments:
+        url, payload = _dispatch_assignment_payload(
+            assignment.asset_type,
+            assignment.asset_id,
+            [waypoint.model_dump(mode="json", exclude_none=True) for waypoint in assignment.path],
+        )
+        gateway_request = request.Request(
+            url=url,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"content-type": "application/json"},
+            method="POST",
+        )
+        try:
+            with request.urlopen(gateway_request, timeout=5) as response:
+                response_body = json.loads(response.read().decode("utf-8") or "{}")
+        except error.URLError as exc:
+            dispatch_results.append(
+                CityMissionDispatchResult(
+                    asset_type=assignment.asset_type,
+                    asset_id=assignment.asset_id,
+                    accepted=False,
+                    adapter_status=f"gateway-unavailable:{exc.reason}",
+                )
+            )
+            continue
+        except Exception as exc:  # pragma: no cover - defensive fallback for remote gateway issues
+            dispatch_results.append(
+                CityMissionDispatchResult(
+                    asset_type=assignment.asset_type,
+                    asset_id=assignment.asset_id,
+                    accepted=False,
+                    adapter_status=f"gateway-failed:{exc.__class__.__name__}",
+                )
+            )
+            continue
+
+        dispatch_results.append(
+            CityMissionDispatchResult(
+                asset_type=assignment.asset_type,
+                asset_id=assignment.asset_id,
+                accepted=response_body.get("accepted") is True,
+                adapter_status=str(response_body.get("adapter_status", "gateway-rejected")),
+            )
+        )
+    return dispatch_results
+
+
+def _publish_city_mission_event(mission: CityMission) -> None:
+    mission_event = NormalizedEvent(
+        event_type=f"city-mission.{mission.status.value}",
+        source="mission-control",
+        entity_id=mission.mission_id,
+        topic=DRONE_MISSIONS_TOPIC,
+        payload=mission.model_dump(mode="json"),
+    )
+    get_publisher().publish_event(mission_event)
+
+    for result in mission.dispatch_results:
+        asset_event = NormalizedEvent(
+            event_type=f"city-mission.dispatch.{result.asset_type.value}",
+            source="mission-control",
+            entity_id=result.asset_id,
+            topic=DRONE_EVENTS_TOPIC if result.asset_type == MissionAssetType.DRONE else ROBOT_EVENTS_TOPIC,
+            payload={"mission_id": mission.mission_id, **result.model_dump(mode="json")},
+        )
+        get_publisher().publish_event(asset_event)
+
+
 @app.get("/health")
 async def health() -> dict[str, str]:
     return {"status": "ok", "service": "mission-control"}
@@ -195,4 +307,26 @@ async def update_mission_status(mission_id: str, status: MissionStatus, progress
         mission.progress_percent = 100
     mission.updated_at = datetime.now(UTC)
     _publish_mission_event(mission, "mission.status.updated", "operator-update")
+    return mission
+
+
+@app.get("/city-missions", response_model=list[CityMission])
+async def list_city_missions() -> list[CityMission]:
+    return sorted(_city_missions.values(), key=lambda mission: mission.updated_at, reverse=True)
+
+
+@app.post("/city-missions", response_model=CityMission)
+async def create_city_mission(request_payload: CityMissionRequest) -> CityMission:
+    mission = CityMission(
+        name=request_payload.name,
+        city=request_payload.city,
+        district=request_payload.district,
+        radius_km=request_payload.radius_km,
+        assignments=request_payload.assignments,
+    )
+    mission.dispatch_results = _dispatch_city_mission(mission)
+    mission.status = MissionStatus.UPLOADED if any(result.accepted for result in mission.dispatch_results) else MissionStatus.FAILED
+    mission.updated_at = datetime.now(UTC)
+    _city_missions[mission.mission_id] = mission
+    _publish_city_mission_event(mission)
     return mission
