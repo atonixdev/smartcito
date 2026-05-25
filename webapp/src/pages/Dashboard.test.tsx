@@ -4,14 +4,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Dashboard from "./Dashboard";
 
-vi.mock("@/components/ThreeDashboardPanel", () => ({
-  default: () => (
-    <section aria-label="SmartCito 3D control plane">
-      <h3>SmartCito 3D Dashboard</h3>
-    </section>
-  ),
-}));
-
 vi.mock("@/api/controlPlane", () => ({
   useControlPlaneOverview: () => ({
     data: {
@@ -58,86 +50,84 @@ vi.mock("@/api/controlPlane", () => ({
       ],
     },
   }),
-  useUpdateOperatorControl: () => ({ isPending: false, mutate: vi.fn() }),
 }));
 
 vi.mock("@/api/cameras", () => ({
-  useCameras: () => ({ data: [], isLoading: false, isError: false }),
-  demoCameraFleet: [],
+  useCameras: () => ({
+    data: [
+      {
+        id: "demo-body-001",
+        device_id: "demo-body-001",
+        device_type: "body_camera",
+        firmware_version: "demo-1.0.0",
+        registered_at: new Date().toISOString(),
+        last_seen_at: new Date().toISOString(),
+        stream_status: "live",
+        location: { lat: -25.7479, lon: 28.2293, accuracy_m: 4.2 },
+        battery_level: 87,
+        mounted: true,
+        tamper_detected: false,
+      },
+    ],
+    isLoading: false,
+    isError: false,
+  }),
+  demoCameraFleet: [
+    {
+      id: "demo-body-001",
+      device_id: "demo-body-001",
+      device_type: "body_camera",
+      firmware_version: "demo-1.0.0",
+      registered_at: new Date().toISOString(),
+      last_seen_at: new Date().toISOString(),
+      stream_status: "live",
+      location: { lat: -25.7479, lon: 28.2293, accuracy_m: 4.2 },
+      battery_level: 87,
+      mounted: true,
+      tamper_detected: false,
+    },
+  ],
 }));
 
 vi.mock("@/api/map", () => ({
-  demoSmartMapDevices: [],
+  demoSmartMapDevices: [
+    {
+      id: "demo-map-camera-001",
+      device_id: "demo-body-001",
+      name: "Pretoria Camera Node",
+      device_type: "camera",
+      latitude: -25.7479,
+      longitude: 28.2293,
+      trust_score: 96,
+      trust_level: "verified",
+      camera_feed_url: "rtsp://demo/pretoria-camera-001",
+      sensor_type: "camera-feed",
+      sensor_value: 0.67,
+      gps_path: [[-25.749, 28.2281], [-25.7484, 28.2287], [-25.7479, 28.2293]],
+      last_seen_at: new Date().toISOString(),
+    },
+  ],
   useSmartMapOverview: () => ({
     data: {
       devices: [
         {
-          id: "raspi-edge-001",
-          device_id: "raspi-edge-001",
-          name: "Raspberry Pi Edge Node",
-          device_type: "iot",
-          latitude: -25.7461,
-          longitude: 28.1881,
+          id: "demo-map-camera-001",
+          device_id: "demo-body-001",
+          name: "Pretoria Camera Node",
+          device_type: "camera",
+          latitude: -25.7479,
+          longitude: 28.2293,
           trust_score: 92,
           trust_level: "verified",
-          camera_feed_url: "rtsp://edge/raspi-edge-001/camera",
-          sensor_type: "air-quality",
+          camera_feed_url: "rtsp://edge/demo-body-001/camera",
+          sensor_type: "camera-feed",
           sensor_value: 0.74,
-          gps_path: [[-25.7472, 28.1868], [-25.7461, 28.1881]],
+          gps_path: [[-25.749, 28.2281], [-25.7479, 28.2293]],
           last_seen_at: new Date().toISOString(),
         },
       ],
       heatmap: [],
       visible_layers: ["verified-devices"],
-      security_policy: "verified devices only",
-    },
-  }),
-}));
-
-vi.mock("@/api/scene", () => ({
-  demoSceneOverview: {
-    devices: [],
-    threats: [],
-    layers: ["iot-devices", "gps-paths", "camera-overlays", "threat-waves"],
-    camera_overlay_mode: "popup-texture-ready",
-    security_policy: "verified devices only",
-  },
-  useSceneOverview: () => ({
-    data: {
-      devices: [
-        {
-          id: "scene-raspi-edge-001",
-          device_id: "scene-raspi-edge-001",
-          name: "Raspberry Pi Edge Node",
-          device_type: "iot",
-          x: 1,
-          y: 0.4,
-          z: 1,
-          latitude: -25.7461,
-          longitude: 28.1881,
-          trust_score: 92,
-          trust_level: "verified",
-          status_color: "#67d5a5",
-          camera_feed_url: "rtsp://edge/scene-raspi-edge-001/camera",
-          sensor_type: "air-quality",
-          sensor_value: 0.74,
-          gps_path_3d: [[0, 0.05, 0], [1, 0.05, 1]],
-        },
-      ],
-      threats: [
-        {
-          id: "threat-scene-raspi-edge-001",
-          x: 1,
-          y: 0.04,
-          z: 1,
-          severity: "high",
-          radius: 2.5,
-          source_device_id: "scene-raspi-edge-001",
-          label: "AI watch zone",
-        },
-      ],
-      layers: ["iot-devices", "gps-paths", "camera-overlays", "threat-waves"],
-      camera_overlay_mode: "popup-texture-ready",
       security_policy: "verified devices only",
     },
   }),
@@ -222,7 +212,21 @@ vi.mock("@/api/droneGateway", () => ({
   }),
   useDroneFleet: () => ({
     data: {
-      drones: [],
+      drones: [
+        {
+          drone_id: "drone-patrol-001",
+          protocol: "simulated",
+          position: { latitude: -25.7454, longitude: 28.2438, altitude_m: 95 },
+          speed_mps: 8.2,
+          heading_deg: 90,
+          battery_percent: 87,
+          link_quality: 0.96,
+          flight_mode: "patrol",
+          status: "in_mission",
+          health_flags: [],
+          timestamp: new Date().toISOString(),
+        },
+      ],
       registry: [
         {
           drone_id: "drone-patrol-001",
@@ -244,15 +248,84 @@ vi.mock("@/api/droneGateway", () => ({
   useDroneGatewayMetrics: () => ({ data: 'smartcito_drone_gateway_events_total{event="commands_accepted"} 1' }),
   useDroneMissions: () => ({ data: [] }),
   useMappingOverlays: () => ({ data: { drones: [], sensors: [], threats: [], geofences: [] } }),
-  useCameraFeeds: () => ({ data: [] }),
-  useThreatAlerts: () => ({ data: [] }),
+  useCameraFeeds: () => ({
+    data: [
+      {
+        drone_id: "drone-patrol-001",
+        stream_url: "rtsp://drone-patrol-001/camera/main",
+        preview_url: "/drone-camera/streams/drone-patrol-001/preview",
+        camera_id: "demo-body-001",
+        ai_detections: [{ label: "vehicle", confidence: 0.91 }],
+        gimbal: { pitch_deg: -18, yaw_deg: 32, zoom_level: 3 },
+      },
+    ],
+  }),
+  useThreatAlerts: () => ({
+    data: [
+      {
+        alert_id: "threat-drone-patrol-001",
+        title: "High surveillance event: perimeter motion",
+        threat_level: "high",
+        source_ids: ["drone-patrol-001", "sensor-em-001"],
+        confidence: 0.86,
+        recommended_actions: ["notify-operator", "dispatch-nearest-drone"],
+      },
+    ],
+  }),
   useUploadDroneMission: () => ({ isPending: false, mutate: vi.fn() }),
-  useConnectDrone: () => ({ isPending: false, mutate: vi.fn(), data: undefined }),
   useSendDroneCommand: () => ({ isPending: false, mutate: vi.fn(), data: undefined }),
 }));
 
+vi.mock("@/api/sensors", () => ({
+  useRecentSensors: () => ({
+    data: [
+      {
+        id: "reading-1",
+        sensor_id: "sensor-em-001",
+        kind: "energy",
+        value: 13.4,
+        unit: "mT",
+        latitude: -25.7448,
+        longitude: 28.2455,
+        observed_at: new Date().toISOString(),
+        received_at: new Date().toISOString(),
+        metadata: {},
+      },
+    ],
+  }),
+}));
+
+vi.mock("@/api/events", () => ({
+  useLiveEvents: () => ({
+    data: [
+      {
+        event_id: "evt-1",
+        source: "drone-gateway",
+        entity_id: "drone-patrol-001",
+        event_type: "command.accepted",
+        occurred_at: new Date().toISOString(),
+        received_at: new Date().toISOString(),
+        payload: {},
+        metadata: {},
+      },
+    ],
+  }),
+  useAlerts: () => ({
+    data: [
+      {
+        id: "alert-1",
+        severity: "high",
+        title: "Perimeter breach",
+        message: "Motion and magnetic spike detected",
+        created_at: new Date().toISOString(),
+        payload: {},
+      },
+    ],
+  }),
+}));
+
 describe("Dashboard", () => {
-  it("renders control-plane modules", async () => {
+  it("renders the command center layout", () => {
     const queryClient = new QueryClient();
 
     render(
@@ -261,21 +334,11 @@ describe("Dashboard", () => {
       </QueryClientProvider>,
     );
 
-    expect(screen.getByRole("heading", { name: /Device Manager/i })).toBeInTheDocument();
-    expect(await screen.findByRole("heading", { name: /SmartCito 3D Dashboard/i })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /SmartCito Map/i })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /Drone Operations/i })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /Infrastructure Configuration/i })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /Kubernetes Configuration/i })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /OpenStack Configuration/i })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /Drone Status Panel/i })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /Drone Capability Panel/i })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /Live Map View/i })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /Mission Planner/i })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /Camera Feed Panel/i })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /Alerts & Threat Detection Panel/i })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /Security Monitor/i })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /Data Flow View/i })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /Operator Controls/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /pretoria command center/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /operational map and live layers/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /drone view/i })).toBeInTheDocument();
+    expect(screen.getByText(/flight controls/i)).toBeInTheDocument();
+    expect(screen.getByText(/live telemetry and logs/i)).toBeInTheDocument();
+    expect(screen.getByText(/telemetry, alerts, and commands/i)).toBeInTheDocument();
   });
 });

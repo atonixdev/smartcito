@@ -1230,6 +1230,566 @@ code {
   width: 100%;
 }
 
+.app-shell-dashboard {
+  min-height: 100vh;
+}
+
+.app-main-dashboard {
+  min-height: 100vh;
+}
+
+.command-center {
+  min-height: 100vh;
+  padding: 1.25rem;
+  background:
+    radial-gradient(circle at top right, rgba(231, 179, 68, 0.18), transparent 22%),
+    radial-gradient(circle at bottom left, rgba(74, 160, 187, 0.16), transparent 24%),
+    linear-gradient(180deg, #04101b 0%, #081822 42%, #07151e 100%);
+  color: var(--fg);
+}
+
+.command-topbar,
+.command-left-panel,
+.command-map-panel,
+.command-right-panel,
+.command-bottom-bar,
+.command-context-card,
+.command-health-card,
+.command-alert-card,
+.command-asset-card,
+.command-asset-row {
+  border: 1px solid rgba(131, 180, 195, 0.18);
+  background: rgba(5, 18, 27, 0.74);
+  box-shadow: 0 24px 40px rgba(2, 8, 12, 0.22);
+  backdrop-filter: blur(12px);
+}
+
+.command-topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.15rem;
+  border-radius: 24px;
+}
+
+.command-topbar h2,
+.command-panel-header h3,
+.command-log-header h3,
+.command-context-card h4,
+.command-subsection-header h4 {
+  margin: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+}
+
+.command-topbar p,
+.command-panel-header span,
+.command-search span,
+.command-asset-card span,
+.command-asset-row span,
+.command-alert-card span,
+.command-map-footer span,
+.command-health-card span,
+.command-log-entry span {
+  color: var(--fg-muted);
+}
+
+.command-kicker {
+  display: inline-flex;
+  margin-bottom: 0.35rem;
+  color: #8fe5db;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.command-topbar-block {
+  max-width: 44rem;
+}
+
+.command-topbar-meta {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  min-width: min(100%, 42rem);
+}
+
+.command-topbar-meta div,
+.command-alert-pill {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.85rem 0.95rem;
+  border-radius: 16px;
+  background: rgba(8, 28, 40, 0.86);
+  border: 1px solid rgba(102, 151, 170, 0.2);
+}
+
+.command-topbar-meta strong,
+.command-alert-pill {
+  color: #f5fbff;
+  font-size: 0.98rem;
+}
+
+.command-alert-pill {
+  align-content: center;
+  cursor: pointer;
+  text-align: left;
+}
+
+.command-layout {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr) 360px;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.command-left-panel,
+.command-map-panel,
+.command-right-panel,
+.command-bottom-bar {
+  border-radius: 24px;
+}
+
+.command-left-panel,
+.command-right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.command-center-panel {
+  min-width: 0;
+}
+
+.command-map-panel,
+.command-bottom-bar {
+  padding: 1rem;
+}
+
+.command-panel-header,
+.command-log-header,
+.command-subsection-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.command-panel-header.compact {
+  margin-bottom: 0.75rem;
+}
+
+.command-count,
+.command-subsection-header span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.2rem;
+  min-height: 2.2rem;
+  border-radius: 999px;
+  background: rgba(18, 56, 76, 0.72);
+  color: #f2fbff;
+  font-weight: 700;
+}
+
+.command-search {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.command-search input,
+.command-form-block select,
+.command-form-block input {
+  width: 100%;
+  border: 1px solid rgba(105, 156, 173, 0.24);
+  border-radius: 14px;
+  padding: 0.78rem 0.9rem;
+  background: rgba(9, 24, 34, 0.84);
+  color: var(--fg);
+}
+
+.command-asset-groups,
+.command-context-stack,
+.command-alert-stack,
+.command-list-block,
+.command-history-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.command-asset-list,
+.command-alert-list {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.command-asset-list.compact {
+  gap: 0.45rem;
+}
+
+.command-asset-card,
+.command-asset-row,
+.command-alert-card,
+.command-line-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 0.8rem;
+  border-radius: 16px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.command-asset-card div,
+.command-alert-card div {
+  display: grid;
+}
+
+.command-asset-card strong,
+.command-alert-card strong,
+.command-context-card strong,
+.command-health-card strong,
+.command-log-entry strong,
+.command-history-row strong,
+.command-video-feed strong {
+  color: #f6fcff;
+}
+
+.command-asset-row,
+.command-line-button {
+  background: rgba(8, 20, 31, 0.84);
+}
+
+.command-asset-card.is-selected,
+.command-asset-row.is-selected,
+.command-alert-card.is-selected,
+.command-map-marker.is-selected,
+.command-map-actions .is-active,
+.command-log-filters .is-active {
+  outline: 1px solid rgba(239, 202, 114, 0.8);
+  box-shadow: 0 0 0 1px rgba(239, 202, 114, 0.3);
+}
+
+.command-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.command-badge.healthy {
+  background: rgba(103, 213, 165, 0.16);
+  color: #8ff5c4;
+}
+
+.command-badge.warning {
+  background: rgba(233, 193, 107, 0.18);
+  color: #ffd776;
+}
+
+.command-badge.critical {
+  background: rgba(248, 113, 113, 0.16);
+  color: #ff9a9a;
+}
+
+.command-map-actions,
+.command-inline-actions,
+.command-chip-row,
+.command-log-filters,
+.command-control-grid,
+.command-layer-row,
+.command-map-footer {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.command-map-actions button,
+.command-control-grid button,
+.command-inline-actions button,
+.command-log-filters button,
+.command-alert-pill,
+.command-context-card button,
+.command-line-button {
+  border: 1px solid rgba(105, 156, 173, 0.22);
+  border-radius: 14px;
+  background: rgba(11, 29, 42, 0.82);
+  color: #f4fbff;
+  padding: 0.72rem 0.86rem;
+}
+
+.command-map-surface {
+  position: relative;
+  margin-top: 0.85rem;
+  min-height: 560px;
+  border-radius: 28px;
+  overflow: hidden;
+  cursor: crosshair;
+  background:
+    linear-gradient(145deg, rgba(6, 25, 36, 0.96), rgba(10, 35, 45, 0.88)),
+    radial-gradient(circle at 10% 20%, rgba(82, 160, 196, 0.12), transparent 18%),
+    radial-gradient(circle at 80% 35%, rgba(236, 190, 105, 0.1), transparent 24%),
+    #071520;
+}
+
+.command-map-grid,
+.command-map-roads,
+.command-draw-overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.command-map-grid {
+  background-image:
+    linear-gradient(rgba(140, 200, 220, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(140, 200, 220, 0.06) 1px, transparent 1px);
+  background-size: 52px 52px;
+}
+
+.command-map-roads {
+  background:
+    linear-gradient(115deg, transparent 34%, rgba(231, 179, 68, 0.15) 34.5%, rgba(231, 179, 68, 0.15) 35.5%, transparent 36%),
+    linear-gradient(90deg, transparent 61%, rgba(102, 176, 196, 0.18) 61.5%, rgba(102, 176, 196, 0.18) 62.5%, transparent 63%),
+    linear-gradient(180deg, transparent 22%, rgba(102, 176, 196, 0.12) 22.5%, rgba(102, 176, 196, 0.12) 23%, transparent 23.5%),
+    radial-gradient(circle at 72% 72%, rgba(46, 127, 158, 0.32), transparent 22%);
+}
+
+.command-zone {
+  position: absolute;
+  border-radius: 20px;
+  border: 1px solid rgba(244, 242, 240, 0.16);
+  backdrop-filter: blur(2px);
+}
+
+.command-zone span {
+  position: absolute;
+  top: 0.55rem;
+  left: 0.65rem;
+  font-size: 0.75rem;
+  color: #f6fbff;
+}
+
+.command-zone-critical {
+  background: rgba(229, 84, 96, 0.09);
+}
+
+.command-zone-restricted {
+  background: rgba(237, 191, 102, 0.11);
+}
+
+.command-zone-geofence {
+  background: rgba(72, 161, 184, 0.1);
+}
+
+.command-map-marker,
+.command-camera-cluster {
+  position: absolute;
+}
+
+.command-map-marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(250, 253, 255, 0.26);
+  color: #041219;
+  font-weight: 900;
+  transform: translate(-50%, -50%);
+}
+
+.command-map-marker.drone {
+  background: #8fe5db;
+}
+
+.command-map-marker.camera {
+  background: #ffd776;
+}
+
+.command-map-marker.sensor {
+  background: #a7b9ff;
+}
+
+.command-map-marker.deterrent {
+  background: #ffaf8d;
+}
+
+.command-camera-fov {
+  position: absolute;
+  top: 0.95rem;
+  left: 1rem;
+  width: 0;
+  height: 0;
+  border-top: 1.7rem solid transparent;
+  border-bottom: 1.7rem solid transparent;
+  border-left: 4.5rem solid rgba(255, 215, 118, 0.18);
+  transform: translate(-10%, -50%) rotate(-12deg);
+  pointer-events: none;
+}
+
+.command-heat {
+  position: absolute;
+  width: 7rem;
+  height: 7rem;
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(255, 169, 101, 0.42) 0%, rgba(255, 169, 101, 0.14) 38%, transparent 70%);
+}
+
+.command-heat-critical {
+  width: 9rem;
+  height: 9rem;
+  background: radial-gradient(circle, rgba(248, 113, 113, 0.48) 0%, rgba(248, 113, 113, 0.16) 42%, transparent 72%);
+}
+
+.command-map-footer {
+  margin-top: 0.85rem;
+  justify-content: space-between;
+}
+
+.command-map-footer div,
+.command-mission-card,
+.command-history-row,
+.command-video-feed,
+.command-health-card,
+.command-log-entry {
+  padding: 0.8rem 0.9rem;
+  border-radius: 16px;
+  background: rgba(7, 21, 32, 0.78);
+  border: 1px solid rgba(104, 151, 172, 0.14);
+}
+
+.command-metrics-grid,
+.command-health-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.command-metrics-grid div {
+  display: grid;
+  gap: 0.18rem;
+  padding: 0.75rem;
+  border-radius: 16px;
+  background: rgba(8, 20, 30, 0.78);
+  border: 1px solid rgba(104, 151, 172, 0.12);
+}
+
+.command-chip-row span {
+  display: inline-flex;
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(17, 52, 73, 0.66);
+  color: #d3edf7;
+  font-size: 0.8rem;
+}
+
+.command-context-card {
+  padding: 0.95rem;
+  border-radius: 20px;
+}
+
+.command-control-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.command-form-block {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+}
+
+.command-form-block label {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.command-line-button {
+  padding: 0.72rem 0.78rem;
+}
+
+.command-video-shell {
+  margin: 0.9rem 0;
+}
+
+.command-video-feed {
+  min-height: 140px;
+  display: grid;
+  align-content: end;
+  background:
+    linear-gradient(180deg, rgba(15, 54, 79, 0.12), rgba(5, 11, 18, 0.78)),
+    radial-gradient(circle at top left, rgba(74, 166, 198, 0.2), transparent 26%),
+    #04121a;
+}
+
+.command-video-feed span,
+.command-history-row span,
+.command-log-entry span {
+  font-size: 0.78rem;
+}
+
+.command-bottom-bar {
+  display: grid;
+  grid-template-columns: 420px minmax(0, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.command-log-list {
+  display: grid;
+  gap: 0.6rem;
+  max-height: 280px;
+  overflow: auto;
+}
+
+.command-log-entry {
+  display: grid;
+  grid-template-columns: 72px 86px minmax(0, 1fr);
+  gap: 0.7rem;
+  align-items: start;
+}
+
+.command-log-entry p {
+  margin: 0;
+  color: #d8e8ef;
+}
+
+.command-log-entry.alert {
+  border-color: rgba(231, 179, 68, 0.28);
+}
+
+.command-log-entry.command {
+  border-color: rgba(102, 176, 196, 0.28);
+}
+
+.command-log-entry.error {
+  border-color: rgba(248, 113, 113, 0.28);
+}
+
+@media (max-width: 1320px) {
+  .command-layout {
+    grid-template-columns: 290px minmax(0, 1fr);
+  }
+
+  .command-right-panel {
+    grid-column: 1 / -1;
+  }
+
+  .command-bottom-bar {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 860px) {
   .app-header {
     align-items: flex-start;
@@ -1276,6 +1836,36 @@ code {
   }
 
   .visualization-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .command-center {
+    padding: 0.8rem;
+  }
+
+  .command-topbar,
+  .command-layout {
+    grid-template-columns: 1fr;
+    display: grid;
+  }
+
+  .command-topbar-meta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-width: 0;
+  }
+
+  .command-map-surface {
+    min-height: 420px;
+  }
+
+  .command-metrics-grid,
+  .command-health-grid,
+  .command-control-grid,
+  .command-bottom-bar {
+    grid-template-columns: 1fr;
+  }
+
+  .command-log-entry {
     grid-template-columns: 1fr;
   }
 

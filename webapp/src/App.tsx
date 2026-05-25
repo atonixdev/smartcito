@@ -8,7 +8,7 @@
  * ============================================================================
  */
 
-import { Link, Navigate, Route, Routes } from "react-router-dom";
+import { Link, Navigate, Route, Routes, useLocation } from "react-router-dom";
 
 import Home from "./pages/Home";
 import Architecture from "./pages/Architecture";
@@ -20,22 +20,27 @@ import Roadmap from "./pages/Roadmap";
 import Visualization from "./pages/Visualization";
 
 export default function App() {
-  return (
-    <div className="app-shell">
-      <header className="app-header">
-        <h1 className="app-title">SmartCito</h1>
-        <nav className="app-nav">
-          <Link to="/home">Home</Link>
-          <Link to="/mission">Mission</Link>
-          <Link to="/architecture">Architecture</Link>
-          <Link to="/community">Community</Link>
-          <Link to="/roadmap">Roadmap</Link>
-          <Link to="/dashboard">Dashboard</Link>
-          <Link to="/visualization">Visualization</Link>
-        </nav>
-      </header>
+  const location = useLocation();
+  const isCommandCenterRoute = location.pathname === "/dashboard";
 
-      <main className="app-main">
+  return (
+    <div className={isCommandCenterRoute ? "app-shell app-shell-dashboard" : "app-shell"}>
+      {!isCommandCenterRoute ? (
+        <header className="app-header">
+          <h1 className="app-title">SmartCito</h1>
+          <nav className="app-nav">
+            <Link to="/home">Home</Link>
+            <Link to="/mission">Mission</Link>
+            <Link to="/architecture">Architecture</Link>
+            <Link to="/community">Community</Link>
+            <Link to="/roadmap">Roadmap</Link>
+            <Link to="/dashboard">Dashboard</Link>
+            <Link to="/visualization">Visualization</Link>
+          </nav>
+        </header>
+      ) : null}
+
+      <main className={isCommandCenterRoute ? "app-main app-main-dashboard" : "app-main"}>
         <Routes>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/home" element={<Home />} />
@@ -49,18 +54,20 @@ export default function App() {
         </Routes>
       </main>
 
-      <footer className="app-footer">
-        <small>
-          SmartCito · Urban Data Backbone · Apache 2.0 ·{" "}
-          <a
-            href="https://github.com/atonixdev/smartcito"
-            target="_blank"
-            rel="noreferrer"
-          >
-            GitHub
-          </a>
-        </small>
-      </footer>
+      {!isCommandCenterRoute ? (
+        <footer className="app-footer">
+          <small>
+            SmartCito · Urban Data Backbone · Apache 2.0 ·{" "}
+            <a
+              href="https://github.com/atonixdev/smartcito"
+              target="_blank"
+              rel="noreferrer"
+            >
+              GitHub
+            </a>
+          </small>
+        </footer>
+      ) : null}
     </div>
   );
 }
