@@ -58,6 +58,8 @@ class Settings(BaseSettings):
         validation_alias=AliasChoices("AUTH_AUDIENCE"),
     )
     jwt_algorithm: str = "HS256"
+    jwt_private_key_pem: str | None = Field(default=None, validation_alias=AliasChoices("JWT_PRIVATE_KEY_PEM"))
+    jwt_public_key_pem: str | None = Field(default=None, validation_alias=AliasChoices("JWT_PUBLIC_KEY_PEM"))
     jwt_access_token_expires_minutes: int = 60
     cors_allowed_origins: str = "http://localhost:5173"
 

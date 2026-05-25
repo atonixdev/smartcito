@@ -297,6 +297,7 @@ class CityMissionRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     name: str = Field(..., min_length=3, max_length=120)
+    operator_id: str = Field(default="mission-control", min_length=2, max_length=120)
     city: str = Field(..., min_length=2, max_length=80)
     district: str = Field(..., min_length=2, max_length=80)
     radius_km: float = Field(..., gt=0, le=100)
@@ -312,6 +313,7 @@ class CityMission(BaseModel):
     status: MissionStatus = MissionStatus.DRAFT
     assignments: list[CityMissionAssignmentIn]
     dispatch_results: list[CityMissionDispatchResult] = Field(default_factory=list)
+    integrity: dict[str, Any] | None = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
@@ -325,6 +327,7 @@ class MissionUploadRequest(BaseModel):
 
     drone_id: str = Field(..., min_length=2, max_length=80)
     name: str = Field(..., min_length=3, max_length=120)
+    operator_id: str = Field(default="mission-control", min_length=2, max_length=120)
     altitude_m: float = Field(..., ge=20, le=500)
     speed_mps: float = Field(..., ge=1, le=40)
     waypoints: list[MissionWaypoint] = Field(..., min_length=2, max_length=200)
@@ -349,6 +352,7 @@ class DroneMission(BaseModel):
     progress_percent: float = Field(default=0, ge=0, le=100)
     waypoints: list[MissionWaypoint] = Field(..., min_length=2, max_length=200)
     validation: MissionValidationResult | None = None
+    integrity: dict[str, Any] | None = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 

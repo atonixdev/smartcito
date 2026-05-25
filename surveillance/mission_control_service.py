@@ -18,6 +18,7 @@ from urllib import error, request
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
+from smartcito_shared.crypto import build_integrity_record, build_secure_envelope
 
 from surveillance.geospatial import evaluate_geofence_activity, resolve_zone, route_mission
 from surveillance.kafka import get_publisher
@@ -123,15 +124,39 @@ def _upload_to_gateway(mission: DroneMission) -> str:
     return str(response_body.get("adapter_status", "gateway-rejected"))
 
 
+def _mission_integrity_payload(mission: DroneMission | CityMission, operator_id: str) -> dict[str, object]:
+    return {
+        "mission_id": mission.mission_id,
+        "name": mission.name,
+        "operator_id": operator_id,
+        "status": mission.status.value,
+        "created_at": mission.created_at.isoformat(),
+        "updated_at": mission.updated_at.isoformat(),
+        "body": mission.model_dump(mode="json", exclude={"integrity"}),
+    }
+
+
+def _attach_mission_integrity(mission: DroneMission | CityMission, operator_id: str) -> None:
+    signable = _mission_integrity_payload(mission, operator_id)
+    mission.integrity = {
+        **build_integrity_record(signable, signer_id=operator_id),
+        "envelope": build_secure_envelope(signable, purpose="mission-file", signer_id=operator_id, associated=mission.mission_id),
+    }
+
+
 def _publish_mission_event(mission: DroneMission, event_type: str, upload_status: str) -> dict[str, object]:
+    mission_payload = {
+        **mission.model_dump(mode="json"),
+        "upload_status": upload_status,
+    }
     event = NormalizedEvent(
         event_type=event_type,
         source="mission-control",
         entity_id=mission.mission_id,
         topic=DRONE_MISSIONS_TOPIC,
         payload={
-            **mission.model_dump(mode="json"),
-            "upload_status": upload_status,
+            **mission_payload,
+            "security": build_secure_envelope(mission_payload, purpose="mission-event", signer_id="mission-control", associated=mission.mission_id),
         },
     )
     publish = get_publisher().publish_event(event)
@@ -255,12 +280,16 @@ def _dispatch_city_mission(mission: CityMission) -> list[CityMissionDispatchResu
 
 
 def _publish_city_mission_event(mission: CityMission) -> None:
+    mission_payload = mission.model_dump(mode="json")
     mission_event = NormalizedEvent(
         event_type=f"city-mission.{mission.status.value}",
         source="mission-control",
         entity_id=mission.mission_id,
         topic=DRONE_MISSIONS_TOPIC,
-        payload=mission.model_dump(mode="json"),
+        payload={
+            **mission_payload,
+            "security": build_secure_envelope(mission_payload, purpose="city-mission-event", signer_id="mission-control", associated=mission.mission_id),
+        },
     )
     get_publisher().publish_event(mission_event)
 
@@ -317,6 +346,7 @@ async def create_mission(request_payload: MissionUploadRequest) -> DroneMission:
         speed_mps=request_payload.speed_mps,
         waypoints=request_payload.waypoints,
     )
+    _attach_mission_integrity(mission, request_payload.operator_id)
     validation = _validate(request_payload, mission_id=mission.mission_id)
     if validation.requires_operator_review:
         mission.validation = validation
@@ -365,6 +395,7 @@ async def create_city_mission(request_payload: CityMissionRequest) -> CityMissio
         radius_km=request_payload.radius_km,
         assignments=request_payload.assignments,
     )
+    _attach_mission_integrity(mission, request_payload.operator_id)
     mission.dispatch_results = _dispatch_city_mission(mission)
     mission.status = MissionStatus.UPLOADED if any(result.accepted for result in mission.dispatch_results) else MissionStatus.FAILED
     mission.updated_at = datetime.now(UTC)

@@ -37,6 +37,8 @@ def test_drone_gateway_normalizes_telemetry() -> None:
     assert payload["event"]["topic"] == "smartcito.drone.telemetry"
     assert payload["event"]["payload"]["coordinate_system"] == "WGS84"
     assert payload["event"]["payload"]["zone"]["zone_id"] == "zone-1-cbd"
+    assert payload["event"]["payload"]["security"]["algorithm"] == "AES-256-GCM"
+    assert payload["event"]["payload"]["security"]["integrity"]["hash"]["sha256"]
     assert payload["publish"]["status"] == "kafka-unavailable"
 
 
@@ -145,6 +147,7 @@ def test_sensor_gateway_splits_alert_topics() -> None:
 
     assert response.status_code == 200
     assert response.json()["event"]["topic"] == "smartcito.sensor.alerts"
+    assert response.json()["event"]["payload"]["security"]["integrity"]["signature"]["value"]
 
 
 def test_camera_service_requires_stream_or_frame_url() -> None:
@@ -161,6 +164,7 @@ def test_camera_service_requires_stream_or_frame_url() -> None:
     frame = client.post("/frames", json={"drone_id": "drone-002", "width": 640, "height": 360})
     assert frame.status_code == 200
     assert frame.json()["event"]["topic"] == "smartcito.drone.camera.frames"
+    assert frame.json()["event"]["payload"]["snapshot_integrity"]["hash"]["sha256"]
 
     feeds = client.get("/feeds")
     assert feeds.status_code == 200
@@ -203,6 +207,8 @@ def test_mission_control_validates_and_uploads_patrol() -> None:
     payload = uploaded.json()
     assert payload["status"] in {"uploaded", "failed"}
     assert payload["validation"]["zones"]
+    assert payload["integrity"]["hash"]["sha256"]
+    assert payload["integrity"]["envelope"]["algorithm"] == "AES-256-GCM"
 
     missions = client.get("/missions")
     assert missions.status_code == 200
@@ -247,6 +253,7 @@ def test_mission_control_creates_city_mission() -> None:
     payload = response.json()
     assert payload["status"] in {"uploaded", "failed"}
     assert len(payload["dispatch_results"]) == 2
+    assert payload["integrity"]["hash"]["sha256"]
 
     missions = client.get("/city-missions")
     assert missions.status_code == 200

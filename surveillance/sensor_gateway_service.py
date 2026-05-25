@@ -15,8 +15,9 @@ from pathlib import Path
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
+from smartcito_shared.crypto import build_secure_envelope
 
-from surveillance.geospatial import resolve_zone
+from surveillance.geospatial import normalize_point, resolve_zone
 from surveillance.kafka import get_publisher
 from surveillance.models import NormalizedEvent, PublishEnvelope, SensorReading
 from surveillance.topics import SENSOR_ALERTS_TOPIC, SENSOR_READINGS_TOPIC
@@ -50,6 +51,16 @@ async def ready() -> dict[str, object]:
 async def ingest_reading(reading: SensorReading) -> PublishEnvelope:
     _latest_readings[reading.device_id] = reading
     topic = SENSOR_ALERTS_TOPIC if reading.alert else SENSOR_READINGS_TOPIC
+    normalized = normalize_point(reading.position)
+    normalized_position = normalized["position"] or reading.position
+    reading_payload = {
+        **reading.model_dump(mode="json"),
+        "position": normalized_position.model_dump(mode="json"),
+        "coordinate_system": normalized["coordinate_system"],
+        "map_projection": normalized["map_projection"],
+        "projected_position": normalized["projected"],
+        "zone": resolve_zone(normalized_position),
+    }
     event = NormalizedEvent(
         event_type="sensor.alert" if reading.alert else "sensor.reading",
         source="sensor-gateway",
@@ -57,9 +68,8 @@ async def ingest_reading(reading: SensorReading) -> PublishEnvelope:
         timestamp=reading.timestamp,
         topic=topic,
         payload={
-            **reading.model_dump(mode="json"),
-            "coordinate_system": "WGS84",
-            "zone": resolve_zone(reading.position),
+            **reading_payload,
+            "security": build_secure_envelope(reading_payload, purpose="sensor-reading", signer_id=reading.device_id, associated=reading.device_id),
         },
     )
     return PublishEnvelope(event=event, publish=get_publisher().publish_event(event))

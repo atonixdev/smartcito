@@ -10,5 +10,6 @@ shapely==2.0.6
 folium==0.18.0
 pyproj==3.6.1
 networkx==3.4.2
+cryptography==43.0.3
 dronekit
 mavsdk

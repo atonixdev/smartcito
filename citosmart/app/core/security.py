@@ -72,7 +72,10 @@ def create_access_token(
         minutes=expires_minutes or settings.jwt_access_token_expires_minutes
     )
     payload: dict[str, Any] = {"sub": subject, "role": role, "exp": expire}
-    return jwt.encode(payload, settings.secret_key, algorithm=settings.jwt_algorithm)
+    signing_key = settings.secret_key
+    if settings.jwt_algorithm.startswith(("RS", "ES")) and settings.jwt_private_key_pem:
+        signing_key = settings.jwt_private_key_pem
+    return jwt.encode(payload, signing_key, algorithm=settings.jwt_algorithm)
 
 
 def decode_token(token: str) -> TokenPayload:
@@ -83,7 +86,10 @@ def decode_token(token: str) -> TokenPayload:
     """
     settings = get_settings()
     try:
-        raw = jwt.decode(token, settings.secret_key, algorithms=[settings.jwt_algorithm])
+        verification_key = settings.secret_key
+        if settings.jwt_algorithm.startswith(("RS", "ES")) and settings.jwt_public_key_pem:
+            verification_key = settings.jwt_public_key_pem
+        raw = jwt.decode(token, verification_key, algorithms=[settings.jwt_algorithm])
         return TokenPayload(**raw)
     except (InvalidTokenError, ValueError) as exc:
         raise HTTPException(

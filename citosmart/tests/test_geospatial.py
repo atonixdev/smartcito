@@ -68,6 +68,8 @@ def test_geospatial_dataset_seeds_demo_features(client: TestClient) -> None:
     assert payload["geojson_layers"]["geofence"]["features"]
     assert payload["geojson_layers"]["drone_path"]["features"]
     assert payload["geojson_layers"]["robot_path"]["features"]
+    assert payload["geofences"][0]["integrity"]["hash"]["sha256"]
+    assert payload["geofences"][0]["integrity"]["signature"]["value"]
 
 
 def test_geospatial_upsert_persists_custom_feature(client: TestClient) -> None:

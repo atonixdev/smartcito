@@ -53,6 +53,7 @@ class GeoFeatureIn(BaseModel):
 
 class GeoFeatureOut(GeoFeatureIn):
     id: UUID = Field(default_factory=uuid4)
+    integrity: dict | None = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 

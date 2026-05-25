@@ -17,6 +17,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
+from app.core.crypto import build_integrity_record
 from app.db.models import GeoFeatureORM
 from app.schemas.geospatial import GeoDatasetOut, GeoFeatureCollection, GeoFeatureIn, GeoFeatureOut, GeoFeatureType
 
@@ -192,6 +193,16 @@ class GeospatialRegistryService:
         return geometry_geojson
 
     def _to_schema(self, record: GeoFeatureORM) -> GeoFeatureOut:
+        signable_payload = {
+            "feature_id": record.feature_id,
+            "name": record.name,
+            "feature_type": record.feature_type,
+            "zone": record.zone,
+            "geometry": record.geometry_geojson,
+            "properties": record.properties,
+            "source_service": record.source_service,
+            "timestamp": record.timestamp.isoformat() if record.timestamp else None,
+        }
         return GeoFeatureOut(
             id=record.id,
             feature_id=record.feature_id,
@@ -202,6 +213,7 @@ class GeospatialRegistryService:
             properties=record.properties,
             source_service=record.source_service,
             timestamp=record.timestamp,
+            integrity=build_integrity_record(signable_payload, signer_id="citosmart-geospatial-registry"),
             created_at=record.created_at,
             updated_at=record.updated_at,
         )

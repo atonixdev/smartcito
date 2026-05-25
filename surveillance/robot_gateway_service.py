@@ -16,8 +16,10 @@ from uuid import uuid4
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
+from smartcito_shared.crypto import build_secure_envelope
 
 from surveillance.kafka import get_publisher
+from surveillance.geospatial import normalize_point, resolve_zone
 from surveillance.models import (
     NormalizedEvent,
     PublishEnvelope,
@@ -184,7 +186,17 @@ def _dispatch_command(command: RobotCommand) -> RobotCommandAck:
         source="robot-gateway",
         entity_id=command.robot_id,
         topic=ROBOT_EVENTS_TOPIC,
-        payload={**command.model_dump(mode="json"), "adapter_status": adapter_status, "accepted": accepted},
+        payload={
+            **command.model_dump(mode="json"),
+            "adapter_status": adapter_status,
+            "accepted": accepted,
+            "security": build_secure_envelope(
+                {**command.model_dump(mode="json"), "adapter_status": adapter_status, "accepted": accepted},
+                purpose="robot-command",
+                signer_id="robot-gateway",
+                associated=command.robot_id,
+            ),
+        },
     )
     publish = get_publisher().publish_event(event)
     return RobotCommandAck(
@@ -266,13 +278,26 @@ async def get_capabilities(robot_id: str) -> RobotCapabilities:
 async def ingest_telemetry(telemetry: RobotTelemetry) -> PublishEnvelope:
     _latest_telemetry[telemetry.robot_id] = telemetry
     _robot_protocols[telemetry.robot_id] = telemetry.protocol
+    normalized = normalize_point(telemetry.position)
+    normalized_position = normalized["position"] or telemetry.position
+    telemetry_payload = {
+        **telemetry.model_dump(mode="json"),
+        "position": normalized_position.model_dump(mode="json"),
+        "coordinate_system": normalized["coordinate_system"],
+        "map_projection": normalized["map_projection"],
+        "projected_position": normalized["projected"],
+        "zone": resolve_zone(normalized_position),
+    }
     event = NormalizedEvent(
         event_type="robot.telemetry.received",
         source="robot-gateway",
         entity_id=telemetry.robot_id,
         timestamp=telemetry.timestamp,
         topic=ROBOT_TELEMETRY_TOPIC,
-        payload={**telemetry.model_dump(mode="json"), "coordinate_system": "WGS84"},
+        payload={
+            **telemetry_payload,
+            "security": build_secure_envelope(telemetry_payload, purpose="robot-telemetry", signer_id=telemetry.robot_id, associated=telemetry.robot_id),
+        },
     )
     return PublishEnvelope(event=event, publish=get_publisher().publish_event(event))
 

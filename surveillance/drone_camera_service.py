@@ -13,6 +13,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
+from smartcito_shared.crypto import build_integrity_record, build_secure_envelope
 
 from surveillance.geospatial import resolve_zone
 from surveillance.kafka import get_publisher
@@ -91,6 +92,13 @@ async def ingest_frame(frame: FrameMetadata) -> PublishEnvelope:
     position = frame.position or (stream.position if stream else None)
     preview_url = frame.preview_url or (f"/streams/{frame.drone_id}/preview" if stream and stream.preview_enabled else None)
     _latest_frames[frame.drone_id] = frame
+    frame_payload = {
+        **frame.model_dump(mode="json"),
+        "stream_url": stream_url,
+        "preview_url": preview_url,
+        "coordinate_system": "WGS84",
+        "zone": resolve_zone(position),
+    }
     event = NormalizedEvent(
         event_type="drone.camera.frame",
         source="drone-camera-ingestion",
@@ -98,11 +106,9 @@ async def ingest_frame(frame: FrameMetadata) -> PublishEnvelope:
         timestamp=frame.timestamp,
         topic=DRONE_CAMERA_FRAMES_TOPIC,
         payload={
-            **frame.model_dump(mode="json"),
-            "stream_url": stream_url,
-            "preview_url": preview_url,
-            "coordinate_system": "WGS84",
-            "zone": resolve_zone(position),
+            **frame_payload,
+            "snapshot_integrity": build_integrity_record(frame_payload, signer_id=frame.drone_id),
+            "security": build_secure_envelope(frame_payload, purpose="camera-frame", signer_id=frame.drone_id, associated=frame.frame_id),
         },
     )
     return PublishEnvelope(event=event, publish=get_publisher().publish_event(event))

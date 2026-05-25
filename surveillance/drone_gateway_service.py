@@ -15,6 +15,7 @@ from uuid import uuid4
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Response
+from smartcito_shared.crypto import build_secure_envelope
 
 from surveillance.adapters import adapter_for, supported_protocols
 from surveillance.geospatial import resolve_zone
@@ -111,6 +112,11 @@ async def ingest_telemetry(telemetry: DroneTelemetry) -> PublishEnvelope:
     _drone_protocols[telemetry.drone_id] = telemetry.protocol
     metrics.increment("telemetry_received")
     zone = resolve_zone(telemetry.position)
+    telemetry_payload = {
+        **telemetry.model_dump(mode="json"),
+        "coordinate_system": "WGS84",
+        "zone": zone,
+    }
     event = NormalizedEvent(
         event_type="drone.telemetry.received",
         source="drone-gateway",
@@ -118,9 +124,8 @@ async def ingest_telemetry(telemetry: DroneTelemetry) -> PublishEnvelope:
         timestamp=telemetry.timestamp,
         topic=DRONE_TELEMETRY_TOPIC,
         payload={
-            **telemetry.model_dump(mode="json"),
-            "coordinate_system": "WGS84",
-            "zone": zone,
+            **telemetry_payload,
+            "security": build_secure_envelope(telemetry_payload, purpose="drone-telemetry", signer_id=telemetry.drone_id, associated=telemetry.drone_id),
         },
     )
     return PublishEnvelope(event=event, publish=get_publisher().publish_event(event))
@@ -161,7 +166,17 @@ def _dispatch_command(command: DroneCommand) -> DroneCommandAck:
         source="drone-gateway",
         entity_id=command.drone_id,
         topic=DRONE_EVENTS_TOPIC,
-        payload={**command.model_dump(mode="json"), "adapter_status": adapter_status, "accepted": accepted},
+        payload={
+            **command.model_dump(mode="json"),
+            "adapter_status": adapter_status,
+            "accepted": accepted,
+            "security": build_secure_envelope(
+                {**command.model_dump(mode="json"), "adapter_status": adapter_status, "accepted": accepted},
+                purpose="drone-command",
+                signer_id="drone-gateway",
+                associated=command.drone_id,
+            ),
+        },
     )
     publish = get_publisher().publish_event(event)
     return DroneCommandAck(
