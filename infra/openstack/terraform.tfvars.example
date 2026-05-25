@@ -4,7 +4,7 @@ username            = "smartcito-admin"
 password            = "change-me"
 region              = "RegionOne"
 external_network_id = "public-network-id"
-image_name          = "ubuntu-22.04"
+image_name          = "smartcito-os-ubuntu-22.04-2026.05"
 key_pair            = "smartcito-keypair"
 
 public_subnet_cidr   = "172.20.10.0/24"

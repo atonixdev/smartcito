@@ -96,6 +96,8 @@ For a single wiki-style project entry point, start with [`docs/WIKI.md`](docs/WI
 For pilot or hardware-backed deployments, see [`docs/DOCKER_DEPLOYMENT.md`](docs/DOCKER_DEPLOYMENT.md)
 and [`hardware/`](hardware/).
 
+For the official OpenStack and Kubernetes node image, see [`infra/openstack/smartcito-os/README.md`](infra/openstack/smartcito-os/README.md).
+
 
 ---
 

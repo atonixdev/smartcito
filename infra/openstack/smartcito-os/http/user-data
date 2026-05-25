@@ -1,0 +1,13 @@
+#cloud-config
+datasource_list: [ OpenStack, ConfigDrive, NoCloud ]
+manage_etc_hosts: true
+package_update: true
+package_upgrade: false
+ssh_pwauth: false
+disable_root: true
+preserve_hostname: false
+runcmd:
+  - systemctl enable ssh
+  - systemctl start ssh
+  - systemctl enable systemd-resolved || true
+  - systemctl start systemd-resolved || true
