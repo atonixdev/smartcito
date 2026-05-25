@@ -1,0 +1,447 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: observability
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+
+    rule_files:
+      - /etc/prometheus/alerts.yml
+
+    scrape_configs:
+      - job_name: prometheus
+        static_configs:
+          - targets: ["prometheus.observability.svc.cluster.local:9090"]
+
+      - job_name: citosmart-api
+        metrics_path: /metrics
+        static_configs:
+          - targets: ["citosmart-api.backend.svc.cluster.local:8000"]
+
+      - job_name: ingestion-producer
+        static_configs:
+          - targets: ["ingestion-kafka-producer.ingestion.svc.cluster.local:8100"]
+
+      - job_name: memcached
+        static_configs:
+          - targets: ["memcached.data-platform.svc.cluster.local:9150"]
+
+      - job_name: postgres-exporter
+        static_configs:
+          - targets: ["postgres-exporter.observability.svc.cluster.local:9187"]
+
+      - job_name: kafka-exporter
+        static_configs:
+          - targets: ["kafka-exporter.observability.svc.cluster.local:9308"]
+
+      - job_name: node-exporter
+        static_configs:
+          - targets: ["node-exporter.observability.svc.cluster.local:9100"]
+
+      - job_name: fluent-bit
+        static_configs:
+          - targets: ["fluent-bit.observability.svc.cluster.local:2020"]
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-alerts
+  namespace: observability
+data:
+  alerts.yml: |
+    groups:
+      - name: smartcito-cache
+        rules:
+          - alert: MemcachedExporterDown
+            expr: up{job="memcached"} == 0
+            for: 2m
+            labels:
+              severity: critical
+            annotations:
+              summary: Memcached exporter is down
+              description: Memcached metrics have not been scraped successfully for more than 2 minutes.
+
+          - alert: SmartCitoCacheLowHitRatio
+            expr: |
+              (
+                sum(rate(smartcito_cache_hits_total[10m]))
+                /
+                clamp_min(sum(rate(smartcito_cache_hits_total[10m])) + sum(rate(smartcito_cache_misses_total[10m])), 1)
+              ) < 0.60
+            for: 15m
+            labels:
+              severity: warning
+            annotations:
+              summary: SmartCito cache hit ratio is low
+              description: Cache hit ratio has been below 60% for 15 minutes. Review cache coverage and TTL choices.
+
+          - alert: SmartCitoCacheErrorsHigh
+            expr: sum(rate(smartcito_cache_errors_total[5m])) > 0.05
+            for: 10m
+            labels:
+              severity: warning
+            annotations:
+              summary: SmartCito cache errors are elevated
+              description: Cache get/set/delete operations are failing more often than expected.
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prometheus-data
+  namespace: observability
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: cinder-csi
+  resources:
+    requests:
+      storage: 50Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  namespace: observability
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+        - name: prometheus
+          image: prom/prometheus:v2.54.1
+          args:
+            - --config.file=/etc/prometheus/prometheus.yml
+            - --storage.tsdb.path=/prometheus
+          ports:
+            - containerPort: 9090
+          volumeMounts:
+            - name: config
+              mountPath: /etc/prometheus/prometheus.yml
+              subPath: prometheus.yml
+            - name: alerts
+              mountPath: /etc/prometheus/alerts.yml
+              subPath: alerts.yml
+            - name: data
+              mountPath: /prometheus
+      volumes:
+        - name: config
+          configMap:
+            name: prometheus-config
+        - name: alerts
+          configMap:
+            name: prometheus-alerts
+        - name: data
+          persistentVolumeClaim:
+            claimName: prometheus-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+  namespace: observability
+spec:
+  selector:
+    app: prometheus
+  ports:
+    - port: 9090
+      targetPort: 9090
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: grafana-admin
+  namespace: observability
+type: Opaque
+stringData:
+  GF_SECURITY_ADMIN_USER: admin
+  GF_SECURITY_ADMIN_PASSWORD: change-me
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+  namespace: observability
+data:
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        uid: prometheus
+        type: prometheus
+        access: proxy
+        url: http://prometheus.observability.svc.cluster.local:9090
+        isDefault: true
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-provider
+  namespace: observability
+data:
+  dashboards.yaml: |
+    apiVersion: 1
+    providers:
+      - name: smartcito
+        orgId: 1
+        folder: SmartCito
+        type: file
+        options:
+          path: /var/lib/grafana/dashboards
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-smartcito-dashboard
+  namespace: observability
+data:
+  smartcito-overview.json: |
+    {
+      "uid": "smartcito-overview",
+      "annotations": {"list": []},
+      "editable": true,
+      "graphTooltip": 0,
+      "links": [],
+      "panels": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}}, "overrides": []},
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+          "id": 1,
+          "targets": [{"expr": "sum(rate(smartcito_cache_hits_total[5m]))", "refId": "A"}],
+          "title": "Cache Hits / s",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}}, "overrides": []},
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+          "id": 2,
+          "targets": [{"expr": "sum(rate(smartcito_cache_misses_total[5m]))", "refId": "A"}],
+          "title": "Cache Misses / s",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}}, "overrides": []},
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+          "id": 3,
+          "targets": [{"expr": "pg_up", "refId": "A"}],
+          "title": "PostgreSQL Exporter Up",
+          "type": "stat"
+        },
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}}, "overrides": []},
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+          "id": 4,
+          "targets": [{"expr": "kafka_brokers", "refId": "A"}],
+          "title": "Kafka Brokers",
+          "type": "stat"
+        }
+      ],
+      "refresh": "15s",
+      "schemaVersion": 39,
+      "tags": ["smartcito"],
+      "templating": {"list": []},
+      "time": {"from": "now-6h", "to": "now"},
+      "title": "SmartCito Overview",
+      "version": 1
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: observability
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+        - name: grafana
+          image: grafana/grafana:11.2.0
+          envFrom:
+            - secretRef:
+                name: grafana-admin
+          env:
+            - name: GF_SERVER_ROOT_URL
+              value: %(protocol)s://%(domain)s/grafana/
+            - name: GF_SERVER_SERVE_FROM_SUB_PATH
+              value: "true"
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+            - name: datasources
+              mountPath: /etc/grafana/provisioning/datasources/datasources.yaml
+              subPath: datasources.yaml
+            - name: provider
+              mountPath: /etc/grafana/provisioning/dashboards/dashboards.yaml
+              subPath: dashboards.yaml
+            - name: dashboards
+              mountPath: /var/lib/grafana/dashboards/smartcito-overview.json
+              subPath: smartcito-overview.json
+      volumes:
+        - name: datasources
+          configMap:
+            name: grafana-datasources
+        - name: provider
+          configMap:
+            name: grafana-dashboard-provider
+        - name: dashboards
+          configMap:
+            name: grafana-smartcito-dashboard
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  namespace: observability
+spec:
+  selector:
+    app: grafana
+  ports:
+    - port: 3000
+      targetPort: 3000
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-exporter
+  namespace: observability
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-exporter
+  template:
+    metadata:
+      labels:
+        app: postgres-exporter
+    spec:
+      containers:
+        - name: postgres-exporter
+          image: prometheuscommunity/postgres-exporter:v0.16.0
+          env:
+            - name: DATA_SOURCE_URI
+              value: postgres.database.svc.cluster.local:5432/smartcito?sslmode=disable
+            - name: DATA_SOURCE_USER
+              value: smartcito
+            - name: DATA_SOURCE_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: smartcito-platform-secrets
+                  key: DB_PASSWORD
+                  optional: true
+          ports:
+            - containerPort: 9187
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-exporter
+  namespace: observability
+spec:
+  selector:
+    app: postgres-exporter
+  ports:
+    - port: 9187
+      targetPort: 9187
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-exporter
+  namespace: observability
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-exporter
+  template:
+    metadata:
+      labels:
+        app: kafka-exporter
+    spec:
+      containers:
+        - name: kafka-exporter
+          image: danielqsj/kafka-exporter:v1.7.0
+          args:
+            - --kafka.server=kafka-bootstrap.data-platform.svc.cluster.local:9092
+          ports:
+            - containerPort: 9308
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-exporter
+  namespace: observability
+spec:
+  selector:
+    app: kafka-exporter
+  ports:
+    - port: 9308
+      targetPort: 9308
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-exporter
+  namespace: observability
+spec:
+  selector:
+    matchLabels:
+      app: node-exporter
+  template:
+    metadata:
+      labels:
+        app: node-exporter
+    spec:
+      hostNetwork: true
+      hostPID: true
+      containers:
+        - name: node-exporter
+          image: prom/node-exporter:v1.8.2
+          args:
+            - --path.rootfs=/host
+          ports:
+            - containerPort: 9100
+          volumeMounts:
+            - name: root
+              mountPath: /host
+              readOnly: true
+      volumes:
+        - name: root
+          hostPath:
+            path: /
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-exporter
+  namespace: observability
+spec:
+  selector:
+    app: node-exporter
+  ports:
+    - port: 9100
+      targetPort: 9100
+  type: ClusterIP

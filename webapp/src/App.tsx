@@ -17,6 +17,7 @@ import Dashboard from "./pages/Dashboard";
 import Mission from "./pages/Mission";
 import NotFound from "./pages/NotFound";
 import Roadmap from "./pages/Roadmap";
+import Visualization from "./pages/Visualization";
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
           <Link to="/community">Community</Link>
           <Link to="/roadmap">Roadmap</Link>
           <Link to="/dashboard">Dashboard</Link>
+          <Link to="/visualization">Visualization</Link>
         </nav>
       </header>
 
@@ -42,6 +44,7 @@ export default function App() {
           <Route path="/community" element={<Community />} />
           <Route path="/roadmap" element={<Roadmap />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/visualization" element={<Visualization />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

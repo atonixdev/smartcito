@@ -90,9 +90,8 @@ class MemcachedCacheService:
 
         try:
             raw = self._client.get(key)  # type: ignore[union-attr]
-        except MemcacheError as exc:
-            CACHE_ERRORS.labels(operation="get").inc()
-            logger.warning("Memcached get failed for %s: %s", key, exc)
+        except (MemcacheError, OSError) as exc:
+            self._record_cache_error("get", key, exc)
             return None
 
         if raw is None:
@@ -119,9 +118,12 @@ class MemcachedCacheService:
                 effective_policy.ttl_seconds,
                 effective_policy.purpose,
             )
-        except (MemcacheError, TypeError, ValueError) as exc:
-            CACHE_ERRORS.labels(operation="set").inc()
-            logger.warning("Memcached set failed for %s: %s", key, exc)
+        except (MemcacheError, OSError, TypeError, ValueError) as exc:
+            if isinstance(exc, (TypeError, ValueError)):
+                CACHE_ERRORS.labels(operation="set").inc()
+                logger.warning("Memcached set failed for %s: %s", key, exc)
+                return
+            self._record_cache_error("set", key, exc)
 
     def delete(self, key: str) -> None:
         if not self.is_enabled():
@@ -133,9 +135,8 @@ class MemcachedCacheService:
             self._client.delete(key)  # type: ignore[union-attr]
             CACHE_INVALIDATIONS.labels(purpose=purpose).inc()
             logger.info("cache invalidate key=%s", key)
-        except MemcacheError as exc:
-            CACHE_ERRORS.labels(operation="delete").inc()
-            logger.warning("Memcached delete failed for %s: %s", key, exc)
+        except (MemcacheError, OSError) as exc:
+            self._record_cache_error("delete", key, exc)
 
     def delete_many(self, keys: list[str]) -> None:
         for key in keys:
@@ -151,6 +152,12 @@ class MemcachedCacheService:
         if key.startswith("dashboard:") or "dashboard-summary" in key:
             return self._policies.dashboard.purpose
         return self._policies.api.purpose
+
+    def _record_cache_error(self, operation: str, key: str, exc: Exception) -> None:
+        CACHE_ERRORS.labels(operation=operation).inc()
+        logger.warning("Memcached %s failed for %s: %s", operation, key, exc)
+        self._enabled = False
+        self._client = None
 
 
 cache_service = MemcachedCacheService()

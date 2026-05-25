@@ -157,3 +157,99 @@ resource "openstack_compute_instance_v2" "spark_workers" {
     uuid = var.services_network_id
   }
 }
+
+resource "openstack_compute_instance_v2" "postgres_primary" {
+  name            = "smartcito-postgres-primary"
+  image_name      = var.image_name
+  flavor_name     = var.postgres_primary_flavor_name
+  key_pair        = var.key_pair
+  security_groups = var.database_security_groups
+  user_data       = local.cloud_init
+
+  network {
+    uuid = var.database_network_id
+  }
+}
+
+resource "openstack_compute_instance_v2" "postgres_replicas" {
+  count           = var.postgres_replica_count
+  name            = "smartcito-postgres-replica-${count.index + 1}"
+  image_name      = var.image_name
+  flavor_name     = var.postgres_replica_flavor_name
+  key_pair        = var.key_pair
+  security_groups = var.database_security_groups
+  user_data       = local.cloud_init
+
+  network {
+    uuid = var.database_network_id
+  }
+}
+
+resource "openstack_compute_instance_v2" "hdfs_namenodes" {
+  count           = var.hdfs_namenode_count
+  name            = "smartcito-hdfs-namenode-${count.index + 1}"
+  image_name      = var.image_name
+  flavor_name     = var.hdfs_namenode_flavor_name
+  key_pair        = var.key_pair
+  security_groups = var.data_platform_security_groups
+  user_data       = local.cloud_init
+
+  network {
+    uuid = var.services_network_id
+  }
+}
+
+resource "openstack_compute_instance_v2" "hdfs_datanodes" {
+  count           = var.hdfs_datanode_count
+  name            = "smartcito-hdfs-datanode-${count.index + 1}"
+  image_name      = var.image_name
+  flavor_name     = var.hdfs_datanode_flavor_name
+  key_pair        = var.key_pair
+  security_groups = var.data_platform_security_groups
+  user_data       = local.cloud_init
+
+  network {
+    uuid = var.services_network_id
+  }
+}
+
+resource "openstack_compute_instance_v2" "zookeeper_nodes" {
+  count           = var.zookeeper_node_count
+  name            = "smartcito-zookeeper-${count.index + 1}"
+  image_name      = var.image_name
+  flavor_name     = var.zookeeper_flavor_name
+  key_pair        = var.key_pair
+  security_groups = var.data_platform_security_groups
+  user_data       = local.cloud_init
+
+  network {
+    uuid = var.services_network_id
+  }
+}
+
+resource "openstack_compute_instance_v2" "hbase_master" {
+  name            = "smartcito-hbase-master"
+  image_name      = var.image_name
+  flavor_name     = var.hbase_master_flavor_name
+  key_pair        = var.key_pair
+  security_groups = var.data_platform_security_groups
+  user_data       = local.cloud_init
+
+  network {
+    uuid = var.services_network_id
+  }
+}
+
+resource "openstack_compute_instance_v2" "hbase_regionservers" {
+  count           = var.hbase_regionserver_count
+  name            = "smartcito-hbase-regionserver-${count.index + 1}"
+  image_name      = var.image_name
+  flavor_name     = var.hbase_regionserver_flavor_name
+  key_pair        = var.key_pair
+  security_groups = var.data_platform_security_groups
+  user_data       = local.cloud_init
+
+  network {
+    uuid = var.services_network_id
+  }
+}

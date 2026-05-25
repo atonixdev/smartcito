@@ -170,6 +170,86 @@ resource "openstack_networking_secgroup_rule_v2" "data_platform_memcached" {
   security_group_id = openstack_networking_secgroup_v2.data_platform_internal.id
 }
 
+resource "openstack_networking_secgroup_rule_v2" "data_platform_hdfs_rpc" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 8020
+  port_range_max    = 8020
+  remote_ip_prefix  = var.services_subnet_cidr
+  security_group_id = openstack_networking_secgroup_v2.data_platform_internal.id
+}
+
+resource "openstack_networking_secgroup_rule_v2" "data_platform_hdfs_web" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 9870
+  port_range_max    = 9870
+  remote_ip_prefix  = var.services_subnet_cidr
+  security_group_id = openstack_networking_secgroup_v2.data_platform_internal.id
+}
+
+resource "openstack_networking_secgroup_rule_v2" "data_platform_hdfs_datanode" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 9864
+  port_range_max    = 9867
+  remote_ip_prefix  = var.services_subnet_cidr
+  security_group_id = openstack_networking_secgroup_v2.data_platform_internal.id
+}
+
+resource "openstack_networking_secgroup_rule_v2" "data_platform_hbase_master" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 16000
+  port_range_max    = 16010
+  remote_ip_prefix  = var.services_subnet_cidr
+  security_group_id = openstack_networking_secgroup_v2.data_platform_internal.id
+}
+
+resource "openstack_networking_secgroup_rule_v2" "data_platform_hbase_regionserver" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 16020
+  port_range_max    = 16030
+  remote_ip_prefix  = var.services_subnet_cidr
+  security_group_id = openstack_networking_secgroup_v2.data_platform_internal.id
+}
+
+resource "openstack_networking_secgroup_rule_v2" "data_platform_hbase_thrift" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 9090
+  port_range_max    = 9095
+  remote_ip_prefix  = var.services_subnet_cidr
+  security_group_id = openstack_networking_secgroup_v2.data_platform_internal.id
+}
+
+resource "openstack_networking_secgroup_rule_v2" "data_platform_zookeeper_client" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 2181
+  port_range_max    = 2181
+  remote_ip_prefix  = var.services_subnet_cidr
+  security_group_id = openstack_networking_secgroup_v2.data_platform_internal.id
+}
+
+resource "openstack_networking_secgroup_rule_v2" "data_platform_zookeeper_quorum" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 2888
+  port_range_max    = 3888
+  remote_ip_prefix  = var.services_subnet_cidr
+  security_group_id = openstack_networking_secgroup_v2.data_platform_internal.id
+}
+
 resource "openstack_networking_secgroup_rule_v2" "database_postgres" {
   direction         = "ingress"
   ethertype         = "IPv4"

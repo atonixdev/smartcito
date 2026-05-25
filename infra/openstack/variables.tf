@@ -106,6 +106,41 @@ variable "spark_worker_flavor_name" {
   default = "m1.xlarge"
 }
 
+variable "postgres_primary_flavor_name" {
+  type    = string
+  default = "m1.xlarge"
+}
+
+variable "postgres_replica_flavor_name" {
+  type    = string
+  default = "m1.large"
+}
+
+variable "hdfs_namenode_flavor_name" {
+  type    = string
+  default = "m1.large"
+}
+
+variable "hdfs_datanode_flavor_name" {
+  type    = string
+  default = "m1.xlarge"
+}
+
+variable "hbase_master_flavor_name" {
+  type    = string
+  default = "m1.large"
+}
+
+variable "hbase_regionserver_flavor_name" {
+  type    = string
+  default = "m1.xlarge"
+}
+
+variable "zookeeper_flavor_name" {
+  type    = string
+  default = "m1.medium"
+}
+
 variable "service_node_count" {
   type    = number
   default = 2
@@ -131,6 +166,31 @@ variable "spark_worker_count" {
   default = 2
 }
 
+variable "postgres_replica_count" {
+  type    = number
+  default = 1
+}
+
+variable "hdfs_namenode_count" {
+  type    = number
+  default = 2
+}
+
+variable "hdfs_datanode_count" {
+  type    = number
+  default = 3
+}
+
+variable "hbase_regionserver_count" {
+  type    = number
+  default = 3
+}
+
+variable "zookeeper_node_count" {
+  type    = number
+  default = 3
+}
+
 variable "database_volume_size_gb" {
   type    = number
   default = 100
@@ -154,4 +214,29 @@ variable "kafka_log_volume_size_gb" {
 variable "spark_checkpoint_volume_size_gb" {
   type    = number
   default = 150
+}
+
+variable "postgres_data_volume_size_gb" {
+  type    = number
+  default = 200
+}
+
+variable "postgres_wal_volume_size_gb" {
+  type    = number
+  default = 100
+}
+
+variable "postgres_replica_volume_size_gb" {
+  type    = number
+  default = 150
+}
+
+variable "hdfs_namenode_volume_size_gb" {
+  type    = number
+  default = 200
+}
+
+variable "hdfs_datanode_volume_size_gb" {
+  type    = number
+  default = 500
 }

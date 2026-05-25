@@ -5,8 +5,8 @@ data-movement backbone.
 
 ## Purpose
 
-Deploy SmartCito services, Memcached, Kafka, Spark Streaming, and supporting storage on a
-Kubernetes cluster that runs on OpenStack.
+Deploy SmartCito services, Memcached, Kafka, Spark Streaming, visualization,
+logging, and supporting storage on a Kubernetes cluster that runs on OpenStack.
 
 ## Included platform layers
 
@@ -17,7 +17,10 @@ Kubernetes cluster that runs on OpenStack.
 - Kafka KRaft cluster and topic bootstrap job.
 - Spark master, workers, and a packaged streaming job image with checkpoint storage.
 - SmartCito API and standalone Kafka consumer deployments.
-- Network policies for internal-only traffic between ingestion, Kafka, Spark, backend, and database.
+- Plotly Dash, a private visualization gateway, and internal frontend exposure.
+- Prometheus, Grafana, PostgreSQL and Kafka exporters, and node metrics collection.
+- Elasticsearch, Kibana, and Fluent Bit for centralized platform logs.
+- Network policies for internal-only traffic between ingestion, Kafka, Spark, backend, visualization, observability, and database.
 
 ## How To Run
 
@@ -26,9 +29,17 @@ kubectl apply -f infra/kubernetes/namespaces.yaml
 kubectl apply -f infra/kubernetes/platform-config.yaml
 kubectl apply -f infra/kubernetes/storage-openstack.yaml
 kubectl apply -f infra/kubernetes/memcached-cluster.yaml
+kubectl apply -f infra/kubernetes/plotly-dash.yaml
+kubectl apply -f infra/kubernetes/observability-stack.yaml
+kubectl apply -f infra/kubernetes/logging-stack.yaml
+kubectl apply -f infra/kubernetes/visualization-gateway.yaml
 kubectl apply -f infra/kubernetes/
 ```
 
 Use the OpenStack cloud controller manager and Cinder CSI driver so
 `LoadBalancer` services and `cinder-csi` persistent volumes are provisioned by
 the underlying OpenStack cluster.
+
+Replace placeholder secrets such as Grafana admin credentials, PostgreSQL
+passwords, and OpenStack network CIDRs before applying the manifests to a live
+cluster.

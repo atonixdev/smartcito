@@ -44,7 +44,47 @@ variable "spark_checkpoint_volume_size_gb" {
   default = 150
 }
 
+variable "postgres_data_volume_size_gb" {
+  type    = number
+  default = 200
+}
+
+variable "postgres_wal_volume_size_gb" {
+  type    = number
+  default = 100
+}
+
+variable "postgres_replica_volume_size_gb" {
+  type    = number
+  default = 150
+}
+
+variable "hdfs_namenode_volume_size_gb" {
+  type    = number
+  default = 200
+}
+
+variable "hdfs_datanode_volume_size_gb" {
+  type    = number
+  default = 500
+}
+
 variable "kafka_broker_count" {
+  type    = number
+  default = 3
+}
+
+variable "postgres_replica_count" {
+  type    = number
+  default = 1
+}
+
+variable "hdfs_namenode_count" {
+  type    = number
+  default = 2
+}
+
+variable "hdfs_datanode_count" {
   type    = number
   default = 3
 }

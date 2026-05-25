@@ -930,6 +930,120 @@ code {
   font-size: 0.84rem;
 }
 
+.visualization-page {
+  display: grid;
+  gap: 1.5rem;
+  margin: 0 auto;
+  max-width: 1320px;
+  padding: 2rem;
+  width: 100%;
+}
+
+.visualization-hero {
+  align-items: end;
+  background: linear-gradient(135deg, rgba(7, 17, 27, 0.96), rgba(10, 48, 56, 0.92));
+  border: 1px solid rgba(87, 199, 212, 0.2);
+  border-radius: 14px;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1.6fr) minmax(260px, 0.8fr);
+  overflow: hidden;
+  padding: 1.5rem;
+  position: relative;
+}
+
+.visualization-hero::after {
+  background: radial-gradient(circle at top right, rgba(103, 213, 165, 0.18), transparent 48%);
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.visualization-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.visualization-hero h2 {
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 0.98;
+  margin: 0.4rem 0 0;
+  max-width: 10ch;
+}
+
+.visualization-meta {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.visualization-meta div {
+  background: rgba(9, 21, 32, 0.72);
+  border: 1px solid rgba(87, 199, 212, 0.18);
+  border-radius: 10px;
+  display: grid;
+  gap: 0.2rem;
+  padding: 1rem;
+}
+
+.visualization-meta strong {
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.visualization-meta span {
+  color: var(--fg-muted);
+}
+
+.visualization-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+.visualization-card {
+  background: rgba(14, 24, 39, 0.82);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  display: grid;
+  gap: 0.9rem;
+  overflow: hidden;
+  padding: 1.1rem;
+}
+
+.visualization-card-header {
+  align-items: start;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.visualization-card-header h3 {
+  margin: 0.3rem 0 0;
+}
+
+.visualization-card p {
+  color: var(--fg-muted);
+  margin: 0;
+}
+
+.visualization-frame-shell {
+  background: #050d15;
+  border: 1px solid rgba(87, 199, 212, 0.14);
+  border-radius: 10px;
+  min-height: 420px;
+  overflow: hidden;
+}
+
+.visualization-frame {
+  background: #fff;
+  border: 0;
+  display: block;
+  height: 420px;
+  width: 100%;
+}
+
 @media (max-width: 860px) {
   .app-header {
     align-items: flex-start;
@@ -975,6 +1089,10 @@ code {
     grid-template-columns: 1fr;
   }
 
+  .visualization-hero {
+    grid-template-columns: 1fr;
+  }
+
   .smart-map {
     height: 360px;
   }
@@ -989,7 +1107,8 @@ code {
   .dashboard,
   .not-found,
   .page-shell,
-  .content-section {
+  .content-section,
+  .visualization-page {
     padding-left: 1rem;
     padding-right: 1rem;
   }

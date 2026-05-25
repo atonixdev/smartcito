@@ -12,6 +12,208 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
+  name: default-deny-visualization
+  namespace: visualization
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-visualization-gateway
+  namespace: visualization
+spec:
+  podSelector:
+    matchLabels:
+      app: visualization-gateway
+  ingress:
+    - from:
+        - ipBlock:
+            cidr: 172.20.20.0/24
+        - ipBlock:
+            cidr: 172.20.30.0/24
+      ports:
+        - protocol: TCP
+          port: 80
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: frontend-service
+      ports:
+        - protocol: TCP
+          port: 80
+    - to:
+        - podSelector:
+            matchLabels:
+              app: dash
+      ports:
+        - protocol: TCP
+          port: 8050
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: observability
+      ports:
+        - protocol: TCP
+          port: 3000
+        - protocol: TCP
+          port: 5601
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: backend
+      ports:
+        - protocol: TCP
+          port: 8000
+  policyTypes:
+    - Ingress
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dash-runtime
+  namespace: visualization
+spec:
+  podSelector:
+    matchLabels:
+      app: dash
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: visualization-gateway
+      ports:
+        - protocol: TCP
+          port: 8050
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: visualization-gateway
+      ports:
+        - protocol: TCP
+          port: 80
+  policyTypes:
+    - Ingress
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend-runtime
+  namespace: visualization
+spec:
+  podSelector:
+    matchLabels:
+      app: frontend-service
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: visualization-gateway
+      ports:
+        - protocol: TCP
+          port: 80
+  policyTypes:
+    - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-observability
+  namespace: observability
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-observability-runtime
+  namespace: observability
+spec:
+  podSelector: {}
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: visualization
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: observability
+      ports:
+        - protocol: TCP
+          port: 3000
+        - protocol: TCP
+          port: 5601
+        - protocol: TCP
+          port: 9090
+        - protocol: TCP
+          port: 9100
+        - protocol: TCP
+          port: 9187
+        - protocol: TCP
+          port: 9308
+        - protocol: TCP
+          port: 2020
+        - protocol: TCP
+          port: 9200
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: backend
+      ports:
+        - protocol: TCP
+          port: 8000
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingestion
+      ports:
+        - protocol: TCP
+          port: 8100
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: data-platform
+      ports:
+        - protocol: TCP
+          port: 9150
+        - protocol: TCP
+          port: 9092
+        - protocol: TCP
+          port: 7077
+        - protocol: TCP
+          port: 8080
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: database
+      ports:
+        - protocol: TCP
+          port: 5432
+    - to:
+        - podSelector:
+            matchLabels:
+              app: elasticsearch
+      ports:
+        - protocol: TCP
+          port: 9200
+  policyTypes:
+    - Ingress
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
   name: allow-backend-to-ingestion
   namespace: ingestion
 spec:
@@ -46,6 +248,37 @@ spec:
           port: 9093
         - protocol: TCP
           port: 11211
+  policyTypes:
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingestion-egress-external-storage
+  namespace: ingestion
+spec:
+  podSelector: {}
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 172.20.20.0/24
+        - ipBlock:
+            cidr: 172.20.30.0/24
+      ports:
+        - protocol: TCP
+          port: 5432
+        - protocol: TCP
+          port: 8020
+        - protocol: TCP
+          port: 9870
+        - protocol: TCP
+          port: 2181
+        - protocol: TCP
+          port: 9090
+        - protocol: TCP
+          port: 16000
+        - protocol: TCP
+          port: 16020
   policyTypes:
     - Egress
 ---
@@ -156,12 +389,72 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
+  name: allow-spark-egress-external-storage
+  namespace: data-platform
+spec:
+  podSelector:
+    matchLabels:
+      app: spark-streaming
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 172.20.20.0/24
+        - ipBlock:
+            cidr: 172.20.30.0/24
+      ports:
+        - protocol: TCP
+          port: 5432
+        - protocol: TCP
+          port: 8020
+        - protocol: TCP
+          port: 9870
+        - protocol: TCP
+          port: 2181
+        - protocol: TCP
+          port: 9090
+        - protocol: TCP
+          port: 16000
+        - protocol: TCP
+          port: 16020
+  policyTypes:
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
   name: default-deny-backend
   namespace: backend
 spec:
   podSelector: {}
   policyTypes:
     - Ingress
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-backend-egress-external-storage
+  namespace: backend
+spec:
+  podSelector: {}
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 172.20.20.0/24
+        - ipBlock:
+            cidr: 172.20.30.0/24
+      ports:
+        - protocol: TCP
+          port: 5432
+        - protocol: TCP
+          port: 2181
+        - protocol: TCP
+          port: 9090
+        - protocol: TCP
+          port: 16000
+        - protocol: TCP
+          port: 16020
+  policyTypes:
     - Egress
 ---
 apiVersion: networking.k8s.io/v1

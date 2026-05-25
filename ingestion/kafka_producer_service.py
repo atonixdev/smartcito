@@ -16,6 +16,8 @@ from pathlib import Path
 from fastapi import FastAPI
 from dotenv import load_dotenv
 
+from ingestion.storage_config import storage_runtime_summary
+
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
 
@@ -40,9 +42,10 @@ async def health() -> dict[str, str]:
 
 
 @app.get("/ready")
-async def readiness() -> dict[str, str]:
+async def readiness() -> dict[str, object]:
     return {
         "status": "ready",
         "bootstrap_servers": _broker_url(),
         "topic": os.getenv("KAFKA_SENSOR_TOPIC", "smartcito.sensors.raw"),
+        "storage": storage_runtime_summary(),
     }

@@ -15,6 +15,7 @@ from fastapi import FastAPI
 from dotenv import load_dotenv
 
 from ingestion.spark_job import build_stream_description
+from ingestion.storage_config import storage_runtime_summary
 
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
@@ -36,6 +37,7 @@ async def readiness() -> dict[str, object]:
         "status": "ready",
         "deployment_mode": "dedicated-image",
         "cache_backend": "memcached",
+        "storage": storage_runtime_summary(),
         "pipeline": build_stream_description(),
     }
 

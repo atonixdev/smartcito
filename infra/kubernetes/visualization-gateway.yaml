@@ -1,0 +1,101 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: visualization-gateway-config
+  namespace: visualization
+data:
+  default.conf: |
+    server {
+        listen 80;
+        server_name _;
+
+        location /api/ {
+            proxy_pass http://citosmart-api.backend.svc.cluster.local:8000/api/;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        location /dash/ {
+            proxy_pass http://dash.visualization.svc.cluster.local:8050/;
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-Prefix /dash;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        location /grafana/ {
+            proxy_pass http://grafana.observability.svc.cluster.local:3000/;
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-Prefix /grafana;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        location /kibana/ {
+            proxy_pass http://kibana.observability.svc.cluster.local:5601/;
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-Prefix /kibana;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        location / {
+            proxy_pass http://frontend-service.visualization.svc.cluster.local:80/;
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: visualization-gateway
+  namespace: visualization
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: visualization-gateway
+  template:
+    metadata:
+      labels:
+        app: visualization-gateway
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.27-alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+      volumes:
+        - name: config
+          configMap:
+            name: visualization-gateway-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: visualization-gateway
+  namespace: visualization
+  annotations:
+    service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
+spec:
+  selector:
+    app: visualization-gateway
+  loadBalancerSourceRanges:
+    - 172.20.20.0/24
+    - 172.20.30.0/24
+  ports:
+    - port: 80
+      targetPort: 80
+  type: LoadBalancer

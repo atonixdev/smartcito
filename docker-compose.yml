@@ -197,5 +197,130 @@ services:
       - api-router
     restart: unless-stopped
 
+  memcached-exporter:
+    image: prom/memcached-exporter:v0.15.0
+    container_name: smartcito-memcached-exporter
+    command: ["--memcached.address=memcached-1:11211"]
+    depends_on:
+      - memcached-1
+    restart: unless-stopped
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:v0.16.0
+    container_name: smartcito-postgres-exporter
+    environment:
+      DATA_SOURCE_URI: postgres:5432/${DB_NAME:-smartcito}?sslmode=disable
+      DATA_SOURCE_USER: ${DB_USER:-smartcito}
+      DATA_SOURCE_PASS: ${DB_PASSWORD:-smartcito}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  kafka-exporter:
+    image: danielqsj/kafka-exporter:v1.7.0
+    container_name: smartcito-kafka-exporter
+    command: ["--kafka.server=kafka:9092"]
+    depends_on:
+      - kafka
+    restart: unless-stopped
+
+  node-exporter:
+    image: prom/node-exporter:v1.8.2
+    container_name: smartcito-node-exporter
+    command: ["--path.rootfs=/host"]
+    volumes:
+      - /:/host:ro,rslave
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    container_name: smartcito-prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./infra/prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
+      - prometheusdata:/prometheus
+    depends_on:
+      - citosmart
+      - dash
+      - memcached-exporter
+      - postgres-exporter
+      - kafka-exporter
+      - node-exporter
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:11.2.0
+    container_name: smartcito-grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-change-me}
+      GF_SERVER_ROOT_URL: '%(protocol)s://%(domain)s/grafana/'
+      GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+      GF_SECURITY_ALLOW_EMBEDDING: "true"
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+    volumes:
+      - ./infra/observability/grafana/datasources/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml:ro
+      - ./infra/observability/grafana/dashboards/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml:ro
+      - ./infra/observability/grafana/dashboards/smartcito-overview.json:/var/lib/grafana/dashboards/smartcito-overview.json:ro
+      - grafanadata:/var/lib/grafana
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.2
+    container_name: smartcito-elasticsearch
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: -Xms1g -Xmx1g
+    volumes:
+      - elasticsearchdata:/usr/share/elasticsearch/data
+    restart: unless-stopped
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.15.2
+    container_name: smartcito-kibana
+    volumes:
+      - ./infra/observability/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+
+  fluent-bit:
+    image: fluent/fluent-bit:3.1.9
+    container_name: smartcito-fluent-bit
+    volumes:
+      - ./infra/observability/fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf:ro
+      - ./infra/observability/fluent-bit/parsers.conf:/fluent-bit/etc/parsers.conf:ro
+      - /var/log:/var/log:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+
+  visualization-gateway:
+    image: nginx:1.27-alpine
+    container_name: smartcito-visualization-gateway
+    ports:
+      - "8088:80"
+    volumes:
+      - ./infra/deploy/nginx/visualization-gateway.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - webapp
+      - api-router
+      - dash
+      - grafana
+      - kibana
+    restart: unless-stopped
+
 volumes:
   pgdata:
+  prometheusdata:
+  grafanadata:
+  elasticsearchdata:

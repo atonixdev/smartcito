@@ -1,0 +1,154 @@
+# Replace the IPs below with the fixed OpenStack addresses assigned to the
+# storage VMs. These Services give Kubernetes workloads stable DNS names for
+# storage systems that run outside the cluster.
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-primary
+  namespace: database
+spec:
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: postgres-primary
+  namespace: database
+subsets:
+  - addresses:
+      - ip: 172.20.30.10
+    ports:
+      - name: postgres
+        port: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-replica
+  namespace: database
+spec:
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: postgres-replica
+  namespace: database
+subsets:
+  - addresses:
+      - ip: 172.20.30.11
+    ports:
+      - name: postgres
+        port: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hdfs-namenode
+  namespace: database
+spec:
+  ports:
+    - name: rpc
+      port: 8020
+      targetPort: 8020
+    - name: web
+      port: 9870
+      targetPort: 9870
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: hdfs-namenode
+  namespace: database
+subsets:
+  - addresses:
+      - ip: 172.20.20.20
+      - ip: 172.20.20.21
+    ports:
+      - name: rpc
+        port: 8020
+      - name: web
+        port: 9870
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeeper
+  namespace: database
+spec:
+  ports:
+    - name: client
+      port: 2181
+      targetPort: 2181
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: zookeeper
+  namespace: database
+subsets:
+  - addresses:
+      - ip: 172.20.20.30
+      - ip: 172.20.20.31
+      - ip: 172.20.20.32
+    ports:
+      - name: client
+        port: 2181
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hbase-master
+  namespace: database
+spec:
+  ports:
+    - name: master
+      port: 16000
+      targetPort: 16000
+    - name: master-ui
+      port: 16010
+      targetPort: 16010
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: hbase-master
+  namespace: database
+subsets:
+  - addresses:
+      - ip: 172.20.20.40
+    ports:
+      - name: master
+        port: 16000
+      - name: master-ui
+        port: 16010
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hbase-thrift
+  namespace: database
+spec:
+  ports:
+    - name: thrift
+      port: 9090
+      targetPort: 9090
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: hbase-thrift
+  namespace: database
+subsets:
+  - addresses:
+      - ip: 172.20.20.41
+    ports:
+      - name: thrift
+        port: 9090

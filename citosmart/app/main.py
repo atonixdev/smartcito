@@ -36,6 +36,7 @@ from prometheus_client import make_asgi_app
 from app.api.v1.router import api_router
 from app.core.config import get_settings
 from app.core.logging import configure_logging
+from app.graphql.schema import graphql_router
 from app.services.ingestion import ingestion_service
 from app.services.kafka_stream import KafkaPublisher
 from app.services.mqtt_ingestor import MqttIngestor
@@ -150,6 +151,7 @@ def create_app() -> FastAPI:
 
     # Versioned API router.
     app.include_router(api_router, prefix="/api/v1")
+    app.include_router(graphql_router, prefix="/api/v1/graphql")
 
     # Prometheus metrics — scraped by the observability stack.
     app.mount("/metrics", make_asgi_app())

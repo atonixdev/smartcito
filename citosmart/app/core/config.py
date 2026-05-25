@@ -82,6 +82,29 @@ class Settings(BaseSettings):
         default="smartcito",
         validation_alias=AliasChoices("DB_PASSWORD", "POSTGRES_PASSWORD"),
     )
+    postgres_primary_host: str = Field(
+        default="postgres-primary.database.svc.cluster.local",
+        validation_alias=AliasChoices("POSTGRES_PRIMARY_HOST"),
+    )
+    postgres_replica_host: str = Field(
+        default="postgres-replica.database.svc.cluster.local",
+        validation_alias=AliasChoices("POSTGRES_REPLICA_HOST"),
+    )
+
+    # ----- Data lake / big-data storage -----
+    hdfs_enabled: bool = False
+    hdfs_namenode_rpc_address: str = ""
+    hdfs_namenode_http_address: str = ""
+    hdfs_raw_data_path: str = "/smartcito/raw"
+    hdfs_archive_path: str = "/smartcito/archive"
+    hdfs_ai_training_path: str = "/smartcito/ai/training"
+    hbase_enabled: bool = False
+    hbase_zookeeper_quorum: str = ""
+    hbase_zookeeper_client_port: int = 2181
+    hbase_master_address: str = ""
+    hbase_thrift_address: str = ""
+    hbase_sensor_table: str = "smartcito_sensor_events"
+    hbase_column_family: str = "d"
 
     # ----- Cache -----
     redis_url: str = "redis://redis:6379/0"

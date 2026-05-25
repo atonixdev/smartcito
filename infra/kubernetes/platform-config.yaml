@@ -9,6 +9,21 @@ data:
   DB_PORT: "5432"
   DB_NAME: smartcito
   DB_USER: smartcito
+  POSTGRES_PRIMARY_HOST: postgres-primary.database.svc.cluster.local
+  POSTGRES_REPLICA_HOST: postgres-replica.database.svc.cluster.local
+  HDFS_ENABLED: "true"
+  HDFS_NAMENODE_RPC_ADDRESS: hdfs-namenode.database.svc.cluster.local:8020
+  HDFS_NAMENODE_HTTP_ADDRESS: hdfs-namenode.database.svc.cluster.local:9870
+  HDFS_RAW_DATA_PATH: /smartcito/raw
+  HDFS_ARCHIVE_PATH: /smartcito/archive
+  HDFS_AI_TRAINING_PATH: /smartcito/ai/training
+  HBASE_ENABLED: "true"
+  HBASE_ZOOKEEPER_QUORUM: zookeeper.database.svc.cluster.local
+  HBASE_ZOOKEEPER_CLIENT_PORT: "2181"
+  HBASE_MASTER_ADDRESS: hbase-master.database.svc.cluster.local:16000
+  HBASE_THRIFT_ADDRESS: hbase-thrift.database.svc.cluster.local:9090
+  HBASE_SENSOR_TABLE: smartcito_sensor_events
+  HBASE_COLUMN_FAMILY: d
   MEMCACHED_SERVERS: memcached-0.memcached-internal.data-platform.svc.cluster.local:11211,memcached-1.memcached-internal.data-platform.svc.cluster.local:11211,memcached-2.memcached-internal.data-platform.svc.cluster.local:11211
   MEMCACHED_DEFAULT_TTL_SECONDS: "60"
   MEMCACHED_API_TTL_SECONDS: "60"
@@ -45,6 +60,21 @@ data:
   DB_PORT: "5432"
   DB_NAME: smartcito
   DB_USER: smartcito
+  POSTGRES_PRIMARY_HOST: postgres-primary.database.svc.cluster.local
+  POSTGRES_REPLICA_HOST: postgres-replica.database.svc.cluster.local
+  HDFS_ENABLED: "true"
+  HDFS_NAMENODE_RPC_ADDRESS: hdfs-namenode.database.svc.cluster.local:8020
+  HDFS_NAMENODE_HTTP_ADDRESS: hdfs-namenode.database.svc.cluster.local:9870
+  HDFS_RAW_DATA_PATH: /smartcito/raw
+  HDFS_ARCHIVE_PATH: /smartcito/archive
+  HDFS_AI_TRAINING_PATH: /smartcito/ai/training
+  HBASE_ENABLED: "true"
+  HBASE_ZOOKEEPER_QUORUM: zookeeper.database.svc.cluster.local
+  HBASE_ZOOKEEPER_CLIENT_PORT: "2181"
+  HBASE_MASTER_ADDRESS: hbase-master.database.svc.cluster.local:16000
+  HBASE_THRIFT_ADDRESS: hbase-thrift.database.svc.cluster.local:9090
+  HBASE_SENSOR_TABLE: smartcito_sensor_events
+  HBASE_COLUMN_FAMILY: d
   MEMCACHED_SERVERS: memcached-0.memcached-internal.data-platform.svc.cluster.local:11211,memcached-1.memcached-internal.data-platform.svc.cluster.local:11211,memcached-2.memcached-internal.data-platform.svc.cluster.local:11211
   MEMCACHED_DEFAULT_TTL_SECONDS: "60"
   MEMCACHED_API_TTL_SECONDS: "60"
@@ -78,6 +108,19 @@ metadata:
 data:
   APP_ENV: staging
   AI_MODELS_URL: http://ai-service.ai.svc.cluster.local
+  HDFS_ENABLED: "true"
+  HDFS_NAMENODE_RPC_ADDRESS: hdfs-namenode.database.svc.cluster.local:8020
+  HDFS_NAMENODE_HTTP_ADDRESS: hdfs-namenode.database.svc.cluster.local:9870
+  HDFS_RAW_DATA_PATH: /smartcito/raw
+  HDFS_ARCHIVE_PATH: /smartcito/archive
+  HDFS_AI_TRAINING_PATH: /smartcito/ai/training
+  HBASE_ENABLED: "true"
+  HBASE_ZOOKEEPER_QUORUM: zookeeper.database.svc.cluster.local
+  HBASE_ZOOKEEPER_CLIENT_PORT: "2181"
+  HBASE_MASTER_ADDRESS: hbase-master.database.svc.cluster.local:16000
+  HBASE_THRIFT_ADDRESS: hbase-thrift.database.svc.cluster.local:9090
+  HBASE_SENSOR_TABLE: smartcito_sensor_events
+  HBASE_COLUMN_FAMILY: d
   MEMCACHED_SERVERS: memcached-0.memcached-internal.data-platform.svc.cluster.local:11211,memcached-1.memcached-internal.data-platform.svc.cluster.local:11211,memcached-2.memcached-internal.data-platform.svc.cluster.local:11211
   MEMCACHED_AI_TTL_SECONDS: "1800"
   OBJECT_STORAGE_ENDPOINT: s3://smartcito-artifacts
@@ -97,6 +140,15 @@ data:
   DB_PORT: "5432"
   DB_NAME: smartcito
   DB_USER: smartcito
+  POSTGRES_PRIMARY_HOST: postgres-primary.database.svc.cluster.local
+  POSTGRES_REPLICA_HOST: postgres-replica.database.svc.cluster.local
+  HBASE_ENABLED: "true"
+  HBASE_ZOOKEEPER_QUORUM: zookeeper.database.svc.cluster.local
+  HBASE_ZOOKEEPER_CLIENT_PORT: "2181"
+  HBASE_MASTER_ADDRESS: hbase-master.database.svc.cluster.local:16000
+  HBASE_THRIFT_ADDRESS: hbase-thrift.database.svc.cluster.local:9090
+  HBASE_SENSOR_TABLE: smartcito_sensor_events
+  HBASE_COLUMN_FAMILY: d
   MEMCACHED_SERVERS: memcached-0.memcached-internal.data-platform.svc.cluster.local:11211,memcached-1.memcached-internal.data-platform.svc.cluster.local:11211,memcached-2.memcached-internal.data-platform.svc.cluster.local:11211
   MEMCACHED_API_TTL_SECONDS: "60"
   KAFKA_BROKER_URL: kafka-bootstrap.data-platform.svc.cluster.local:9092
@@ -115,6 +167,16 @@ data:
   DB_PORT: "5432"
   DB_NAME: smartcito
   DB_USER: smartcito
+  POSTGRES_PRIMARY_HOST: postgres-primary.database.svc.cluster.local
+  POSTGRES_REPLICA_HOST: postgres-replica.database.svc.cluster.local
+  HDFS_ENABLED: "true"
+  HDFS_NAMENODE_RPC_ADDRESS: hdfs-namenode.database.svc.cluster.local:8020
+  HDFS_NAMENODE_HTTP_ADDRESS: hdfs-namenode.database.svc.cluster.local:9870
+  HBASE_ENABLED: "true"
+  HBASE_ZOOKEEPER_QUORUM: zookeeper.database.svc.cluster.local
+  HBASE_ZOOKEEPER_CLIENT_PORT: "2181"
+  HBASE_MASTER_ADDRESS: hbase-master.database.svc.cluster.local:16000
+  HBASE_THRIFT_ADDRESS: hbase-thrift.database.svc.cluster.local:9090
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -126,6 +188,20 @@ data:
   DB_PORT: "5432"
   DB_NAME: smartcito
   DB_USER: smartcito
+  POSTGRES_PRIMARY_HOST: postgres-primary.database.svc.cluster.local
+  POSTGRES_REPLICA_HOST: postgres-replica.database.svc.cluster.local
+  HDFS_ENABLED: "true"
+  HDFS_NAMENODE_RPC_ADDRESS: hdfs-namenode.database.svc.cluster.local:8020
+  HDFS_NAMENODE_HTTP_ADDRESS: hdfs-namenode.database.svc.cluster.local:9870
+  HDFS_RAW_DATA_PATH: /smartcito/raw
+  HDFS_ARCHIVE_PATH: /smartcito/archive
+  HBASE_ENABLED: "true"
+  HBASE_ZOOKEEPER_QUORUM: zookeeper.database.svc.cluster.local
+  HBASE_ZOOKEEPER_CLIENT_PORT: "2181"
+  HBASE_MASTER_ADDRESS: hbase-master.database.svc.cluster.local:16000
+  HBASE_THRIFT_ADDRESS: hbase-thrift.database.svc.cluster.local:9090
+  HBASE_SENSOR_TABLE: smartcito_sensor_events
+  HBASE_COLUMN_FAMILY: d
   MEMCACHED_SERVERS: memcached-0.memcached-internal.data-platform.svc.cluster.local:11211,memcached-1.memcached-internal.data-platform.svc.cluster.local:11211,memcached-2.memcached-internal.data-platform.svc.cluster.local:11211
   MEMCACHED_DEFAULT_TTL_SECONDS: "60"
   KAFKA_BROKER_URL: kafka-bootstrap.data-platform.svc.cluster.local:9092
@@ -141,6 +217,17 @@ data:
   OBJECT_STORAGE_BUCKET: smartcito-artifacts
   SPARK_CHECKPOINT_DIR: /opt/spark/checkpoints/smartcito
   SPARK_OBJECT_STORAGE_PATH: s3a://smartcito-artifacts/streaming
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: smartcito-platform-config
+  namespace: visualization
+data:
+  SMARTCITO_API_BASE: http://visualization-gateway.visualization.svc.cluster.local/api/v1
+  SMARTCITO_DASH_URL: /dash/
+  SMARTCITO_GRAFANA_URL: /grafana/
+  SMARTCITO_KIBANA_URL: /kibana/
 ---
 apiVersion: v1
 kind: Secret
@@ -205,3 +292,12 @@ type: Opaque
 stringData:
   DB_PASSWORD: change-me
   KAFKA_KRAFT_CLUSTER_ID: change-me-kraft-cluster-id
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: smartcito-platform-secrets
+  namespace: observability
+type: Opaque
+stringData:
+  DB_PASSWORD: change-me

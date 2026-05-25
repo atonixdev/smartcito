@@ -64,11 +64,23 @@ module "compute" {
   kafka_broker_flavor_name = var.kafka_broker_flavor_name
   spark_master_flavor_name = var.spark_master_flavor_name
   spark_worker_flavor_name = var.spark_worker_flavor_name
+  postgres_primary_flavor_name = var.postgres_primary_flavor_name
+  postgres_replica_flavor_name = var.postgres_replica_flavor_name
+  hdfs_namenode_flavor_name = var.hdfs_namenode_flavor_name
+  hdfs_datanode_flavor_name = var.hdfs_datanode_flavor_name
+  hbase_master_flavor_name = var.hbase_master_flavor_name
+  hbase_regionserver_flavor_name = var.hbase_regionserver_flavor_name
+  zookeeper_flavor_name = var.zookeeper_flavor_name
   service_node_count   = var.service_node_count
   database_node_count  = var.database_node_count
   kubernetes_worker_count = var.kubernetes_worker_count
   kafka_broker_count = var.kafka_broker_count
   spark_worker_count = var.spark_worker_count
+  postgres_replica_count = var.postgres_replica_count
+  hdfs_namenode_count = var.hdfs_namenode_count
+  hdfs_datanode_count = var.hdfs_datanode_count
+  hbase_regionserver_count = var.hbase_regionserver_count
+  zookeeper_node_count = var.zookeeper_node_count
 }
 
 module "storage" {
@@ -86,6 +98,14 @@ module "storage" {
   kafka_log_volume_size_gb     = var.kafka_log_volume_size_gb
   spark_checkpoint_volume_size_gb = var.spark_checkpoint_volume_size_gb
   kafka_broker_count           = var.kafka_broker_count
+  postgres_data_volume_size_gb = var.postgres_data_volume_size_gb
+  postgres_wal_volume_size_gb = var.postgres_wal_volume_size_gb
+  postgres_replica_volume_size_gb = var.postgres_replica_volume_size_gb
+  hdfs_namenode_volume_size_gb = var.hdfs_namenode_volume_size_gb
+  hdfs_datanode_volume_size_gb = var.hdfs_datanode_volume_size_gb
+  postgres_replica_count = var.postgres_replica_count
+  hdfs_namenode_count = var.hdfs_namenode_count
+  hdfs_datanode_count = var.hdfs_datanode_count
 }
 
 resource "openstack_compute_volume_attach_v2" "database_volume_attachment" {
@@ -102,4 +122,32 @@ resource "openstack_compute_volume_attach_v2" "kafka_log_volume_attachments" {
 resource "openstack_compute_volume_attach_v2" "spark_checkpoint_attachment" {
   instance_id = module.compute.spark_master_instance_id
   volume_id   = module.storage.spark_checkpoint_volume_id
+}
+
+resource "openstack_compute_volume_attach_v2" "postgres_primary_data_attachment" {
+  instance_id = module.compute.postgres_primary_instance_id
+  volume_id   = module.storage.postgres_data_volume_id
+}
+
+resource "openstack_compute_volume_attach_v2" "postgres_primary_wal_attachment" {
+  instance_id = module.compute.postgres_primary_instance_id
+  volume_id   = module.storage.postgres_wal_volume_id
+}
+
+resource "openstack_compute_volume_attach_v2" "postgres_replica_attachments" {
+  count       = min(length(module.compute.postgres_replica_instance_ids), length(module.storage.postgres_replica_volume_ids))
+  instance_id = module.compute.postgres_replica_instance_ids[count.index]
+  volume_id   = module.storage.postgres_replica_volume_ids[count.index]
+}
+
+resource "openstack_compute_volume_attach_v2" "hdfs_namenode_attachments" {
+  count       = min(length(module.compute.hdfs_namenode_instance_ids), length(module.storage.hdfs_namenode_volume_ids))
+  instance_id = module.compute.hdfs_namenode_instance_ids[count.index]
+  volume_id   = module.storage.hdfs_namenode_volume_ids[count.index]
+}
+
+resource "openstack_compute_volume_attach_v2" "hdfs_datanode_attachments" {
+  count       = min(length(module.compute.hdfs_datanode_instance_ids), length(module.storage.hdfs_datanode_volume_ids))
+  instance_id = module.compute.hdfs_datanode_instance_ids[count.index]
+  volume_id   = module.storage.hdfs_datanode_volume_ids[count.index]
 }
