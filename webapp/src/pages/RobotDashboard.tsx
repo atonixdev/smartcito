@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 
+import { useCityMapPayload, useMappingGeofences } from "@/api/droneGateway";
 import CommandCenterMap from "@/components/CommandCenterMap";
 import OperationsSwitcher from "@/components/OperationsSwitcher";
 import { demoSmartMapDevices, useSmartMapOverview } from "@/api/map";
@@ -36,6 +37,8 @@ export default function RobotDashboard() {
   const fleetQuery = useRobotFleet();
   const sendRobotCommand = useSendRobotCommand();
   const mapQuery = useSmartMapOverview();
+  const mappingGeofencesQuery = useMappingGeofences();
+  const cityMapPayloadQuery = useCityMapPayload();
   const sensorQuery = useRecentSensors(8);
 
   const fleet = fleetQuery.data && fleetQuery.data.registry.length > 0 ? fleetQuery.data : demoRobotFleet;
@@ -46,6 +49,8 @@ export default function RobotDashboard() {
   const selectedRegistry = registry.find((robot) => robot.robot_id === selectedRobotId) ?? registry[0];
   const selectedRoutes = routes.filter((route) => route.robot_id === (selectedTelemetry?.robot_id ?? selectedRegistry?.robot_id));
   const mapDevices = mapQuery.data?.devices?.length ? mapQuery.data.devices : demoSmartMapDevices;
+  const liveGeofences = mappingGeofencesQuery.data;
+  const cityMapPayload = cityMapPayloadQuery.data ?? null;
   const liveReadings = sensorQuery.data ?? [];
 
   const selectedRobot = {
@@ -113,6 +118,14 @@ export default function RobotDashboard() {
     threat_level: reading.value > 1 ? "critical" : "warning",
     source_ids: [selectedRobot.id],
   }));
+
+  const mapGeoJsonLayers = [
+    { id: "geofences", data: liveGeofences?.geojson ?? null, color: "#57c7d4" },
+    { id: "sensors", data: cityMapPayload?.geojson_layers?.sensors ?? null, color: "#f1c96b" },
+    { id: "cameras", data: cityMapPayload?.geojson_layers?.cameras ?? null, color: "#ffd776" },
+    { id: "robot-paths", data: cityMapPayload?.geojson_layers?.robot_paths ?? null, color: "#6be3a8" },
+    { id: "mission-routes", data: cityMapPayload?.geojson_layers?.mission_routes ?? null, color: "#8fb6ff" },
+  ];
 
   return (
     <section className="command-center operations-page robot-dashboard" aria-label="Robot operations dashboard">
@@ -230,7 +243,7 @@ export default function RobotDashboard() {
             <CommandCenterMap
               assets={mapAssets}
               threatAlerts={threatAlerts}
-              zones={robotZones}
+              zones={[]}
               selectedAssetId={selectedRobot.id}
               drawPoints={[]}
               onMapClick={() => undefined}
@@ -239,6 +252,7 @@ export default function RobotDashboard() {
                   setSelectedRobotId(id);
                 }
               }}
+              geoJsonLayers={mapGeoJsonLayers}
             />
           </div>
         </section>

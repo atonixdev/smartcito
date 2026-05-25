@@ -62,8 +62,12 @@ def test_geospatial_dataset_seeds_demo_features(client: TestClient) -> None:
     assert payload["geofences"]
     assert payload["zones"]
     assert payload["sensors"]
+    assert payload["drone_paths"]
+    assert payload["robot_paths"]
     assert payload["mission_routes"]
     assert payload["geojson_layers"]["geofence"]["features"]
+    assert payload["geojson_layers"]["drone_path"]["features"]
+    assert payload["geojson_layers"]["robot_path"]["features"]
 
 
 def test_geospatial_upsert_persists_custom_feature(client: TestClient) -> None:
@@ -89,3 +93,36 @@ def test_geospatial_upsert_persists_custom_feature(client: TestClient) -> None:
     )
     assert listed.status_code == 200
     assert "geo-camera-custom-001" in {item["feature_id"] for item in listed.json()}
+
+
+def test_geospatial_feature_delete_removes_persisted_feature(client: TestClient) -> None:
+    created = client.post(
+        "/api/v1/geospatial/features",
+        headers=_auth_headers("operator"),
+        json={
+            "feature_id": "geo-drone-path-custom-001",
+            "name": "Custom Drone Path",
+            "feature_type": "drone_path",
+            "zone": "cbd",
+            "geometry": {"type": "LineString", "coordinates": [[28.24, -25.746], [28.245, -25.744]]},
+            "properties": {"asset_id": "drone-custom-001", "path_kind": "history"},
+            "source_service": "test-suite",
+        },
+    )
+
+    assert created.status_code == 201
+
+    deleted = client.delete(
+        "/api/v1/geospatial/features/geo-drone-path-custom-001",
+        headers=_auth_headers("operator"),
+    )
+
+    assert deleted.status_code == 204
+
+    listed = client.get(
+        "/api/v1/geospatial/features",
+        headers=_auth_headers("viewer"),
+        params={"feature_type": "drone_path"},
+    )
+    assert listed.status_code == 200
+    assert "geo-drone-path-custom-001" not in {item["feature_id"] for item in listed.json()}

@@ -9,6 +9,7 @@
 
 import { useMemo, useState } from "react";
 
+import CommandCenterMap from "@/components/CommandCenterMap";
 import {
   demoCameraFeed,
   demoDroneFleet,
@@ -18,11 +19,13 @@ import {
   type DroneTelemetry,
   type MissionWaypoint,
   useCameraFeeds,
+  useCityMapPayload,
   useConnectDrone,
   useDroneFleet,
   useDroneGatewayMetrics,
   useDroneGatewayReady,
   useDroneMissions,
+  useMappingGeofences,
   useMappingOverlays,
   useSendDroneCommand,
   useThreatAlerts,
@@ -91,6 +94,8 @@ export default function DroneOperationsPanel() {
   const metrics = useDroneGatewayMetrics();
   const missionsQuery = useDroneMissions();
   const mappingQuery = useMappingOverlays();
+  const mappingGeofencesQuery = useMappingGeofences();
+  const cityMapPayloadQuery = useCityMapPayload();
   const cameraQuery = useCameraFeeds();
   const threatQuery = useThreatAlerts();
   const connectDrone = useConnectDrone();
@@ -108,8 +113,31 @@ export default function DroneOperationsPanel() {
   const cameraFeed = cameraQuery.data?.[0] ?? demoCameraFeed;
   const alerts = threatQuery.data?.length ? threatQuery.data : demoThreatAlerts;
   const overlays = mappingQuery.data;
+  const liveGeofences = mappingGeofencesQuery.data;
+  const cityMapPayload = cityMapPayloadQuery.data ?? null;
   const registryStatus = ready.data?.registry ?? (ready.isError ? "offline" : "demo");
   const commandPending = sendCommand.isPending || connectDrone.isPending || uploadMission.isPending;
+
+  const mapAssets = useMemo(
+    () => telemetry.map((item) => ({
+      id: item.drone_id,
+      kind: "drone" as const,
+      label: item.drone_id,
+      status: item.status,
+      subtitle: `${item.flight_mode} · ${Math.round(item.battery_percent)}% battery`,
+      latitude: item.position.latitude,
+      longitude: item.position.longitude,
+    })),
+    [telemetry],
+  );
+
+  const mapGeoJsonLayers = [
+    { id: "geofences", data: liveGeofences?.geojson ?? null, color: "#57c7d4" },
+    { id: "sensors", data: cityMapPayload?.geojson_layers?.sensors ?? null, color: "#f1c96b" },
+    { id: "cameras", data: cityMapPayload?.geojson_layers?.cameras ?? null, color: "#ffd776" },
+    { id: "drone-paths", data: cityMapPayload?.geojson_layers?.drone_paths ?? null, color: "#8fb6ff" },
+    { id: "mission-routes", data: cityMapPayload?.geojson_layers?.mission_routes ?? null, color: "#8fe5db" },
+  ];
 
   const waypointSummary = useMemo(
     () => waypoints.map((point, index) => `${index + 1}: ${point.latitude.toFixed(4)}, ${point.longitude.toFixed(4)}`).join(" | "),
@@ -247,6 +275,18 @@ export default function DroneOperationsPanel() {
             <div><dt>Threat overlays</dt><dd>{overlays?.threats.length ?? alerts.length}</dd></div>
           </dl>
           <p className="muted drone-command-status">{waypointSummary}</p>
+          <div className="command-map-shell">
+            <CommandCenterMap
+              assets={mapAssets}
+              threatAlerts={alerts}
+              zones={[]}
+              selectedAssetId={selectedDroneId}
+              drawPoints={[]}
+              onMapClick={() => undefined}
+              onSelectAsset={() => undefined}
+              geoJsonLayers={mapGeoJsonLayers}
+            />
+          </div>
         </section>
 
         <section className="drone-gateway-card">

@@ -170,6 +170,27 @@ vi.mock("@/api/robotGateway", () => ({
   useSendRobotCommand: () => ({ isPending: false, mutate: vi.fn() }),
 }));
 
+vi.mock("@/api/droneGateway", () => ({
+  useMappingGeofences: () => ({
+    data: {
+      geojson: { type: "FeatureCollection", features: [] },
+      overlays: [],
+    },
+  }),
+  useCityMapPayload: () => ({
+    data: {
+      html: "<div>map</div>",
+      geojson_layers: {
+        sensors: { type: "FeatureCollection", features: [] },
+        cameras: { type: "FeatureCollection", features: [] },
+        robot_paths: { type: "FeatureCollection", features: [] },
+        mission_routes: { type: "FeatureCollection", features: [] },
+      },
+      marker_layers: {},
+    },
+  }),
+}));
+
 describe("RobotDashboard", () => {
   it("renders the ground robotics operator view", () => {
     const queryClient = new QueryClient();

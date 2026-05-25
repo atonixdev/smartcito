@@ -71,6 +71,14 @@ class GeospatialRegistryService:
             return features
         return await self.seed_demo_features(session)
 
+    async def delete_feature(self, session: AsyncSession, feature_id: str) -> bool:
+        record = await session.scalar(select(GeoFeatureORM).where(GeoFeatureORM.feature_id == feature_id))
+        if record is None:
+            return False
+        await session.delete(record)
+        await session.commit()
+        return True
+
     async def dataset(self, session: AsyncSession) -> GeoDatasetOut:
         rows = await self.list_features(session)
         grouped = {
@@ -78,6 +86,8 @@ class GeospatialRegistryService:
             GeoFeatureType.ZONE.value: [],
             GeoFeatureType.SENSOR.value: [],
             GeoFeatureType.CAMERA.value: [],
+            GeoFeatureType.DRONE_PATH.value: [],
+            GeoFeatureType.ROBOT_PATH.value: [],
             GeoFeatureType.MISSION_ROUTE.value: [],
         }
         for row in rows:
@@ -88,6 +98,8 @@ class GeospatialRegistryService:
             zones=grouped[GeoFeatureType.ZONE.value],
             sensors=grouped[GeoFeatureType.SENSOR.value],
             cameras=grouped[GeoFeatureType.CAMERA.value],
+            drone_paths=grouped[GeoFeatureType.DRONE_PATH.value],
+            robot_paths=grouped[GeoFeatureType.ROBOT_PATH.value],
             mission_routes=grouped[GeoFeatureType.MISSION_ROUTE.value],
             geojson_layers={key: self._feature_collection(items) for key, items in grouped.items()},
         )
@@ -146,6 +158,24 @@ class GeospatialRegistryService:
                 zone="cbd",
                 geometry={"type": "LineString", "coordinates": [[28.2281, -25.7490], [28.2293, -25.7479], [28.2361, -25.7461], [28.2438, -25.7454]]},
                 properties={"asset_type": "drone", "asset_id": "drone-patrol-001"},
+                source_service="system:demo-seed",
+            ),
+            GeoFeatureIn(
+                feature_id="geo-drone-path-patrol-001",
+                name="Drone patrol live path",
+                feature_type=GeoFeatureType.DRONE_PATH,
+                zone="cbd",
+                geometry={"type": "LineString", "coordinates": [[28.2275, -25.7495], [28.2310, -25.7481], [28.2388, -25.7460], [28.2438, -25.7454]]},
+                properties={"asset_type": "drone", "asset_id": "drone-patrol-001", "path_kind": "live"},
+                source_service="system:demo-seed",
+            ),
+            GeoFeatureIn(
+                feature_id="geo-robot-path-patrol-001",
+                name="Robot perimeter live path",
+                feature_type=GeoFeatureType.ROBOT_PATH,
+                zone="cbd",
+                geometry={"type": "LineString", "coordinates": [[28.2287, -25.7488], [28.2299, -25.7481], [28.2322, -25.7474], [28.2346, -25.7467]]},
+                properties={"asset_type": "robot", "asset_id": "robot-cap-001", "path_kind": "live"},
                 source_service="system:demo-seed",
             ),
         ]

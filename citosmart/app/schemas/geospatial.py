@@ -20,6 +20,8 @@ class GeoFeatureType(str, Enum):
     ZONE = "zone"
     SENSOR = "sensor"
     CAMERA = "camera"
+    DRONE_PATH = "drone_path"
+    ROBOT_PATH = "robot_path"
     MISSION_ROUTE = "mission_route"
 
 
@@ -65,5 +67,7 @@ class GeoDatasetOut(BaseModel):
     zones: list[GeoFeatureOut]
     sensors: list[GeoFeatureOut]
     cameras: list[GeoFeatureOut]
+    drone_paths: list[GeoFeatureOut]
+    robot_paths: list[GeoFeatureOut]
     mission_routes: list[GeoFeatureOut]
     geojson_layers: dict[str, GeoFeatureCollection]

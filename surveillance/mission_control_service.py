@@ -19,7 +19,7 @@ from urllib import error, request
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 
-from surveillance.geospatial import resolve_zone
+from surveillance.geospatial import evaluate_geofence_activity, resolve_zone, route_mission
 from surveillance.kafka import get_publisher
 from surveillance.models import (
     CityMission,
@@ -62,6 +62,19 @@ def _validate(request_payload: MissionUploadRequest, *, mission_id: str | None =
             requires_operator_review = True
             issues.append(f"waypoint {index} enters critical zone {zone['zone_id']}")
 
+    for index, (previous_waypoint, current_waypoint) in enumerate(zip(request_payload.waypoints, request_payload.waypoints[1:]), start=2):
+        segment_activity = evaluate_geofence_activity(
+            current_waypoint,
+            previous_position=previous_waypoint,
+            path=[previous_waypoint, current_waypoint],
+        )
+        if segment_activity["violations"]:
+            requires_operator_review = True
+            issues.append(
+                f"path segment {index - 1}->{index} intersects restricted zones: {', '.join(segment_activity['violations'])}"
+            )
+        zones.extend(segment_activity["entries"])
+
     unique_zones = sorted(set(zones))
     if request_payload.altitude_m > 120:
         requires_operator_review = True
@@ -83,10 +96,11 @@ def _validate(request_payload: MissionUploadRequest, *, mission_id: str | None =
 
 
 def _upload_to_gateway(mission: DroneMission) -> str:
+    routed_path = _route_path(mission.waypoints)
     payload = {
         "drone_id": mission.drone_id,
         "action": "follow_path",
-        "path": [waypoint.model_dump(mode="json", exclude_none=True) for waypoint in mission.waypoints],
+        "path": [waypoint.model_dump(mode="json", exclude_none=True) for waypoint in routed_path],
         "requested_by": "mission-control",
     }
     body = json.dumps(payload).encode("utf-8")
@@ -141,6 +155,32 @@ def _dispatch_city_assignment(assignment: CityMissionRequest) -> CityMissionDisp
     raise RuntimeError("unreachable helper signature")
 
 
+def _route_path(path: list[object]) -> list[object]:
+    if len(path) < 2:
+        return path
+
+    routed_path: list[object] = [path[0]]
+    current_waypoint = path[0]
+    for next_waypoint in path[1:]:
+        try:
+            route = route_mission(current_waypoint, [next_waypoint])
+            route_points = route.get("path", [])
+        except Exception:
+            route_points = []
+
+        if route_points:
+            segment_points = [
+                next_waypoint.__class__(**route_point)
+                for route_point in route_points
+            ]
+            routed_path.extend(segment_points[1:] if len(segment_points) > 1 else segment_points)
+        else:
+            routed_path.append(next_waypoint)
+        current_waypoint = next_waypoint
+
+    return routed_path
+
+
 def _dispatch_assignment_payload(asset_type: MissionAssetType, asset_id: str, path: list[object]) -> tuple[str, dict[str, object]]:
     if asset_type == MissionAssetType.DRONE:
         return (
@@ -167,10 +207,11 @@ def _dispatch_assignment_payload(asset_type: MissionAssetType, asset_id: str, pa
 def _dispatch_city_mission(mission: CityMission) -> list[CityMissionDispatchResult]:
     dispatch_results: list[CityMissionDispatchResult] = []
     for assignment in mission.assignments:
+        routed_path = _route_path(assignment.path)
         url, payload = _dispatch_assignment_payload(
             assignment.asset_type,
             assignment.asset_id,
-            [waypoint.model_dump(mode="json", exclude_none=True) for waypoint in assignment.path],
+            [waypoint.model_dump(mode="json", exclude_none=True) for waypoint in routed_path],
         )
         gateway_request = request.Request(
             url=url,

@@ -8,7 +8,7 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import require_role
@@ -51,3 +51,16 @@ async def list_geo_features(
 )
 async def get_geo_dataset(session: AsyncSession = Depends(get_session)) -> GeoDatasetOut:
     return await geospatial_registry_service.dataset(session)
+
+
+@router.delete(
+    "/features/{feature_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(require_role("operator"))],
+    summary="Delete a persisted geographic feature",
+)
+async def delete_geo_feature(feature_id: str, session: AsyncSession = Depends(get_session)) -> Response:
+    deleted = await geospatial_registry_service.delete_feature(session, feature_id)
+    if not deleted:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="geographic feature not found")
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

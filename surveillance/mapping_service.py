@@ -22,6 +22,7 @@ from surveillance.geospatial import (
     geofence_overlays,
     normalize_point,
     path_around,
+    route_mission,
     render_city_map,
     resolve_zone,
     search_locations,
@@ -43,6 +44,12 @@ class GeofenceEvaluationRequest(BaseModel):
     current_position: GeoPoint
     previous_position: GeoPoint | None = None
     path: list[GeoPoint] = Field(default_factory=list)
+
+
+class MissionRouteRequest(BaseModel):
+    origin: GeoPoint
+    destinations: list[GeoPoint] = Field(default_factory=list, min_length=1)
+    obstacles: list[dict[str, object]] = Field(default_factory=list)
 
 
 @app.get("/health")
@@ -112,6 +119,15 @@ async def city_map_html() -> HTMLResponse:
         geofence_overlays_list=geofence_overlays(),
     )
     return HTMLResponse(rendered["html"])
+
+
+@app.post("/routes/mission")
+async def mission_route(request: MissionRouteRequest) -> dict[str, object]:
+    return route_mission(
+        request.origin,
+        request.destinations,
+        extra_obstacles=request.obstacles,
+    )
 
 
 @app.post("/overlays/drone")

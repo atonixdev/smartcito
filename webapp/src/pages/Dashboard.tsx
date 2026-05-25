@@ -862,6 +862,8 @@ export default function Dashboard() {
   const mapGeoJsonLayers = [
     { id: "geofences", data: liveGeofences?.geojson ?? null, color: "#57c7d4" },
     { id: "search-radius", data: liveSearch?.radius ?? null, color: "#f1c96b" },
+    { id: "drone-paths", data: cityMapPayload?.geojson_layers?.drone_paths ?? null, color: "#8fb6ff" },
+    { id: "robot-paths", data: cityMapPayload?.geojson_layers?.robot_paths ?? null, color: "#6be3a8" },
     { id: "mission-routes", data: cityMapPayload?.geojson_layers?.mission_routes ?? null, color: "#8fb6ff" },
   ];
 

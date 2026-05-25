@@ -11,6 +11,7 @@ from surveillance.drone_gateway_service import app as drone_app
 from surveillance import geospatial
 from surveillance.mapping_service import app as mapping_app
 from surveillance.mission_control_service import app as mission_app
+from surveillance import mission_control_service
 from surveillance.robot_gateway_service import app as robot_app
 from surveillance.sensor_gateway_service import app as sensor_app
 from surveillance.threat_detection_service import app as threat_app
@@ -252,6 +253,63 @@ def test_mission_control_creates_city_mission() -> None:
     assert len(missions.json()) >= 1
 
 
+def test_mission_control_routes_payloads_through_shared_geographic_engine(monkeypatch) -> None:
+    routed_paths: list[list[dict[str, float]]] = []
+
+    def fake_route(origin, destinations, extra_obstacles=None):
+        destination = destinations[0]
+        return {
+            "path": [
+                origin.model_dump(mode="json"),
+                {
+                    "latitude": (origin.latitude + destination.latitude) / 2,
+                    "longitude": (origin.longitude + destination.longitude) / 2,
+                    "altitude_m": origin.altitude_m,
+                },
+                destination.model_dump(mode="json"),
+            ]
+        }
+
+    class FakeResponse:
+        def __init__(self, body: bytes):
+            self._body = body
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def read(self) -> bytes:
+            return self._body
+
+    def fake_urlopen(request_obj, timeout=5):
+        routed_paths.append(__import__("json").loads(request_obj.data.decode("utf-8"))["path"])
+        return FakeResponse(b'{"accepted": true, "adapter_status": "uploaded"}')
+
+    monkeypatch.setattr(mission_control_service, "route_mission", fake_route)
+    monkeypatch.setattr(mission_control_service.request, "urlopen", fake_urlopen)
+
+    client = TestClient(mission_app)
+    response = client.post(
+        "/missions",
+        json={
+            "drone_id": "drone-route-001",
+            "name": "Engine routed patrol",
+            "altitude_m": 80,
+            "speed_mps": 8,
+            "waypoints": [
+                {"latitude": -25.7480, "longitude": 28.1800, "altitude_m": 80},
+                {"latitude": -25.7460, "longitude": 28.1820, "altitude_m": 80},
+            ],
+        },
+    )
+
+    assert response.status_code == 200
+    assert routed_paths
+    assert len(routed_paths[0]) == 3
+
+
 def test_threat_detection_classifies_critical_zone() -> None:
     client = TestClient(threat_app)
     response = client.post(
@@ -340,7 +398,28 @@ def test_mapping_service_search_uses_fallback_index_when_nominatim_unavailable(m
     assert payload["radius"]["type"] == "Polygon"
 
 
-def test_mapping_service_renders_city_map_outputs() -> None:
+def test_mapping_service_builds_networkx_mission_route() -> None:
+    client = TestClient(mapping_app)
+    response = client.post(
+        "/routes/mission",
+        json={
+            "origin": {"latitude": -25.7605, "longitude": 28.2170},
+            "destinations": [
+                {"latitude": -25.7479, "longitude": 28.2293},
+                {"latitude": -25.7448, "longitude": 28.2455},
+            ],
+        },
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["distance_m"] > 0
+    assert len(payload["segments"]) == 2
+    assert payload["geojson"]["features"]
+    assert len(payload["path"]) >= 2
+
+
+def test_mapping_service_renders_city_map_outputs(monkeypatch) -> None:
     client = TestClient(mapping_app)
     client.post(
         "/overlays/sensor",
@@ -354,10 +433,61 @@ def test_mapping_service_renders_city_map_outputs() -> None:
         },
     )
 
+    monkeypatch.setattr(geospatial, "fetch_persisted_geographic_dataset", lambda: {
+        "drone_paths": [
+            {
+                "feature_id": "geo-drone-path-demo-001",
+                "name": "Drone demo path",
+                "feature_type": "drone_path",
+                "zone": "cbd",
+                "geometry": {"type": "LineString", "coordinates": [[28.2293, -25.7479], [28.2361, -25.7461]]},
+                "properties": {},
+            }
+        ],
+        "robot_paths": [
+            {
+                "feature_id": "geo-robot-path-demo-001",
+                "name": "Robot demo path",
+                "feature_type": "robot_path",
+                "zone": "cbd",
+                "geometry": {"type": "LineString", "coordinates": [[28.2287, -25.7488], [28.2322, -25.7474]]},
+                "properties": {},
+            }
+        ],
+        "mission_routes": [],
+        "sensors": [
+            {
+                "feature_id": "geo-sensor-demo-001",
+                "name": "Sensor demo point",
+                "feature_type": "sensor",
+                "zone": "cbd",
+                "geometry": {"type": "Point", "coordinates": [28.2293, -25.7479]},
+                "properties": {},
+            }
+        ],
+        "cameras": [
+            {
+                "feature_id": "geo-camera-demo-001",
+                "name": "Camera demo point",
+                "feature_type": "camera",
+                "zone": "cbd",
+                "geometry": {"type": "Point", "coordinates": [28.2361, -25.7461]},
+                "properties": {},
+            }
+        ],
+        "geojson_layers": {
+            "mission_route": {"type": "FeatureCollection", "features": []},
+        },
+    })
+
     response = client.get("/maps/city")
 
     assert response.status_code == 200
     payload = response.json()
     assert "leaflet" in payload["html"].lower()
     assert payload["geojson_layers"]["geofences"]["features"]
+    assert payload["geojson_layers"]["sensors"]["features"]
+    assert payload["geojson_layers"]["cameras"]["features"]
+    assert payload["geojson_layers"]["drone_paths"]["features"]
+    assert payload["geojson_layers"]["robot_paths"]["features"]
     assert payload["marker_layers"]["sensors"]

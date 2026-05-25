@@ -17,6 +17,7 @@ from urllib import parse, request
 
 import folium
 import geopandas as gpd
+import networkx as nx
 from pyproj import Transformer
 from shapely.geometry import LineString, Point, Polygon, mapping, shape
 
@@ -131,9 +132,55 @@ def _dataset_features_by_type(feature_type: str) -> list[dict[str, Any]]:
         return []
     if feature_type == "mission_route":
         candidate = dataset.get("mission_routes")
+    elif feature_type == "drone_path":
+        candidate = dataset.get("drone_paths")
+    elif feature_type == "robot_path":
+        candidate = dataset.get("robot_paths")
     else:
         candidate = dataset.get(f"{feature_type}s")
     return candidate if isinstance(candidate, list) else []
+
+
+def _line_features_geojson(feature_type: str) -> dict[str, Any]:
+    return {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "id": item.get("feature_id"),
+                "geometry": item.get("geometry"),
+                "properties": {
+                    "name": item.get("name"),
+                    "feature_type": item.get("feature_type"),
+                    "zone": item.get("zone"),
+                    **(item.get("properties") or {}),
+                },
+            }
+            for item in _dataset_features_by_type(feature_type)
+            if isinstance(item.get("geometry"), dict) and item["geometry"].get("type") == "LineString"
+        ],
+    }
+
+
+def _point_features_geojson(feature_type: str) -> dict[str, Any]:
+    return {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "id": item.get("feature_id"),
+                "geometry": item.get("geometry"),
+                "properties": {
+                    "name": item.get("name"),
+                    "feature_type": item.get("feature_type"),
+                    "zone": item.get("zone"),
+                    **(item.get("properties") or {}),
+                },
+            }
+            for item in _dataset_features_by_type(feature_type)
+            if isinstance(item.get("geometry"), dict) and item["geometry"].get("type") == "Point"
+        ],
+    }
 
 
 def geofence_geodataframe() -> gpd.GeoDataFrame:
@@ -361,6 +408,150 @@ def evaluate_geofence_activity(
     }
 
 
+def _route_polygon_barriers(extra_obstacles: list[dict[str, Any]] | None = None) -> list[Polygon]:
+    polygons: list[Polygon] = []
+    geofences = geofence_geodataframe()
+    for _, row in geofences.iterrows():
+        if str(row["type"]) in {"restricted_area", "alert_zone"} or str(row["criticality"]) in {"high", "critical"}:
+            polygons.append(row.geometry)
+    for obstacle in extra_obstacles or []:
+        try:
+            geometry = shape(obstacle)
+        except Exception:
+            continue
+        if isinstance(geometry, Polygon):
+            polygons.append(geometry)
+    return polygons
+
+
+def _route_node_coordinates(
+    origin: GeoPoint,
+    destinations: list[GeoPoint],
+    barrier_polygons: list[Polygon],
+) -> list[tuple[float, float]]:
+    coordinates = [(origin.longitude, origin.latitude)]
+    coordinates.extend((point.longitude, point.latitude) for point in destinations)
+    for polygon in barrier_polygons:
+        min_x, min_y, max_x, max_y = polygon.bounds
+        padding = 0.0015
+        for coordinate in [
+            (min_x - padding, min_y - padding),
+            (min_x - padding, max_y + padding),
+            (max_x + padding, min_y - padding),
+            (max_x + padding, max_y + padding),
+        ]:
+            coordinates.append(coordinate)
+    return list(dict.fromkeys(coordinates))
+
+
+def _segment_clear(segment: LineString, barrier_polygons: list[Polygon]) -> bool:
+    start_point = Point(segment.coords[0])
+    end_point = Point(segment.coords[-1])
+    for polygon in barrier_polygons:
+        endpoint_inside = (
+            polygon.contains(start_point)
+            or polygon.contains(end_point)
+            or polygon.touches(start_point)
+            or polygon.touches(end_point)
+        )
+        if not endpoint_inside and (segment.crosses(polygon) or segment.within(polygon)):
+            return False
+        if segment.intersects(polygon) and not endpoint_inside:
+            return False
+    return True
+
+
+def route_mission(
+    origin: GeoPoint,
+    destinations: list[GeoPoint],
+    *,
+    extra_obstacles: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    if not destinations:
+        return {
+            "path": [],
+            "geojson": {"type": "FeatureCollection", "features": []},
+            "segments": [],
+            "distance_m": 0.0,
+            "avoided_zone_ids": [],
+        }
+
+    barrier_polygons = _route_polygon_barriers(extra_obstacles)
+    graph = nx.Graph()
+    node_coordinates = _route_node_coordinates(origin, destinations, barrier_polygons)
+
+    for node_id, coordinate in enumerate(node_coordinates):
+        graph.add_node(node_id, coordinate=coordinate)
+
+    for left_id, left_coordinate in enumerate(node_coordinates):
+        left_projected = Point(*_TO_WEB_MERCATOR.transform(*left_coordinate))
+        for right_id in range(left_id + 1, len(node_coordinates)):
+            right_coordinate = node_coordinates[right_id]
+            segment = LineString([left_coordinate, right_coordinate])
+            if not _segment_clear(segment, barrier_polygons):
+                continue
+            right_projected = Point(*_TO_WEB_MERCATOR.transform(*right_coordinate))
+            weight = float(left_projected.distance(right_projected))
+            graph.add_edge(left_id, right_id, weight=weight)
+
+    origin_id = 0
+    waypoint_ids = [node_coordinates.index((point.longitude, point.latitude)) for point in destinations]
+
+    full_path_ids = [origin_id]
+    total_distance = 0.0
+    segment_summaries: list[dict[str, Any]] = []
+    current_id = origin_id
+    for target_id in waypoint_ids:
+        shortest = nx.shortest_path(graph, source=current_id, target=target_id, weight="weight")
+        segment_distance = sum(
+            float(graph.edges[left_id, right_id]["weight"])
+            for left_id, right_id in zip(shortest, shortest[1:])
+        )
+        total_distance += segment_distance
+        if full_path_ids and shortest and full_path_ids[-1] == shortest[0]:
+            full_path_ids.extend(shortest[1:])
+        else:
+            full_path_ids.extend(shortest)
+        segment_summaries.append(
+            {
+                "from": graph.nodes[current_id]["coordinate"],
+                "to": graph.nodes[target_id]["coordinate"],
+                "distance_m": round(segment_distance, 3),
+                "node_count": len(shortest),
+            }
+        )
+        current_id = target_id
+
+    path_points = [
+        GeoPoint(latitude=float(graph.nodes[node_id]["coordinate"][1]), longitude=float(graph.nodes[node_id]["coordinate"][0]))
+        for node_id in full_path_ids
+    ]
+    path_line = LineString([(point.longitude, point.latitude) for point in path_points]) if len(path_points) >= 2 else None
+    avoided_zone_ids = sorted(
+        str(row["id"])
+        for _, row in geofence_geodataframe().iterrows()
+        if path_line is not None and not row.geometry.intersects(path_line) and (str(row["type"]) in {"restricted_area", "alert_zone"} or str(row["criticality"]) in {"high", "critical"})
+    )
+
+    return {
+        "path": [point.model_dump(mode="json") for point in path_points],
+        "geojson": {
+            "type": "FeatureCollection",
+            "features": [] if path_line is None else [{
+                "type": "Feature",
+                "geometry": mapping(path_line),
+                "properties": {
+                    "distance_m": round(total_distance, 3),
+                    "segment_count": len(segment_summaries),
+                },
+            }],
+        },
+        "segments": segment_summaries,
+        "distance_m": round(total_distance, 3),
+        "avoided_zone_ids": avoided_zone_ids,
+    }
+
+
 def path_around(position: GeoPoint) -> list[GeoPoint]:
     normalized = normalize_point(position)["position"] or position
     route = LineString(
@@ -486,6 +677,15 @@ def render_city_map(
                 tooltip=mission_route.get("name", "Mission route"),
             ).add_to(city_map)
 
+    for path_feature in persisted_dataset.get("drone_paths", []) + persisted_dataset.get("robot_paths", []):
+        geometry = path_feature.get("geometry", {})
+        if geometry.get("type") == "LineString":
+            folium.PolyLine(
+                [(latitude, longitude) for longitude, latitude in geometry.get("coordinates", [])],
+                tooltip=path_feature.get("name", "Asset path"),
+                color="#8fb6ff" if path_feature.get("feature_type") == "drone_path" else "#6be3a8",
+            ).add_to(city_map)
+
     for feature_group in (persisted_dataset.get("sensors", []), persisted_dataset.get("cameras", [])):
         for feature in feature_group:
             geometry = feature.get("geometry", {})
@@ -524,6 +724,10 @@ def render_city_map(
         "geojson_layers": {
             "geofences": geofence_geojson(),
             "search_radius": None,
+            "sensors": _point_features_geojson("sensor"),
+            "cameras": _point_features_geojson("camera"),
+            "drone_paths": _line_features_geojson("drone_path"),
+            "robot_paths": _line_features_geojson("robot_path"),
             "mission_routes": persisted_dataset.get("geojson_layers", {}).get("mission_route", {"type": "FeatureCollection", "features": []}),
         },
         "marker_layers": marker_layers,
