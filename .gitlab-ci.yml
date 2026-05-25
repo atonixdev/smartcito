@@ -24,11 +24,14 @@ build:docker-images:
     - docker build --pull -f hardware/Dockerfile -t "$CI_REGISTRY_IMAGE/hardware-agent:$IMAGE_TAG" .
     - docker build --pull -f hardware/usb_module/Dockerfile -t "$CI_REGISTRY_IMAGE/usb-module:$IMAGE_TAG" .
     - docker build --pull -f ingestion/Dockerfile -t "$CI_REGISTRY_IMAGE/ingestion-kafka-producer:$IMAGE_TAG" .
-    - docker build --pull -f ingestion/Dockerfile -t "$CI_REGISTRY_IMAGE/ingestion-spark:$IMAGE_TAG" .
+    - docker build --pull -f ingestion/Dockerfile.spark -t "$CI_REGISTRY_IMAGE/ingestion-spark:$IMAGE_TAG" .
 
 test:citosmart:
   stage: test
   image: python:3.11-slim
+  services:
+    - name: memcached:1.6-alpine
+      alias: memcached
   before_script:
     - pip install -r citosmart/requirements-dev.txt black flake8 mypy
   script:
@@ -36,11 +39,14 @@ test:citosmart:
     - black --check .
     - flake8 .
     - mypy app
-    - pytest
+    - MEMCACHED_SERVERS=memcached:11211 pytest
 
 test:python-services:
   stage: test
   image: python:3.11-slim
+  services:
+    - name: memcached:1.6-alpine
+      alias: memcached
   before_script:
     - pip install black flake8 mypy pytest httpx
     - pip install -r citosmart/requirements.txt
@@ -54,7 +60,18 @@ test:python-services:
     - black --check ai_models camera_module gps_module ingestion security/service.py hardware/service.py ai_models/tests camera_module/tests gps_module/tests ingestion/tests security/tests hardware/tests
     - flake8 ai_models camera_module gps_module ingestion security/service.py hardware/service.py ai_models/tests camera_module/tests gps_module/tests ingestion/tests security/tests hardware/tests
     - mypy --ignore-missing-imports ai_models camera_module gps_module ingestion security/service.py hardware/service.py ai_models/tests camera_module/tests gps_module/tests ingestion/tests security/tests hardware/tests
-    - PYTHONPATH="$CI_PROJECT_DIR:$CI_PROJECT_DIR/citosmart" pytest ai_models/tests camera_module/tests gps_module/tests ingestion/tests security/tests hardware/tests
+    - PYTHONPATH="$CI_PROJECT_DIR:$CI_PROJECT_DIR/citosmart" MEMCACHED_SERVERS=memcached:11211 pytest ai_models/tests camera_module/tests gps_module/tests ingestion/tests security/tests hardware/tests
+
+test:memcached-smoke:
+  stage: test
+  image: python:3.11-slim
+  services:
+    - name: memcached:1.6-alpine
+      alias: memcached
+  before_script:
+    - pip install pymemcache==4.0.0
+  script:
+    - MEMCACHED_SERVERS=memcached:11211 python scripts/ci/memcached_smoke.py
 
 test:security-root:
   stage: test
@@ -104,7 +121,7 @@ package:push-images:
     - docker build --pull -f hardware/Dockerfile -t "$CI_REGISTRY_IMAGE/hardware-agent:$IMAGE_TAG" -t "$CI_REGISTRY_IMAGE/hardware-agent:latest" .
     - docker build --pull -f hardware/usb_module/Dockerfile -t "$CI_REGISTRY_IMAGE/usb-module:$IMAGE_TAG" -t "$CI_REGISTRY_IMAGE/usb-module:latest" .
     - docker build --pull -f ingestion/Dockerfile -t "$CI_REGISTRY_IMAGE/ingestion-kafka-producer:$IMAGE_TAG" -t "$CI_REGISTRY_IMAGE/ingestion-kafka-producer:latest" .
-    - docker build --pull -f ingestion/Dockerfile -t "$CI_REGISTRY_IMAGE/ingestion-spark:$IMAGE_TAG" -t "$CI_REGISTRY_IMAGE/ingestion-spark:latest" .
+    - docker build --pull -f ingestion/Dockerfile.spark -t "$CI_REGISTRY_IMAGE/ingestion-spark:$IMAGE_TAG" -t "$CI_REGISTRY_IMAGE/ingestion-spark:latest" .
     - docker push "$CI_REGISTRY_IMAGE/citosmart:$IMAGE_TAG"
     - docker push "$CI_REGISTRY_IMAGE/citosmart:latest"
     - docker push "$CI_REGISTRY_IMAGE/webapp:$IMAGE_TAG"

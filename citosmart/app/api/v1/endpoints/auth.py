@@ -27,6 +27,7 @@ from app.core.security import (
     verify_password,
     TokenPayload,
 )
+from app.services.cache import CacheKeyBuilder, cache_service
 
 router = APIRouter()
 
@@ -80,11 +81,33 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()) -> TokenRespon
             headers={"WWW-Authenticate": "Bearer"},
         )
 
+    session_key = CacheKeyBuilder.build("api", "session", form_data.username)
+    cached_session = cache_service.get_json(session_key)
+    if cached_session is not None and cached_session.get("role") == user["role"]:
+        return TokenResponse(access_token=cached_session["access_token"])
+
     token = create_access_token(subject=form_data.username, role=user["role"])
+    cache_service.set_json(
+        session_key,
+        {"access_token": token, "role": user["role"]},
+        cache_service.policies.session,
+    )
+    cache_service.set_json(
+        CacheKeyBuilder.build("api", "user", form_data.username),
+        {"username": form_data.username, "role": user["role"]},
+        cache_service.policies.api,
+    )
     return TokenResponse(access_token=token)
 
 
 @router.get("/me", response_model=MeResponse, summary="Return the current caller")
 async def whoami(current: TokenPayload = Depends(get_current_user)) -> MeResponse:
     """Echo the decoded token. Useful for debugging webapps."""
-    return MeResponse(username=current.sub, role=current.role)
+    cache_key = CacheKeyBuilder.build("api", "user", current.sub)
+    cached_profile = cache_service.get_json(cache_key)
+    if cached_profile is not None:
+        return MeResponse.model_validate(cached_profile)
+
+    response = MeResponse(username=current.sub, role=current.role)
+    cache_service.set_json(cache_key, response.model_dump(mode="json"), cache_service.policies.api)
+    return response

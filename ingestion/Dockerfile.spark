@@ -1,0 +1,31 @@
+FROM bitnami/spark:3.5.1
+
+USER 0
+
+WORKDIR /opt/smartcito
+
+COPY ingestion /opt/smartcito/ingestion
+
+RUN python -m pip install --no-cache-dir -r /opt/smartcito/ingestion/requirements.txt
+
+RUN mkdir -p /opt/spark/checkpoints /opt/spark/object-store \
+    && chown -R 1001:0 /opt/smartcito /opt/spark/checkpoints /opt/spark/object-store
+
+ENV PYTHONPATH=/opt/smartcito \
+    SPARK_MASTER_URL=local[*] \
+    KAFKA_BROKER_URL=kafka:9092 \
+    KAFKA_RAW_EVENTS_TOPIC=smartcito.sensors.raw \
+    KAFKA_ALERTS_TOPIC=smartcito.alerts \
+    MEMCACHED_SERVERS=memcached-1:11211,memcached-2:11211,memcached-3:11211 \
+    SPARK_CHECKPOINT_DIR=/opt/spark/checkpoints \
+    SPARK_OBJECT_STORAGE_PATH=/opt/spark/object-store \
+    DB_HOST=postgres \
+    DB_PORT=5432 \
+    DB_NAME=smartcito \
+    DB_USER=smartcito \
+    DB_PASSWORD=change-me
+
+USER 1001
+
+ENTRYPOINT ["/opt/bitnami/spark/bin/spark-submit"]
+CMD ["--master", "local[*]", "--packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1,org.postgresql:postgresql:42.7.4", "/opt/smartcito/ingestion/streaming_job.py"]

@@ -5,6 +5,70 @@ x-logging: &stdout-logging
     max-file: "3"
 
 services:
+  memcached-1:
+    image: memcached:1.6-alpine
+    container_name: smartcito-memcached-1-hardware
+    command: ["memcached", "-m", "256", "-I", "4m", "-o", "modern"]
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - backend
+    restart: unless-stopped
+    logging: *stdout-logging
+
+  memcached-2:
+    image: memcached:1.6-alpine
+    container_name: smartcito-memcached-2-hardware
+    command: ["memcached", "-m", "256", "-I", "4m", "-o", "modern"]
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - backend
+    restart: unless-stopped
+    logging: *stdout-logging
+
+  memcached-3:
+    image: memcached:1.6-alpine
+    container_name: smartcito-memcached-3-hardware
+    command: ["memcached", "-m", "256", "-I", "4m", "-o", "modern"]
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - backend
+    restart: unless-stopped
+    logging: *stdout-logging
+
+  api-router:
+    image: nginx:1.27-alpine
+    container_name: smartcito-api-router-hardware
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx
+      - /var/run
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./infra/deploy/nginx/api-router.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./infra/deploy/nginx/upstreams/api-local.conf:/etc/nginx/conf.d/api-upstream.conf:ro
+    networks:
+      - backend
+      - edge
+    depends_on:
+      - citosmart
+    restart: unless-stopped
+    logging: *stdout-logging
+
   citosmart:
     build:
       context: ./citosmart
@@ -13,8 +77,6 @@ services:
     env_file: .env
     environment:
       SMARTCITO_DEPLOYMENT_MODE: ${SMARTCITO_DEPLOYMENT_MODE:-hardware}
-    ports:
-      - "${APP_PORT:-8000}:8000"
     read_only: true
     tmpfs:
       - /tmp
@@ -28,6 +90,12 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      memcached-1:
+        condition: service_started
+      memcached-2:
+        condition: service_started
+      memcached-3:
+        condition: service_started
       kafka:
         condition: service_started
       mqtt:
@@ -53,7 +121,7 @@ services:
       - edge
       - backend
     depends_on:
-      - citosmart
+      - api-router
     restart: unless-stopped
     logging: *stdout-logging
 
@@ -181,7 +249,7 @@ services:
       - backend
       - monitoring
     depends_on:
-      - citosmart
+      - api-router
     restart: unless-stopped
     logging: *stdout-logging
 

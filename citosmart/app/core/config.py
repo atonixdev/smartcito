@@ -85,6 +85,13 @@ class Settings(BaseSettings):
 
     # ----- Cache -----
     redis_url: str = "redis://redis:6379/0"
+    memcached_servers: str = "memcached-1:11211,memcached-2:11211,memcached-3:11211"
+    memcached_default_ttl_seconds: int = 60
+    memcached_api_ttl_seconds: int = 60
+    memcached_dashboard_ttl_seconds: int = 45
+    memcached_device_metadata_ttl_seconds: int = 300
+    memcached_ai_ttl_seconds: int = 1800
+    memcached_session_ttl_seconds: int = 3600
 
     # ----- Streaming (Kafka) -----
     kafka_bootstrap_servers: str = Field(

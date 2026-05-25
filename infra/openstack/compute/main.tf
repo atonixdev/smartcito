@@ -23,9 +23,21 @@ locals {
               package_update: true
               packages:
                 - docker.io
+                - containerd
               runcmd:
                 - systemctl enable docker
                 - systemctl start docker
+              EOF
+
+  kubernetes_cloud_init = <<-EOF
+              #cloud-config
+              package_update: true
+              packages:
+                - containerd
+                - curl
+              runcmd:
+                - systemctl enable containerd
+                - systemctl start containerd
               EOF
 }
 
@@ -71,5 +83,77 @@ resource "openstack_compute_instance_v2" "database_nodes" {
 
   network {
     uuid = var.database_network_id
+  }
+}
+
+resource "openstack_compute_instance_v2" "kubernetes_control_plane" {
+  name            = "smartcito-k8s-control-plane"
+  image_name      = var.image_name
+  flavor_name     = var.kubernetes_control_plane_flavor_name
+  key_pair        = var.key_pair
+  security_groups = var.kubernetes_security_groups
+  user_data       = local.kubernetes_cloud_init
+
+  network {
+    uuid = var.public_network_id
+  }
+
+  network {
+    uuid = var.services_network_id
+  }
+}
+
+resource "openstack_compute_instance_v2" "kubernetes_workers" {
+  count           = var.kubernetes_worker_count
+  name            = "smartcito-k8s-worker-${count.index + 1}"
+  image_name      = var.image_name
+  flavor_name     = var.kubernetes_worker_flavor_name
+  key_pair        = var.key_pair
+  security_groups = var.kubernetes_security_groups
+  user_data       = local.kubernetes_cloud_init
+
+  network {
+    uuid = var.services_network_id
+  }
+}
+
+resource "openstack_compute_instance_v2" "kafka_brokers" {
+  count           = var.kafka_broker_count
+  name            = "smartcito-kafka-${count.index + 1}"
+  image_name      = var.image_name
+  flavor_name     = var.kafka_broker_flavor_name
+  key_pair        = var.key_pair
+  security_groups = var.data_platform_security_groups
+  user_data       = local.cloud_init
+
+  network {
+    uuid = var.services_network_id
+  }
+}
+
+resource "openstack_compute_instance_v2" "spark_master" {
+  name            = "smartcito-spark-master"
+  image_name      = var.image_name
+  flavor_name     = var.spark_master_flavor_name
+  key_pair        = var.key_pair
+  security_groups = var.data_platform_security_groups
+  user_data       = local.cloud_init
+
+  network {
+    uuid = var.services_network_id
+  }
+}
+
+resource "openstack_compute_instance_v2" "spark_workers" {
+  count           = var.spark_worker_count
+  name            = "smartcito-spark-worker-${count.index + 1}"
+  image_name      = var.image_name
+  flavor_name     = var.spark_worker_flavor_name
+  key_pair        = var.key_pair
+  security_groups = var.data_platform_security_groups
+  user_data       = local.cloud_init
+
+  network {
+    uuid = var.services_network_id
   }
 }

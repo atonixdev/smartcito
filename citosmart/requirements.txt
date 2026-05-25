@@ -36,6 +36,7 @@ alembic==1.13.3                   # Schema migrations
 
 # ---- Cache ----
 redis==5.1.1
+pymemcache==4.0.0
 
 # ---- Security ----
 cryptography==43.0.3              # AES, RSA, X.509, key derivation

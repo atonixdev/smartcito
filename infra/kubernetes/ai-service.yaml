@@ -16,8 +16,22 @@ spec:
       containers:
         - name: ai-service
           image: smartcito/ai-service:latest
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: smartcito-platform-config
+            - secretRef:
+                name: smartcito-platform-secrets
           ports:
             - containerPort: 8012
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8012
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8012
           resources:
             requests:
               cpu: 500m
@@ -37,6 +51,7 @@ spec:
   ports:
     - port: 80
       targetPort: 8012
+  type: ClusterIP
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler

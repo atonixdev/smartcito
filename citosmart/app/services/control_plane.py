@@ -37,6 +37,7 @@ from app.schemas.control_plane import (
     SecurityAlert,
     SecurityMonitorStatus,
 )
+from app.services.cache import CacheKeyBuilder, cache_service
 from app.services.camera_registry import camera_registry_service
 
 try:
@@ -58,8 +59,15 @@ class ControlPlaneService:
             "security-policies": OperatorControlState.RUNNING,
         }
         self._map_devices: dict[str, MapDevice] = {}
+        self._overview_cache_key = CacheKeyBuilder.build("api", "dashboard-summary", "control-plane-overview")
+        self._map_cache_key = CacheKeyBuilder.build("dashboard", "summary", "map-overview")
+        self._scene_cache_key = CacheKeyBuilder.build("dashboard", "summary", "scene-overview")
 
     async def overview(self, session: AsyncSession) -> ControlPlaneOverview:
+        cached = cache_service.get_json(self._overview_cache_key)
+        if cached is not None:
+            return ControlPlaneOverview.model_validate(cached)
+
         cameras = await camera_registry_service.list_devices(session)
         if not cameras:
             cameras = await camera_registry_service.seed_demo_devices(session)
@@ -197,12 +205,18 @@ class ControlPlaneService:
             ),
         ]
 
-        return ControlPlaneOverview(
+        overview = ControlPlaneOverview(
             devices=sorted(devices, key=self._last_seen_sort_key, reverse=True),
             security=security,
             data_flow=data_flow,
             controls=controls,
         )
+        cache_service.set_json(
+            self._overview_cache_key,
+            overview.model_dump(mode="json"),
+            cache_service.policies.dashboard,
+        )
+        return overview
 
     async def update_control(
         self,
@@ -227,11 +241,16 @@ class ControlPlaneService:
             )
         )
         await session.commit()
+        self._invalidate_dashboard_caches()
 
         overview = await self.overview(session)
         return next(control for control in overview.controls if control.id == control_id)
 
     async def map_overview(self, session: AsyncSession) -> MapOverview:
+        cached = cache_service.get_json(self._map_cache_key)
+        if cached is not None:
+            return MapOverview.model_validate(cached)
+
         cameras = await camera_registry_service.list_devices(session)
         if not cameras:
             cameras = await camera_registry_service.seed_demo_devices(session)
@@ -311,14 +330,30 @@ class ControlPlaneService:
             for device in devices
         ]
 
-        return MapOverview(
+        overview = MapOverview(
             devices=devices,
             heatmap=heatmap,
             visible_layers=["verified-devices", "camera-overlays", "gps-paths", "sensor-heatmap"],
             security_policy="verified devices only; trust score must be greater than 80; registration and map updates are audited",
         )
+        cache_service.set_json(
+            self._map_cache_key,
+            overview.model_dump(mode="json"),
+            cache_service.policies.dashboard,
+        )
+        return overview
 
     async def scene_overview(self, session: AsyncSession, *, actor: str) -> SceneOverview:
+        cached = cache_service.get_json(self._scene_cache_key)
+        if cached is not None:
+            await self._record_scene_audit(
+                session,
+                actor=actor,
+                device_count=len(cached.get("devices", [])),
+                threat_count=len(cached.get("threats", [])),
+            )
+            return SceneOverview.model_validate(cached)
+
         map_overview = await self.map_overview(session)
         scene_devices = [self._scene_device(device) for device in map_overview.devices]
         threats = [
@@ -335,28 +370,25 @@ class ControlPlaneService:
             for device in scene_devices
             if (device.sensor_value or 0) >= 0.7 or device.device_type == DeviceCategory.CAMERA
         ]
-        session.add(
-            AuditEventORM(
-                id=str(uuid4()),
-                entity_type="dashboard_scene",
-                entity_id="3d-control-plane",
-                action="control-plane.scene.visualized",
-                actor=actor,
-                payload={
-                    "device_count": len(scene_devices),
-                    "threat_count": len(threats),
-                    "policy": "jwt-rbac-and-trust-score",
-                },
-            )
+        await self._record_scene_audit(
+            session,
+            actor=actor,
+            device_count=len(scene_devices),
+            threat_count=len(threats),
         )
-        await session.commit()
-        return SceneOverview(
+        overview = SceneOverview(
             devices=scene_devices,
             threats=threats,
             layers=["city-map", "iot-devices", "gps-paths", "camera-overlays", "threat-waves"],
             camera_overlay_mode="popup-texture-ready",
             security_policy="JWT + RBAC required; objects are color-coded by trust score and visible only after map trust policy validation",
         )
+        cache_service.set_json(
+            self._scene_cache_key,
+            overview.model_dump(mode="json"),
+            cache_service.policies.dashboard,
+        )
+        return overview
 
     async def register_map_device(
         self,
@@ -398,7 +430,40 @@ class ControlPlaneService:
             )
         )
         await session.commit()
+        self._invalidate_dashboard_caches()
+        cache_service.delete(CacheKeyBuilder.build("device", "metadata", registration.device_id))
         return device
+
+    async def _record_scene_audit(
+        self,
+        session: AsyncSession,
+        *,
+        actor: str,
+        device_count: int,
+        threat_count: int,
+    ) -> None:
+        session.add(
+            AuditEventORM(
+                id=str(uuid4()),
+                entity_type="dashboard_scene",
+                entity_id="3d-control-plane",
+                action="control-plane.scene.visualized",
+                actor=actor,
+                payload={
+                    "device_count": device_count,
+                    "threat_count": threat_count,
+                    "policy": "jwt-rbac-and-trust-score",
+                },
+            )
+        )
+        await session.commit()
+
+    def _invalidate_dashboard_caches(self) -> None:
+        cache_service.delete_many([
+            self._overview_cache_key,
+            self._map_cache_key,
+            self._scene_cache_key,
+        ])
 
     def _action_label(self, state: OperatorControlState) -> str:
         return "stop" if state == OperatorControlState.RUNNING else "start"

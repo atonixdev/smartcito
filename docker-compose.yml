@@ -10,17 +10,51 @@
 # ============================================================================
 
 services:
+  memcached-1:
+    image: memcached:1.6-alpine
+    container_name: smartcito-memcached-1-local
+    command: ["memcached", "-m", "128", "-I", "2m", "-o", "modern"]
+    restart: unless-stopped
+
+  memcached-2:
+    image: memcached:1.6-alpine
+    container_name: smartcito-memcached-2-local
+    command: ["memcached", "-m", "128", "-I", "2m", "-o", "modern"]
+    restart: unless-stopped
+
+  memcached-3:
+    image: memcached:1.6-alpine
+    container_name: smartcito-memcached-3-local
+    command: ["memcached", "-m", "128", "-I", "2m", "-o", "modern"]
+    restart: unless-stopped
+
+  api-router:
+    image: nginx:1.27-alpine
+    container_name: smartcito-api-router
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./infra/deploy/nginx/api-router.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./infra/deploy/nginx/upstreams/api-local.conf:/etc/nginx/conf.d/api-upstream.conf:ro
+    depends_on:
+      - citosmart
+    restart: unless-stopped
+
   citosmart:
     build:
       context: ./citosmart
     image: smartcito/api-gateway:local
     container_name: smartcito-citosmart
     env_file: .env
-    ports:
-      - "8000:8000"
     depends_on:
       postgres:
         condition: service_healthy
+      memcached-1:
+        condition: service_started
+      memcached-2:
+        condition: service_started
+      memcached-3:
+        condition: service_started
       redis:
         condition: service_started
       kafka:
@@ -36,7 +70,7 @@ services:
     ports:
       - "5173:80"
     depends_on:
-      - citosmart
+      - api-router
     restart: unless-stopped
 
   camera-service:
@@ -82,7 +116,7 @@ services:
     ports:
       - "8013:8013"
     depends_on:
-      - citosmart
+      - api-router
     restart: unless-stopped
 
   hardware-agent:
@@ -156,11 +190,11 @@ services:
     container_name: smartcito-dash
     command: ["python", "-m", "app.dash_app.server"]
     environment:
-      SMARTCITO_API_BASE: "http://citosmart:8000/api/v1"
+      SMARTCITO_API_BASE: "http://api-router:8000/api/v1"
     ports:
       - "8050:8050"
     depends_on:
-      - citosmart
+      - api-router
     restart: unless-stopped
 
 volumes:

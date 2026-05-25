@@ -16,8 +16,22 @@ spec:
       containers:
         - name: security-service
           image: smartcito/security-service:latest
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: smartcito-platform-config
+            - secretRef:
+                name: smartcito-platform-secrets
           ports:
             - containerPort: 8013
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8013
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8013
           resources:
             requests:
               cpu: 100m
@@ -37,3 +51,4 @@ spec:
   ports:
     - port: 80
       targetPort: 8013
+  type: ClusterIP

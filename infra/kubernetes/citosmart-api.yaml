@@ -1,0 +1,197 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: citosmart-api
+  namespace: backend
+spec:
+  replicas: 3
+  minReadySeconds: 10
+  revisionHistoryLimit: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: citosmart-api
+  template:
+    metadata:
+      labels:
+        app: citosmart-api
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+    spec:
+      containers:
+        - name: citosmart-api
+          image: smartcito/api-gateway:latest
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: smartcito-platform-config
+            - secretRef:
+                name: smartcito-platform-secrets
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health/ready
+              port: 8000
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health/live
+              port: 8000
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: citosmart-api
+  namespace: backend
+spec:
+  selector:
+    app: citosmart-api
+  ports:
+    - port: 8000
+      targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: citosmart-api
+  namespace: backend
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: citosmart-api
+  minReplicas: 3
+  maxReplicas: 12
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event-consumer-raw
+  namespace: backend
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: event-consumer-raw
+  template:
+    metadata:
+      labels:
+        app: event-consumer-raw
+    spec:
+      containers:
+        - name: event-consumer-raw
+          image: smartcito/api-gateway:latest
+          imagePullPolicy: IfNotPresent
+          command: ["python", "-m", "app.workers.event_consumer_runner"]
+          env:
+            - name: EVENT_CONSUMER_MODE
+              value: raw
+          envFrom:
+            - configMapRef:
+                name: smartcito-platform-config
+            - secretRef:
+                name: smartcito-platform-secrets
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event-consumer-clean
+  namespace: backend
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: event-consumer-clean
+  template:
+    metadata:
+      labels:
+        app: event-consumer-clean
+    spec:
+      containers:
+        - name: event-consumer-clean
+          image: smartcito/api-gateway:latest
+          imagePullPolicy: IfNotPresent
+          command: ["python", "-m", "app.workers.event_consumer_runner"]
+          env:
+            - name: EVENT_CONSUMER_MODE
+              value: clean
+          envFrom:
+            - configMapRef:
+                name: smartcito-platform-config
+            - secretRef:
+                name: smartcito-platform-secrets
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event-consumer-alerts
+  namespace: backend
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: event-consumer-alerts
+  template:
+    metadata:
+      labels:
+        app: event-consumer-alerts
+    spec:
+      containers:
+        - name: event-consumer-alerts
+          image: smartcito/api-gateway:latest
+          imagePullPolicy: IfNotPresent
+          command: ["python", "-m", "app.workers.event_consumer_runner"]
+          env:
+            - name: EVENT_CONSUMER_MODE
+              value: alerts
+          envFrom:
+            - configMapRef:
+                name: smartcito-platform-config
+            - secretRef:
+                name: smartcito-platform-secrets
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: citosmart-api
+  namespace: backend
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: citosmart-api

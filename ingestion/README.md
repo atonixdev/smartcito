@@ -23,10 +23,12 @@ the SmartCito core for processing, storage, and analytics.
 
 ```
 ingestion/
-├── Dockerfile       # Container image for ingestion jobs
+├── Dockerfile       # Container image for Python ingestion APIs/helpers
+├── Dockerfile.spark # Dedicated Spark job image
 ├── requirements.txt # Runtime dependencies
 ├── kafka_producer.py# Simple Kafka producer helper
-├── spark_job.py     # Structured streaming job template
+├── spark_job.py     # Declarative pipeline metadata
+├── streaming_job.py # Repo-owned Structured Streaming runtime
 └── README.md
 ```
 
@@ -49,7 +51,7 @@ ingestion/
 
 - Python 3.11
 - kafka-python
-- Spark job templates
+- Spark job templates and packaged streaming runtime
 
 ## How To Run Its Container
 
@@ -58,8 +60,17 @@ docker build -f ingestion/Dockerfile -t smartcito-ingestion .
 docker run --rm smartcito-ingestion
 ```
 
+```bash
+docker build -f ingestion/Dockerfile.spark -t smartcito-ingestion-spark .
+docker run --rm smartcito-ingestion-spark
+```
+
 ## Example Usage
 
 ```bash
 python -m ingestion.spark_job
+```
+
+```bash
+/opt/bitnami/spark/bin/spark-submit --master local[*] ingestion/streaming_job.py
 ```

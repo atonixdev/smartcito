@@ -17,3 +17,11 @@ output "public_security_group_id" {
 output "database_security_group_id" {
   value = openstack_networking_secgroup_v2.database_internal.id
 }
+
+output "kubernetes_security_group_id" {
+  value = openstack_networking_secgroup_v2.kubernetes_internal.id
+}
+
+output "data_platform_security_group_id" {
+  value = openstack_networking_secgroup_v2.data_platform_internal.id
+}

@@ -51,14 +51,24 @@ module "compute" {
   services_network_id   = module.networking.services_network_id
   database_network_id   = module.networking.database_network_id
   public_security_groups   = [module.networking.public_security_group_id]
-  internal_security_groups = [module.networking.public_security_group_id]
+  internal_security_groups = [module.networking.data_platform_security_group_id]
   database_security_groups = [module.networking.database_security_group_id]
+  kubernetes_security_groups = [module.networking.kubernetes_security_group_id]
+  data_platform_security_groups = [module.networking.data_platform_security_group_id]
 
   api_flavor_name      = var.api_flavor_name
   service_flavor_name  = var.service_flavor_name
   database_flavor_name = var.database_flavor_name
+  kubernetes_control_plane_flavor_name = var.kubernetes_control_plane_flavor_name
+  kubernetes_worker_flavor_name = var.kubernetes_worker_flavor_name
+  kafka_broker_flavor_name = var.kafka_broker_flavor_name
+  spark_master_flavor_name = var.spark_master_flavor_name
+  spark_worker_flavor_name = var.spark_worker_flavor_name
   service_node_count   = var.service_node_count
   database_node_count  = var.database_node_count
+  kubernetes_worker_count = var.kubernetes_worker_count
+  kafka_broker_count = var.kafka_broker_count
+  spark_worker_count = var.spark_worker_count
 }
 
 module "storage" {
@@ -73,4 +83,23 @@ module "storage" {
   database_volume_size_gb      = var.database_volume_size_gb
   object_storage_volume_size_gb = var.object_storage_volume_size_gb
   logs_volume_size_gb          = var.logs_volume_size_gb
+  kafka_log_volume_size_gb     = var.kafka_log_volume_size_gb
+  spark_checkpoint_volume_size_gb = var.spark_checkpoint_volume_size_gb
+  kafka_broker_count           = var.kafka_broker_count
+}
+
+resource "openstack_compute_volume_attach_v2" "database_volume_attachment" {
+  instance_id = module.compute.database_node_ids[0]
+  volume_id   = module.storage.database_volume_id
+}
+
+resource "openstack_compute_volume_attach_v2" "kafka_log_volume_attachments" {
+  count       = min(length(module.compute.kafka_broker_ids), length(module.storage.kafka_log_volume_ids))
+  instance_id = module.compute.kafka_broker_ids[count.index]
+  volume_id   = module.storage.kafka_log_volume_ids[count.index]
+}
+
+resource "openstack_compute_volume_attach_v2" "spark_checkpoint_attachment" {
+  instance_id = module.compute.spark_master_instance_id
+  volume_id   = module.storage.spark_checkpoint_volume_id
 }

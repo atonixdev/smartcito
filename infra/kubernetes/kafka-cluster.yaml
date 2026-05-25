@@ -1,0 +1,126 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-bootstrap
+  namespace: data-platform
+spec:
+  selector:
+    app: kafka
+  ports:
+    - name: kafka
+      port: 9092
+      targetPort: 9092
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-internal
+  namespace: data-platform
+spec:
+  clusterIP: None
+  selector:
+    app: kafka
+  ports:
+    - name: kafka
+      port: 9092
+      targetPort: 9092
+    - name: controller
+      port: 9093
+      targetPort: 9093
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka
+  namespace: data-platform
+spec:
+  serviceName: kafka-internal
+  replicas: 3
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9092"
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: kafka
+          image: bitnami/kafka:3.7
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: smartcito-platform-config
+            - secretRef:
+                name: smartcito-platform-secrets
+          command:
+            - /bin/bash
+            - -ec
+            - |
+              export POD_INDEX="${HOSTNAME##*-}"
+              export KAFKA_CFG_NODE_ID="$((POD_INDEX + 1))"
+              export KAFKA_CFG_PROCESS_ROLES="broker,controller"
+              export KAFKA_CFG_LISTENERS="PLAINTEXT://:9092,CONTROLLER://:9093"
+              export KAFKA_CFG_ADVERTISED_LISTENERS="PLAINTEXT://${HOSTNAME}.kafka-internal.data-platform.svc.cluster.local:9092"
+              export KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP="PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT"
+              export KAFKA_CFG_CONTROLLER_LISTENER_NAMES="CONTROLLER"
+              export KAFKA_CFG_INTER_BROKER_LISTENER_NAME="PLAINTEXT"
+              export KAFKA_CFG_CONTROLLER_QUORUM_VOTERS="1@kafka-0.kafka-internal.data-platform.svc.cluster.local:9093,2@kafka-1.kafka-internal.data-platform.svc.cluster.local:9093,3@kafka-2.kafka-internal.data-platform.svc.cluster.local:9093"
+              exec /opt/bitnami/scripts/kafka/entrypoint.sh /opt/bitnami/scripts/kafka/run.sh
+          ports:
+            - containerPort: 9092
+            - containerPort: 9093
+          volumeMounts:
+            - name: kafka-data
+              mountPath: /bitnami/kafka
+          readinessProbe:
+            tcpSocket:
+              port: 9092
+          livenessProbe:
+            tcpSocket:
+              port: 9092
+          resources:
+            requests:
+              cpu: "1"
+              memory: 2Gi
+            limits:
+              cpu: "4"
+              memory: 6Gi
+  volumeClaimTemplates:
+    - metadata:
+        name: kafka-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: cinder-csi
+        resources:
+          requests:
+            storage: 250Gi
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kafka-topic-bootstrap
+  namespace: data-platform
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: kafka-topic-bootstrap
+          image: bitnami/kafka:3.7
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: smartcito-platform-config
+          command:
+            - /bin/bash
+            - -ec
+            - |
+              for topic in "$KAFKA_GPS_TOPIC" "$KAFKA_CCTV_TOPIC" "$KAFKA_IOT_TOPIC" "$KAFKA_SENSOR_TOPIC" "$KAFKA_RAW_EVENTS_TOPIC" "$KAFKA_CLEAN_EVENTS_TOPIC" "$KAFKA_ALERTS_TOPIC"; do
+                kafka-topics.sh --bootstrap-server kafka-bootstrap.data-platform.svc.cluster.local:9092 --create --if-not-exists --topic "$topic" --replication-factor 3 --partitions 12
+              done

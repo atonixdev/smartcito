@@ -1,0 +1,207 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: smartcito-platform-config
+  namespace: backend
+data:
+  APP_ENV: staging
+  DB_HOST: postgres.database.svc.cluster.local
+  DB_PORT: "5432"
+  DB_NAME: smartcito
+  DB_USER: smartcito
+  MEMCACHED_SERVERS: memcached-0.memcached-internal.data-platform.svc.cluster.local:11211,memcached-1.memcached-internal.data-platform.svc.cluster.local:11211,memcached-2.memcached-internal.data-platform.svc.cluster.local:11211
+  MEMCACHED_DEFAULT_TTL_SECONDS: "60"
+  MEMCACHED_API_TTL_SECONDS: "60"
+  MEMCACHED_DASHBOARD_TTL_SECONDS: "45"
+  MEMCACHED_DEVICE_METADATA_TTL_SECONDS: "300"
+  MEMCACHED_AI_TTL_SECONDS: "1800"
+  MEMCACHED_SESSION_TTL_SECONDS: "3600"
+  KAFKA_BROKER_URL: kafka-bootstrap.data-platform.svc.cluster.local:9092
+  MESSAGE_BUS_URL: kafka-bootstrap.data-platform.svc.cluster.local:9092
+  KAFKA_GPS_TOPIC: smartcito.gps.raw
+  KAFKA_CCTV_TOPIC: smartcito.cctv.raw
+  KAFKA_IOT_TOPIC: smartcito.iot.raw
+  KAFKA_SENSOR_TOPIC: smartcito.sensors.raw
+  KAFKA_RAW_EVENTS_TOPIC: smartcito.events.raw
+  KAFKA_CLEAN_EVENTS_TOPIC: smartcito.events.clean
+  KAFKA_ALERTS_TOPIC: smartcito.alerts
+  OBJECT_STORAGE_ENDPOINT: s3://smartcito-artifacts
+  OBJECT_STORAGE_BUCKET: smartcito-artifacts
+  AI_MODELS_URL: http://ai-service.ai.svc.cluster.local
+  SPARK_MASTER_URL: spark://spark-master.data-platform.svc.cluster.local:7077
+  SPARK_CHECKPOINT_DIR: /opt/spark/checkpoints/smartcito
+  SPARK_OBJECT_STORAGE_PATH: s3a://smartcito-artifacts/streaming
+  AUTH_ISSUER: smartcito.local
+  AUTH_AUDIENCE: smartcito-clients
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: smartcito-platform-config
+  namespace: ingestion
+data:
+  APP_ENV: staging
+  DB_HOST: postgres.database.svc.cluster.local
+  DB_PORT: "5432"
+  DB_NAME: smartcito
+  DB_USER: smartcito
+  MEMCACHED_SERVERS: memcached-0.memcached-internal.data-platform.svc.cluster.local:11211,memcached-1.memcached-internal.data-platform.svc.cluster.local:11211,memcached-2.memcached-internal.data-platform.svc.cluster.local:11211
+  MEMCACHED_DEFAULT_TTL_SECONDS: "60"
+  MEMCACHED_API_TTL_SECONDS: "60"
+  MEMCACHED_DASHBOARD_TTL_SECONDS: "45"
+  MEMCACHED_DEVICE_METADATA_TTL_SECONDS: "300"
+  MEMCACHED_AI_TTL_SECONDS: "1800"
+  MEMCACHED_SESSION_TTL_SECONDS: "3600"
+  KAFKA_BROKER_URL: kafka-bootstrap.data-platform.svc.cluster.local:9092
+  MESSAGE_BUS_URL: kafka-bootstrap.data-platform.svc.cluster.local:9092
+  KAFKA_GPS_TOPIC: smartcito.gps.raw
+  KAFKA_CCTV_TOPIC: smartcito.cctv.raw
+  KAFKA_IOT_TOPIC: smartcito.iot.raw
+  KAFKA_SENSOR_TOPIC: smartcito.sensors.raw
+  KAFKA_RAW_EVENTS_TOPIC: smartcito.events.raw
+  KAFKA_CLEAN_EVENTS_TOPIC: smartcito.events.clean
+  KAFKA_ALERTS_TOPIC: smartcito.alerts
+  OBJECT_STORAGE_ENDPOINT: s3://smartcito-artifacts
+  OBJECT_STORAGE_BUCKET: smartcito-artifacts
+  AI_MODELS_URL: http://ai-service.ai.svc.cluster.local
+  SPARK_MASTER_URL: spark://spark-master.data-platform.svc.cluster.local:7077
+  SPARK_CHECKPOINT_DIR: /opt/spark/checkpoints/smartcito
+  SPARK_OBJECT_STORAGE_PATH: s3a://smartcito-artifacts/streaming
+  AUTH_ISSUER: smartcito.local
+  AUTH_AUDIENCE: smartcito-clients
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: smartcito-platform-config
+  namespace: ai
+data:
+  APP_ENV: staging
+  AI_MODELS_URL: http://ai-service.ai.svc.cluster.local
+  MEMCACHED_SERVERS: memcached-0.memcached-internal.data-platform.svc.cluster.local:11211,memcached-1.memcached-internal.data-platform.svc.cluster.local:11211,memcached-2.memcached-internal.data-platform.svc.cluster.local:11211
+  MEMCACHED_AI_TTL_SECONDS: "1800"
+  OBJECT_STORAGE_ENDPOINT: s3://smartcito-artifacts
+  OBJECT_STORAGE_BUCKET: smartcito-artifacts
+  KAFKA_BROKER_URL: kafka-bootstrap.data-platform.svc.cluster.local:9092
+  AUTH_ISSUER: smartcito.local
+  AUTH_AUDIENCE: smartcito-clients
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: smartcito-platform-config
+  namespace: security
+data:
+  APP_ENV: staging
+  DB_HOST: postgres.database.svc.cluster.local
+  DB_PORT: "5432"
+  DB_NAME: smartcito
+  DB_USER: smartcito
+  MEMCACHED_SERVERS: memcached-0.memcached-internal.data-platform.svc.cluster.local:11211,memcached-1.memcached-internal.data-platform.svc.cluster.local:11211,memcached-2.memcached-internal.data-platform.svc.cluster.local:11211
+  MEMCACHED_API_TTL_SECONDS: "60"
+  KAFKA_BROKER_URL: kafka-bootstrap.data-platform.svc.cluster.local:9092
+  OBJECT_STORAGE_ENDPOINT: s3://smartcito-artifacts
+  OBJECT_STORAGE_BUCKET: smartcito-artifacts
+  AUTH_ISSUER: smartcito.local
+  AUTH_AUDIENCE: smartcito-clients
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: smartcito-platform-config
+  namespace: database
+data:
+  DB_HOST: postgres.database.svc.cluster.local
+  DB_PORT: "5432"
+  DB_NAME: smartcito
+  DB_USER: smartcito
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: smartcito-platform-config
+  namespace: data-platform
+data:
+  DB_HOST: postgres.database.svc.cluster.local
+  DB_PORT: "5432"
+  DB_NAME: smartcito
+  DB_USER: smartcito
+  MEMCACHED_SERVERS: memcached-0.memcached-internal.data-platform.svc.cluster.local:11211,memcached-1.memcached-internal.data-platform.svc.cluster.local:11211,memcached-2.memcached-internal.data-platform.svc.cluster.local:11211
+  MEMCACHED_DEFAULT_TTL_SECONDS: "60"
+  KAFKA_BROKER_URL: kafka-bootstrap.data-platform.svc.cluster.local:9092
+  MESSAGE_BUS_URL: kafka-bootstrap.data-platform.svc.cluster.local:9092
+  KAFKA_GPS_TOPIC: smartcito.gps.raw
+  KAFKA_CCTV_TOPIC: smartcito.cctv.raw
+  KAFKA_IOT_TOPIC: smartcito.iot.raw
+  KAFKA_SENSOR_TOPIC: smartcito.sensors.raw
+  KAFKA_RAW_EVENTS_TOPIC: smartcito.events.raw
+  KAFKA_CLEAN_EVENTS_TOPIC: smartcito.events.clean
+  KAFKA_ALERTS_TOPIC: smartcito.alerts
+  OBJECT_STORAGE_ENDPOINT: s3a://smartcito-artifacts
+  OBJECT_STORAGE_BUCKET: smartcito-artifacts
+  SPARK_CHECKPOINT_DIR: /opt/spark/checkpoints/smartcito
+  SPARK_OBJECT_STORAGE_PATH: s3a://smartcito-artifacts/streaming
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: smartcito-platform-secrets
+  namespace: backend
+type: Opaque
+stringData:
+  DB_PASSWORD: change-me
+  AUTH_JWT_SECRET: change-me-to-a-long-random-string
+  OPENSTACK_AUTH_URL: https://openstack.example.com:5000/v3
+  OPENSTACK_PROJECT: smartcito
+  OPENSTACK_USER: smartcito-admin
+  OPENSTACK_PASSWORD: change-me
+  KAFKA_KRAFT_CLUSTER_ID: change-me-kraft-cluster-id
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: smartcito-platform-secrets
+  namespace: ingestion
+type: Opaque
+stringData:
+  DB_PASSWORD: change-me
+  AUTH_JWT_SECRET: change-me-to-a-long-random-string
+  KAFKA_KRAFT_CLUSTER_ID: change-me-kraft-cluster-id
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: smartcito-platform-secrets
+  namespace: ai
+type: Opaque
+stringData:
+  AUTH_JWT_SECRET: change-me-to-a-long-random-string
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: smartcito-platform-secrets
+  namespace: security
+type: Opaque
+stringData:
+  DB_PASSWORD: change-me
+  AUTH_JWT_SECRET: change-me-to-a-long-random-string
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: smartcito-platform-secrets
+  namespace: database
+type: Opaque
+stringData:
+  DB_PASSWORD: change-me
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: smartcito-platform-secrets
+  namespace: data-platform
+type: Opaque
+stringData:
+  DB_PASSWORD: change-me
+  KAFKA_KRAFT_CLUSTER_ID: change-me-kraft-cluster-id

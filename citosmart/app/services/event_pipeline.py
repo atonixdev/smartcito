@@ -23,6 +23,7 @@ from app.db.models import AuditEventORM, SensorReadingORM
 from app.schemas.events import AlertEvent, HistoricalAnalyticsPoint, NormalizedEvent
 from app.schemas.sensor import SensorKind, SensorReadingIn, SensorReadingOut
 from app.services.ai_client import ai_client
+from app.services.cache import CacheKeyBuilder, cache_service
 from app.services.kafka_stream import KafkaPublisher
 from app.services.object_storage import object_storage_service
 
@@ -32,6 +33,7 @@ class EventPipelineService:
         self._topics = load_topics()
         self._live_events: Deque[NormalizedEvent] = deque(maxlen=200)
         self._alerts: Deque[AlertEvent] = deque(maxlen=100)
+        self._history_cache_limits = (20, 50, 100, 200)
 
     def normalize_sensor_reading(self, reading: SensorReadingIn) -> NormalizedEvent:
         return NormalizedEvent(
@@ -204,6 +206,7 @@ class EventPipelineService:
             )
 
         await session.commit()
+        self._invalidate_history_cache()
         return stored
 
     def live_events(self, limit: int = 25) -> Iterable[NormalizedEvent]:
@@ -213,6 +216,11 @@ class EventPipelineService:
         return list(self._alerts)[:limit]
 
     async def historical_analytics(self, session: AsyncSession, limit: int = 20) -> list[HistoricalAnalyticsPoint]:
+        cache_key = CacheKeyBuilder.build("api", "historical-analytics", f"history-{limit}")
+        cached = cache_service.get_json(cache_key)
+        if cached is not None:
+            return [HistoricalAnalyticsPoint.model_validate(item) for item in cached]
+
         stmt = (
             select(
                 SensorReadingORM.sensor_id,
@@ -225,7 +233,7 @@ class EventPipelineService:
             .limit(limit)
         )
         rows = (await session.execute(stmt)).all()
-        return [
+        points = [
             HistoricalAnalyticsPoint(
                 sensor_id=sensor_id,
                 samples=int(samples),
@@ -234,6 +242,20 @@ class EventPipelineService:
             )
             for sensor_id, samples, average_value, latest_observed_at in rows
         ]
+        cache_service.set_json(
+            cache_key,
+            [point.model_dump(mode="json") for point in points],
+            cache_service.policies.api,
+        )
+        return points
+
+    def _invalidate_history_cache(self) -> None:
+        cache_service.delete_many(
+            [
+                CacheKeyBuilder.build("api", "historical-analytics", f"history-{limit}")
+                for limit in self._history_cache_limits
+            ]
+        )
 
 
 event_pipeline_service = EventPipelineService()

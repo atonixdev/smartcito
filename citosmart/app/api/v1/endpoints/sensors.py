@@ -22,11 +22,23 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.security import require_role
 from app.db.session import get_session
 from app.schemas.sensor import SensorReadingIn, SensorReadingOut
+from app.services.cache import CacheKeyBuilder, cache_service
 from app.services.event_pipeline import event_pipeline_service
 from app.services.ingestion import ingestion_service
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
+RECENT_SENSOR_CACHE_LIMITS = (10, 50, 100, 500)
+
+
+def _recent_cache_key(limit: int) -> str:
+    return CacheKeyBuilder.build("api", "sensor-readings", f"recent-{limit}")
+
+
+def _invalidate_recent_sensor_cache(limit: int) -> None:
+    candidate_limits = set(RECENT_SENSOR_CACHE_LIMITS)
+    candidate_limits.add(limit)
+    cache_service.delete_many([_recent_cache_key(candidate_limit) for candidate_limit in sorted(candidate_limits)])
 
 
 @router.post(
@@ -51,11 +63,13 @@ async def ingest_reading(
     record = ingestion_service.ingest(reading)
     kafka = getattr(request.app.state, "kafka", None)
     try:
-        return await event_pipeline_service.process_sensor_reading(
+        response = await event_pipeline_service.process_sensor_reading(
             session,
             reading=reading,
             publisher=kafka,
         )
+        _invalidate_recent_sensor_cache(limit=50)
+        return response
     except Exception as exc:  # noqa: BLE001
         logger.warning("Event pipeline failed for %s: %s", record.sensor_id, exc)
         if kafka is not None:
@@ -63,6 +77,7 @@ async def ingest_reading(
                 await kafka.publish_reading(record)
             except Exception as kafka_exc:  # noqa: BLE001
                 logger.warning("Kafka publish failed for %s: %s", record.sensor_id, kafka_exc)
+        _invalidate_recent_sensor_cache(limit=50)
         return record
 
 
@@ -76,4 +91,15 @@ async def list_recent(
     limit: int = Query(50, ge=1, le=500, description="Max number of readings"),
 ) -> list[SensorReadingOut]:
     """Return the latest `limit` readings, newest last."""
-    return list(ingestion_service.recent(limit=limit))
+    cache_key = _recent_cache_key(limit)
+    cached = cache_service.get_json(cache_key)
+    if cached is not None:
+        return [SensorReadingOut.model_validate(item) for item in cached]
+
+    readings = list(ingestion_service.recent(limit=limit))
+    cache_service.set_json(
+        cache_key,
+        [reading.model_dump(mode="json") for reading in readings],
+        cache_service.policies.api,
+    )
+    return readings

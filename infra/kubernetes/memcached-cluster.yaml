@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: memcached
+  namespace: data-platform
+spec:
+  selector:
+    app: memcached
+  ports:
+    - name: memcached
+      port: 11211
+      targetPort: 11211
+    - name: metrics
+      port: 9150
+      targetPort: 9150
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: memcached-internal
+  namespace: data-platform
+spec:
+  clusterIP: None
+  selector:
+    app: memcached
+  ports:
+    - name: memcached
+      port: 11211
+      targetPort: 11211
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: memcached
+  namespace: data-platform
+spec:
+  serviceName: memcached-internal
+  replicas: 3
+  selector:
+    matchLabels:
+      app: memcached
+  template:
+    metadata:
+      labels:
+        app: memcached
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9150"
+    spec:
+      containers:
+        - name: memcached
+          image: memcached:1.6-alpine
+          args: ["-m", "256", "-I", "4m", "-o", "modern"]
+          ports:
+            - containerPort: 11211
+          readinessProbe:
+            tcpSocket:
+              port: 11211
+          livenessProbe:
+            tcpSocket:
+              port: 11211
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+        - name: memcached-exporter
+          image: prom/memcached-exporter:v0.15.0
+          args: ["--memcached.address=127.0.0.1:11211"]
+          ports:
+            - containerPort: 9150
+          resources:
+            requests:
+              cpu: 25m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi

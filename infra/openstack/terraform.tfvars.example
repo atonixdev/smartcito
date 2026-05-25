@@ -14,10 +14,20 @@ database_subnet_cidr = "172.20.30.0/24"
 api_flavor_name      = "m1.medium"
 service_flavor_name  = "m1.large"
 database_flavor_name = "m1.xlarge"
+kubernetes_control_plane_flavor_name = "m1.large"
+kubernetes_worker_flavor_name        = "m1.large"
+kafka_broker_flavor_name             = "m1.large"
+spark_master_flavor_name             = "m1.large"
+spark_worker_flavor_name             = "m1.xlarge"
 
 service_node_count  = 2
 database_node_count = 1
+kubernetes_worker_count = 3
+kafka_broker_count     = 3
+spark_worker_count     = 2
 
 database_volume_size_gb       = 100
 object_storage_volume_size_gb = 250
 logs_volume_size_gb           = 150
+kafka_log_volume_size_gb      = 250
+spark_checkpoint_volume_size_gb = 150

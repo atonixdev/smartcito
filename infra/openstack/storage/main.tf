@@ -34,3 +34,16 @@ resource "openstack_blockstorage_volume_v3" "logs_volume" {
   size        = var.logs_volume_size_gb
   description = "Persistent volume for aggregated platform logs."
 }
+
+resource "openstack_blockstorage_volume_v3" "kafka_log_volumes" {
+  count       = var.kafka_broker_count
+  name        = "smartcito-kafka-log-${count.index + 1}"
+  size        = var.kafka_log_volume_size_gb
+  description = "Persistent Kafka broker log volume."
+}
+
+resource "openstack_blockstorage_volume_v3" "spark_checkpoint_volume" {
+  name        = "smartcito-spark-checkpoints"
+  size        = var.spark_checkpoint_volume_size_gb
+  description = "Persistent Spark Streaming checkpoint volume."
+}

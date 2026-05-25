@@ -33,3 +33,18 @@ variable "logs_volume_size_gb" {
   type    = number
   default = 150
 }
+
+variable "kafka_log_volume_size_gb" {
+  type    = number
+  default = 250
+}
+
+variable "spark_checkpoint_volume_size_gb" {
+  type    = number
+  default = 150
+}
+
+variable "kafka_broker_count" {
+  type    = number
+  default = 3
+}

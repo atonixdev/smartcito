@@ -34,6 +34,8 @@ async def health() -> dict[str, str]:
 async def readiness() -> dict[str, object]:
     return {
         "status": "ready",
+        "deployment_mode": "dedicated-image",
+        "cache_backend": "memcached",
         "pipeline": build_stream_description(),
     }
 

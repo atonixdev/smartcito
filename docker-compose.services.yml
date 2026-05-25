@@ -5,22 +5,115 @@ x-logging: &stdout-logging
     max-file: "3"
 
 services:
-  citosmart:
+  api-router:
+    image: nginx:1.27-alpine
+    container_name: smartcito-api-router
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    volumes:
+      - ./infra/deploy/nginx/api-router.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./infra/deploy/runtime/api-upstream.conf:/etc/nginx/conf.d/api-upstream.conf:ro
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8000/__router/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    logging: *stdout-logging
+
+  citosmart-blue:
     build:
       context: ./citosmart
     image: ${CITOSMART_IMAGE:-smartcito/api-gateway:local}
-    container_name: smartcito-citosmart
+    container_name: smartcito-citosmart-blue
     env_file: .env
-    ports:
-      - "${APP_PORT:-8000}:8000"
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_started
+      memcached-1:
+        condition: service_started
+      memcached-2:
+        condition: service_started
+      memcached-3:
+        condition: service_started
       kafka:
         condition: service_started
       mqtt:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health/ready')"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    logging: *stdout-logging
+
+  citosmart-green:
+    build:
+      context: ./citosmart
+    image: ${CITOSMART_IMAGE:-smartcito/api-gateway:local}
+    container_name: smartcito-citosmart-green
+    env_file: .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      memcached-1:
+        condition: service_started
+      memcached-2:
+        condition: service_started
+      memcached-3:
+        condition: service_started
+      kafka:
+        condition: service_started
+      mqtt:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health/ready')"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    logging: *stdout-logging
+
+  event-consumer-raw:
+    image: ${CITOSMART_IMAGE:-smartcito/api-gateway:local}
+    container_name: smartcito-event-consumer-raw
+    env_file: .env
+    command: ["python", "-m", "app.workers.event_consumer_runner"]
+    environment:
+      EVENT_CONSUMER_MODE: raw
+    depends_on:
+      kafka:
+        condition: service_started
+    restart: unless-stopped
+    logging: *stdout-logging
+
+  event-consumer-clean:
+    image: ${CITOSMART_IMAGE:-smartcito/api-gateway:local}
+    container_name: smartcito-event-consumer-clean
+    env_file: .env
+    command: ["python", "-m", "app.workers.event_consumer_runner"]
+    environment:
+      EVENT_CONSUMER_MODE: clean
+    depends_on:
+      kafka:
+        condition: service_started
+    restart: unless-stopped
+    logging: *stdout-logging
+
+  event-consumer-alerts:
+    image: ${CITOSMART_IMAGE:-smartcito/api-gateway:local}
+    container_name: smartcito-event-consumer-alerts
+    env_file: .env
+    command: ["python", "-m", "app.workers.event_consumer_runner"]
+    environment:
+      EVENT_CONSUMER_MODE: alerts
+    depends_on:
+      kafka:
         condition: service_started
     restart: unless-stopped
     logging: *stdout-logging
@@ -37,6 +130,9 @@ services:
       - "${INGESTION_KAFKA_PRODUCER_PORT:-8100}:8100"
     depends_on:
       - kafka
+      - memcached-1
+      - memcached-2
+      - memcached-3
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8100/health"]
       interval: 15s
@@ -48,20 +144,17 @@ services:
   ingestion-spark:
     build:
       context: .
-      dockerfile: ingestion/Dockerfile
+      dockerfile: ingestion/Dockerfile.spark
     image: ${INGESTION_SPARK_IMAGE:-smartcito/ingestion-spark:local}
     container_name: smartcito-ingestion-spark
     env_file: .env
-    command: ["uvicorn", "ingestion.spark_service:app", "--host", "0.0.0.0", "--port", "8101"]
-    ports:
-      - "${INGESTION_SPARK_PORT:-8101}:8101"
+    environment:
+      SPARK_MASTER_URL: ${SPARK_MASTER_URL:-local[*]}
     depends_on:
       - kafka
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8101/health"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
+      - memcached-1
+      - memcached-2
+      - memcached-3
     restart: unless-stopped
     logging: *stdout-logging
 
@@ -98,6 +191,10 @@ services:
     env_file: .env
     ports:
       - "${AI_SERVICE_PORT:-8012}:8012"
+    depends_on:
+      - memcached-1
+      - memcached-2
+      - memcached-3
     restart: unless-stopped
     logging: *stdout-logging
 
@@ -111,7 +208,7 @@ services:
     ports:
       - "${SECURITY_SERVICE_PORT:-8013}:8013"
     depends_on:
-      - citosmart
+      - api-router
     restart: unless-stopped
     logging: *stdout-logging
 
@@ -155,6 +252,36 @@ services:
     restart: unless-stopped
     logging: *stdout-logging
 
+  memcached-1:
+    image: memcached:1.6-alpine
+    container_name: smartcito-memcached-1
+    command: ["memcached", "-m", "256", "-I", "4m", "-o", "modern", "-v"]
+    restart: unless-stopped
+    logging: *stdout-logging
+
+  memcached-2:
+    image: memcached:1.6-alpine
+    container_name: smartcito-memcached-2
+    command: ["memcached", "-m", "256", "-I", "4m", "-o", "modern", "-v"]
+    restart: unless-stopped
+    logging: *stdout-logging
+
+  memcached-3:
+    image: memcached:1.6-alpine
+    container_name: smartcito-memcached-3
+    command: ["memcached", "-m", "256", "-I", "4m", "-o", "modern", "-v"]
+    restart: unless-stopped
+    logging: *stdout-logging
+
+  memcached-exporter:
+    image: prom/memcached-exporter:v0.15.0
+    container_name: smartcito-memcached-exporter
+    command: ["--memcached.address=memcached-1:11211"]
+    depends_on:
+      - memcached-1
+    restart: unless-stopped
+    logging: *stdout-logging
+
   kafka:
     image: bitnami/kafka:3.7
     container_name: smartcito-kafka
@@ -191,7 +318,7 @@ services:
     ports:
       - "${WEBAPP_PORT:-5173}:80"
     depends_on:
-      - citosmart
+      - api-router
     restart: unless-stopped
     logging: *stdout-logging
 

@@ -1,5 +1,8 @@
 topics:
+  gps: smartcito.gps.raw
+  cctv: smartcito.cctv.raw
+  iot: smartcito.iot.raw
+  alerts: smartcito.alerts
   raw_events: smartcito.events.raw
   clean_events: smartcito.events.clean
-  alerts: smartcito.alerts
   sensor_readings: smartcito.sensors.raw

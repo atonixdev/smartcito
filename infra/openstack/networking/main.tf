@@ -110,6 +110,66 @@ resource "openstack_networking_secgroup_v2" "database_internal" {
   description = "Restrict database access to internal SmartCito networks only."
 }
 
+resource "openstack_networking_secgroup_v2" "kubernetes_internal" {
+  name        = "smartcito-kubernetes-internal"
+  description = "Allow Kubernetes control-plane and node traffic on SmartCito internal networks."
+}
+
+resource "openstack_networking_secgroup_rule_v2" "kubernetes_api" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 6443
+  port_range_max    = 6443
+  remote_ip_prefix  = var.public_subnet_cidr
+  security_group_id = openstack_networking_secgroup_v2.kubernetes_internal.id
+}
+
+resource "openstack_networking_secgroup_rule_v2" "kubernetes_kubelet" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 10250
+  port_range_max    = 10259
+  remote_ip_prefix  = var.services_subnet_cidr
+  security_group_id = openstack_networking_secgroup_v2.kubernetes_internal.id
+}
+
+resource "openstack_networking_secgroup_v2" "data_platform_internal" {
+  name        = "smartcito-data-platform-internal"
+  description = "Allow Kafka, Spark, and service-plane communication on internal networks only."
+}
+
+resource "openstack_networking_secgroup_rule_v2" "data_platform_kafka" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 9092
+  port_range_max    = 9093
+  remote_ip_prefix  = var.services_subnet_cidr
+  security_group_id = openstack_networking_secgroup_v2.data_platform_internal.id
+}
+
+resource "openstack_networking_secgroup_rule_v2" "data_platform_spark" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 7077
+  port_range_max    = 8080
+  remote_ip_prefix  = var.services_subnet_cidr
+  security_group_id = openstack_networking_secgroup_v2.data_platform_internal.id
+}
+
+resource "openstack_networking_secgroup_rule_v2" "data_platform_memcached" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 11211
+  port_range_max    = 11211
+  remote_ip_prefix  = var.services_subnet_cidr
+  security_group_id = openstack_networking_secgroup_v2.data_platform_internal.id
+}
+
 resource "openstack_networking_secgroup_rule_v2" "database_postgres" {
   direction         = "ingress"
   ethertype         = "IPv4"

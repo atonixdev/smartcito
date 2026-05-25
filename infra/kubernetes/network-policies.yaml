@@ -12,7 +12,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-api-to-ingestion
+  name: allow-backend-to-ingestion
   namespace: ingestion
 spec:
   podSelector: {}
@@ -20,6 +20,219 @@ spec:
     - from:
         - namespaceSelector:
             matchLabels:
+              kubernetes.io/metadata.name: backend
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: data-platform
+  policyTypes:
+    - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingestion-egress-data-platform
+  namespace: ingestion
+spec:
+  podSelector: {}
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: data-platform
+      ports:
+        - protocol: TCP
+          port: 9092
+        - protocol: TCP
+          port: 9093
+        - protocol: TCP
+          port: 11211
+  policyTypes:
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-data-platform
+  namespace: data-platform
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-kafka-ingress
+  namespace: data-platform
+spec:
+  podSelector:
+    matchLabels:
+      app: kafka
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingestion
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: backend
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: data-platform
+      ports:
+        - protocol: TCP
+          port: 9092
+        - protocol: TCP
+          port: 9093
+  policyTypes:
+    - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-memcached-ingress
+  namespace: data-platform
+spec:
+  podSelector:
+    matchLabels:
+      app: memcached
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingestion
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: backend
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ai
+        - namespaceSelector:
+            matchLabels:
               kubernetes.io/metadata.name: security
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: data-platform
+      ports:
+        - protocol: TCP
+          port: 11211
+  policyTypes:
+    - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-spark-egress
+  namespace: data-platform
+spec:
+  podSelector:
+    matchLabels:
+      app: spark-streaming
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: data-platform
+      ports:
+        - protocol: TCP
+          port: 9092
+        - protocol: TCP
+          port: 9093
+        - protocol: TCP
+          port: 7077
+        - protocol: TCP
+          port: 11211
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: database
+      ports:
+        - protocol: TCP
+          port: 5432
+  policyTypes:
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-backend
+  namespace: backend
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-backend-runtime
+  namespace: backend
+spec:
+  podSelector: {}
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: visualization
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: security
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: data-platform
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: data-platform
+      ports:
+        - protocol: TCP
+          port: 9092
+        - protocol: TCP
+          port: 11211
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: database
+      ports:
+        - protocol: TCP
+          port: 5432
+  policyTypes:
+    - Ingress
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-database
+  namespace: database
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-database-from-platform
+  namespace: database
+spec:
+  podSelector:
+    matchLabels:
+      app: postgres
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: backend
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: data-platform
+      ports:
+        - protocol: TCP
+          port: 5432
   policyTypes:
     - Ingress

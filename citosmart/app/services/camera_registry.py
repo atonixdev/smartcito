@@ -20,10 +20,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import get_settings
 from app.db.models import AuditEventORM, CameraDeviceORM
 from app.schemas.camera import CameraDeviceOut, CameraRegistrationIn, CameraTelemetryIn, StreamStatus
+from app.services.cache import CacheKeyBuilder, cache_service
 
 
 class CameraRegistryService:
     """Persistence layer for registered cameras and their audit trail."""
+
+    def __init__(self) -> None:
+        self._fleet_cache_key = CacheKeyBuilder.build("device", "camera-fleet", "list")
 
     async def register(
         self,
@@ -65,6 +69,7 @@ class CameraRegistryService:
             payload=payload,
         )
         await session.commit()
+        self._invalidate_camera_cache(registration.device_id)
         return self._to_schema(device)
 
     async def update_telemetry(
@@ -96,14 +101,25 @@ class CameraRegistryService:
             payload=payload,
         )
         await session.commit()
+        self._invalidate_camera_cache(device_id)
         return self._to_schema(device)
 
     async def list_devices(self, session: AsyncSession) -> list[CameraDeviceOut]:
         """Return all registered cameras, newest first."""
+        cached = cache_service.get_json(self._fleet_cache_key)
+        if cached is not None:
+            return [CameraDeviceOut.model_validate(item) for item in cached]
+
         rows = await session.scalars(
             select(CameraDeviceORM).order_by(CameraDeviceORM.registered_at.desc())
         )
-        return [self._to_schema(device) for device in rows.all()]
+        devices = [self._to_schema(device) for device in rows.all()]
+        cache_service.set_json(
+            self._fleet_cache_key,
+            [device.model_dump(mode="json") for device in devices],
+            cache_service.policies.device_metadata,
+        )
+        return devices
 
     async def seed_demo_devices(self, session: AsyncSession) -> list[CameraDeviceOut]:
         """Seed a demo fleet in non-production when the registry is empty."""
@@ -182,6 +198,7 @@ class CameraRegistryService:
             )
 
         await session.commit()
+        self._invalidate_camera_cache(*[device.device_id for device in demo_devices])
         return [self._to_schema(device) for device in demo_devices]
 
     async def _get_device(self, session: AsyncSession, device_id: str) -> CameraDeviceORM | None:
@@ -230,6 +247,11 @@ class CameraRegistryService:
             mounted=device.mounted,
             tamper_detected=device.tamper_detected,
         )
+
+    def _invalidate_camera_cache(self, *device_ids: str) -> None:
+        keys = [self._fleet_cache_key]
+        keys.extend(CacheKeyBuilder.build("device", "metadata", device_id) for device_id in device_ids if device_id)
+        cache_service.delete_many(keys)
 
 
 camera_registry_service = CameraRegistryService()

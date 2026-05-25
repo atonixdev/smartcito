@@ -22,6 +22,26 @@ output "database_node_ids" {
   value = module.compute.database_node_ids
 }
 
+output "kubernetes_control_plane_instance_id" {
+  value = module.compute.kubernetes_control_plane_instance_id
+}
+
+output "kubernetes_worker_ids" {
+  value = module.compute.kubernetes_worker_ids
+}
+
+output "kafka_broker_ids" {
+  value = module.compute.kafka_broker_ids
+}
+
+output "spark_master_instance_id" {
+  value = module.compute.spark_master_instance_id
+}
+
+output "spark_worker_ids" {
+  value = module.compute.spark_worker_ids
+}
+
 output "database_volume_id" {
   value = module.storage.database_volume_id
 }
@@ -32,4 +52,12 @@ output "object_storage_volume_id" {
 
 output "logs_volume_id" {
   value = module.storage.logs_volume_id
+}
+
+output "kafka_log_volume_ids" {
+  value = module.storage.kafka_log_volume_ids
+}
+
+output "spark_checkpoint_volume_id" {
+  value = module.storage.spark_checkpoint_volume_id
 }
