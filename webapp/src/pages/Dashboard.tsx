@@ -17,13 +17,12 @@ import {
   useMappingOverlays,
   useSendDroneCommand,
   useThreatAlerts,
-  useUploadDroneMission,
   type DroneCommandAction,
   type DroneMission,
   type DroneTelemetry,
 } from "@/api/droneGateway";
 import { useAlerts, useLiveEvents } from "@/api/events";
-import { demoSmartMapDevices, useSmartMapOverview, type SmartMapDevice } from "@/api/map";
+import { demoSmartMapOverview, useSmartMapOverview, type SmartMapDevice } from "@/api/map";
 import { useCreateCityMission, useCityMissions } from "@/api/missionControl";
 import { useRealtimeCommandCenter } from "@/api/realtime";
 import { demoRobotFleet, useRobotFleet } from "@/api/robotGateway";
@@ -348,6 +347,7 @@ export default function Dashboard() {
   const [assetFilter, setAssetFilter] = useState("");
   const [mapMode, setMapMode] = useState<CityMapMode>("3d");
   const [selectedSearchId, setSelectedSearchId] = useState(citySearchPresets[0].id);
+  const [selectedRobotIds, setSelectedRobotIds] = useState<string[]>([]);
   const deferredAssetFilter = useDeferredValue(assetFilter);
   const [recordingEnabled, setRecordingEnabled] = useState(false);
   const realtime = useRealtimeCommandCenter(true);
@@ -364,7 +364,6 @@ export default function Dashboard() {
   const eventAlertsQuery = useAlerts();
   const controlPlaneQuery = useControlPlaneOverview();
   const sendDroneCommand = useSendDroneCommand();
-  const uploadMission = useUploadDroneMission();
   const smartMapQuery = useSmartMapOverview();
   const sceneOverviewQuery = useSceneOverview();
   const robotFleetQuery = useRobotFleet();
@@ -421,11 +420,12 @@ export default function Dashboard() {
     : cameraFeedsQuery.data && cameraFeedsQuery.data.length > 0
       ? cameraFeedsQuery.data
       : [demoCameraFeed];
+  const smartMapOverview = smartMapQuery.data && smartMapQuery.data.devices.length > 0
+    ? smartMapQuery.data
+    : demoSmartMapOverview;
   const mapDevices = realtimeMap?.devices && realtimeMap.devices.length > 0
     ? realtimeMap.devices
-    : smartMapQuery.data && smartMapQuery.data.devices.length > 0
-      ? smartMapQuery.data.devices
-      : demoSmartMapDevices;
+    : smartMapOverview.devices;
   const threatAlerts = Array.isArray(realtimeThreatAlerts) && realtimeThreatAlerts.length > 0
     ? realtimeThreatAlerts
     : threatAlertsQuery.data && threatAlertsQuery.data.length > 0
@@ -440,6 +440,7 @@ export default function Dashboard() {
   const sceneOverview = sceneOverviewQuery.data && sceneOverviewQuery.data.devices.length > 0
     ? sceneOverviewQuery.data
     : demoSceneOverview;
+  const cameraCorridors = smartMapOverview.camera_corridors;
   const overlayCounts = realtimeSurveillance?.mapping_overlays && typeof realtimeSurveillance.mapping_overlays === "object"
     ? (realtimeSurveillance.mapping_overlays as { drones: unknown[]; sensors: unknown[]; threats: unknown[]; geofences: unknown[] })
     : mappingOverlaysQuery.data ?? { drones: [], sensors: [], threats: [], geofences: [] };
@@ -537,35 +538,6 @@ export default function Dashboard() {
     };
   });
 
-  const cameraCorridors = useMemo(
-    () => mapDevices
-      .filter((device) => device.device_type === "camera")
-      .map((device) => {
-        const origin = { latitude: device.latitude, longitude: device.longitude };
-        const target = device.gps_path[0]
-          ? { latitude: device.gps_path[0][0], longitude: device.gps_path[0][1] }
-          : { latitude: device.latitude + 0.0012, longitude: device.longitude + 0.0018 };
-        const deltaLatitude = target.latitude - origin.latitude;
-        const deltaLongitude = target.longitude - origin.longitude;
-        const length = Math.max(Math.hypot(deltaLatitude, deltaLongitude), 0.0008);
-        const normalLatitude = -deltaLongitude / length;
-        const normalLongitude = deltaLatitude / length;
-        const width = 0.00045;
-
-        return {
-          id: `${device.id}-corridor`,
-          label: `${device.name} corridor`,
-          polygon: [
-            [origin.latitude + normalLatitude * width, origin.longitude + normalLongitude * width],
-            [origin.latitude - normalLatitude * width, origin.longitude - normalLongitude * width],
-            [target.latitude - normalLatitude * width * 1.6, target.longitude - normalLongitude * width * 1.6],
-            [target.latitude + normalLatitude * width * 1.6, target.longitude + normalLongitude * width * 1.6],
-          ] as Array<[number, number]>,
-        };
-      }),
-    [mapDevices],
-  );
-
   const assetCatalog = useMemo(
     () => [...drones, ...robotAssets, ...cameras, ...sensorAssets, ...deterrentAssets],
     [cameras, deterrentAssets, drones, robotAssets, sensorAssets],
@@ -600,6 +572,14 @@ export default function Dashboard() {
       setSelectedAsset({ kind: "drone", id: drones[0].id });
     }
   }, [drones, selectedAsset]);
+
+  useEffect(() => {
+    if (selectedRobotIds.length > 0 || robotRegistry.length === 0) {
+      return;
+    }
+
+    setSelectedRobotIds(robotRegistry.filter((robot) => robot.status !== "offline").map((robot) => robot.robot_id));
+  }, [robotRegistry, selectedRobotIds.length]);
 
   const focusedDroneId = selectedDroneId || drones[0]?.id || "";
   const activeDroneTelemetry = droneTelemetries.find((telemetry) => telemetry.drone_id === focusedDroneId) ?? droneTelemetries[0] ?? null;
@@ -685,10 +665,18 @@ export default function Dashboard() {
   }
 
   function handleQuickMissionUpload() {
-    const primaryRobot = robotRegistry[0];
-    if (!activeDroneRegistry || !primaryRobot || drawPoints.length < 2) {
+    const selectedRobots = robotRegistry.filter((robot) => selectedRobotIds.includes(robot.robot_id));
+    if (!activeDroneRegistry || drawPoints.length < 2) {
       appendLocalLog("mission", "Quick mission requires at least two map points.", {
         severity: "critical",
+        assetId: focusedDroneId,
+      });
+      return;
+    }
+
+    if (selectedRobots.length === 0) {
+      appendLocalLog("mission", "Select at least one robot before assigning a city mission.", {
+        severity: "warning",
         assetId: focusedDroneId,
       });
       return;
@@ -707,19 +695,27 @@ export default function Dashboard() {
           speed_mps: activeDroneTelemetry?.speed_mps ?? 8,
           path: drawPoints,
         },
-        {
-          asset_type: "robot",
-          asset_id: primaryRobot.robot_id,
-          speed_mps: Math.min(primaryRobot.max_speed_mps, 2),
+        ...selectedRobots.map((robot) => ({
+          asset_type: "robot" as const,
+          asset_id: robot.robot_id,
+          speed_mps: Math.min(robot.max_speed_mps, 2),
           path: drawPoints.map((point) => ({ latitude: point.latitude, longitude: point.longitude, altitude_m: 0 })),
-        },
+        })),
       ],
     });
 
-    appendLocalLog("mission", `City mission dispatched to ${activeDroneRegistry.drone_id} and ${primaryRobot.robot_id}`, {
+    appendLocalLog("mission", `City mission dispatched to ${activeDroneRegistry.drone_id} and ${selectedRobots.map((robot) => robot.robot_id).join(", ")}`, {
       assetId: activeDroneRegistry.drone_id,
       sourceLabel: activeDroneRegistry.model,
     });
+  }
+
+  function toggleRobotSelection(robotId: string) {
+    setSelectedRobotIds((currentRobotIds) => (
+      currentRobotIds.includes(robotId)
+        ? currentRobotIds.filter((currentRobotId) => currentRobotId !== robotId)
+        : [...currentRobotIds, robotId]
+    ));
   }
 
   function handleGoHere() {
@@ -1117,6 +1113,24 @@ export default function Dashboard() {
               </label>
 
               <section className="command-context-card city-search-card">
+                <h4>Assign robot fleet</h4>
+                <p>Choose which ground units receive the shared city mission plan.</p>
+                <div className="command-selection-list" role="group" aria-label="Robot mission assignees">
+                  {robotRegistry.map((robot) => (
+                    <label key={robot.robot_id} className="command-selection-item">
+                      <input
+                        type="checkbox"
+                        checked={selectedRobotIds.includes(robot.robot_id)}
+                        onChange={() => toggleRobotSelection(robot.robot_id)}
+                      />
+                      <span>{robot.model}</span>
+                      <strong>{robot.status}</strong>
+                    </label>
+                  ))}
+                </div>
+              </section>
+
+              <section className="command-context-card city-search-card">
                 <h4>Search corridor</h4>
                 <p>{selectedSearch.detail}</p>
                 <div className="command-chip-row">
@@ -1209,6 +1223,7 @@ export default function Dashboard() {
                 <div><span>Radius</span><strong>{selectedSearch.radiusKm} km</strong></div>
                 <div><span>Map mode</span><strong>{mapMode.toUpperCase()}</strong></div>
                 <div><span>Robots online</span><strong>{robotAssets.length}</strong></div>
+                <div><span>Robot assignees</span><strong>{selectedRobotIds.length}</strong></div>
                 <div><span>Cameras online</span><strong>{cameras.length}</strong></div>
                 <div><span>Sensors online</span><strong>{sensorAssets.length}</strong></div>
                 <div><span>City missions</span><strong>{cityMissionsQuery.data?.length ?? 0}</strong></div>

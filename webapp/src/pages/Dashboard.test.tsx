@@ -95,23 +95,37 @@ vi.mock("@/api/cameras", () => ({
 }));
 
 vi.mock("@/api/map", () => ({
-  demoSmartMapDevices: [
-    {
-      id: "demo-map-camera-001",
-      device_id: "demo-body-001",
-      name: "Pretoria Camera Node",
-      device_type: "camera",
-      latitude: -25.7479,
-      longitude: 28.2293,
-      trust_score: 96,
-      trust_level: "verified",
-      camera_feed_url: "rtsp://demo/pretoria-camera-001",
-      sensor_type: "camera-feed",
-      sensor_value: 0.67,
-      gps_path: [[-25.749, 28.2281], [-25.7484, 28.2287], [-25.7479, 28.2293]],
-      last_seen_at: new Date().toISOString(),
-    },
-  ],
+  demoSmartMapOverview: {
+    devices: [
+      {
+        id: "demo-map-camera-001",
+        device_id: "demo-body-001",
+        name: "Pretoria Camera Node",
+        device_type: "camera",
+        latitude: -25.7479,
+        longitude: 28.2293,
+        trust_score: 96,
+        trust_level: "verified",
+        camera_feed_url: "rtsp://demo/pretoria-camera-001",
+        sensor_type: "camera-feed",
+        sensor_value: 0.67,
+        gps_path: [[-25.749, 28.2281], [-25.7484, 28.2287], [-25.7479, 28.2293]],
+        last_seen_at: new Date().toISOString(),
+      },
+    ],
+    heatmap: [],
+    camera_corridors: [
+      {
+        id: "demo-map-camera-001-corridor",
+        source_device_id: "demo-body-001",
+        label: "Pretoria Camera Node corridor",
+        polygon: [[-25.7475, 28.2298], [-25.7482, 28.2289], [-25.7491, 28.2282], [-25.7484, 28.2291]],
+        coverage_score: 0.78,
+      },
+    ],
+    visible_layers: ["verified-devices"],
+    security_policy: "verified devices only",
+  },
   useSmartMapOverview: () => ({
     data: {
       devices: [
@@ -132,6 +146,15 @@ vi.mock("@/api/map", () => ({
         },
       ],
       heatmap: [],
+      camera_corridors: [
+        {
+          id: "demo-map-camera-001-corridor",
+          source_device_id: "demo-body-001",
+          label: "Pretoria Camera Node corridor",
+          polygon: [[-25.7475, 28.2298], [-25.7482, 28.2289], [-25.7491, 28.2282], [-25.7484, 28.2291]],
+          coverage_score: 0.78,
+        },
+      ],
       visible_layers: ["verified-devices"],
       security_policy: "verified devices only",
     },
@@ -481,6 +504,7 @@ vi.mock("@/api/scene", () => ({
   demoSceneOverview: {
     devices: [],
     threats: [],
+    camera_corridors: [],
     layers: ["city-map"],
     camera_overlay_mode: "corridor",
     security_policy: "verified-devices",
@@ -489,6 +513,7 @@ vi.mock("@/api/scene", () => ({
     data: {
       devices: [],
       threats: [],
+      camera_corridors: [],
       layers: ["city-map"],
       camera_overlay_mode: "corridor",
       security_policy: "verified-devices",
@@ -514,6 +539,7 @@ describe("Dashboard", () => {
     expect(screen.getByRole("heading", { name: /Strategic city map/i })).toBeInTheDocument();
     expect(screen.getByText(/Johannesburg → Winchester → 5 km/i)).toBeInTheDocument();
     expect(screen.getByText(/Street-level navigation/i)).toBeInTheDocument();
+    expect(screen.getByRole("group", { name: /robot mission assignees/i })).toBeInTheDocument();
     expect(screen.getByText(/2 robots/i)).toBeInTheDocument();
   });
 });

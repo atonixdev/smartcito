@@ -60,6 +60,9 @@ def test_map_overview_returns_verified_devices_only(client: TestClient) -> None:
     body = res.json()
     assert body["devices"]
     assert all(device["trust_score"] > 80 for device in body["devices"])
+    assert body["camera_corridors"]
+    first_corridor = body["camera_corridors"][0]
+    assert {"id", "source_device_id", "label", "polygon", "coverage_score"} <= set(first_corridor)
     assert "camera-overlays" in body["visible_layers"]
 
 
@@ -93,6 +96,9 @@ def test_scene_overview_returns_3d_ready_devices_and_threats(client: TestClient)
     body = res.json()
     assert body["devices"]
     assert body["threats"]
+    assert body["camera_corridors"]
     assert "threat-waves" in body["layers"]
     first_device = body["devices"][0]
     assert {"x", "y", "z", "gps_path_3d", "status_color"} <= set(first_device)
+    first_corridor = body["camera_corridors"][0]
+    assert {"id", "source_device_id", "label", "polygon_3d", "coverage_score"} <= set(first_corridor)

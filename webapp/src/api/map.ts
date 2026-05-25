@@ -34,9 +34,18 @@ export interface SmartMapHeatPoint {
   label: string;
 }
 
+export interface SmartMapCameraCorridor {
+  id: string;
+  source_device_id: string;
+  label: string;
+  polygon: Array<[number, number]>;
+  coverage_score: number;
+}
+
 export interface SmartMapOverview {
   devices: SmartMapDevice[];
   heatmap: SmartMapHeatPoint[];
+  camera_corridors: SmartMapCameraCorridor[];
   visible_layers: string[];
   security_policy: string;
 }
@@ -133,6 +142,32 @@ export const demoSmartMapDevices: SmartMapDevice[] = [
     last_seen_at: new Date().toISOString(),
   },
 ];
+
+export const demoSmartMapOverview: SmartMapOverview = {
+  devices: demoSmartMapDevices,
+  heatmap: demoSmartMapDevices.map((device) => ({
+    latitude: device.latitude,
+    longitude: device.longitude,
+    intensity: Math.min(Math.max(device.sensor_value ?? 0.45, 0.15), 1),
+    label: `${device.name} ${device.sensor_type}`,
+  })),
+  camera_corridors: [
+    {
+      id: "demo-map-camera-001-corridor",
+      source_device_id: "demo-map-camera-001",
+      label: "Pretoria Camera Node corridor",
+      polygon: [
+        [-25.74753, 28.22978],
+        [-25.74827, 28.22882],
+        [-25.74972, 28.22738],
+        [-25.74886, 28.22838],
+      ],
+      coverage_score: 0.78,
+    },
+  ],
+  visible_layers: ["verified-devices", "camera-overlays", "gps-paths", "sensor-heatmap", "drone-patrols", "threat-zones"],
+  security_policy: "verified devices only; trust score must be greater than 80; drone, sensor, camera, and map updates are audited",
+};
 
 export async function fetchSmartMapOverview(): Promise<SmartMapOverview> {
   const { data } = await api.get<SmartMapOverview>("/control-plane/map");

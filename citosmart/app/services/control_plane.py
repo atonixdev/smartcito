@@ -23,6 +23,7 @@ from app.schemas.control_plane import (
     DataFlowStage,
     DeviceCategory,
     DeviceTrustLevel,
+    MapCameraCorridor,
     MapDevice,
     MapDeviceRegistrationIn,
     MapHeatPoint,
@@ -31,6 +32,7 @@ from app.schemas.control_plane import (
     OperatorControl,
     OperatorControlState,
     PipelineState,
+    SceneCameraCorridor,
     SceneDevice,
     SceneOverview,
     SceneThreat,
@@ -402,10 +404,16 @@ class ControlPlaneService:
             )
             for device in devices
         ]
+        camera_corridors = [
+            self._camera_corridor(device)
+            for device in devices
+            if device.device_type == DeviceCategory.CAMERA
+        ]
 
         overview = MapOverview(
             devices=devices,
             heatmap=heatmap,
+            camera_corridors=camera_corridors,
             visible_layers=["verified-devices", "camera-overlays", "gps-paths", "sensor-heatmap", "drone-patrols", "threat-zones"],
             security_policy="verified devices only; trust score must be greater than 80; drone, sensor, camera, and map updates are audited",
         )
@@ -452,6 +460,11 @@ class ControlPlaneService:
         overview = SceneOverview(
             devices=scene_devices,
             threats=threats,
+            camera_corridors=[
+                self._scene_camera_corridor(device)
+                for device in map_overview.devices
+                if device.device_type == DeviceCategory.CAMERA
+            ],
             layers=["city-map", "iot-devices", "gps-paths", "camera-overlays", "threat-waves"],
             camera_overlay_mode="popup-texture-ready",
             security_policy="JWT + RBAC required; objects are color-coded by trust score and visible only after map trust policy validation",
@@ -578,6 +591,28 @@ class ControlPlaneService:
             (latitude, longitude),
         ]
 
+    def _camera_corridor(self, device: MapDevice) -> MapCameraCorridor:
+        target_latitude, target_longitude = device.gps_path[0] if device.gps_path else (device.latitude + 0.0012, device.longitude + 0.0018)
+        delta_latitude = target_latitude - device.latitude
+        delta_longitude = target_longitude - device.longitude
+        length = max((delta_latitude ** 2 + delta_longitude ** 2) ** 0.5, 0.0008)
+        normal_latitude = -delta_longitude / length
+        normal_longitude = delta_latitude / length
+        width = 0.00045
+
+        return MapCameraCorridor(
+            id=f"{device.device_id}-corridor",
+            source_device_id=device.device_id,
+            label=f"{device.name} corridor",
+            polygon=[
+                (device.latitude + normal_latitude * width, device.longitude + normal_longitude * width),
+                (device.latitude - normal_latitude * width, device.longitude - normal_longitude * width),
+                (target_latitude - normal_latitude * width * 1.6, target_longitude - normal_longitude * width * 1.6),
+                (target_latitude + normal_latitude * width * 1.6, target_longitude + normal_longitude * width * 1.6),
+            ],
+            coverage_score=min(max((device.sensor_value or 0.72), 0.2), 1),
+        )
+
     def _scene_device(self, device: MapDevice) -> SceneDevice:
         x_position, _, z_position = self._scene_coordinates(device.latitude, device.longitude)
         return SceneDevice(
@@ -600,6 +635,16 @@ class ControlPlaneService:
                 (*self._scene_coordinates(latitude, longitude),)
                 for latitude, longitude in device.gps_path
             ],
+        )
+
+    def _scene_camera_corridor(self, device: MapDevice) -> SceneCameraCorridor:
+        corridor = self._camera_corridor(device)
+        return SceneCameraCorridor(
+            id=corridor.id,
+            source_device_id=corridor.source_device_id,
+            label=corridor.label,
+            polygon_3d=[self._scene_coordinates(latitude, longitude) for latitude, longitude in corridor.polygon],
+            coverage_score=corridor.coverage_score,
         )
 
     def _scene_coordinates(self, latitude: float, longitude: float) -> tuple[float, float, float]:

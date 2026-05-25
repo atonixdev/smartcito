@@ -9,7 +9,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { api } from "./client";
-import { demoSmartMapDevices } from "./map";
+import { demoSmartMapOverview } from "./map";
 import type { SmartMapDevice } from "./map";
 
 export interface SceneDevice {
@@ -42,9 +42,18 @@ export interface SceneThreat {
   label: string;
 }
 
+export interface SceneCameraCorridor {
+  id: string;
+  source_device_id: string;
+  label: string;
+  polygon_3d: Array<[number, number, number]>;
+  coverage_score: number;
+}
+
 export interface SceneOverview {
   devices: SceneDevice[];
   threats: SceneThreat[];
+  camera_corridors: SceneCameraCorridor[];
   layers: string[];
   camera_overlay_mode: string;
   security_policy: string;
@@ -67,7 +76,7 @@ function scenePosition(latitude: number, longitude: number): [number, number, nu
 }
 
 export const demoSceneOverview: SceneOverview = {
-  devices: demoSmartMapDevices.map((device) => {
+  devices: demoSmartMapOverview.devices.map((device) => {
     const [xPosition, yPosition, zPosition] = scenePosition(device.latitude, device.longitude);
     return {
       id: device.id,
@@ -100,6 +109,13 @@ export const demoSceneOverview: SceneOverview = {
       label: "AI watch zone: air-quality",
     },
   ],
+  camera_corridors: demoSmartMapOverview.camera_corridors.map((corridor) => ({
+    id: corridor.id,
+    source_device_id: corridor.source_device_id,
+    label: corridor.label,
+    polygon_3d: corridor.polygon.map(([latitude, longitude]) => scenePosition(latitude, longitude)),
+    coverage_score: corridor.coverage_score,
+  })),
   layers: ["city-map", "iot-devices", "gps-paths", "camera-overlays", "threat-waves"],
   camera_overlay_mode: "popup-texture-ready",
   security_policy: "JWT + RBAC required; objects are color-coded by trust score and visible only after map trust policy validation",

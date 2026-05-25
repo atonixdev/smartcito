@@ -133,9 +133,18 @@ class MapHeatPoint(BaseModel):
     label: str
 
 
+class MapCameraCorridor(BaseModel):
+    id: str
+    source_device_id: str
+    label: str
+    polygon: list[tuple[float, float]]
+    coverage_score: float = Field(..., ge=0, le=1)
+
+
 class MapOverview(BaseModel):
     devices: list[MapDevice]
     heatmap: list[MapHeatPoint]
+    camera_corridors: list[MapCameraCorridor]
     visible_layers: list[str]
     security_policy: str
 
@@ -170,9 +179,18 @@ class SceneThreat(BaseModel):
     label: str
 
 
+class SceneCameraCorridor(BaseModel):
+    id: str
+    source_device_id: str
+    label: str
+    polygon_3d: list[tuple[float, float, float]]
+    coverage_score: float = Field(..., ge=0, le=1)
+
+
 class SceneOverview(BaseModel):
     devices: list[SceneDevice]
     threats: list[SceneThreat]
+    camera_corridors: list[SceneCameraCorridor]
     layers: list[str]
     camera_overlay_mode: str
     security_policy: str

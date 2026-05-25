@@ -42,8 +42,10 @@ interface MapPoint {
 
 export interface CameraCorridor {
   id: string;
+  source_device_id?: string;
   label: string;
   polygon: Array<[number, number]>;
+  coverage_score?: number;
 }
 
 const tileProviders: Record<Exclude<MapMode, "3d">, { url: string; attribution: string }> = {
@@ -305,6 +307,44 @@ export default function CommandCenterMap({
       ring.rotation.x = -Math.PI / 2;
       ring.position.set(threat.x, 0.08, threat.z);
       scene.add(ring);
+    });
+
+    (sceneOverview?.camera_corridors ?? []).forEach((corridor) => {
+      if (corridor.polygon_3d.length < 3) {
+        return;
+      }
+
+      const shape = new THREE.Shape();
+      corridor.polygon_3d.forEach(([xPosition, , zPosition], index) => {
+        if (index === 0) {
+          shape.moveTo(xPosition, zPosition);
+          return;
+        }
+
+        shape.lineTo(xPosition, zPosition);
+      });
+
+      const corridorMesh = new THREE.Mesh(
+        new THREE.ShapeGeometry(shape),
+        new THREE.MeshBasicMaterial({
+          color: 0xffd776,
+          transparent: true,
+          opacity: Math.min(Math.max(corridor.coverage_score * 0.28, 0.12), 0.32),
+          side: THREE.DoubleSide,
+        }),
+      );
+      corridorMesh.rotation.x = -Math.PI / 2;
+      corridorMesh.position.y = 0.11;
+      scene.add(corridorMesh);
+
+      const outlinePoints = corridor.polygon_3d.map(([xPosition, yPosition, zPosition]) => new THREE.Vector3(xPosition, yPosition + 0.12, zPosition));
+      outlinePoints.push(outlinePoints[0].clone());
+      const outlineGeometry = new THREE.BufferGeometry().setFromPoints(outlinePoints);
+      const outline = new THREE.Line(
+        outlineGeometry,
+        new THREE.LineBasicMaterial({ color: 0xffd776, transparent: true, opacity: 0.75 }),
+      );
+      scene.add(outline);
     });
 
     let frame = 0;

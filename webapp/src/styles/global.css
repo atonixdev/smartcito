@@ -1486,6 +1486,35 @@ code {
   padding: 0.72rem 0.86rem;
 }
 
+.command-selection-list {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.command-selection-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.7rem 0.8rem;
+  border-radius: 14px;
+  border: 1px solid rgba(105, 156, 173, 0.18);
+  background: rgba(8, 24, 35, 0.72);
+}
+
+.command-selection-item input {
+  accent-color: #67d5a5;
+}
+
+.command-selection-item span {
+  color: #f4fbff;
+}
+
+.command-selection-item strong {
+  text-transform: capitalize;
+  color: #8fe5db;
+}
+
 .command-video-stage {
   margin-top: 0.85rem;
 }
