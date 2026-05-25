@@ -43,7 +43,7 @@ Implemented endpoints:
 | `POST /drones/{drone_id}/commands` | Mission Control command route with path/body drone ID validation |
 | `GET /drones` | Returns latest telemetry plus known registry capability records |
 
-Supported adapter protocols are `simulated`, `mavlink`, `rest`, `websocket`, and `vendor-sdk`. The concrete adapters currently share the safe simulated implementation contract, so real vendor SDKs can be added behind the existing `DroneAdapter` protocol without changing the public API.
+Supported adapter protocols are `simulated`, `mavlink`, `rest`, `websocket`, and `vendor-sdk`. The `mavlink` adapter now uses `pymavlink` for real heartbeat, command, position-target, and mission-upload transport, while the other protocols keep the stable gateway contract in place for future vendor-specific integrations.
 
 The Drone Registry persists:
 
@@ -77,8 +77,16 @@ The Drone Registry persists:
 Start the supporting service stack:
 
 ```bash
-docker compose -f docker-compose.services.yml up drone-gateway sensor-gateway drone-camera-ingestion threat-detection mapping-geospatial kafka
-docker compose -f docker-compose.services.yml up mission-control
+docker compose -f docker-compose.services.yml up \
+  drone-gateway sensor-gateway drone-camera-ingestion mission-control \
+  threat-detection mapping-geospatial kafka
+```
+
+For the full dashboard, API, surveillance, and observability stack in one
+command, use the root compose file:
+
+```bash
+docker compose up --build
 ```
 
 The services default to Kafka publishing. For endpoint-only development without a broker, set:

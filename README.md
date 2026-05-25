@@ -65,9 +65,24 @@ See [`map/README.md`](map/README.md) for full API and usage.
 |-------------|----------------------------|-------------------------------|
 | Webapp    | http://localhost:5173      | React dashboard               |
 | SmartCito API | http://localhost:8000      | FastAPI backend (OpenAPI at `/docs`)  |
+| Drone Gateway | http://localhost:8020      | MAVLink / drone telemetry and command gateway |
+| Mission Control | http://localhost:8025      | Mission validation, upload, and monitoring |
+| Mapping Geospatial | http://localhost:8024   | Drone path, geofence, and overlay service |
+| Drone Camera | http://localhost:8022      | RTSP/WebRTC registration and frame metadata |
+| Threat Detection | http://localhost:8023    | AI alert correlation surface |
 | PostgreSQL  | localhost:5432             | Relational store              |
 | Redis       | localhost:6379             | Cache & pub/sub               |
 | Kafka       | localhost:9092             | Event streaming               |
+
+### One-Command Full Dashboard Stack
+
+```bash
+docker compose up --build
+```
+
+That now brings up the main API, web dashboard, drone gateway, mission control,
+mapping, drone camera ingestion, threat detection, observability surfaces, and
+their local proxy routes in one stack.
 
 ### Local SmartCito API Development
 

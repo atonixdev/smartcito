@@ -60,7 +60,12 @@ async def gateway_metrics() -> Response:
 @app.post("/connect", response_model=DroneCapabilities)
 async def connect_drone(request: DroneConnectionRequest) -> DroneCapabilities:
     adapter = adapter_for(request.protocol)
-    capabilities = adapter.discover_capabilities(request)
+    try:
+        capabilities = adapter.discover_capabilities(request)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
     registry_status = registry.upsert(capabilities)
     _drone_protocols[request.drone_id] = request.protocol
     metrics.increment("drone_connected")
@@ -141,7 +146,12 @@ def _dispatch_command(command: DroneCommand) -> DroneCommandAck:
     capabilities = registry.get(command.drone_id)
     if protocol is None and capabilities is not None:
         protocol = capabilities.protocol
-    adapter_status = adapter_for(protocol or "simulated").send_command(command)
+    try:
+        adapter_status = adapter_for(protocol or "simulated").send_command(command)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
     accepted = "accepted" in adapter_status
     metrics.increment("commands_accepted" if accepted else "commands_rejected")
 

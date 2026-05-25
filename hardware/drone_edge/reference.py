@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+from hardware.drone_edge.manufacturer_spec import build_manufacturer_spec
+from hardware.drone_edge.rfp_packet import build_rfp_packet
+from hardware.drone_edge.ros2_contract import build_ros2_node_contract
+
 
 def build_reference_stack() -> dict[str, object]:
     return {
@@ -22,4 +26,7 @@ def build_reference_stack() -> dict[str, object]:
             "camera_service": "http://drone-camera-ingestion:8022",
             "mission_control": "http://mission-control:8025",
         },
+        "ros2_contract": build_ros2_node_contract(),
+        "manufacturer_spec": build_manufacturer_spec(),
+        "rfp_packet": build_rfp_packet(),
     }

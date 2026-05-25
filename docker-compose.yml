@@ -71,6 +71,107 @@ services:
       - "5173:80"
     depends_on:
       - api-router
+      - drone-gateway
+      - mission-control
+      - mapping-geospatial
+      - drone-camera-ingestion
+      - threat-detection
+    restart: unless-stopped
+
+  drone-gateway:
+    build:
+      context: .
+      dockerfile: surveillance/Dockerfile
+    image: smartcito/drone-gateway:local
+    container_name: smartcito-drone-gateway
+    env_file: .env
+    command: ["uvicorn", "surveillance.drone_gateway_service:app", "--host", "0.0.0.0", "--port", "8020"]
+    ports:
+      - "8020:8020"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    restart: unless-stopped
+
+  sensor-gateway:
+    build:
+      context: .
+      dockerfile: surveillance/Dockerfile
+    image: smartcito/sensor-gateway:local
+    container_name: smartcito-sensor-gateway
+    env_file: .env
+    command: ["uvicorn", "surveillance.sensor_gateway_service:app", "--host", "0.0.0.0", "--port", "8021"]
+    ports:
+      - "8021:8021"
+    depends_on:
+      kafka:
+        condition: service_started
+    restart: unless-stopped
+
+  drone-camera-ingestion:
+    build:
+      context: .
+      dockerfile: surveillance/Dockerfile
+    image: smartcito/drone-camera-ingestion:local
+    container_name: smartcito-drone-camera-ingestion
+    env_file: .env
+    command: ["uvicorn", "surveillance.drone_camera_service:app", "--host", "0.0.0.0", "--port", "8022"]
+    ports:
+      - "8022:8022"
+    depends_on:
+      kafka:
+        condition: service_started
+    restart: unless-stopped
+
+  threat-detection:
+    build:
+      context: .
+      dockerfile: surveillance/Dockerfile
+    image: smartcito/threat-detection:local
+    container_name: smartcito-threat-detection
+    env_file: .env
+    command: ["uvicorn", "surveillance.threat_detection_service:app", "--host", "0.0.0.0", "--port", "8023"]
+    ports:
+      - "8023:8023"
+    depends_on:
+      kafka:
+        condition: service_started
+    restart: unless-stopped
+
+  mapping-geospatial:
+    build:
+      context: .
+      dockerfile: surveillance/Dockerfile
+    image: smartcito/mapping-geospatial:local
+    container_name: smartcito-mapping-geospatial
+    env_file: .env
+    command: ["uvicorn", "surveillance.mapping_service:app", "--host", "0.0.0.0", "--port", "8024"]
+    ports:
+      - "8024:8024"
+    depends_on:
+      kafka:
+        condition: service_started
+    restart: unless-stopped
+
+  mission-control:
+    build:
+      context: .
+      dockerfile: surveillance/Dockerfile
+    image: smartcito/mission-control:local
+    container_name: smartcito-mission-control
+    env_file: .env
+    command: ["uvicorn", "surveillance.mission_control_service:app", "--host", "0.0.0.0", "--port", "8025"]
+    environment:
+      DRONE_GATEWAY_URL: http://drone-gateway:8020
+    ports:
+      - "8025:8025"
+    depends_on:
+      drone-gateway:
+        condition: service_started
+      kafka:
+        condition: service_started
     restart: unless-stopped
 
   camera-service:
@@ -245,6 +346,12 @@ services:
       - prometheusdata:/prometheus
     depends_on:
       - citosmart
+      - drone-gateway
+      - sensor-gateway
+      - drone-camera-ingestion
+      - threat-detection
+      - mapping-geospatial
+      - mission-control
       - dash
       - memcached-exporter
       - postgres-exporter
@@ -314,6 +421,11 @@ services:
     depends_on:
       - webapp
       - api-router
+      - drone-gateway
+      - mission-control
+      - mapping-geospatial
+      - drone-camera-ingestion
+      - threat-detection
       - dash
       - grafana
       - kibana

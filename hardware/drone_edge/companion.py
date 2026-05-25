@@ -3,6 +3,7 @@ from __future__ import annotations
 from hardware.drone_edge.mavlink_bridge import normalize_mavlink_telemetry
 from hardware.drone_edge.schemas import CameraStreamProfile, DroneProfile, FrameSample, SensorSnapshot
 from hardware.drone_edge.sdk import SmartCitoDroneSDK
+from hardware.drone_edge.streamer import VideoEncodingProfile, build_camera_stream_profile
 
 
 class DroneCompanionRuntime:
@@ -12,11 +13,27 @@ class DroneCompanionRuntime:
         sdk: SmartCitoDroneSDK,
         drone_profile: DroneProfile,
         camera_profile: CameraStreamProfile | None = None,
+        encoder_profile: VideoEncodingProfile | None = None,
     ) -> None:
         self.sdk = sdk
         self.drone_profile = drone_profile
         self.camera_profile = camera_profile
+        self.encoder_profile = encoder_profile
         self._camera_registered = False
+
+        if self.camera_profile is None and self.encoder_profile is not None:
+            self.camera_profile = build_camera_stream_profile(
+                drone_id=self.drone_profile.drone_id,
+                encoder_profile=self.encoder_profile,
+            )
+
+    def camera_pipeline_plan(self) -> dict[str, object] | None:
+        if self.encoder_profile is None:
+            return None
+        return {
+            "behavior": self.encoder_profile.behavior_contract(),
+            "command": self.encoder_profile.ffmpeg_command(),
+        }
 
     def bootstrap(self) -> dict[str, object]:
         connect_result = self.sdk.connect_drone(self.drone_profile)
@@ -29,6 +46,7 @@ class DroneCompanionRuntime:
             "connect": connect_result,
             "capabilities": capability_result,
             "camera": camera_result,
+            "camera_pipeline": self.camera_pipeline_plan(),
         }
 
     def uplink_snapshot(

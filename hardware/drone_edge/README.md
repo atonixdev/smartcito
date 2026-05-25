@@ -18,6 +18,10 @@ It represents the hardware and communication layers from the drone brief:
 - `mavlink_bridge.py`: normalizes MAVLink-style flight payloads and autopilot metadata.
 - `sdk.py`: SmartCito cloud uplink SDK for Drone Gateway, Sensor Gateway, and Camera Service.
 - `companion.py`: PX4/ROS2 companion runtime that boots the uplink path and ships snapshots to the cloud.
+- `streamer.py`: camera encoding and RTSP/WebRTC/custom uplink planning for the companion computer.
+- `manufacturer_spec.py`: manufacturer-facing hardware specification contract for SmartCito-compatible drones.
+- `ros2_contract.py`: ROS2 autonomy-node contract for SLAM, obstacle avoidance, and visual odometry publishing into SmartCito.
+- `rfp_packet.py`: manufacturer-ready RFP packet structure with BOM fields and acceptance criteria.
 - `reference.py`: reference stack contract returned by the hardware-domain API.
 
 ## Operating Model
@@ -30,6 +34,15 @@ The drone companion computer owns all communication from drone hardware into SMA
 4. `SmartCitoDroneSDK` registers the drone with Drone Gateway.
 5. The same SDK pushes telemetry to Drone Gateway, sensor snapshots to Sensor Gateway, and camera streams/frame metadata to Drone Camera Ingestion.
 6. Mission commands still flow from Mission Control to Drone Gateway only, which keeps the cloud-side control path centralized.
+
+The ROS2 autonomy surface is also defined explicitly. `ros2_contract.py`
+describes the node responsibilities, ROS topics, and SmartCito publish contract
+for SLAM, obstacle avoidance, and visual odometry on the companion computer.
+
+The companion computer also owns camera behavior. `streamer.py` defines the
+SmartCito-controlled encoder contract for H.264 or H.265 plus RTSP, WebRTC, or
+custom uplink behavior so the cloud Camera Service receives a predictable stream
+surface regardless of vendor airframe design.
 
 ## Example
 
@@ -94,3 +107,5 @@ runtime.uplink_snapshot(
 ## Validation Scope
 
 This repo does not build PX4 firmware or ROS2 packages directly. Instead, it implements the SmartCito-owned integration layer between those drone runtimes and the SmartCito cloud platform.
+
+For the manufacturer-facing drone build packet, see [`../docs/drone_manufacturer_spec.md`](../docs/drone_manufacturer_spec.md).

@@ -48,6 +48,8 @@ hardware/
 - Security posture: [`../security/SECURITY_POSTURE.md`](../security/SECURITY_POSTURE.md)
 - Deployment guide: [`docs/deployment.md`](docs/deployment.md)
 - Camera device integration: [`docs/camera_hardware_integration.md`](docs/camera_hardware_integration.md)
+- Drone manufacturer specification: [`docs/drone_manufacturer_spec.md`](docs/drone_manufacturer_spec.md)
+- Drone RFP packet and acceptance structure: [`docs/drone_manufacturer_spec.md`](docs/drone_manufacturer_spec.md)
 - Prototyping notes: [`docs/prototyping.md`](docs/prototyping.md)
 - Open protocol baseline: [`networking/protocols/`](networking/protocols/)
 - Quantum-ready procedures: [`quantum/`](quantum/)
@@ -71,4 +73,7 @@ docker run --rm -p 8014:8014 smartcito-hardware-domain
 ```bash
 curl http://localhost:8014/monitoring/sample
 curl http://localhost:8014/drone-edge/reference-stack
+curl http://localhost:8014/drone-edge/hardware-spec
+curl http://localhost:8014/drone-edge/ros2-contract
+curl http://localhost:8014/drone-edge/rfp-packet
 ```
