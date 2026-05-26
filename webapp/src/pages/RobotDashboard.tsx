@@ -16,11 +16,6 @@ interface RobotSensor {
   status: RobotSensorStatus;
 }
 
-const robotZones = [
-  { id: "robot-zone-1", label: "Tunnel patrol zone", kind: "restricted" as const, top: 42, left: 28, width: 19, height: 18 },
-  { id: "robot-zone-2", label: "Depot patrol lane", kind: "geofence" as const, top: 56, left: 54, width: 22, height: 14 },
-];
-
 function sensorTone(status: RobotSensorStatus) {
   if (status === "offline") {
     return "critical";

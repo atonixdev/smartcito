@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from "react";
+import type { Feature, FeatureCollection, Geometry } from "geojson";
 import L from "leaflet";
 import * as THREE from "three";
 import "leaflet/dist/leaflet.css";
@@ -35,12 +36,17 @@ interface ZoneOverlay {
   height: number;
 }
 
+interface GeoJsonGeometry {
+  type: string;
+  coordinates: unknown;
+}
+
 interface GeoJsonFeatureCollection {
   type: "FeatureCollection";
   features: Array<{
     type: "Feature";
     id?: string;
-    geometry: { type: string; coordinates: unknown };
+    geometry: GeoJsonGeometry;
     properties?: Record<string, unknown>;
   }>;
 }
@@ -108,7 +114,7 @@ export default function CommandCenterMap({
   mode?: MapMode;
   sceneOverview?: SceneOverview | null;
   cameraCorridors?: CameraCorridor[];
-  geoJsonLayers?: Array<{ id: string; data: GeoJsonFeatureCollection | { type: string; coordinates: unknown } | null; color?: string }>;
+  geoJsonLayers?: Array<{ id: string; data: GeoJsonFeatureCollection | GeoJsonGeometry | null; color?: string }>;
 }) {
   const mapElementRef = useRef<HTMLDivElement | null>(null);
   const sceneElementRef = useRef<HTMLDivElement | null>(null);
@@ -197,8 +203,8 @@ export default function CommandCenterMap({
         return;
       }
 
-      if ((layer.data as GeoJsonFeatureCollection).type === "FeatureCollection") {
-        L.geoJSON(layer.data as GeoJsonFeatureCollection, {
+      if (layer.data.type === "FeatureCollection") {
+        L.geoJSON(layer.data as unknown as FeatureCollection, {
           style: {
             color: layer.color ?? "#57c7d4",
             weight: 2,
@@ -218,7 +224,13 @@ export default function CommandCenterMap({
         return;
       }
 
-      L.geoJSON({ type: "Feature", geometry: layer.data as { type: string; coordinates: unknown }, properties: { name: layer.id } }, {
+      const feature = {
+        type: "Feature",
+        geometry: layer.data,
+        properties: { name: layer.id },
+      } as unknown as Feature<Geometry>;
+
+      L.geoJSON(feature, {
         style: {
           color: layer.color ?? "#f1c96b",
           weight: 2,
@@ -273,7 +285,7 @@ export default function CommandCenterMap({
       }).addTo(group);
     }
 
-    const overlayBounds = overlays.getBounds();
+    const overlayBounds = L.featureGroup(overlays.getLayers()).getBounds();
     if (bounds.length > 0) {
       const assetBounds = L.latLngBounds(bounds.map((asset) => [asset.latitude, asset.longitude]));
       const nextBounds = overlayBounds.isValid() ? assetBounds.extend(overlayBounds) : assetBounds;

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: security-service
-          image: smartcito/security-service:latest
+          image: atonixdev/security-service:1.0.0
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:

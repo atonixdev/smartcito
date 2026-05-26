@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: frontend-service
-          image: smartcito/frontend-service:latest
+          image: atonixdev/webapp:1.0.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80

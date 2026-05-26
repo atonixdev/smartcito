@@ -24,7 +24,7 @@ services:
   citosmart-blue:
     build:
       context: ./citosmart
-    image: ${CITOSMART_IMAGE:-smartcito/api-gateway:local}
+      image: ${CITOSMART_IMAGE:-atonixdev/api-gateway:1.0.0}
     container_name: smartcito-citosmart-blue
     env_file: .env
     depends_on:
@@ -53,7 +53,7 @@ services:
   citosmart-green:
     build:
       context: ./citosmart
-    image: ${CITOSMART_IMAGE:-smartcito/api-gateway:local}
+      image: ${CITOSMART_IMAGE:-atonixdev/api-gateway:1.0.0}
     container_name: smartcito-citosmart-green
     env_file: .env
     depends_on:
@@ -80,7 +80,7 @@ services:
     logging: *stdout-logging
 
   event-consumer-raw:
-    image: ${CITOSMART_IMAGE:-smartcito/api-gateway:local}
+    image: ${CITOSMART_IMAGE:-atonixdev/api-gateway:1.0.0}
     container_name: smartcito-event-consumer-raw
     env_file: .env
     command: ["python", "-m", "app.workers.event_consumer_runner"]
@@ -93,7 +93,7 @@ services:
     logging: *stdout-logging
 
   event-consumer-clean:
-    image: ${CITOSMART_IMAGE:-smartcito/api-gateway:local}
+    image: ${CITOSMART_IMAGE:-atonixdev/api-gateway:1.0.0}
     container_name: smartcito-event-consumer-clean
     env_file: .env
     command: ["python", "-m", "app.workers.event_consumer_runner"]
@@ -106,7 +106,7 @@ services:
     logging: *stdout-logging
 
   event-consumer-alerts:
-    image: ${CITOSMART_IMAGE:-smartcito/api-gateway:local}
+    image: ${CITOSMART_IMAGE:-atonixdev/api-gateway:1.0.0}
     container_name: smartcito-event-consumer-alerts
     env_file: .env
     command: ["python", "-m", "app.workers.event_consumer_runner"]
@@ -122,7 +122,7 @@ services:
     build:
       context: .
       dockerfile: ingestion/Dockerfile
-    image: ${INGESTION_KAFKA_PRODUCER_IMAGE:-smartcito/ingestion-kafka-producer:local}
+      image: ${INGESTION_KAFKA_PRODUCER_IMAGE:-atonixdev/ingestion-kafka-producer:1.0.0}
     container_name: smartcito-ingestion-kafka-producer
     env_file: .env
     command: ["uvicorn", "ingestion.kafka_producer_service:app", "--host", "0.0.0.0", "--port", "8100"]
@@ -145,7 +145,7 @@ services:
     build:
       context: .
       dockerfile: ingestion/Dockerfile.spark
-    image: ${INGESTION_SPARK_IMAGE:-smartcito/ingestion-spark:local}
+      image: ${INGESTION_SPARK_IMAGE:-atonixdev/ingestion-spark:1.0.0}
     container_name: smartcito-ingestion-spark
     env_file: .env
     environment:
@@ -162,7 +162,7 @@ services:
     build:
       context: .
       dockerfile: camera_module/Dockerfile
-    image: ${CAMERA_IMAGE:-smartcito/camera-service:local}
+      image: ${CAMERA_IMAGE:-atonixdev/camera-service:1.0.0}
     container_name: smartcito-camera-service
     env_file: .env
     ports:
@@ -174,7 +174,7 @@ services:
     build:
       context: .
       dockerfile: gps_module/Dockerfile
-    image: ${GPS_IMAGE:-smartcito/gps-service:local}
+      image: ${GPS_IMAGE:-atonixdev/gps-service:1.0.0}
     container_name: smartcito-gps-service
     env_file: .env
     ports:
@@ -186,7 +186,7 @@ services:
     build:
       context: .
       dockerfile: ai/ai_models/Dockerfile
-    image: ${AI_IMAGE:-smartcito/ai-service:local}
+      image: ${AI_IMAGE:-atonixdev/ai-service:1.0.0}
     container_name: smartcito-ai-service
     env_file: .env
     ports:
@@ -202,7 +202,7 @@ services:
     build:
       context: .
       dockerfile: security/Dockerfile
-    image: ${SECURITY_IMAGE:-smartcito/security-service:local}
+      image: ${SECURITY_IMAGE:-atonixdev/security-service:1.0.0}
     container_name: smartcito-security-service
     env_file: .env
     ports:
@@ -216,7 +216,7 @@ services:
     build:
       context: .
       dockerfile: hardware/Dockerfile
-    image: ${HARDWARE_IMAGE:-smartcito/hardware-agent:local}
+      image: ${HARDWARE_IMAGE:-atonixdev/hardware-agent:1.0.0}
     container_name: smartcito-hardware-agent
     env_file: .env
     ports:
@@ -228,7 +228,7 @@ services:
     build:
       context: .
       dockerfile: surveillance/Dockerfile
-    image: ${DRONE_GATEWAY_IMAGE:-smartcito/drone-gateway:local}
+      image: ${DRONE_GATEWAY_IMAGE:-atonixdev/drone-gateway:1.0.0}
     container_name: smartcito-drone-gateway
     env_file: .env
     command: ["uvicorn", "surveillance.drone_gateway_service:app", "--host", "0.0.0.0", "--port", "8020"]
@@ -244,7 +244,7 @@ services:
     build:
       context: .
       dockerfile: surveillance/Dockerfile
-    image: ${SENSOR_GATEWAY_IMAGE:-smartcito/sensor-gateway:local}
+      image: ${SENSOR_GATEWAY_IMAGE:-atonixdev/sensor-gateway:1.0.0}
     container_name: smartcito-sensor-gateway
     env_file: .env
     command: ["uvicorn", "surveillance.sensor_gateway_service:app", "--host", "0.0.0.0", "--port", "8021"]
@@ -259,7 +259,7 @@ services:
     build:
       context: .
       dockerfile: surveillance/Dockerfile
-    image: ${DRONE_CAMERA_IMAGE:-smartcito/drone-camera-ingestion:local}
+      image: ${DRONE_CAMERA_IMAGE:-atonixdev/drone-camera-ingestion:1.0.0}
     container_name: smartcito-drone-camera-ingestion
     env_file: .env
     command: ["uvicorn", "surveillance.drone_camera_service:app", "--host", "0.0.0.0", "--port", "8022"]
@@ -274,7 +274,7 @@ services:
     build:
       context: .
       dockerfile: surveillance/Dockerfile
-    image: ${MISSION_CONTROL_IMAGE:-smartcito/mission-control:local}
+      image: ${MISSION_CONTROL_IMAGE:-atonixdev/mission-control:1.0.0}
     container_name: smartcito-mission-control
     env_file: .env
     command: ["uvicorn", "surveillance.mission_control_service:app", "--host", "0.0.0.0", "--port", "8025"]
@@ -290,7 +290,7 @@ services:
     build:
       context: .
       dockerfile: surveillance/Dockerfile
-    image: ${THREAT_DETECTION_IMAGE:-smartcito/threat-detection:local}
+      image: ${THREAT_DETECTION_IMAGE:-atonixdev/threat-detection:1.0.0}
     container_name: smartcito-threat-detection
     env_file: .env
     command: ["uvicorn", "surveillance.threat_detection_service:app", "--host", "0.0.0.0", "--port", "8023"]
@@ -305,7 +305,7 @@ services:
     build:
       context: .
       dockerfile: surveillance/Dockerfile
-    image: ${MAPPING_GEOSPATIAL_IMAGE:-smartcito/mapping-geospatial:local}
+      image: ${MAPPING_GEOSPATIAL_IMAGE:-atonixdev/mapping-geospatial:1.0.0}
     container_name: smartcito-mapping-geospatial
     env_file: .env
     command: ["uvicorn", "surveillance.mapping_service:app", "--host", "0.0.0.0", "--port", "8024"]
@@ -404,7 +404,7 @@ services:
   webapp:
     build:
       context: ./webapp
-    image: ${WEBAPP_IMAGE:-smartcito/frontend-service:local}
+      image: ${WEBAPP_IMAGE:-atonixdev/webapp:1.0.0}
     container_name: smartcito-webapp
     env_file: .env
     ports:

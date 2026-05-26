@@ -95,7 +95,7 @@ spec:
     spec:
       containers:
         - name: spark-streaming
-          image: smartcito/ingestion-spark:latest
+          image: atonixdev/ingestion-spark:1.0.0
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:

@@ -3,8 +3,8 @@
 set -euo pipefail
 
 : "${DEPLOY_PATH:?DEPLOY_PATH is required}"
-: "${IMAGE_REGISTRY:?IMAGE_REGISTRY is required}"
-: "${IMAGE_TAG:?IMAGE_TAG is required}"
+: "${IMAGE_REGISTRY:=atonixdev}"
+: "${IMAGE_TAG:=1.0.0}"
 
 deploy_strategy="${DEPLOY_STRATEGY:-blue-green-api}"
 compose_file="docker-compose.services.yml"

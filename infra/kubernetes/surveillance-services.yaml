@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: drone-gateway
-          image: smartcito/drone-gateway:latest
+          image: atonixdev/drone-gateway:1.0.0
           imagePullPolicy: IfNotPresent
           command: ["uvicorn", "surveillance.drone_gateway_service:app", "--host", "0.0.0.0", "--port", "8020"]
           envFrom:
@@ -80,7 +80,7 @@ spec:
     spec:
       containers:
         - name: sensor-gateway
-          image: smartcito/sensor-gateway:latest
+          image: atonixdev/sensor-gateway:1.0.0
           imagePullPolicy: IfNotPresent
           command: ["uvicorn", "surveillance.sensor_gateway_service:app", "--host", "0.0.0.0", "--port", "8021"]
           envFrom:
@@ -139,7 +139,7 @@ spec:
     spec:
       containers:
         - name: drone-camera-ingestion
-          image: smartcito/drone-camera-ingestion:latest
+          image: atonixdev/drone-camera-ingestion:1.0.0
           imagePullPolicy: IfNotPresent
           command: ["uvicorn", "surveillance.drone_camera_service:app", "--host", "0.0.0.0", "--port", "8022"]
           envFrom:
@@ -198,7 +198,7 @@ spec:
     spec:
       containers:
         - name: mission-control
-          image: smartcito/mission-control:latest
+          image: atonixdev/mission-control:1.0.0
           imagePullPolicy: IfNotPresent
           command: ["uvicorn", "surveillance.mission_control_service:app", "--host", "0.0.0.0", "--port", "8025"]
           envFrom:
@@ -259,7 +259,7 @@ spec:
         smartcito.io/accelerator: gpu-optional
       containers:
         - name: threat-detection
-          image: smartcito/threat-detection:latest
+          image: atonixdev/threat-detection:1.0.0
           imagePullPolicy: IfNotPresent
           command: ["uvicorn", "surveillance.threat_detection_service:app", "--host", "0.0.0.0", "--port", "8023"]
           envFrom:
@@ -316,7 +316,7 @@ spec:
     spec:
       containers:
         - name: mapping-geospatial
-          image: smartcito/mapping-geospatial:latest
+          image: atonixdev/mapping-geospatial:1.0.0
           imagePullPolicy: IfNotPresent
           command: ["uvicorn", "surveillance.mapping_service:app", "--host", "0.0.0.0", "--port", "8024"]
           envFrom:

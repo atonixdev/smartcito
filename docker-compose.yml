@@ -43,7 +43,7 @@ services:
   citosmart:
     build:
       context: ./citosmart
-    image: smartcito/api-gateway:local
+      image: atonixdev/api-gateway:1.0.0
     container_name: smartcito-citosmart
     env_file: .env
     depends_on:
@@ -64,7 +64,7 @@ services:
   webapp:
     build:
       context: ./webapp
-    image: smartcito/frontend-service:local
+      image: atonixdev/webapp:1.0.0
     container_name: smartcito-webapp
     env_file: .env
     ports:
@@ -82,7 +82,7 @@ services:
     build:
       context: .
       dockerfile: surveillance/Dockerfile
-    image: smartcito/drone-gateway:local
+      image: atonixdev/drone-gateway:1.0.0
     container_name: smartcito-drone-gateway
     env_file: .env
     command: ["uvicorn", "surveillance.drone_gateway_service:app", "--host", "0.0.0.0", "--port", "8020"]
@@ -99,7 +99,7 @@ services:
     build:
       context: .
       dockerfile: surveillance/Dockerfile
-    image: smartcito/sensor-gateway:local
+      image: atonixdev/sensor-gateway:1.0.0
     container_name: smartcito-sensor-gateway
     env_file: .env
     command: ["uvicorn", "surveillance.sensor_gateway_service:app", "--host", "0.0.0.0", "--port", "8021"]
@@ -114,7 +114,7 @@ services:
     build:
       context: .
       dockerfile: surveillance/Dockerfile
-    image: smartcito/drone-camera-ingestion:local
+      image: atonixdev/drone-camera-ingestion:1.0.0
     container_name: smartcito-drone-camera-ingestion
     env_file: .env
     command: ["uvicorn", "surveillance.drone_camera_service:app", "--host", "0.0.0.0", "--port", "8022"]
@@ -129,7 +129,7 @@ services:
     build:
       context: .
       dockerfile: surveillance/Dockerfile
-    image: smartcito/threat-detection:local
+      image: atonixdev/threat-detection:1.0.0
     container_name: smartcito-threat-detection
     env_file: .env
     command: ["uvicorn", "surveillance.threat_detection_service:app", "--host", "0.0.0.0", "--port", "8023"]
@@ -144,7 +144,7 @@ services:
     build:
       context: .
       dockerfile: surveillance/Dockerfile
-    image: smartcito/mapping-geospatial:local
+      image: atonixdev/mapping-geospatial:1.0.0
     container_name: smartcito-mapping-geospatial
     env_file: .env
     command: ["uvicorn", "surveillance.mapping_service:app", "--host", "0.0.0.0", "--port", "8024"]
@@ -159,7 +159,7 @@ services:
     build:
       context: .
       dockerfile: surveillance/Dockerfile
-    image: smartcito/mission-control:local
+      image: atonixdev/mission-control:1.0.0
     container_name: smartcito-mission-control
     env_file: .env
     command: ["uvicorn", "surveillance.mission_control_service:app", "--host", "0.0.0.0", "--port", "8025"]
@@ -178,7 +178,7 @@ services:
     build:
       context: .
       dockerfile: camera_module/Dockerfile
-    image: smartcito/camera-service:local
+      image: atonixdev/camera-service:1.0.0
     container_name: smartcito-camera-service
     env_file: .env
     ports:
@@ -189,7 +189,7 @@ services:
     build:
       context: .
       dockerfile: gps_module/Dockerfile
-    image: smartcito/gps-service:local
+      image: atonixdev/gps-service:1.0.0
     container_name: smartcito-gps-service
     env_file: .env
     ports:
@@ -200,7 +200,7 @@ services:
     build:
       context: .
       dockerfile: ai/ai_models/Dockerfile
-    image: smartcito/ai-service:local
+      image: atonixdev/ai-service:1.0.0
     container_name: smartcito-ai-service
     env_file: .env
     ports:
@@ -211,7 +211,7 @@ services:
     build:
       context: .
       dockerfile: security/Dockerfile
-    image: smartcito/security-service:local
+      image: atonixdev/security-service:1.0.0
     container_name: smartcito-security-service
     env_file: .env
     ports:
@@ -224,7 +224,7 @@ services:
     build:
       context: .
       dockerfile: hardware/Dockerfile
-    image: smartcito/hardware-agent:local
+      image: atonixdev/hardware-agent:1.0.0
     container_name: smartcito-hardware-agent
     env_file: .env
     ports:
@@ -287,7 +287,7 @@ services:
     # command differs.
     build:
       context: ./citosmart
-    image: smartcito/dash:local
+    image: atonixdev/dash:1.0.0
     container_name: smartcito-dash
     command: ["python", "-m", "app.dash_app.server"]
     environment:

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: camera-service
-          image: smartcito/camera-service:latest
+          image: atonixdev/camera-service:1.0.0
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:

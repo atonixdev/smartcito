@@ -72,17 +72,6 @@ interface DeterrentAsset {
   rule: string;
 }
 
-interface RobotAsset {
-  id: string;
-  name: string;
-  status: "nominal" | "degraded" | "offline";
-  mission: string;
-  batteryPercent: number;
-  latitude: number;
-  longitude: number;
-  routeLabel: string;
-}
-
 interface ZoneOverlay {
   id: string;
   label: string;
@@ -122,29 +111,6 @@ interface AssetListItem {
 
 const cityName = "Pretoria Command Center";
 const operatorName = "Primary Operator";
-
-const demoRobots: RobotAsset[] = [
-  {
-    id: "robot-patrol-007",
-    name: "UGV Patrol 007",
-    status: "nominal",
-    mission: "Perimeter route alpha",
-    batteryPercent: 81,
-    latitude: -25.7462,
-    longitude: 28.2372,
-    routeLabel: "North gate to transit plaza",
-  },
-  {
-    id: "robot-tunnel-003",
-    name: "Tunnel Robot 003",
-    status: "degraded",
-    mission: "Tunnel inspection",
-    batteryPercent: 63,
-    latitude: -25.7481,
-    longitude: 28.2329,
-    routeLabel: "Utility tunnel south loop",
-  },
-];
 
 const citySearchPresets = [
   {
@@ -349,7 +315,7 @@ export default function Dashboard() {
   const [localLogs, setLocalLogs] = useState<CommandLogEntry[]>([]);
   const [assetFilter, setAssetFilter] = useState("");
   const [mapMode, setMapMode] = useState<CityMapMode>("3d");
-  const [selectedSearchId, setSelectedSearchId] = useState(citySearchPresets[0].id);
+  const [selectedSearchId, setSelectedSearchId] = useState<string>(citySearchPresets[0].id);
   const [selectedRobotIds, setSelectedRobotIds] = useState<string[]>([]);
   const deferredAssetFilter = useDeferredValue(assetFilter);
   const [recordingEnabled, setRecordingEnabled] = useState(false);

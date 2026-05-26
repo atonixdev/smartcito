@@ -23,6 +23,8 @@ export default function DroneDashboard() {
   const telemetry = fleet.drones[0] ?? demoDroneFleet.drones[0];
   const registry = fleet.registry[0] ?? demoDroneFleet.registry[0];
   const alerts = alertsQuery.data && alertsQuery.data.length > 0 ? alertsQuery.data : demoThreatAlerts;
+  const linkQualityPercent = Math.round((telemetry.link_quality ?? 0) * 100);
+  const altitudeMeters = Math.round(telemetry.position.altitude_m ?? 0);
 
   const statusCards = useMemo(
     () => [
@@ -30,10 +32,10 @@ export default function DroneDashboard() {
       { label: "Active drone", value: registry.model },
       { label: "Battery", value: `${Math.round(telemetry.battery_percent)}%` },
       { label: "Flight mode", value: telemetry.flight_mode },
-      { label: "Link", value: `${Math.round(telemetry.link_quality * 100)}%` },
+      { label: "Link", value: `${linkQualityPercent}%` },
       { label: "Threats", value: `${alerts.length}` },
     ],
-    [alerts.length, gatewayReady.data?.registry, registry.model, telemetry.battery_percent, telemetry.flight_mode, telemetry.link_quality],
+    [alerts.length, gatewayReady.data?.registry, linkQualityPercent, registry.model, telemetry.battery_percent, telemetry.flight_mode],
   );
 
   return (
@@ -56,7 +58,7 @@ export default function DroneDashboard() {
           </div>
           <div>
             <span>Altitude</span>
-            <strong>{Math.round(telemetry.position.altitude_m)} m</strong>
+            <strong>{altitudeMeters} m</strong>
           </div>
         </div>
       </header>
