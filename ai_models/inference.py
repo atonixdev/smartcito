@@ -36,6 +36,9 @@ class GenerateRequest(BaseModel):
     prompt: str = Field(min_length=1)
     system_prompt: str | None = None
     model: str | None = None
+    backend: str = Field(default="auto")
+    adapter_path: str | None = None
+    merge_lora: bool = False
     temperature: float = Field(default=0.2, ge=0.0, le=2.0)
     max_tokens: int = Field(default=512, ge=1, le=4096)
 
@@ -99,6 +102,9 @@ async def generate(request: GenerateRequest) -> dict[str, object]:
             model=request.model,
             temperature=request.temperature,
             max_tokens=request.max_tokens,
+            backend=request.backend,
+            adapter_path=request.adapter_path,
+            merge_lora=request.merge_lora,
         )
     except RuntimeError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc

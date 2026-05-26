@@ -73,6 +73,12 @@ test:memcached-smoke:
   script:
     - MEMCACHED_SERVERS=memcached:11211 python scripts/ci/memcached_smoke.py
 
+test:ai-offline-smoke:
+  stage: test
+  image: python:3.11-slim
+  script:
+    - python scripts/ci/ai_offline_validation.py
+
 test:security-root:
   stage: test
   image: python:3.11-slim

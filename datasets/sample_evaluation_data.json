@@ -1,0 +1,38 @@
+[
+  {
+    "id": "drone-anomaly-001",
+    "instruction": "Analyze drone telemetry for anomalies",
+    "input": "Drone: alpha-7; GPS: -26.2041,28.0473; Altitude: 128m; Battery: 41%; Wind: 18km/h; Rotor vibration: 0.83; Camera horizon drift: 4.2 degrees",
+    "expected_output": "Anomaly detected: rotor imbalance on the rear-left motor. Reduce airspeed, hold position, and return the drone for maintenance if vibration persists.",
+    "required_terms": ["rotor imbalance", "return", "maintenance"],
+    "rubric_keywords": ["airspeed", "hold position"],
+    "banned_terms": ["ignore", "safe to continue"],
+    "metadata": {
+      "domain": "drone-operations"
+    }
+  },
+  {
+    "id": "camera-intrusion-001",
+    "instruction": "Interpret multi-camera security activity",
+    "input": "Location: North Gate; Camera-04 motion score: 0.92; Camera-08 thermal delta: 6.1; Access badge event: none; Time: 23:42 local",
+    "expected_output": "Probable intrusion event with correlated motion and heat signatures and no badge event. Escalate to perimeter response and keep operators on live video.",
+    "required_terms": ["intrusion", "perimeter response", "live video"],
+    "rubric_keywords": ["badge event", "heat signatures"],
+    "banned_terms": ["dismiss", "no action needed"],
+    "metadata": {
+      "domain": "camera-analytics"
+    }
+  },
+  {
+    "id": "orchestration-001",
+    "instruction": "Recommend an orchestration response",
+    "input": "Cluster: edge-prod-2; Kubernetes alerts: node memory pressure on worker-3; OpenStack compute host: overloaded; AI inference queue latency: 940ms; Camera ingestion pods restarting: 3",
+    "expected_output": "Drain the unhealthy node, relocate overloaded workloads, and scale camera ingestion and inference workloads to restore latency and stability.",
+    "required_terms": ["drain", "scale", "latency"],
+    "rubric_keywords": ["OpenStack", "camera ingestion", "worker-3"],
+    "banned_terms": ["do nothing", "disable monitoring"],
+    "metadata": {
+      "domain": "orchestration"
+    }
+  }
+]

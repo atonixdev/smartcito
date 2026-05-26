@@ -1,11 +1,13 @@
 # AI Models
 
-Computer vision and predictive analytics models for SmartCito.
+Computer vision, local LLM inference, and predictive analytics models for SmartCito.
 
-This service now supports two inference modes:
+This service now supports multiple inference modes:
 
 - Numeric anomaly scoring through `/infer` for existing SmartCito callers.
-- Llama Stack-backed text generation through `/models` and `/generate`.
+- Remote Llama Stack-backed text generation through `/models` and `/generate`.
+- Local Hugging Face inference using a base LLaMA-3 model.
+- Local LoRA or LoRA-merged inference for `SmartCito-LLaMA3-8B` adapters.
 
 It also includes structured operator workflows for:
 
@@ -48,6 +50,20 @@ Inference services are exposed to the backend through the ingestion layer or
 via a dedicated REST/gRPC microservice. Metadata (events, alerts, scores) is
 written to the database — **raw video is never stored**.
 
+## Text Generation Backends
+
+`POST /generate` accepts backend selection fields so the same API can be used in local development, Kaggle notebooks, or remote runtime environments:
+
+- `backend="remote"` or `backend="llama-stack"` for an OpenAI-compatible remote runtime.
+- `backend="local"` for base-model local inference.
+- `backend="local-lora"` for base model + adapter inference without merging.
+- `backend="merged-local"` for base model + adapter inference with `merge_and_unload()`.
+
+Additional fields:
+
+- `adapter_path` for an explicit LoRA adapter directory.
+- `merge_lora` to force merged-local behavior.
+
 ## Llama Stack Integration
 
 The AI service can proxy text generation to a running Llama Stack or OGX
@@ -59,6 +75,45 @@ Set these environment variables for the `ai_models` service:
 - `LLAMA_STACK_MODEL` — default model id exposed by the stack
 - `LLAMA_STACK_API_KEY` — optional API key if your stack requires one
 - `LLAMA_STACK_TIMEOUT_SECONDS` — optional HTTP timeout, default `30`
+
+## Local Hugging Face and LoRA Integration
+
+Set these environment variables for local SmartCito-LLaMA3-8B inference:
+
+- `SMARTCITO_BASE_MODEL_ID` — usually `meta-llama/Meta-Llama-3-8B-Instruct`
+- `SMARTCITO_LORA_ADAPTER_PATH` — path to `output/smartcito-lora/`
+- `SMARTCITO_LLM_BACKEND` — `auto`, `local`, `local-lora`, `merged-local`, or `remote`
+- `SMARTCITO_LOAD_IN_4BIT` — `true` to load a 4-bit quantized local model
+- `SMARTCITO_DEVICE_MAP` — optional device map, default `auto`
+- `HUGGINGFACE_HUB_TOKEN` or `HF_TOKEN` — optional gated model access token
+
+Example request for LoRA-merged inference:
+
+```bash
+curl -X POST http://localhost:8012/generate \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "prompt":"Analyze drone telemetry for anomalies.",
+    "backend":"merged-local",
+    "model":"meta-llama/Meta-Llama-3-8B-Instruct",
+    "adapter_path":"./output/smartcito-lora",
+    "merge_lora":true,
+    "temperature":0.1,
+    "max_tokens":160
+  }'
+```
+
+## Training and Kaggle Flow
+
+SmartCito ships a full adapter-training path for community contribution:
+
+- [training/prepare_dataset.py](training/prepare_dataset.py) normalizes contributor data.
+- [training/lora_training.py](training/lora_training.py) runs standard LoRA fine-tuning.
+- [training/qlora_training.py](training/qlora_training.py) runs QLoRA fine-tuning.
+- [training/dataset_format.md](training/dataset_format.md) documents the dataset schema.
+- [examples/smartcito_training_demo.ipynb](examples/smartcito_training_demo.ipynb) and [examples/smartcito_inference_demo.ipynb](examples/smartcito_inference_demo.ipynb) are Kaggle-ready starting points.
+
+Only adapter weights from `output/smartcito-lora/` should be shared.
 
 Typical setup flow for Meta-hosted model downloads:
 

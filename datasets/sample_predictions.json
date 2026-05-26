@@ -1,0 +1,14 @@
+[
+  {
+    "id": "drone-anomaly-001",
+    "prediction": "Anomaly detected: rotor imbalance is likely. Reduce airspeed, hold position, and return the drone for maintenance review."
+  },
+  {
+    "id": "camera-intrusion-001",
+    "prediction": "This looks like an intrusion with matching motion and heat signatures and no badge event. Escalate perimeter response and keep operators on live video."
+  },
+  {
+    "id": "orchestration-001",
+    "prediction": "Drain worker-3, relocate overloaded workloads, and scale camera ingestion to restore inference latency and cluster stability."
+  }
+]

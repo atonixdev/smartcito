@@ -64,12 +64,18 @@ def test_generate_proxies_to_llama_stack(monkeypatch) -> None:
         model: str | None,
         temperature: float,
         max_tokens: int,
+        backend: str | None = None,
+        adapter_path: str | None = None,
+        merge_lora: bool = False,
     ) -> dict[str, object]:
         assert prompt == "Summarize traffic anomalies."
         assert system_prompt == "You are an analyst."
         assert model == "Llama-4-Maverick"
         assert temperature == 0.1
         assert max_tokens == 128
+        assert backend == "remote"
+        assert adapter_path is None
+        assert merge_lora is False
         return {
             "model": "Llama-4-Maverick",
             "provider": "llama-stack",
@@ -85,6 +91,7 @@ def test_generate_proxies_to_llama_stack(monkeypatch) -> None:
             "prompt": "Summarize traffic anomalies.",
             "system_prompt": "You are an analyst.",
             "model": "Llama-4-Maverick",
+            "backend": "remote",
             "temperature": 0.1,
             "max_tokens": 128,
         },
@@ -92,6 +99,49 @@ def test_generate_proxies_to_llama_stack(monkeypatch) -> None:
 
     assert response.status_code == 200
     assert response.json()["text"] == "No anomalies detected."
+
+
+def test_generate_supports_local_lora_backend(monkeypatch) -> None:
+    async def fake_generate_text(
+        prompt: str,
+        *,
+        system_prompt: str | None,
+        model: str | None,
+        temperature: float,
+        max_tokens: int,
+        backend: str | None = None,
+        adapter_path: str | None = None,
+        merge_lora: bool = False,
+    ) -> dict[str, object]:
+        assert prompt == "Analyze drone telemetry for anomalies."
+        assert backend == "merged-local"
+        assert model == "meta-llama/Meta-Llama-3-8B-Instruct"
+        assert adapter_path == "./output/smartcito-lora"
+        assert merge_lora is True
+        return {
+            "model": "SmartCito-LLaMA3-8B",
+            "provider": "local-peft-merged",
+            "text": "Rotor imbalance detected on drone alpha.",
+            "raw": {"adapter_path": adapter_path},
+        }
+
+    monkeypatch.setattr("ai_models.inference.generate_text", fake_generate_text)
+
+    response = client.post(
+        "/generate",
+        json={
+            "prompt": "Analyze drone telemetry for anomalies.",
+            "model": "meta-llama/Meta-Llama-3-8B-Instruct",
+            "backend": "merged-local",
+            "adapter_path": "./output/smartcito-lora",
+            "merge_lora": True,
+            "temperature": 0.0,
+            "max_tokens": 128,
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["provider"] == "local-peft-merged"
 
 
 def test_classify_alert_returns_operational_label() -> None:
