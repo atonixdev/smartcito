@@ -1,9 +1,0 @@
-{
-  "version": "smartcito_model_cli_test",
-  "records": 12,
-  "sources": [
-    "ai/datasets/batch_gps_20260526_072239.json",
-    "ai/datasets/sample_training_data.json"
-  ],
-  "artifact_dir": "ai/models/smartcito_model_cli_test"
-}
