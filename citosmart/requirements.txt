@@ -12,8 +12,8 @@ fastapi==0.115.2
 uvicorn[standard]==0.32.0
 pydantic==2.9.2
 pydantic-settings==2.5.2
-python-multipart==0.0.12
-strawberry-graphql[fastapi]==0.275.2
+python-multipart==0.0.27
+strawberry-graphql[fastapi]==0.315.4
 
 # ---- IoT ingestion ----
 paho-mqtt==2.1.0                  # MQTT client for sensor data
@@ -41,7 +41,7 @@ redis==5.1.1
 pymemcache==4.0.0
 
 # ---- Security ----
-cryptography==43.0.3              # AES, RSA, X.509, key derivation
+cryptography==46.0.7              # AES, RSA, X.509, key derivation
 PyJWT[crypto]==2.9.0              # JWT issuance + verification
 passlib[bcrypt]==1.7.4            # Password hashing
 bcrypt==4.0.1                     # Passlib-compatible bcrypt backend
