@@ -1,0 +1,116 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-service
+  namespace: ai
+spec:
+  replicas: 1
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ai-service
+  namespace: ai
+spec:
+  minReplicas: 1
+  maxReplicas: 1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: camera-service
+  namespace: ingestion
+spec:
+  replicas: 1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gps-service
+  namespace: ingestion
+spec:
+  replicas: 1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: security-service
+  namespace: security
+spec:
+  replicas: 1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-service
+  namespace: visualization
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: frontend-service
+          volumeMounts:
+            - name: frontend-nginx-config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+      volumes:
+        - name: frontend-nginx-config
+          configMap:
+            name: frontend-nginx-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: visualization-gateway
+  namespace: visualization
+spec:
+  replicas: 1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drone-gateway
+  namespace: backend
+spec:
+  replicas: 1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sensor-gateway
+  namespace: backend
+spec:
+  replicas: 1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drone-camera-ingestion
+  namespace: backend
+spec:
+  replicas: 1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mission-control
+  namespace: backend
+spec:
+  replicas: 1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: threat-detection
+  namespace: ai
+spec:
+  replicas: 1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mapping-geospatial
+  namespace: visualization
+spec:
+  replicas: 1

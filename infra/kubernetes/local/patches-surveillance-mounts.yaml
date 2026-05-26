@@ -1,0 +1,139 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drone-gateway
+  namespace: backend
+spec:
+  template:
+    spec:
+      containers:
+        - name: drone-gateway
+          env:
+            - name: PYTHONPATH
+              value: /app
+          volumeMounts:
+            - name: smartcito-shared
+              mountPath: /app/smartcito_shared
+              readOnly: true
+      volumes:
+        - name: smartcito-shared
+          hostPath:
+            path: /workspace/smartcito/smartcito_shared
+            type: Directory
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sensor-gateway
+  namespace: backend
+spec:
+  template:
+    spec:
+      containers:
+        - name: sensor-gateway
+          env:
+            - name: PYTHONPATH
+              value: /app
+          volumeMounts:
+            - name: smartcito-shared
+              mountPath: /app/smartcito_shared
+              readOnly: true
+      volumes:
+        - name: smartcito-shared
+          hostPath:
+            path: /workspace/smartcito/smartcito_shared
+            type: Directory
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drone-camera-ingestion
+  namespace: backend
+spec:
+  template:
+    spec:
+      containers:
+        - name: drone-camera-ingestion
+          env:
+            - name: PYTHONPATH
+              value: /app
+          volumeMounts:
+            - name: smartcito-shared
+              mountPath: /app/smartcito_shared
+              readOnly: true
+      volumes:
+        - name: smartcito-shared
+          hostPath:
+            path: /workspace/smartcito/smartcito_shared
+            type: Directory
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mission-control
+  namespace: backend
+spec:
+  template:
+    spec:
+      containers:
+        - name: mission-control
+          env:
+            - name: PYTHONPATH
+              value: /app
+            - name: DRONE_GATEWAY_URL
+              value: http://drone-gateway.backend.svc.cluster.local:8020
+          volumeMounts:
+            - name: smartcito-shared
+              mountPath: /app/smartcito_shared
+              readOnly: true
+      volumes:
+        - name: smartcito-shared
+          hostPath:
+            path: /workspace/smartcito/smartcito_shared
+            type: Directory
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: threat-detection
+  namespace: ai
+spec:
+  template:
+    spec:
+      containers:
+        - name: threat-detection
+          env:
+            - name: PYTHONPATH
+              value: /app
+          volumeMounts:
+            - name: smartcito-shared
+              mountPath: /app/smartcito_shared
+              readOnly: true
+      volumes:
+        - name: smartcito-shared
+          hostPath:
+            path: /workspace/smartcito/smartcito_shared
+            type: Directory
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mapping-geospatial
+  namespace: visualization
+spec:
+  template:
+    spec:
+      containers:
+        - name: mapping-geospatial
+          env:
+            - name: PYTHONPATH
+              value: /app
+          volumeMounts:
+            - name: smartcito-shared
+              mountPath: /app/smartcito_shared
+              readOnly: true
+      volumes:
+        - name: smartcito-shared
+          hostPath:
+            path: /workspace/smartcito/smartcito_shared
+            type: Directory

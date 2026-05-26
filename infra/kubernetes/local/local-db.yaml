@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: database
+spec:
+  serviceName: postgres
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          envFrom:
+            - configMapRef:
+                name: smartcito-platform-config
+            - secretRef:
+                name: smartcito-platform-secrets
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: smartcito-platform-config
+                  key: DB_NAME
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: smartcito-platform-config
+                  key: DB_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: smartcito-platform-secrets
+                  key: DB_PASSWORD
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+          readinessProbe:
+            tcpSocket:
+              port: 5432
+          livenessProbe:
+            tcpSocket:
+              port: 5432
+      volumes:
+        - name: postgres-data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: database
+spec:
+  selector:
+    app: postgres
+  ports:
+    - port: 5432
+      targetPort: 5432
+  type: ClusterIP

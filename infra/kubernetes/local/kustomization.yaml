@@ -1,0 +1,36 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../namespaces.yaml
+  - ../platform-config.yaml
+  - ../memcached-cluster.yaml
+  - ../ai-service.yaml
+  - ../camera-service.yaml
+  - ../gps-service.yaml
+  - ../security-service.yaml
+  - ../frontend-service.yaml
+  - ../visualization-gateway.yaml
+  - ../surveillance-services.yaml
+  - local-db.yaml
+  - local-frontend-config.yaml
+  - local-kafka.yaml
+  - local-citosmart-api.yaml
+  - local-plotly-dash.yaml
+
+patchesStrategicMerge:
+  - patches-platform-config-local.yaml
+  - patches-scale-down.yaml
+  - patches-surveillance-mounts.yaml
+  - patches-visualization-gateway.yaml
+
+patches:
+  - target:
+      version: v1
+      group: apps
+      kind: Deployment
+      name: threat-detection
+      namespace: ai
+    patch: |-
+      - op: remove
+        path: /spec/template/spec/nodeSelector

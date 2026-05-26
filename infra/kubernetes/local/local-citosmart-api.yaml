@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: citosmart-api
+  namespace: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: citosmart-api
+  template:
+    metadata:
+      labels:
+        app: citosmart-api
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+    spec:
+      containers:
+        - name: citosmart-api
+          image: atonixdev/api-gateway:1.0.0
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: smartcito-platform-config
+            - secretRef:
+                name: smartcito-platform-secrets
+          env:
+            - name: PYTHONPATH
+              value: /app
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - name: smartcito-data
+              mountPath: /app/data
+            - name: smartcito-shared
+              mountPath: /app/smartcito_shared
+              readOnly: true
+            - name: smartcito-hardware
+              mountPath: /app/hardware
+              readOnly: true
+            - name: ingestion-config
+              mountPath: /ingestion/config
+              readOnly: true
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health/ready
+              port: 8000
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health/live
+              port: 8000
+      volumes:
+        - name: smartcito-data
+          hostPath:
+            path: /workspace/smartcito/data
+            type: Directory
+        - name: smartcito-shared
+          hostPath:
+            path: /workspace/smartcito/smartcito_shared
+            type: Directory
+        - name: smartcito-hardware
+          hostPath:
+            path: /workspace/smartcito/hardware
+            type: Directory
+        - name: ingestion-config
+          hostPath:
+            path: /workspace/smartcito/ingestion/config
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: citosmart-api
+  namespace: backend
+spec:
+  selector:
+    app: citosmart-api
+  ports:
+    - port: 8000
+      targetPort: 8000
+  type: ClusterIP

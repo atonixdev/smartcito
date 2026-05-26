@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dash
+  namespace: visualization
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dash
+  template:
+    metadata:
+      labels:
+        app: dash
+    spec:
+      containers:
+        - name: dash
+          image: atonixdev/dash:1.0.0
+          imagePullPolicy: IfNotPresent
+          command: ["python", "-m", "app.dash_app.server"]
+          envFrom:
+            - configMapRef:
+                name: smartcito-platform-config
+          env:
+            - name: PYTHONPATH
+              value: /app
+            - name: DASH_REFRESH_MS
+              value: "5000"
+          ports:
+            - containerPort: 8050
+          volumeMounts:
+            - name: smartcito-shared
+              mountPath: /app/smartcito_shared
+              readOnly: true
+            - name: smartcito-hardware
+              mountPath: /app/hardware
+              readOnly: true
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: 8050
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: 8050
+      volumes:
+        - name: smartcito-shared
+          hostPath:
+            path: /workspace/smartcito/smartcito_shared
+            type: Directory
+        - name: smartcito-hardware
+          hostPath:
+            path: /workspace/smartcito/hardware
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dash
+  namespace: visualization
+spec:
+  selector:
+    app: dash
+  ports:
+    - port: 8050
+      targetPort: 8050
+  type: ClusterIP
