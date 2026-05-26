@@ -6,10 +6,10 @@ ROOT_DIR=${0:A:h:h}
 cd "$ROOT_DIR"
 
 PYTHON_BIN=${PYTHON_BIN:-python3}
-DATASET=${DATASET:-datasets/sample_training_data.json}
-EVAL_DATASET=${EVAL_DATASET:-datasets/sample_evaluation_data.json}
-BASE_MODEL=${BASE_MODEL:-meta-llama/Meta-Llama-3-8B-Instruct}
-ADAPTER_PATH=${ADAPTER_PATH:-output/smartcito-lora}
+DATASET=${DATASET:-ai/datasets/sample_training_data.json}
+EVAL_DATASET=${EVAL_DATASET:-ai/datasets/sample_evaluation_data.json}
+BASE_MODEL=${BASE_MODEL:-}
+ADAPTER_PATH=${ADAPTER_PATH:-ai/output/smartcito-lora}
 KAGGLE_BUNDLE_DIR=${KAGGLE_BUNDLE_DIR:-dist/smartcito_ai_kaggle}
 EVAL_OUTPUT=${EVAL_OUTPUT:-$ADAPTER_PATH/evaluation_summary.json}
 EVAL_REPORT=${EVAL_REPORT:-$ADAPTER_PATH/evaluation_report.md}
@@ -21,6 +21,7 @@ KAGGLE_LICENSE=${KAGGLE_LICENSE:-Apache-2.0}
 KAGGLE_PRIVATE=${KAGGLE_PRIVATE:-0}
 KAGGLE_UPDATE=${KAGGLE_UPDATE:-0}
 KAGGLE_DRY_RUN=${KAGGLE_DRY_RUN:-0}
+KAGGLE_DIR_MODE=${KAGGLE_DIR_MODE:-zip}
 
 print_help() {
 	cat <<'EOF'
@@ -54,35 +55,49 @@ Environment overrides:
 	KAGGLE_PRIVATE
 	KAGGLE_UPDATE
 	KAGGLE_DRY_RUN
+	KAGGLE_DIR_MODE
 EOF
 }
 
 run_package() {
-	"$PYTHON_BIN" training/package_kaggle_bundle.py --output-dir "$KAGGLE_BUNDLE_DIR"
+	"$PYTHON_BIN" ai/training/package_kaggle_bundle.py --output-dir "$KAGGLE_BUNDLE_DIR"
 }
 
 run_prepare() {
-	"$PYTHON_BIN" training/prepare_dataset.py --input "$DATASET" --output datasets/prepared_smartcito_training_data.jsonl
+	"$PYTHON_BIN" ai/training/prepare_dataset.py --input "$DATASET" --output ai/datasets/prepared_smartcito_training_data.jsonl
 }
 
 run_train_lora() {
-	"$PYTHON_BIN" training/lora_training.py --dataset "$DATASET" --base-model "$BASE_MODEL" --output-dir "$ADAPTER_PATH"
+	local -a args
+	args=(ai/training/lora_training.py --dataset "$DATASET" --output-dir "$ADAPTER_PATH")
+	if [[ -n "$BASE_MODEL" ]]; then
+		args+=(--base-model "$BASE_MODEL")
+	fi
+	"$PYTHON_BIN" "${args[@]}"
 }
 
 run_train_qlora() {
-	"$PYTHON_BIN" training/qlora_training.py --dataset "$DATASET" --base-model "$BASE_MODEL" --output-dir "$ADAPTER_PATH"
+	local -a args
+	args=(ai/training/qlora_training.py --dataset "$DATASET" --output-dir "$ADAPTER_PATH")
+	if [[ -n "$BASE_MODEL" ]]; then
+		args+=(--base-model "$BASE_MODEL")
+	fi
+	"$PYTHON_BIN" "${args[@]}"
 }
 
 run_evaluate() {
 	local -a args
 	args=(
-		training/evaluate_adapters.py
+		ai/training/evaluate_adapters.py
 		--dataset "$EVAL_DATASET"
-		--base-model "$BASE_MODEL"
 		--adapter-path "$ADAPTER_PATH"
 		--output "$EVAL_OUTPUT"
 		--markdown-report "$EVAL_REPORT"
 	)
+
+	if [[ -n "$BASE_MODEL" ]]; then
+		args+=(--base-model "$BASE_MODEL")
+	fi
 
 	if [[ -n "$PREDICTIONS_FILE" ]]; then
 		args+=(--predictions-file "$PREDICTIONS_FILE")
@@ -94,12 +109,13 @@ run_evaluate() {
 run_publish_kaggle() {
 	local -a args
 	args=(
-		training/publish_kaggle_dataset.py
+		ai/training/publish_kaggle_dataset.py
 		--bundle-dir "$KAGGLE_BUNDLE_DIR"
 		--owner "$KAGGLE_OWNER"
 		--slug "$KAGGLE_SLUG"
 		--title "$KAGGLE_TITLE"
 		--license "$KAGGLE_LICENSE"
+		--dir-mode "$KAGGLE_DIR_MODE"
 	)
 
 	if [[ "$KAGGLE_PRIVATE" == "1" ]]; then

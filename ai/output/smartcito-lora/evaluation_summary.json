@@ -1,0 +1,113 @@
+{
+  "model_name": "SmartCito Model",
+  "base_model": "meta-llama/Meta-Llama-3-8B-Instruct",
+  "adapter_path": "output/smartcito-lora",
+  "backend": "merged-local",
+  "dataset": "datasets/sample_evaluation_data.json",
+  "predictions_file": "datasets/sample_predictions.json",
+  "average_overall_score": 0.8178,
+  "pass_rate": 1.0,
+  "pass_threshold": 0.65,
+  "records": 3,
+  "domains": [
+    {
+      "domain": "camera-analytics",
+      "records": 1,
+      "average_overall_score": 0.8544,
+      "pass_rate": 1.0
+    },
+    {
+      "domain": "drone-operations",
+      "records": 1,
+      "average_overall_score": 0.7823,
+      "pass_rate": 1.0
+    },
+    {
+      "domain": "orchestration",
+      "records": 1,
+      "average_overall_score": 0.8167,
+      "pass_rate": 1.0
+    }
+  ],
+  "results": [
+    {
+      "id": "drone-anomaly-001",
+      "domain": "drone-operations",
+      "expected_output": "Anomaly detected: rotor imbalance on the rear-left motor. Reduce airspeed, hold position, and return the drone for maintenance if vibration persists.",
+      "actual_output": "Anomaly detected: rotor imbalance is likely. Reduce airspeed, hold position, and return the drone for maintenance review.",
+      "metrics": {
+        "recall": 0.6667,
+        "precision": 0.8235,
+        "f1": 0.7369,
+        "required_term_score": 1.0,
+        "rubric_score": 1.0,
+        "overall_score": 0.7823
+      },
+      "required_terms": [
+        "rotor imbalance",
+        "return",
+        "maintenance"
+      ],
+      "rubric_keywords": [
+        "airspeed",
+        "hold position"
+      ],
+      "banned_term_violations": [],
+      "passed": true,
+      "instruction": "Analyze drone telemetry for anomalies"
+    },
+    {
+      "id": "camera-intrusion-001",
+      "domain": "camera-analytics",
+      "expected_output": "Probable intrusion event with correlated motion and heat signatures and no badge event. Escalate to perimeter response and keep operators on live video.",
+      "actual_output": "This looks like an intrusion with matching motion and heat signatures and no badge event. Escalate perimeter response and keep operators on live video.",
+      "metrics": {
+        "recall": 0.85,
+        "precision": 0.7727,
+        "f1": 0.8095,
+        "required_term_score": 1.0,
+        "rubric_score": 1.0,
+        "overall_score": 0.8544
+      },
+      "required_terms": [
+        "intrusion",
+        "perimeter response",
+        "live video"
+      ],
+      "rubric_keywords": [
+        "badge event",
+        "heat signatures"
+      ],
+      "banned_term_violations": [],
+      "passed": true,
+      "instruction": "Interpret multi-camera security activity"
+    },
+    {
+      "id": "orchestration-001",
+      "domain": "orchestration",
+      "expected_output": "Drain the unhealthy node, relocate overloaded workloads, and scale camera ingestion and inference workloads to restore latency and stability.",
+      "actual_output": "Drain worker-3, relocate overloaded workloads, and scale camera ingestion to restore inference latency and cluster stability.",
+      "metrics": {
+        "recall": 0.8125,
+        "precision": 0.8125,
+        "f1": 0.8125,
+        "required_term_score": 1.0,
+        "rubric_score": 0.6667,
+        "overall_score": 0.8167
+      },
+      "required_terms": [
+        "drain",
+        "scale",
+        "latency"
+      ],
+      "rubric_keywords": [
+        "OpenStack",
+        "camera ingestion",
+        "worker-3"
+      ],
+      "banned_term_violations": [],
+      "passed": true,
+      "instruction": "Recommend an orchestration response"
+    }
+  ]
+}

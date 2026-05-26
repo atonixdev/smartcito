@@ -19,7 +19,7 @@ build:docker-images:
     - docker build --pull -t "$CI_REGISTRY_IMAGE/webapp:$IMAGE_TAG" ./webapp
     - docker build --pull -f camera_module/Dockerfile -t "$CI_REGISTRY_IMAGE/camera-service:$IMAGE_TAG" .
     - docker build --pull -f gps_module/Dockerfile -t "$CI_REGISTRY_IMAGE/gps-service:$IMAGE_TAG" .
-    - docker build --pull -f ai_models/Dockerfile -t "$CI_REGISTRY_IMAGE/ai-service:$IMAGE_TAG" .
+    - docker build --pull -f ai/ai_models/Dockerfile -t "$CI_REGISTRY_IMAGE/ai-service:$IMAGE_TAG" .
     - docker build --pull -f security/Dockerfile -t "$CI_REGISTRY_IMAGE/security-service:$IMAGE_TAG" .
     - docker build --pull -f hardware/Dockerfile -t "$CI_REGISTRY_IMAGE/hardware-agent:$IMAGE_TAG" .
     - docker build --pull -f hardware/usb_module/Dockerfile -t "$CI_REGISTRY_IMAGE/usb-module:$IMAGE_TAG" .
@@ -50,17 +50,17 @@ test:python-services:
   before_script:
     - pip install black flake8 mypy pytest httpx
     - pip install -r citosmart/requirements.txt
-    - pip install -r ai_models/requirements.txt
+    - pip install -r ai/ai_models/requirements.txt
     - pip install -r camera_module/requirements.txt
     - pip install -r gps_module/requirements.txt
     - pip install -r ingestion/requirements.txt
     - pip install -r security/requirements.txt
     - pip install -r hardware/requirements.txt
   script:
-    - black --check ai_models camera_module gps_module ingestion security/service.py hardware/service.py ai_models/tests camera_module/tests gps_module/tests ingestion/tests security/tests hardware/tests
-    - flake8 ai_models camera_module gps_module ingestion security/service.py hardware/service.py ai_models/tests camera_module/tests gps_module/tests ingestion/tests security/tests hardware/tests
-    - mypy --ignore-missing-imports ai_models camera_module gps_module ingestion security/service.py hardware/service.py ai_models/tests camera_module/tests gps_module/tests ingestion/tests security/tests hardware/tests
-    - PYTHONPATH="$CI_PROJECT_DIR:$CI_PROJECT_DIR/citosmart" MEMCACHED_SERVERS=memcached:11211 pytest ai_models/tests camera_module/tests gps_module/tests ingestion/tests security/tests hardware/tests
+    - black --check ai/ai_models camera_module gps_module ingestion security/service.py hardware/service.py ai/ai_models/tests camera_module/tests gps_module/tests ingestion/tests security/tests hardware/tests
+    - flake8 ai/ai_models camera_module gps_module ingestion security/service.py hardware/service.py ai/ai_models/tests camera_module/tests gps_module/tests ingestion/tests security/tests hardware/tests
+    - mypy --ignore-missing-imports ai/ai_models camera_module gps_module ingestion security/service.py hardware/service.py ai/ai_models/tests camera_module/tests gps_module/tests ingestion/tests security/tests hardware/tests
+    - PYTHONPATH="$CI_PROJECT_DIR:$CI_PROJECT_DIR/citosmart" MEMCACHED_SERVERS=memcached:11211 pytest ai/ai_models/tests camera_module/tests gps_module/tests ingestion/tests security/tests hardware/tests
 
 test:memcached-smoke:
   stage: test
@@ -122,7 +122,7 @@ package:push-images:
     - docker build --pull -t "$CI_REGISTRY_IMAGE/webapp:$IMAGE_TAG" -t "$CI_REGISTRY_IMAGE/webapp:latest" ./webapp
     - docker build --pull -f camera_module/Dockerfile -t "$CI_REGISTRY_IMAGE/camera-service:$IMAGE_TAG" -t "$CI_REGISTRY_IMAGE/camera-service:latest" .
     - docker build --pull -f gps_module/Dockerfile -t "$CI_REGISTRY_IMAGE/gps-service:$IMAGE_TAG" -t "$CI_REGISTRY_IMAGE/gps-service:latest" .
-    - docker build --pull -f ai_models/Dockerfile -t "$CI_REGISTRY_IMAGE/ai-service:$IMAGE_TAG" -t "$CI_REGISTRY_IMAGE/ai-service:latest" .
+    - docker build --pull -f ai/ai_models/Dockerfile -t "$CI_REGISTRY_IMAGE/ai-service:$IMAGE_TAG" -t "$CI_REGISTRY_IMAGE/ai-service:latest" .
     - docker build --pull -f security/Dockerfile -t "$CI_REGISTRY_IMAGE/security-service:$IMAGE_TAG" -t "$CI_REGISTRY_IMAGE/security-service:latest" .
     - docker build --pull -f hardware/Dockerfile -t "$CI_REGISTRY_IMAGE/hardware-agent:$IMAGE_TAG" -t "$CI_REGISTRY_IMAGE/hardware-agent:latest" .
     - docker build --pull -f hardware/usb_module/Dockerfile -t "$CI_REGISTRY_IMAGE/usb-module:$IMAGE_TAG" -t "$CI_REGISTRY_IMAGE/usb-module:latest" .

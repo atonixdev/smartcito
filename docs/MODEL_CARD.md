@@ -1,13 +1,13 @@
-# SmartCito-LLaMA3-8B Model Card
+# SmartCito Model Card
 
 ## Model Overview
 
-- Model name: `SmartCito-LLaMA3-8B`
-- Base model: `meta-llama/Meta-Llama-3-8B-Instruct`
+- Model name: `SmartCito Model`
+- Base model: user-supplied compatible foundation model from an official provider source
 - Adaptation method: LoRA and QLoRA fine-tuning
 - Distribution: SmartCito LoRA adapter weights only
 
-SmartCito-LLaMA3-8B is a domain-specialized operational assistant for city monitoring, drone and robot missions, camera analytics, sensor fusion, security triage, geographic reasoning, and OpenStack or Kubernetes incident response.
+SmartCito Model is a domain-specialized operational assistant for city monitoring, drone and robot missions, camera analytics, sensor fusion, security triage, geographic reasoning, and OpenStack or Kubernetes incident response.
 
 ## Intended Use
 
@@ -31,6 +31,8 @@ SmartCito adapters are fine-tuned on structured instruction data using the schem
 
 The repository ships only sample and prepared contributor data. Base model weights are not included.
 
+This bundle does not include LLaMA-3 weights. It only ships SmartCito code, LoRA or QLoRA adapters, and synthetic or sovereign datasets. Users must obtain LLaMA-3 or any other compatible base model from official provider sources.
+
 ## Limitations
 
 - The model can hallucinate and must not be treated as an autonomous authority.
@@ -48,5 +50,5 @@ The repository ships only sample and prepared contributor data. Base model weigh
 ## Distribution Notes
 
 - Legal artifact to share: `output/smartcito-lora/`
-- Do not commit or redistribute Meta LLaMA-3 base checkpoints through this repository.
-- Contributors may reference the base model from Hugging Face and combine it locally with SmartCito adapters for inference.
+- Do not commit or redistribute third-party base checkpoints through this repository.
+- Contributors may reference a compatible base model from an official provider source and combine it locally with SmartCito adapters for inference.

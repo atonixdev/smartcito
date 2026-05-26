@@ -1,0 +1,17 @@
+{
+  "version": "smartcito_model_v2",
+  "records": 1,
+  "domains": {
+    "drone-operations": 1
+  },
+  "average_instruction_tokens": 10.0,
+  "vocabulary_size": 32,
+  "task_types": {
+    "drone_mission_logic": 1
+  },
+  "fit_loss": 1.0,
+  "fit_accuracy": 1.0,
+  "task_scores": {
+    "drone-operations": 1.0
+  }
+}

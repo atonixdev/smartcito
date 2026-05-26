@@ -104,7 +104,7 @@ jobs:
         run: |
           pip install black flake8 mypy pytest httpx
           pip install -r citosmart/requirements.txt
-          pip install -r ai_models/requirements.txt
+          pip install -r ai/ai_models/requirements.txt
           pip install -r camera_module/requirements.txt
           pip install -r gps_module/requirements.txt
           pip install -r ingestion/requirements.txt
@@ -112,19 +112,19 @@ jobs:
           pip install -r hardware/requirements.txt
 
       - name: Black
-        run: black --check ai_models camera_module gps_module ingestion security/service.py hardware/service.py ai_models/tests camera_module/tests gps_module/tests ingestion/tests security/tests hardware/tests
+        run: black --check ai/ai_models camera_module gps_module ingestion security/service.py hardware/service.py ai/ai_models/tests camera_module/tests gps_module/tests ingestion/tests security/tests hardware/tests
 
       - name: Flake8
-        run: flake8 ai_models camera_module gps_module ingestion security/service.py hardware/service.py ai_models/tests camera_module/tests gps_module/tests ingestion/tests security/tests hardware/tests
+        run: flake8 ai/ai_models camera_module gps_module ingestion security/service.py hardware/service.py ai/ai_models/tests camera_module/tests gps_module/tests ingestion/tests security/tests hardware/tests
 
       - name: Mypy
-        run: mypy --ignore-missing-imports ai_models camera_module gps_module ingestion security/service.py hardware/service.py ai_models/tests camera_module/tests gps_module/tests ingestion/tests security/tests hardware/tests
+        run: mypy --ignore-missing-imports ai/ai_models camera_module gps_module ingestion security/service.py hardware/service.py ai/ai_models/tests camera_module/tests gps_module/tests ingestion/tests security/tests hardware/tests
 
       - name: Pytest
         env:
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/citosmart
           MEMCACHED_SERVERS: memcached:11211
-        run: pytest ai_models/tests camera_module/tests gps_module/tests ingestion/tests security/tests hardware/tests
+        run: pytest ai/ai_models/tests camera_module/tests gps_module/tests ingestion/tests security/tests hardware/tests
 
   security-tests:
     name: Root Security Tests

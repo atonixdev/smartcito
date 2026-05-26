@@ -1,0 +1,112 @@
+[
+  {
+    "instruction": "Plan a safe drone patrol route for a 2km radius around the stadium.",
+    "input": "Map: zone A/B/C; No-fly zones: north sector; Weather: clear; Wind: 8km/h; Available launch pad: zone B; Crowd density: high on east entrance",
+    "output": "Route: launch from zone B, hold altitude at 120m, patrol clockwise through zones B and C, avoid the north sector entirely, and repeat the loop every 15 minutes with an extra pass on the east entrance.",
+    "metadata": {
+      "domain": "drone-operations",
+      "source": "synthetic-stadium-ops",
+      "priority": "high",
+      "reviewed": true
+    }
+  },
+  {
+    "instruction": "Analyze drone telemetry for anomalies",
+    "input": "Drone: alpha-7; GPS: -26.2041,28.0473; Altitude: 128m; Battery: 41%; Wind: 18km/h; Rotor vibration: 0.83; Camera horizon drift: 4.2 degrees",
+    "output": "Anomaly detected: rotor imbalance on the rear-left motor. Reduce airspeed, hold position for 10 seconds, and if vibration persists route the drone back to the maintenance waypoint.",
+    "metadata": {
+      "domain": "drone-operations",
+      "source": "drone-edge",
+      "priority": "high",
+      "reviewed": true
+    }
+  },
+  {
+    "instruction": "Summarize a robot navigation issue",
+    "input": "Robot: rover-12; Mission: substation inspection; LiDAR confidence: 0.48; Wheel slip: 0.31; Obstacle map: blocked on south corridor; Battery: 62%",
+    "output": "Navigation risk detected: the south corridor path is unreliable because LiDAR confidence is low and wheel slip is elevated. Re-route through the east aisle and slow the robot to inspection speed.",
+    "metadata": {
+      "domain": "robotics",
+      "source": "ground-robot",
+      "priority": "medium",
+      "reviewed": true
+    }
+  },
+  {
+    "instruction": "Recommend a robot route adjustment near a rail depot.",
+    "input": "Robot: relay-3; Mission: depot perimeter sweep; Surface traction: wet; Camera visibility: 0.61; Obstacle alert: service vehicle in west lane; Battery: 58%",
+    "output": "Shift the robot to the east maintenance lane, lower speed to wet-surface mode, and pause at each checkpoint until visibility improves or the west lane clears.",
+    "metadata": {
+      "domain": "robot-navigation",
+      "source": "synthetic-robot-ops",
+      "priority": "medium",
+      "reviewed": true
+    }
+  },
+  {
+    "instruction": "Interpret multi-camera security activity",
+    "input": "Location: North Gate; Camera-04 motion score: 0.92; Camera-08 thermal delta: 6.1; Access badge event: none; Time: 23:42 local",
+    "output": "Probable intrusion event. Two cameras show correlated movement and heat signatures without a matching badge event. Escalate to perimeter response and keep live video pinned for operator review.",
+    "metadata": {
+      "domain": "camera-analytics",
+      "source": "city-camera-cluster",
+      "priority": "critical",
+      "reviewed": true
+    }
+  },
+  {
+    "instruction": "Assess a threat escalation at a municipal power substation.",
+    "input": "Location: substation-4; Camera motion score: 0.88; Fence vibration sensor: triggered twice; Thermal variance: 5.7; Badge scan: none; Patrol unit ETA: 6 minutes",
+    "output": "Classify the event as a high-confidence perimeter intrusion, lock down the substation access points, dispatch the patrol unit to the south fence line, and keep live camera and thermal feeds pinned for the operator.",
+    "metadata": {
+      "domain": "threat-reasoning",
+      "source": "synthetic-threat-monitoring",
+      "priority": "critical",
+      "reviewed": true
+    }
+  },
+  {
+    "instruction": "Fuse environmental sensor alerts",
+    "input": "Zone: River District; Water level sensor: 0.87; Rainfall rate: 28mm/h; Pump station status: degraded; Traffic sensor congestion index: 0.74",
+    "output": "Flood readiness alert. Water levels and rainfall indicate rising flood risk while pump performance is degraded. Notify city operations, pre-stage barriers, and divert traffic from low-lying streets.",
+    "metadata": {
+      "domain": "sensor-fusion",
+      "source": "environmental-iot",
+      "priority": "high",
+      "reviewed": true
+    }
+  },
+  {
+    "instruction": "Reason about a geographic deployment plan",
+    "input": "Incident: fire alarm near depot-3; Nearby assets: drone bravo at 1.2km, patrol robot rho at 0.8km, camera mast cm-19 at 0.4km; Wind direction: west-east",
+    "output": "Deploy camera mast cm-19 for immediate visual confirmation, route patrol robot rho to secure the depot perimeter, and launch drone bravo from the west so smoke drift does not block the initial camera pass.",
+    "metadata": {
+      "domain": "geographic-reasoning",
+      "source": "mission-control",
+      "priority": "high",
+      "reviewed": true
+    }
+  },
+  {
+    "instruction": "Explain a geographic routing decision for a flood response team.",
+    "input": "District map: west bridge congested, central tunnel closed, east bypass open; Water depth: rising in river ward; Assets: drone delta 900m away, response van 2.4km away, camera mast cm-07 300m away",
+    "output": "Use camera mast cm-07 for immediate confirmation, send drone delta over the east bypass corridor to survey flooded streets, and route the response van around the west bridge to avoid congestion and water buildup.",
+    "metadata": {
+      "domain": "geographic-reasoning",
+      "source": "synthetic-geospatial-engine",
+      "priority": "high",
+      "reviewed": true
+    }
+  },
+  {
+    "instruction": "Recommend an orchestration response",
+    "input": "Cluster: edge-prod-2; Kubernetes alerts: node memory pressure on worker-3; OpenStack compute host: overloaded; AI inference queue latency: 940ms; Camera ingestion pods restarting: 3",
+    "output": "Stabilize the edge cluster by draining worker-3, scaling the camera ingestion deployment to healthy nodes, and moving queued inference jobs off the overloaded OpenStack host before latency breaches the 1-second threshold.",
+    "metadata": {
+      "domain": "orchestration",
+      "source": "platform-observability",
+      "priority": "high",
+      "reviewed": true
+    }
+  }
+]

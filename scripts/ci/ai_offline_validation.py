@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 WRAPPER = ROOT / "scripts" / "ai.sh"
 DIST_DIR = ROOT / "dist" / "smartcito_ai_kaggle"
-OUTPUT_DIR = ROOT / "output" / "smartcito-lora"
+OUTPUT_DIR = ROOT / "ai" / "output" / "smartcito-lora"
 
 
 def _run(command: list[str], *, extra_env: dict[str, str] | None = None) -> None:
@@ -29,7 +29,7 @@ def main() -> int:
     _run([str(WRAPPER), "package"])
     _run(
         [str(WRAPPER), "evaluate"],
-        extra_env={"PREDICTIONS_FILE": "datasets/sample_predictions.json"},
+        extra_env={"PREDICTIONS_FILE": "ai/datasets/sample_predictions.json"},
     )
 
     manifest = DIST_DIR / "kaggle_bundle_manifest.json"

@@ -1,0 +1,73 @@
+#!/usr/bin/env python3
+
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+
+from ingestion.datastream import run_datastream
+from ai.training.smartcito_model_pipeline import deploy_model, export_dataset, train_from_batches
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="SmartCito runtime manager")
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    ingest_parser = subparsers.add_parser("ingest", help="Run the SmartCito DataStream ingestion service")
+    ingest_parser.add_argument("--config", default="ingestion/config/datastream_sources.json")
+    ingest_parser.add_argument("--output-dir", default="ai/smartcito_datasets")
+    ingest_parser.add_argument("--limit", type=int, default=None)
+
+    train_parser = subparsers.add_parser("train", help="Train a versioned SmartCito model from batch datasets")
+    train_parser.add_argument("--batch-dir", default="ai/smartcito_datasets")
+    train_parser.add_argument("--models-dir", default="ai/models")
+    train_parser.add_argument("--version", default=None)
+    train_parser.add_argument("--no-activate", action="store_true")
+
+    deploy_parser = subparsers.add_parser("deploy", help="Deploy a specific SmartCito model version")
+    deploy_parser.add_argument("--version", required=True)
+    deploy_parser.add_argument("--models-dir", default="ai/models")
+
+    dataset_parser = subparsers.add_parser("dataset", help="Dataset utilities")
+    dataset_subparsers = dataset_parser.add_subparsers(dest="dataset_command", required=True)
+    export_parser = dataset_subparsers.add_parser("export", help="Export sanitized SmartCito training data")
+    export_parser.add_argument("--batch-dir", default="ai/smartcito_datasets")
+    export_parser.add_argument("--output-path", required=True)
+    export_parser.add_argument("--include-metadata", action="store_true")
+
+    return parser
+
+
+def main() -> int:
+    parser = build_parser()
+    args = parser.parse_args()
+
+    if args.command == "ingest":
+        result = run_datastream(config_path=args.config, output_dir=args.output_dir, limit=args.limit)
+    elif args.command == "train":
+        result = train_from_batches(
+            batch_dir=args.batch_dir,
+            models_dir=args.models_dir,
+            version=args.version,
+            activate=not args.no_activate,
+        )
+    elif args.command == "deploy":
+        result = deploy_model(version=args.version, models_dir=args.models_dir)
+    elif args.command == "dataset" and args.dataset_command == "export":
+        result = export_dataset(
+            batch_dir=args.batch_dir,
+            output_path=args.output_path,
+            include_metadata=args.include_metadata,
+        )
+    else:
+        parser.print_help()
+        return 1
+
+    json.dump(result, sys.stdout, indent=2)
+    sys.stdout.write("\n")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

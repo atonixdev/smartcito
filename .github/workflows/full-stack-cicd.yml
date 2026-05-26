@@ -54,7 +54,7 @@ jobs:
             dockerfile: ./gps_module/Dockerfile
           - image: ai-service
             context: .
-            dockerfile: ./ai_models/Dockerfile
+            dockerfile: ./ai/ai_models/Dockerfile
           - image: security-service
             context: .
             dockerfile: ./security/Dockerfile

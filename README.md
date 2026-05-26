@@ -26,7 +26,9 @@
 
 SmartCito unifies IoT, GPS, cameras, 2D/3D maps, AI, cryptography, and secure edge compute into a single auditable operations dashboard.
 
-The repository now also includes a Kaggle-ready fine-tuning pipeline for `SmartCito-LLaMA3-8B`, a LoRA or QLoRA adaptation of LLaMA-3 for SmartCito operational intelligence.
+The repository now also includes a Kaggle-ready fine-tuning pipeline for the SmartCito Model, with LoRA and QLoRA workflows for SmartCito operational intelligence.
+
+This bundle does not include LLaMA-3 weights. It only ships SmartCito code, LoRA or QLoRA adapters, and synthetic or sovereign datasets. Users must obtain any compatible base model from official provider sources.
 
 ---
 
@@ -151,15 +153,12 @@ Kafka topics, Kubernetes deployment, Docker Compose usage, and validation steps.
 
 | Folder | Purpose |
 | ------ | ------- |
+| `ai/` | Consolidated home for AI inference, training, datasets, notebooks, runtime code, and model artifacts |
 | `citosmart/` | Primary FastAPI application, schemas, services, and migrations |
 | `ingestion/` | External data ingestion pipelines and connectors |
 | `services/` | Deployable microservice workspace for separately scoped services |
 | `surveillance/` | Drone gateway, sensor gateway, drone camera ingestion, mapping, and threat services |
 | `database/` | Shared database bootstrap and initialization assets |
-| `ai_models/` | AI/ML inference services and model packaging |
-| `training/` | LoRA and QLoRA training scripts plus dataset preparation tooling |
-| `datasets/` | Sample and prepared fine-tuning datasets for SmartCito adapters |
-| `examples/` | Kaggle-ready notebooks for training and inference |
 | `webapp/` | Primary React frontend for operators |
 | `map/` | Location intelligence and mapping subsystem |
 | `security/` | Security services, policy, crypto, IAM, and audit assets |
@@ -172,22 +171,38 @@ Kafka topics, Kubernetes deployment, Docker Compose usage, and validation steps.
 Current backend rule: `citosmart/` is the backend API application.
 Use `services/` for separately deployable capabilities.
 
-## SmartCito-LLaMA3-8B
+AI-specific folders are consolidated under `ai/`. Use the `ai/` tree directly for model, dataset, training, runtime, and artifact workflows.
 
-The SmartCito AI pipeline fine-tunes `meta-llama/Meta-Llama-3-8B-Instruct` with LoRA or QLoRA and exports adapter-only artifacts to `output/smartcito-lora/`.
+## SmartCito Model
 
-- Dataset schema: [training/dataset_format.md](training/dataset_format.md)
-- Training scripts: [training/lora_training.py](training/lora_training.py) and [training/qlora_training.py](training/qlora_training.py)
-- Evaluation script: [training/evaluate_adapters.py](training/evaluate_adapters.py)
-- Kaggle bundle packager: [training/package_kaggle_bundle.py](training/package_kaggle_bundle.py)
-- Kaggle publish helper: [training/publish_kaggle_dataset.py](training/publish_kaggle_dataset.py)
+The SmartCito Model pipeline supports LoRA and QLoRA fine-tuning workflows and exports adapter-only artifacts to `ai/output/smartcito-lora/`.
+
+The repository also now includes a sovereign SmartCito runtime pipeline for ingestion, versioned training, deployment, and inference without bundling third-party foundation-model weights.
+
+- Dataset schema: [ai/training/dataset_format.md](ai/training/dataset_format.md)
+- Training scripts: [ai/training/lora_training.py](ai/training/lora_training.py) and [ai/training/qlora_training.py](ai/training/qlora_training.py)
+- Evaluation script: [ai/training/evaluate_adapters.py](ai/training/evaluate_adapters.py)
+- Kaggle bundle packager: [ai/training/package_kaggle_bundle.py](ai/training/package_kaggle_bundle.py)
+- Kaggle publish helper: [ai/training/publish_kaggle_dataset.py](ai/training/publish_kaggle_dataset.py)
 - One-command workflow: [Makefile](Makefile)
 - Shell workflow wrapper: [scripts/ai.sh](scripts/ai.sh)
-- Example notebooks: [examples/smartcito_training_demo.ipynb](examples/smartcito_training_demo.ipynb) and [examples/smartcito_inference_demo.ipynb](examples/smartcito_inference_demo.ipynb)
+- Public Kaggle demo notebook: [ai/examples/SmartCito_Training_Demo.ipynb](ai/examples/SmartCito_Training_Demo.ipynb)
+- Public Kaggle inference notebook: [ai/examples/smartcito_inference_demo.ipynb](ai/examples/smartcito_inference_demo.ipynb)
+- AI runtime package: [ai/smartcito_runtime](ai/smartcito_runtime)
 - Model documentation: [docs/MODEL_CARD.md](docs/MODEL_CARD.md)
-- Kaggle workflow: [docs/KAGGLE_GUIDE.md](docs/KAGGLE_GUIDE.md)
+- Operational flow: [docs/OPERATIONAL_FLOW.md](docs/OPERATIONAL_FLOW.md)
+- Kaggle workflow: [docs/KAGGLE_USAGE.md](docs/KAGGLE_USAGE.md)
+- Runtime documentation: [docs/SMARTCITO_MODEL_RUNTIME.md](docs/SMARTCITO_MODEL_RUNTIME.md)
 
-Important: the repository does not ship LLaMA-3 base weights. Contributors should only publish LoRA adapters generated from SmartCito training runs.
+### Sovereign Runtime
+
+- Ingestion/DataStream batches sovereign events into `ai/smartcito_datasets/batch_YYYYMMDD_HHMMSS.json`
+- Versioned model artifacts are stored under `ai/models/smartcito_model_vN/`
+- The active deployed model is tracked via `ai/models/active_model.json`
+- FastAPI inference exposes SmartCito task endpoints under `/smartcito/*`
+- The project CLI supports `smartcito ingest`, `smartcito train`, `smartcito deploy`, and `smartcito dataset export`
+
+Important: the repository does not ship base foundation-model weights. Contributors should only publish LoRA adapters generated from SmartCito training runs.
 
 ---
 

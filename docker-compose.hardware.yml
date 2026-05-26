@@ -214,7 +214,7 @@ services:
   ai-service:
     build:
       context: .
-      dockerfile: ai_models/Dockerfile
+      dockerfile: ai/ai_models/Dockerfile
     image: smartcito/ai-service:hardware
     container_name: smartcito-ai-service
     env_file: .env

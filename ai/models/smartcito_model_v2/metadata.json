@@ -1,0 +1,8 @@
+{
+  "version": "smartcito_model_v2",
+  "sources": [
+    "smartcito_datasets/batch_20260526_061658.json"
+  ],
+  "records": 1,
+  "artifact_dir": "models/smartcito_model_v2"
+}

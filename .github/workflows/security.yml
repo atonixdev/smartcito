@@ -118,7 +118,7 @@ jobs:
         run: |
           trivy config --exit-code 1 --severity HIGH,CRITICAL camera_module/Dockerfile
           trivy config --exit-code 1 --severity HIGH,CRITICAL gps_module/Dockerfile
-          trivy config --exit-code 1 --severity HIGH,CRITICAL ai_models/Dockerfile
+          trivy config --exit-code 1 --severity HIGH,CRITICAL ai/ai_models/Dockerfile
           trivy config --exit-code 1 --severity HIGH,CRITICAL security/Dockerfile
           trivy config --exit-code 1 --severity HIGH,CRITICAL hardware/Dockerfile
 

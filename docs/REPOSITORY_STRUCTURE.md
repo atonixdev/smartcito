@@ -96,7 +96,27 @@ backend API service that owns them. For the main backend, that means
 should own its migrations, while `database/` remains the shared infrastructure
 layer.
 
-### `ai_models/`
+### `ai/`
+
+**Responsibility:** Consolidated AI workspace for inference, training, datasets,
+notebooks, runtime code, and model artifacts.
+
+**Put here:**
+
+- `ai/ai_models/` for inference services and model packaging.
+- `ai/training/` for fine-tuning, evaluation, and Kaggle packaging scripts.
+- `ai/datasets/` for synthetic and sovereign AI datasets.
+- `ai/examples/` for notebooks and demo assets.
+- `ai/smartcito_runtime/` for the sovereign runtime model code.
+- `ai/smartcito_datasets/` for generated ingestion batches.
+- `ai/models/` and `ai/output/` for versioned artifacts and adapter outputs.
+
+**Compatibility rule:**
+
+AI work should target the `ai/` tree directly. The duplicate top-level AI
+paths have been removed.
+
+### `ai/ai_models/`
 
 **Responsibility:** AI and ML inference assets.
 
