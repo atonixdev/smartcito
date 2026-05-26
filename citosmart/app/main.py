@@ -38,6 +38,7 @@ from app.core.config import get_settings
 from app.core.logging import configure_logging
 from app.graphql.schema import graphql_router
 from app.services.gps_mqtt_ingestor import GPSMqttIngestor
+from app.services.gps_udp_ingestor import GPSUDPIngestor
 from app.services.ingestion import ingestion_service
 from app.services.kafka_stream import KafkaPublisher
 from app.services.mqtt_ingestor import MqttIngestor
@@ -66,6 +67,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     app.state.kafka = None
     app.state.mqtt_task = None
     app.state.gps_mqtt_task = None
+    app.state.gps_udp_task = None
 
     # ---- Kafka publisher ---------------------------------------------------
     if settings.kafka_publisher_enabled:
@@ -117,6 +119,19 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
             settings.gps_mqtt_topic,
         )
 
+    # ---- GPS UDP bridge ----------------------------------------------------
+    if settings.gps_udp_enabled:
+        gps_udp_ingestor = GPSUDPIngestor(
+            host=settings.gps_udp_host,
+            port=settings.gps_udp_port,
+        )
+        app.state.gps_udp_task = asyncio.create_task(gps_udp_ingestor.run(), name="gps-udp-ingestor")
+        logger.info(
+            "GPS UDP ingestor started → %s:%s",
+            settings.gps_udp_host,
+            settings.gps_udp_port,
+        )
+
     try:
         yield
     finally:
@@ -133,6 +148,13 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
             app.state.gps_mqtt_task.cancel()
             try:
                 await app.state.gps_mqtt_task
+            except (asyncio.CancelledError, Exception):  # noqa: BLE001
+                pass
+
+        if app.state.gps_udp_task is not None:
+            app.state.gps_udp_task.cancel()
+            try:
+                await app.state.gps_udp_task
             except (asyncio.CancelledError, Exception):  # noqa: BLE001
                 pass
 
