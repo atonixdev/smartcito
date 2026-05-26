@@ -25,8 +25,10 @@ logging, and supporting storage on a Kubernetes cluster that runs on OpenStack.
 ## How To Run
 
 ```bash
+cp .env.example .env
 kubectl apply -f infra/kubernetes/namespaces.yaml
 kubectl apply -f infra/kubernetes/platform-config.yaml
+bash infra/kubernetes/apply-backend-secret.sh .env
 kubectl apply -f infra/kubernetes/storage-openstack.yaml
 kubectl apply -f infra/kubernetes/memcached-cluster.yaml
 kubectl apply -f infra/kubernetes/plotly-dash.yaml
@@ -39,6 +41,11 @@ kubectl apply -f infra/kubernetes/
 Use the OpenStack cloud controller manager and Cinder CSI driver so
 `LoadBalancer` services and `cinder-csi` persistent volumes are provisioned by
 the underlying OpenStack cluster.
+
+`infra/kubernetes/apply-backend-secret.sh` rebuilds the backend
+`smartcito-platform-secrets` Secret from `.env`, including both the canonical
+`OPENSTACK_*` variables used by SmartCito and `OS_*` aliases commonly expected
+by OpenStack tooling.
 
 Replace placeholder secrets such as Grafana admin credentials, PostgreSQL
 passwords, and OpenStack network CIDRs before applying the manifests to a live

@@ -49,6 +49,14 @@ terraform -chdir=infra/openstack plan
 terraform -chdir=infra/openstack apply
 ```
 
+If you want Terraform to consume the same `.env` contract used by the rest of
+the repo, load it first:
+
+```bash
+bash infra/openstack/export-openstack-env.sh .env terraform -chdir=infra/openstack plan
+bash infra/openstack/export-openstack-env.sh .env terraform -chdir=infra/openstack apply
+```
+
 Example `clouds.yaml` profile for this stack:
 
 ```yaml
