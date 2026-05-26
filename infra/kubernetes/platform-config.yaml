@@ -266,10 +266,12 @@ type: Opaque
 stringData:
   DB_PASSWORD: change-me
   AUTH_JWT_SECRET: change-me-to-a-long-random-string
-  OPENSTACK_AUTH_URL: https://openstack.example.com:5000/v3
+  OPENSTACK_AUTH_URL: https://openstack.example.com/identity/v3
   OPENSTACK_PROJECT: smartcito
   OPENSTACK_USER: smartcito-admin
   OPENSTACK_PASSWORD: change-me
+  OPENSTACK_REGION: RegionOne
+  OPENSTACK_USER_DOMAIN_NAME: Default
   KAFKA_KRAFT_CLUSTER_ID: change-me-kraft-cluster-id
 ---
 apiVersion: v1

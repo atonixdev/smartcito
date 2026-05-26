@@ -1,4 +1,5 @@
 PYTHON ?= python3
+ENV_FILE ?= .env
 DATASET ?= ai/datasets/sample_training_data.json
 EVAL_DATASET ?= ai/datasets/sample_evaluation_data.json
 BASE_MODEL ?=
@@ -19,7 +20,7 @@ KAGGLE_PRIVATE_FLAG := $(if $(filter 1,$(KAGGLE_PRIVATE)),--private,)
 KAGGLE_UPDATE_FLAG := $(if $(filter 1,$(KAGGLE_UPDATE)),--update,)
 KAGGLE_DRY_RUN_FLAG := $(if $(filter 1,$(KAGGLE_DRY_RUN)),--dry-run,)
 
-.PHONY: ai-help ai-prepare ai-package ai-train-lora ai-train-qlora ai-evaluate ai-report ai-publish-kaggle ai-full
+.PHONY: ai-help ai-prepare ai-package ai-train-lora ai-train-qlora ai-evaluate ai-report ai-publish-kaggle ai-full openstack-env k8s-backend-secret
 
 ai-help:
 	@printf '%s\n' 'SmartCito AI workflow targets:'
@@ -54,3 +55,9 @@ ai-publish-kaggle:
 	$(PYTHON) ai/training/publish_kaggle_dataset.py --bundle-dir $(KAGGLE_BUNDLE_DIR) --owner $(KAGGLE_OWNER) --slug $(KAGGLE_SLUG) --title "$(KAGGLE_TITLE)" --license $(KAGGLE_LICENSE) --dir-mode $(KAGGLE_DIR_MODE) $(KAGGLE_PRIVATE_FLAG) $(KAGGLE_UPDATE_FLAG) $(KAGGLE_DRY_RUN_FLAG)
 
 ai-full: ai-package ai-prepare ai-evaluate
+
+openstack-env:
+	bash infra/openstack/export-openstack-env.sh $(ENV_FILE)
+
+k8s-backend-secret:
+	bash infra/kubernetes/apply-backend-secret.sh $(ENV_FILE)

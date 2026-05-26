@@ -237,7 +237,7 @@ Important environment variables include:
 - `KAFKA_BROKER_URL` or `MESSAGE_BUS_URL`
 - `OBJECT_STORAGE_ENDPOINT`, `OBJECT_STORAGE_BUCKET`
 - `AUTH_JWT_SECRET`, `AUTH_ISSUER`, `AUTH_AUDIENCE`
-- `OPENSTACK_AUTH_URL`, `OPENSTACK_PROJECT`, `OPENSTACK_USER`, `OPENSTACK_PASSWORD`
+- `OPENSTACK_AUTH_URL`, `OPENSTACK_PROJECT`, `OPENSTACK_USER`, `OPENSTACK_PASSWORD`, `OPENSTACK_REGION`
 
 SmartCito now standardizes CI/CD across GitHub Actions and GitLab around these
 stages: **build → test → package → deploy-staging → deploy-production**.
