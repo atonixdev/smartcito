@@ -1,0 +1,14 @@
+FAIL|smartcito-citosmart|citosmart/Dockerfile|citosmart
+FAIL|smartcito-webapp|webapp/Dockerfile|webapp
+PASS|smartcito-map|map/Dockerfile|map
+FAIL|smartcito-camera-module|camera_module/Dockerfile|.
+PASS|smartcito-gps-module|gps_module/Dockerfile|.
+PASS|smartcito-hardware-domain|hardware/Dockerfile|.
+PASS|smartcito-usb-module|hardware/usb_module/Dockerfile|.
+FAIL|smartcito-ai-models|ai/ai_models/Dockerfile|.
+FAIL|smartcito-security-domain|security/Dockerfile|.
+FAIL|smartcito-surveillance|surveillance/Dockerfile|.
+FAIL|smartcito-ingestion|ingestion/Dockerfile|.
+FAIL|smartcito-ingestion-spark|ingestion/Dockerfile.spark|.
+FAIL|smartcito-ai-service|services/ai-service/Dockerfile|.
+FAIL|smartcito-camera-service|services/camera-service/Dockerfile|.

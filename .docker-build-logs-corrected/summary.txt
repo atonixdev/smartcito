@@ -1,0 +1,6 @@
+PASS|smartcito-map|map/Dockerfile|map
+PASS|smartcito-camera-module|camera_module/Dockerfile|.
+PASS|smartcito-gps-module|gps_module/Dockerfile|.
+PASS|smartcito-hardware-domain|hardware/Dockerfile|.
+PASS|smartcito-usb-module|hardware/usb_module/Dockerfile|.
+FAIL|smartcito-ai-models|ai/ai_models/Dockerfile|.

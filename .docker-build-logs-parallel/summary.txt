@@ -1,0 +1,5 @@
+FAIL|smartcito-webapp|webapp/Dockerfile|webapp
+PASS|smartcito-map|map/Dockerfile|map
+PASS|smartcito-camera-module|camera_module/Dockerfile|.
+FAIL|smartcito-gps-module|gps_module/Dockerfile|.
+PASS|smartcito-hardware-domain|hardware/Dockerfile|.
