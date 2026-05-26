@@ -23,7 +23,7 @@ from smartcito_runtime import load_active_model
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
 
-app = FastAPI(title="SmartCito AI Models")
+app = FastAPI(title="SmartCito")
 
 
 class InferenceRequest(BaseModel):

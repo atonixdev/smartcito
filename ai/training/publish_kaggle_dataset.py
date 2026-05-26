@@ -11,20 +11,20 @@ AI_ROOT = Path(__file__).resolve().parents[1]
 REPO_ROOT = AI_ROOT.parent
 DEFAULT_BUNDLE_DIR = REPO_ROOT / "dist" / "smartcito_ai_kaggle"
 DEFAULT_SLUG = "smartcito-ai-kaggle-bundle"
-DEFAULT_TITLE = "SmartCito AI Kaggle Bundle"
+DEFAULT_TITLE = "SmartCito Kaggle Bundle"
 DEFAULT_LICENSE = "Apache-2.0"
 DEFAULT_DIR_MODE = "zip"
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Publish the SmartCito AI Kaggle bundle as a Kaggle dataset.")
+    parser = argparse.ArgumentParser(description="Publish the SmartCito Kaggle bundle as a Kaggle dataset.")
     parser.add_argument("--bundle-dir", default=str(DEFAULT_BUNDLE_DIR))
     parser.add_argument("--owner", required=True, help="Kaggle username or organization name.")
     parser.add_argument("--slug", default=DEFAULT_SLUG, help="Kaggle dataset slug.")
     parser.add_argument("--title", default=DEFAULT_TITLE, help="Kaggle dataset title.")
     parser.add_argument("--license", dest="license_name", default=DEFAULT_LICENSE, help="Kaggle dataset license name.")
     parser.add_argument("--private", action="store_true", help="Create or update the dataset as private.")
-    parser.add_argument("--version-notes", default="SmartCito AI Kaggle bundle update", help="Version notes for Kaggle dataset updates.")
+    parser.add_argument("--version-notes", default="SmartCito Kaggle bundle update", help="Version notes for Kaggle dataset updates.")
     parser.add_argument(
         "--dir-mode",
         choices=("skip", "zip", "tar"),

@@ -1,4 +1,4 @@
-# AI Models
+# SmartCito
 
 Computer vision, local LLM inference, and predictive analytics models for SmartCito.
 

@@ -81,6 +81,22 @@ def build_training_records(payload: Any, *, bbox: str) -> list[dict[str, Any]]:
     return [record]
 
 
+def ingest_map(
+    *,
+    api_url: str = DEFAULT_OVERPASS_URL,
+    input_file: str | None = None,
+    bbox: str = "-26.25,27.98,-26.15,28.08",
+    output_dir: str = str(DEFAULT_DATASET_DIR),
+) -> dict[str, object]:
+    if input_file:
+        payload = load_json_source(input_file=input_file, api_url=None)
+    else:
+        payload = fetch_map_payload(api_url=api_url, bbox=bbox)
+    records = build_training_records(payload, bbox=bbox)
+    output_path = save_training_batch(records, source="map", output_dir=output_dir)
+    return {"output_path": str(output_path), "records": len(records), "source": "map"}
+
+
 def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Ingest map or geographic context into SmartCito training batches.")
     parser.add_argument("--api-url", default=DEFAULT_OVERPASS_URL)
@@ -92,13 +108,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
 
 def main() -> int:
     args = build_arg_parser().parse_args()
-    if args.input_file:
-        payload = load_json_source(input_file=args.input_file, api_url=None)
-    else:
-        payload = fetch_map_payload(api_url=args.api_url, bbox=args.bbox)
-    records = build_training_records(payload, bbox=args.bbox)
-    output_path = save_training_batch(records, source="map", output_dir=args.output_dir)
-    print(json.dumps({"output_path": str(output_path), "records": len(records)}, indent=2))
+    result = ingest_map(api_url=args.api_url, input_file=args.input_file, bbox=args.bbox, output_dir=args.output_dir)
+    print(json.dumps(result, indent=2))
     return 0
 
 

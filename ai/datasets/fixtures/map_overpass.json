@@ -1,0 +1,36 @@
+{
+  "elements": [
+    {
+      "type": "way",
+      "id": 101,
+      "tags": {
+        "highway": "motorway",
+        "name": "M1 North"
+      }
+    },
+    {
+      "type": "way",
+      "id": 102,
+      "tags": {
+        "highway": "trunk",
+        "name": "M2 East"
+      }
+    },
+    {
+      "type": "way",
+      "id": 103,
+      "tags": {
+        "building": "yes",
+        "name": "Operations Center"
+      }
+    },
+    {
+      "type": "relation",
+      "id": 201,
+      "tags": {
+        "boundary": "administrative",
+        "name": "Johannesburg"
+      }
+    }
+  ]
+}

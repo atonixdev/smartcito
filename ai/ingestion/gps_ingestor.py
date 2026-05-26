@@ -61,6 +61,18 @@ def build_training_records(payload: Any) -> list[dict[str, Any]]:
     return records
 
 
+def ingest_gps(
+    *,
+    api_url: str | None = None,
+    input_file: str | None = None,
+    output_dir: str = str(DEFAULT_DATASET_DIR),
+) -> dict[str, object]:
+    payload = load_json_source(input_file=input_file, api_url=api_url)
+    records = build_training_records(payload)
+    output_path = save_training_batch(records, source="gps", output_dir=output_dir)
+    return {"output_path": str(output_path), "records": len(records), "source": "gps"}
+
+
 def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Ingest GPS or GNSS data into SmartCito training batches.")
     parser.add_argument("--api-url", default=None, help="Optional API endpoint for JSON GPS/GNSS logs.")
@@ -71,10 +83,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
 
 def main() -> int:
     args = build_arg_parser().parse_args()
-    payload = load_json_source(input_file=args.input_file, api_url=args.api_url)
-    records = build_training_records(payload)
-    output_path = save_training_batch(records, source="gps", output_dir=args.output_dir)
-    print(json.dumps({"output_path": str(output_path), "records": len(records)}, indent=2))
+    result = ingest_gps(api_url=args.api_url, input_file=args.input_file, output_dir=args.output_dir)
+    print(json.dumps(result, indent=2))
     return 0
 
 

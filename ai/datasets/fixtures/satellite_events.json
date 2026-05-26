@@ -1,0 +1,24 @@
+{
+  "events": [
+    {
+      "id": "EONET_1",
+      "title": "Johannesburg Severe Storm Watch",
+      "categories": [
+        {
+          "id": "severeStorms",
+          "title": "Severe Storms"
+        }
+      ],
+      "geometry": [
+        {
+          "date": "2026-05-26T07:00:00Z",
+          "type": "Point",
+          "coordinates": [28.0473, -26.2041]
+        }
+      ],
+      "cloud_cover": "62%",
+      "temperature": "18C",
+      "storm_index": "elevated"
+    }
+  ]
+}

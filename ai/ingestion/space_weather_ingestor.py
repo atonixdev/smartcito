@@ -69,6 +69,22 @@ def build_training_records(
     ]
 
 
+def ingest_space_weather(
+    *,
+    region: str = "global",
+    k_index_url: str = DEFAULT_K_INDEX_URL,
+    xray_url: str = DEFAULT_XRAY_URL,
+    k_index_input_file: str | None = None,
+    xray_input_file: str | None = None,
+    output_dir: str = str(DEFAULT_DATASET_DIR),
+) -> dict[str, object]:
+    k_index_payload = load_json_source(input_file=k_index_input_file, api_url=None if k_index_input_file else k_index_url)
+    xray_payload = load_json_source(input_file=xray_input_file, api_url=None if xray_input_file else xray_url)
+    records = build_training_records(k_index_payload=k_index_payload, xray_payload=xray_payload, region=region)
+    output_path = save_training_batch(records, source="space_weather", output_dir=output_dir)
+    return {"output_path": str(output_path), "records": len(records), "source": "space-weather"}
+
+
 def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Ingest space-weather data into SmartCito training batches.")
     parser.add_argument("--region", default="global")
@@ -82,11 +98,15 @@ def build_arg_parser() -> argparse.ArgumentParser:
 
 def main() -> int:
     args = build_arg_parser().parse_args()
-    k_index_payload = load_json_source(input_file=args.k_index_input_file, api_url=None if args.k_index_input_file else args.k_index_url)
-    xray_payload = load_json_source(input_file=args.xray_input_file, api_url=None if args.xray_input_file else args.xray_url)
-    records = build_training_records(k_index_payload=k_index_payload, xray_payload=xray_payload, region=args.region)
-    output_path = save_training_batch(records, source="space_weather", output_dir=args.output_dir)
-    print(json.dumps({"output_path": str(output_path), "records": len(records)}, indent=2))
+    result = ingest_space_weather(
+        region=args.region,
+        k_index_url=args.k_index_url,
+        xray_url=args.xray_url,
+        k_index_input_file=args.k_index_input_file,
+        xray_input_file=args.xray_input_file,
+        output_dir=args.output_dir,
+    )
+    print(json.dumps(result, indent=2))
     return 0
 
 

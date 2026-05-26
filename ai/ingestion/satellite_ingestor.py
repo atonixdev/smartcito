@@ -71,6 +71,19 @@ def build_training_records(payload: Any, *, region: str) -> list[dict[str, Any]]
     return records
 
 
+def ingest_satellite(
+    *,
+    api_url: str = DEFAULT_SATELLITE_URL,
+    input_file: str | None = None,
+    region: str = "global",
+    output_dir: str = str(DEFAULT_DATASET_DIR),
+) -> dict[str, object]:
+    payload = load_json_source(input_file=input_file, api_url=None if input_file else api_url)
+    records = build_training_records(payload, region=region)
+    output_path = save_training_batch(records, source="satellite", output_dir=output_dir)
+    return {"output_path": str(output_path), "records": len(records), "source": "satellite"}
+
+
 def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Ingest satellite or earth-observation data into SmartCito training batches.")
     parser.add_argument("--api-url", default=DEFAULT_SATELLITE_URL)
@@ -82,10 +95,13 @@ def build_arg_parser() -> argparse.ArgumentParser:
 
 def main() -> int:
     args = build_arg_parser().parse_args()
-    payload = load_json_source(input_file=args.input_file, api_url=None if args.input_file else args.api_url)
-    records = build_training_records(payload, region=args.region)
-    output_path = save_training_batch(records, source="satellite", output_dir=args.output_dir)
-    print(json.dumps({"output_path": str(output_path), "records": len(records)}, indent=2))
+    result = ingest_satellite(
+        api_url=args.api_url,
+        input_file=args.input_file,
+        region=args.region,
+        output_dir=args.output_dir,
+    )
+    print(json.dumps(result, indent=2))
     return 0
 
 

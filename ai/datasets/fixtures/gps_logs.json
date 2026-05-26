@@ -1,0 +1,18 @@
+[
+  {
+    "timestamp": "2026-05-26T07:00:00Z",
+    "latitude": -26.2041,
+    "longitude": 28.0473,
+    "altitude": 1750,
+    "speed": 12,
+    "heading": 202
+  },
+  {
+    "timestamp": "2026-05-26T07:01:00Z",
+    "latitude": -26.2045,
+    "longitude": 28.048,
+    "altitude": 1748,
+    "speed": 6,
+    "heading": 205
+  }
+]
