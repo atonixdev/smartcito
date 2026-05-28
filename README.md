@@ -152,6 +152,15 @@ vendor-agnostic adapters.
 See [surveillance/README.md](surveillance/README.md) for service APIs,
 Kafka topics, Kubernetes deployment, Docker Compose usage, and validation steps.
 
+## Robot Stack
+
+The robot stack now lives in [robot/](robot/). It provides the modular
+building blocks for ground-robot motion, traction, sensor fusion, perception,
+navigation, cloud contracts, and ROS2 integration.
+
+Start with [robot/README.md](robot/README.md) for the layout and validation
+entry points.
+
 ---
 
 ## Repository Layout
@@ -160,6 +169,7 @@ Kafka topics, Kubernetes deployment, Docker Compose usage, and validation steps.
 | ------ | ------- |
 | `ai/` | Consolidated home for AI inference, training, datasets, notebooks, runtime code, and model artifacts |
 | `gpuops/` | JAX-first intelligence engine modules for physics, robotics, mapping, distance, camera, solvers, and optimization |
+| `robot/` | Robot autonomy stack for physics, perception, navigation, cloud integration, and ROS2 workspace contracts |
 | `orcaapi/` | Primary FastAPI application, schemas, services, and migrations |
 | `ingestion/` | External data ingestion pipelines and connectors |
 | `services/` | Deployable microservice workspace for separately scoped services |

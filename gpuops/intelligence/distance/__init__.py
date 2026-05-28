@@ -1,6 +1,7 @@
-"""ORCA distance, filtering, and fusion components."""
+"""GPUOPS distance, filtering, and fusion components."""
 
-from ORCA.intelligence.distance.filters import (
+from gpuops.intelligence.distance.ekf_uav import ekf_predict_uav, fuse_uav_sensors
+from gpuops.intelligence.distance.filters import (
     gps_fusion,
     kalman_predict,
     kalman_update,
@@ -16,4 +17,6 @@ __all__ = [
     "particle_filter_update",
     "gps_fusion",
     "slam_pose_step",
+    "ekf_predict_uav",
+    "fuse_uav_sensors",
 ]

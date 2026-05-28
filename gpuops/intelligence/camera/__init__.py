@@ -1,6 +1,6 @@
 """ORCA camera intelligence components."""
 
-from ORCA.intelligence.camera.vision import (
+from gpuops.intelligence.camera.vision import (
     depth_from_disparity,
     extract_grad_features,
     optical_flow_delta,

@@ -19,6 +19,7 @@ For canonical ownership boundaries, see `docs/REPOSITORY_STRUCTURE.md`.
 - Operator frontend and dashboards: `webapp/`
 - AI training, runtime, datasets, and adapters: `ai/`
 - JAX intelligence modules (physics/robotics/mapping/camera/control): `gpuops/`
+- Robot stack, autonomy contracts, and ROS2 workspace notes: `robot/`
 - Ingestion and connectors: `ingestion/`
 - Security controls and policy assets: `security/`
 - Infrastructure automation and deployment: `infra/`

@@ -198,6 +198,33 @@ services:
     restart: unless-stopped
     logging: *stdout-logging
 
+  gpuops-service:
+    build:
+      context: .
+      dockerfile: gpuops/Dockerfile
+      image: ${GPUOPS_IMAGE:-atonixdev/gpuops-service:1.0.0}
+    container_name: orca-gpuops-service
+    env_file: .env
+    ports:
+      - "${GPUOPS_SERVICE_PORT:-8015}:8015"
+    restart: unless-stopped
+    logging: *stdout-logging
+
+  robot-service:
+    build:
+      context: .
+      dockerfile: robot/Dockerfile
+      image: ${ROBOT_IMAGE:-atonixdev/robot-service:1.0.0}
+    container_name: orca-robot-service
+    env_file: .env
+    ports:
+      - "${ROBOT_SERVICE_PORT:-8016}:8016"
+    depends_on:
+      - gpuops-service
+      - ai-service
+    restart: unless-stopped
+    logging: *stdout-logging
+
   security-service:
     build:
       context: .

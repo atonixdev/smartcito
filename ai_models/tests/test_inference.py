@@ -236,3 +236,40 @@ def test_detect_objects_returns_service_unavailable_for_missing_yolo() -> None:
     )
 
     assert response.status_code == 503
+
+
+def test_robot_model_endpoint_returns_robot_ai_contract() -> None:
+    response = client.get("/robot/model")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["model_name"] == "SmartCito Robot AI"
+    assert "physics" in payload["inputs"]
+    assert "ros2" in payload["inputs"]
+
+
+def test_robot_control_endpoint_builds_px4_command() -> None:
+    response = client.post(
+        "/robot/control",
+        json={
+            "robot_id": "robot-alpha",
+            "front_distance_m": 1.8,
+            "left_distance_m": 1.2,
+            "right_distance_m": 2.0,
+            "battery_percent": 74.0,
+            "obstacle_risk": 0.2,
+            "stability_margin": 0.18,
+            "localization_confidence": 0.92,
+            "target_speed_mps": 1.4,
+            "speed_limit_mps": 1.6,
+            "mission_mode": "autonomous",
+            "emergency_stop": False,
+        },
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["telemetry"]["robot_id"] == "robot-alpha"
+    assert payload["command"]["px4_mode"] == "AUTO"
+    assert payload["command"]["ros2_action"] == "publish_navigation_command"
+    assert payload["command"]["source_model"] == "SmartCito Robot AI"

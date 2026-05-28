@@ -19,6 +19,9 @@ from dotenv import load_dotenv
 from ai.ai_models.llama_stack import generate_text, list_models, load_llama_stack_settings
 from ai.ai_models.model import classify_alert, detect_objects, score_anomaly, summarize_event
 from ai.orca_runtime import load_active_model
+from robot.ai.hybrid import build_robot_ai_model
+from robot.ros2_ws.messages import RobotTelemetryMessage
+from robot.ros2_ws.pipeline import build_robot_control_packet
 
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
@@ -79,6 +82,21 @@ class OrcaDecisionRequest(BaseModel):
     instruction: str = Field(min_length=1)
     input: str = Field(min_length=1)
     context: dict[str, Any] = Field(default_factory=dict)
+
+
+class RobotTelemetryRequest(BaseModel):
+    robot_id: str = Field(min_length=1)
+    front_distance_m: float = Field(ge=0.0)
+    left_distance_m: float = Field(ge=0.0)
+    right_distance_m: float = Field(ge=0.0)
+    battery_percent: float = Field(ge=0.0, le=100.0)
+    obstacle_risk: float = Field(default=0.0, ge=0.0, le=1.0)
+    stability_margin: float = Field(default=0.0)
+    localization_confidence: float = Field(default=1.0, ge=0.0, le=1.0)
+    target_speed_mps: float = Field(default=1.0, ge=0.0)
+    speed_limit_mps: float = Field(default=1.5, ge=0.0)
+    mission_mode: str = Field(default="autonomous")
+    emergency_stop: bool = False
 
 
 def _orca_predict(task_type: str, request: OrcaDecisionRequest) -> dict[str, object]:
@@ -147,6 +165,11 @@ async def orca_model_status() -> dict[str, object]:
             "vocabulary_size": model.metrics.vocabulary_size,
         },
     }
+
+
+@app.get("/robot/model")
+async def robot_model() -> dict[str, object]:
+    return build_robot_ai_model()
 
 
 @app.post("/infer")
@@ -269,3 +292,27 @@ async def orca_geographic_reasoning(request: OrcaDecisionRequest) -> dict[str, o
 @app.post("/orca/infrastructure-ops")
 async def orca_infrastructure_ops(request: OrcaDecisionRequest) -> dict[str, object]:
     return _orca_predict("infrastructure_operations", request)
+
+
+@app.get("/robot/ai/model")
+async def robot_ai_model() -> dict[str, object]:
+    return build_robot_ai_model()
+
+
+@app.post("/robot/control")
+async def robot_control(request: RobotTelemetryRequest) -> dict[str, object]:
+    telemetry = RobotTelemetryMessage(
+        robot_id=request.robot_id,
+        front_distance_m=request.front_distance_m,
+        left_distance_m=request.left_distance_m,
+        right_distance_m=request.right_distance_m,
+        battery_percent=request.battery_percent,
+        obstacle_risk=request.obstacle_risk,
+        stability_margin=request.stability_margin,
+        localization_confidence=request.localization_confidence,
+        target_speed_mps=request.target_speed_mps,
+        speed_limit_mps=request.speed_limit_mps,
+        mission_mode=request.mission_mode,
+        emergency_stop=request.emergency_stop,
+    )
+    return build_robot_control_packet(telemetry)
