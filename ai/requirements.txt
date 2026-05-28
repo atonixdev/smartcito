@@ -1,0 +1,2 @@
+-r ai_models/requirements.txt
+-r model_stack/requirements.txt

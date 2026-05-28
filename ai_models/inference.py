@@ -16,9 +16,9 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
 
-from ai_models.llama_stack import generate_text, list_models, load_llama_stack_settings
-from ai_models.model import classify_alert, detect_objects, score_anomaly, summarize_event
-from orca_runtime import load_active_model
+from ai.ai_models.llama_stack import generate_text, list_models, load_llama_stack_settings
+from ai.ai_models.model import classify_alert, detect_objects, score_anomaly, summarize_event
+from ai.orca_runtime import load_active_model
 
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)

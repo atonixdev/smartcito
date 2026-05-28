@@ -1,6 +1,0 @@
-keras>=3.3,<4
-tensorflow>=2.16,<2.20
-numpy>=1.26,<3
-PyYAML>=6,<7
-Pillow>=10,<13
-tf2onnx>=1.16,<2

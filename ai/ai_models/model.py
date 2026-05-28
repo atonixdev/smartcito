@@ -384,6 +384,10 @@ def detect_objects(
 ) -> tuple[list[ObjectDetection], dict[str, object]]:
     """Run object detection via an auto-selected, OpenCV, YOLO, or heuristic backend."""
     normalized_backend = backend.strip().lower()
+    supported_backends = {"auto", "heuristic", "opencv", "yolo"}
+    if normalized_backend not in supported_backends:
+        raise ValueError(f"Unsupported detection backend: {backend}")
+
     image = _decode_image(image_b64)
 
     if normalized_backend == "auto":
@@ -392,10 +396,8 @@ def detect_objects(
         detections, metadata = _detect_with_heuristic(image, labels=labels, threshold=threshold)
     elif normalized_backend == "opencv":
         detections, metadata = _detect_with_opencv(image, labels=labels, threshold=threshold)
-    elif normalized_backend == "yolo":
-        detections, metadata = _detect_with_yolo(image, labels=labels, threshold=threshold)
     else:
-        raise ValueError(f"Unsupported detection backend: {backend}")
+        detections, metadata = _detect_with_yolo(image, labels=labels, threshold=threshold)
 
     metadata["requested_backend"] = normalized_backend
     return detections, metadata

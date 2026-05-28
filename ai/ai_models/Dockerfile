@@ -16,9 +16,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 RUN python -m venv "$VIRTUAL_ENV"
-COPY ai/ai_models/requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
 COPY ai /app/ai
+RUN pip install --no-cache-dir -r /app/ai/requirements.txt
 
 FROM runtime
 COPY --from=builder /app /app

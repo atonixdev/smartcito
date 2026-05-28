@@ -16,11 +16,11 @@ def test_health(monkeypatch) -> None:
     response = client.get("/health")
 
     assert response.status_code == 200
-    assert response.json() == {
-        "status": "ok",
-        "service": "ai-models",
-        "llama_stack": "not-configured",
-    }
+    payload = response.json()
+    assert payload["status"] == "ok"
+    assert payload["service"] == "ai-models"
+    assert payload["llama_stack"] == "not-configured"
+    assert payload["orca_model"] == "not-deployed"
 
 
 def test_infer_returns_bounded_score() -> None:
@@ -215,7 +215,7 @@ def test_detect_objects_returns_bounding_box_for_bright_region() -> None:
 def test_detect_objects_rejects_unknown_backend() -> None:
     response = client.post(
         "/detect_objects",
-        json={"image_b64": "AA==", "backend": "yolo"},
+        json={"image_b64": "AA==", "backend": "unknown-backend"},
     )
 
     assert response.status_code == 400

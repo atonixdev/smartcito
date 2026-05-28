@@ -110,6 +110,11 @@ Detailed walkthroughs live in [`docs/`](docs/).
 Repository ownership and folder responsibilities are defined in
 [`docs/REPOSITORY_STRUCTURE.md`](docs/REPOSITORY_STRUCTURE.md).
 
+Quick placement guide for contributors is in
+[`docs/WORKSPACE_ORGANIZATION.md`](docs/WORKSPACE_ORGANIZATION.md).
+
+Run `make repo-check` to validate repository structure guardrails.
+
 For a single wiki-style project entry point, start with [`docs/WIKI.md`](docs/WIKI.md).
 
 For pilot or hardware-backed deployments, see [`docs/DOCKER_DEPLOYMENT.md`](docs/DOCKER_DEPLOYMENT.md)
@@ -154,6 +159,7 @@ Kafka topics, Kubernetes deployment, Docker Compose usage, and validation steps.
 | Folder | Purpose |
 | ------ | ------- |
 | `ai/` | Consolidated home for AI inference, training, datasets, notebooks, runtime code, and model artifacts |
+| `gpuops/` | JAX-first intelligence engine modules for physics, robotics, mapping, distance, camera, solvers, and optimization |
 | `orcaapi/` | Primary FastAPI application, schemas, services, and migrations |
 | `ingestion/` | External data ingestion pipelines and connectors |
 | `services/` | Deployable microservice workspace for separately scoped services |
@@ -189,6 +195,8 @@ The repository also now includes a Orca runtime pipeline for ingestion, versione
 - Public Kaggle demo notebook: [ai/examples/Orca_Training_Demo.ipynb](ai/examples/Orca_Training_Demo.ipynb)
 - Public Kaggle inference notebook: [ai/examples/orca_inference_demo.ipynb](ai/examples/orca_inference_demo.ipynb)
 - AI runtime package: [ai/orca_runtime](ai/orca_runtime)
+- ORCA JAX intelligence engine: [gpuops/README.md](gpuops/README.md)
+- ORCA developer directive: [gpuops/DEVELOPER_DIRECTIVE.md](gpuops/DEVELOPER_DIRECTIVE.md)
 - Model documentation: [docs/MODEL_CARD.md](docs/MODEL_CARD.md)
 - Operational flow: [docs/OPERATIONAL_FLOW.md](docs/OPERATIONAL_FLOW.md)
 - Kaggle workflow: [docs/KAGGLE_USAGE.md](docs/KAGGLE_USAGE.md)
