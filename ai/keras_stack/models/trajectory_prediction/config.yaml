@@ -1,0 +1,11 @@
+module: trajectory_prediction
+version: v1
+past_length: 24
+future_length: 12
+encoder_units: 128
+training:
+  epochs: 15
+  batch_size: 32
+  validation_split: 0.2
+export:
+  onnx: false

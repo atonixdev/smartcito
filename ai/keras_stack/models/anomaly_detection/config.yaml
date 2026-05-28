@@ -1,0 +1,14 @@
+module: anomaly_detection
+version: v1
+sequence_length: 32
+latent_dim: 64
+threshold_percentile: 95
+weights:
+  reconstruction: 0.6
+  prediction: 0.4
+training:
+  epochs: 15
+  batch_size: 32
+  validation_split: 0.2
+export:
+  onnx: false

@@ -1,0 +1,15 @@
+module: sensor_fusion
+version: v1
+gps_embedding_dim: 128
+vision_embedding_dim: 256
+meta_keys:
+  - time_of_day
+  - weather_score
+  - device_health
+output_dim: 1
+training:
+  epochs: 12
+  batch_size: 32
+  validation_split: 0.2
+export:
+  onnx: false

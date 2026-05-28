@@ -1,0 +1,1 @@
+"""GPS classification model module."""

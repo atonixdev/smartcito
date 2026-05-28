@@ -41,6 +41,7 @@ Orca Model is intended for organizations that need:
 ## Bundle Layout
 
 - `ai/ai_models/` — inference APIs, model utilities, and runtime dependencies
+- `ai/keras_stack/` — modular Keras 3 models for GPS classification, trajectory forecasting, anomaly detection, drone vision, and sensor fusion
 - `ai/ingestion/` — external data ingestion for space weather, satellite, GPS, and map sources
 - `ai/training/` — dataset preparation, fine-tuning, evaluation, Kaggle packaging, and publishing
 - `ai/datasets/` — sample and prepared datasets for Orca AI workflows
@@ -98,6 +99,36 @@ python ai/training/qlora_training.py \
 	--base-model your-foundation-model-id \
 	--output-dir ai/output/orca-lora
 ```
+
+### 4b. Train Modular Keras Models
+
+Install the dedicated Keras stack dependencies when you want TensorFlow-backed sequence and vision models:
+
+```bash
+pip install -r ai/keras_stack/requirements.txt
+```
+
+Train individual modules independently:
+
+```bash
+python -m ai.keras_stack.models.gps_classification.train \
+	--dataset ai/datasets/gps_classification.json \
+	--output-dir ai/models/keras/gps_classifier_v1
+```
+
+```bash
+python -m ai.keras_stack.models.trajectory_prediction.train \
+	--dataset ai/datasets/trajectory_prediction.json \
+	--output-dir ai/models/keras/trajectory_v1
+```
+
+```bash
+python -m ai.keras_stack.models.drone_vision.train \
+	--dataset ai/datasets/drone_vision.json \
+	--output-dir ai/models/keras/drone_vision_v1
+```
+
+The same package also includes anomaly detection, sensor fusion, shared preprocessing, SavedModel export, and a unified pipeline wrapper in `ai/keras_stack/pipeline.py`.
 
 ### 5. Evaluate Outputs
 
@@ -177,6 +208,7 @@ Orca Model should be shared with the following controls:
 ## Recommended Entry Points
 
 - Dataset schema: `ai/training/dataset_format.md`
+- Keras stack: `ai/keras_stack/README.md`
 - Model card: `docs/MODEL_CARD.md`
 - Operational flow: `docs/OPERATIONAL_FLOW.md`
 - Kaggle workflow: `docs/KAGGLE_USAGE.md`
