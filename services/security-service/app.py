@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-app = FastAPI(title="SmartCito Security Service")
+app = FastAPI(title="Orca Security Service")
 
 
 @app.get("/health")

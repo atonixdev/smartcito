@@ -38,7 +38,7 @@ class Settings(BaseSettings):
 
     # ----- Core -----
     app_env: Literal["development", "staging", "production"] = "development"
-    app_name: str = "SmartCito"
+    app_name: str = "Orca"
     app_host: str = "0.0.0.0"  # noqa: S104  binding intentional for container
     app_port: int = 8000
     log_level: str = "INFO"
@@ -50,11 +50,11 @@ class Settings(BaseSettings):
         description="HMAC key for JWT signing. MUST be overridden in production.",
     )
     auth_issuer: str = Field(
-        default="smartcito.local",
+        default="orca.local",
         validation_alias=AliasChoices("AUTH_ISSUER"),
     )
     auth_audience: str = Field(
-        default="smartcito-clients",
+        default="orca-clients",
         validation_alias=AliasChoices("AUTH_AUDIENCE"),
     )
     jwt_algorithm: str = "HS256"
@@ -73,15 +73,15 @@ class Settings(BaseSettings):
         validation_alias=AliasChoices("DB_PORT", "POSTGRES_PORT"),
     )
     postgres_db: str = Field(
-        default="smartcito",
+        default="orca",
         validation_alias=AliasChoices("DB_NAME", "POSTGRES_DB"),
     )
     postgres_user: str = Field(
-        default="smartcito",
+        default="orca",
         validation_alias=AliasChoices("DB_USER", "POSTGRES_USER"),
     )
     postgres_password: str = Field(
-        default="smartcito",
+        default="orca",
         validation_alias=AliasChoices("DB_PASSWORD", "POSTGRES_PASSWORD"),
     )
     postgres_primary_host: str = Field(
@@ -97,15 +97,15 @@ class Settings(BaseSettings):
     hdfs_enabled: bool = False
     hdfs_namenode_rpc_address: str = ""
     hdfs_namenode_http_address: str = ""
-    hdfs_raw_data_path: str = "/smartcito/raw"
-    hdfs_archive_path: str = "/smartcito/archive"
-    hdfs_ai_training_path: str = "/smartcito/ai/training"
+    hdfs_raw_data_path: str = "/orca/raw"
+    hdfs_archive_path: str = "/orca/archive"
+    hdfs_ai_training_path: str = "/orca/ai/training"
     hbase_enabled: bool = False
     hbase_zookeeper_quorum: str = ""
     hbase_zookeeper_client_port: int = 2181
     hbase_master_address: str = ""
     hbase_thrift_address: str = ""
-    hbase_sensor_table: str = "smartcito_sensor_events"
+    hbase_sensor_table: str = "orca_sensor_events"
     hbase_column_family: str = "d"
 
     # ----- Cache -----
@@ -127,21 +127,21 @@ class Settings(BaseSettings):
             "KAFKA_BOOTSTRAP_SERVERS",
         ),
     )
-    kafka_sensor_topic: str = "smartcito.sensors.raw"
-    kafka_raw_events_topic: str = "smartcito.events.raw"
-    kafka_clean_events_topic: str = "smartcito.events.clean"
-    kafka_alerts_topic: str = "smartcito.alerts"
+    kafka_sensor_topic: str = "orca.sensors.raw"
+    kafka_raw_events_topic: str = "orca.events.raw"
+    kafka_clean_events_topic: str = "orca.events.clean"
+    kafka_alerts_topic: str = "orca.alerts"
     kafka_publisher_enabled: bool = False
 
     # ----- IoT ingestion (MQTT) -----
     mqtt_enabled: bool = False
     mqtt_host: str = "localhost"
     mqtt_port: int = 1883
-    mqtt_topic: str = "smartcito/sensors/+"
-    mqtt_client_id: str = "smartcito-api"
+    mqtt_topic: str = "orca/sensors/+"
+    mqtt_client_id: str = "orca-api"
     gps_mqtt_enabled: bool = False
-    gps_mqtt_topic: str = "smartcito/gps/+"
-    gps_mqtt_client_id: str = "smartcito-gps-api"
+    gps_mqtt_topic: str = "orca/gps/+"
+    gps_mqtt_client_id: str = "orca-gps-api"
     gps_udp_enabled: bool = False
     gps_udp_host: str = "0.0.0.0"
     gps_udp_port: int = 9011
@@ -153,7 +153,7 @@ class Settings(BaseSettings):
     # ----- AI / object storage -----
     ai_models_url: str = "http://ai-service:8012"
     object_storage_endpoint: str = "file://./data/object_storage"
-    object_storage_bucket: str = "smartcito-artifacts"
+    object_storage_bucket: str = "orca-artifacts"
 
     # ----- Realtime / service aggregation -----
     drone_gateway_url: str = "http://drone-gateway:8020"

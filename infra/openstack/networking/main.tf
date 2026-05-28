@@ -21,12 +21,12 @@ provider "openstack" {
 }
 
 resource "openstack_networking_network_v2" "public_net" {
-  name           = "smartcito-public-net"
+  name           = "orca-public-net"
   admin_state_up = true
 }
 
 resource "openstack_networking_subnet_v2" "public_subnet" {
-  name       = "smartcito-public-subnet"
+  name       = "orca-public-subnet"
   network_id = openstack_networking_network_v2.public_net.id
   cidr       = var.public_subnet_cidr
   ip_version = 4
@@ -35,12 +35,12 @@ resource "openstack_networking_subnet_v2" "public_subnet" {
 }
 
 resource "openstack_networking_network_v2" "services_net" {
-  name           = "smartcito-services-net"
+  name           = "orca-services-net"
   admin_state_up = true
 }
 
 resource "openstack_networking_subnet_v2" "services_subnet" {
-  name       = "smartcito-services-subnet"
+  name       = "orca-services-subnet"
   network_id = openstack_networking_network_v2.services_net.id
   cidr       = var.services_subnet_cidr
   ip_version = 4
@@ -49,12 +49,12 @@ resource "openstack_networking_subnet_v2" "services_subnet" {
 }
 
 resource "openstack_networking_network_v2" "database_net" {
-  name           = "smartcito-database-net"
+  name           = "orca-database-net"
   admin_state_up = true
 }
 
 resource "openstack_networking_subnet_v2" "database_subnet" {
-  name       = "smartcito-database-subnet"
+  name       = "orca-database-subnet"
   network_id = openstack_networking_network_v2.database_net.id
   cidr       = var.database_subnet_cidr
   ip_version = 4
@@ -62,29 +62,29 @@ resource "openstack_networking_subnet_v2" "database_subnet" {
   dns_nameservers = var.dns_nameservers
 }
 
-resource "openstack_networking_router_v2" "smartcito_router" {
-  name                = "smartcito-edge-router"
+resource "openstack_networking_router_v2" "orca_router" {
+  name                = "orca-edge-router"
   admin_state_up      = true
   external_network_id = var.external_network_id
 }
 
 resource "openstack_networking_router_interface_v2" "public_interface" {
-  router_id = openstack_networking_router_v2.smartcito_router.id
+  router_id = openstack_networking_router_v2.orca_router.id
   subnet_id = openstack_networking_subnet_v2.public_subnet.id
 }
 
 resource "openstack_networking_router_interface_v2" "services_interface" {
-  router_id = openstack_networking_router_v2.smartcito_router.id
+  router_id = openstack_networking_router_v2.orca_router.id
   subnet_id = openstack_networking_subnet_v2.services_subnet.id
 }
 
 resource "openstack_networking_router_interface_v2" "database_interface" {
-  router_id = openstack_networking_router_v2.smartcito_router.id
+  router_id = openstack_networking_router_v2.orca_router.id
   subnet_id = openstack_networking_subnet_v2.database_subnet.id
 }
 
 resource "openstack_networking_secgroup_v2" "public_ingress" {
-  name        = "smartcito-public-ingress"
+  name        = "orca-public-ingress"
   description = "Allow HTTP/HTTPS access to API gateway and webapp only."
 }
 
@@ -109,13 +109,13 @@ resource "openstack_networking_secgroup_rule_v2" "public_https" {
 }
 
 resource "openstack_networking_secgroup_v2" "database_internal" {
-  name        = "smartcito-database-internal"
-  description = "Restrict database access to internal SmartCito networks only."
+  name        = "orca-database-internal"
+  description = "Restrict database access to internal Orca networks only."
 }
 
 resource "openstack_networking_secgroup_v2" "kubernetes_internal" {
-  name        = "smartcito-kubernetes-internal"
-  description = "Allow Kubernetes control-plane and node traffic on SmartCito internal networks."
+  name        = "orca-kubernetes-internal"
+  description = "Allow Kubernetes control-plane and node traffic on Orca internal networks."
 }
 
 resource "openstack_networking_secgroup_rule_v2" "kubernetes_api" {
@@ -139,7 +139,7 @@ resource "openstack_networking_secgroup_rule_v2" "kubernetes_kubelet" {
 }
 
 resource "openstack_networking_secgroup_v2" "data_platform_internal" {
-  name        = "smartcito-data-platform-internal"
+  name        = "orca-data-platform-internal"
   description = "Allow Kafka, Spark, and service-plane communication on internal networks only."
 }
 

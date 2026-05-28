@@ -23,7 +23,7 @@ from app.schemas.geospatial import GeoDatasetOut, GeoFeatureCollection, GeoFeatu
 
 
 class GeospatialRegistryService:
-    """Persistence layer for geographic assets shared across SmartCito."""
+    """Persistence layer for geographic assets shared across Orca."""
 
     async def upsert_feature(self, session: AsyncSession, feature: GeoFeatureIn) -> GeoFeatureOut:
         record = await session.scalar(select(GeoFeatureORM).where(GeoFeatureORM.feature_id == feature.feature_id))

@@ -14,7 +14,7 @@ from hardware.test_support import HardwareSnapshot, assert_snapshot, collect_sna
 def test_power_distribution() -> None:
     snapshot = collect_snapshot(
         component="rack-power",
-        endpoint_env="SMARTCITO_RACK_ENDPOINT",
+        endpoint_env="ORCA_RACK_ENDPOINT",
         defaults=HardwareSnapshot(
             component="rack-power",
             endpoint="simulation://racks",

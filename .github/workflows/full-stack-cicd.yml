@@ -20,7 +20,7 @@ on:
         type: boolean
 
 env:
-  IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}/smartcito
+  IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}/orca
   IMAGE_TAG: ${{ github.sha }}
 
 jobs:

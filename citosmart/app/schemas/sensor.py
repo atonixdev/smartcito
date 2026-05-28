@@ -3,7 +3,7 @@
  File: citosmart/app/schemas/sensor.py
  Purpose:
    Pydantic models that define the JSON contract for sensor data flowing
-   between IoT producers, the SmartCito API, and dashboard consumers.
+   between IoT producers, the Orca API, and dashboard consumers.
 
  Why separate schemas from ORM models?
    - Schemas describe the *wire* format and validation rules.

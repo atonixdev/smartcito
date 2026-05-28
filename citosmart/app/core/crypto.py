@@ -1,6 +1,6 @@
 """Shared backend crypto façade over the repository-wide crypto helpers."""
 
-from smartcito_shared.crypto import (
+from orca_shared.crypto import (
     Ciphertext,
     build_integrity_record,
     build_secure_envelope,

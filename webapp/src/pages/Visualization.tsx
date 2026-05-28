@@ -22,8 +22,8 @@ const observabilitySurfaces = [
     eyebrow: "Metrics and alerts",
     description:
       "Prometheus-backed operational dashboards for cache, PostgreSQL, Kafka, and node health.",
-    href: "/grafana/d/smartcito-overview/smartcito-overview?kiosk",
-    embedSrc: "/grafana/d/smartcito-overview/smartcito-overview?kiosk",
+    href: "/grafana/d/orca-overview/orca-overview?kiosk",
+    embedSrc: "/grafana/d/orca-overview/orca-overview?kiosk",
   },
   {
     title: "Kibana",
@@ -43,7 +43,7 @@ export default function Visualization() {
           <span className="eyebrow">Visualization gateway</span>
           <h2>Dash, metrics, and logs from one routed surface.</h2>
           <p className="lead-text">
-            This page assumes the app is served behind the SmartCito gateway and
+            This page assumes the app is served behind the Orca gateway and
             keeps every observability surface on the same origin. In local
             compose, use the gateway on port 8088 for the closest parity with
             the Kubernetes deployment model.

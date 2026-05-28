@@ -53,7 +53,7 @@ load_env_file
 : "${OPENSTACK_PASSWORD:?OPENSTACK_PASSWORD is required}"
 
 secret_args=(
-  create secret generic smartcito-platform-secrets
+  create secret generic orca-platform-secrets
   --namespace "$namespace"
   --dry-run=client
   -o yaml

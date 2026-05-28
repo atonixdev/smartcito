@@ -3,7 +3,7 @@
  File: docs/wiki/STORAGE_AND_EVENT_BACKBONE.md
  Purpose:
    Dedicated wiki page for databases, Kafka, object storage, block storage,
-   and event durability in SmartCito.
+   and event durability in Orca.
 ================================================================================
 -->
 
@@ -15,7 +15,7 @@
 
 ## What This Module Does
 
-This area describes how SmartCito stores relational data, streams events,
+This area describes how Orca stores relational data, streams events,
 buffers hot reads, and maps block or object storage into operational flows.
 
 ## Why It Is Important

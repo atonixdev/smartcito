@@ -1,1 +1,1 @@
-"""USB detection helpers and service entry points for SmartCito."""
+"""USB detection helpers and service entry points for Orca."""

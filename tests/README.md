@@ -1,6 +1,6 @@
 # Tests
 
-Cross-module unit and integration tests for SmartCito.
+Cross-module unit and integration tests for Orca.
 
 Backend-specific tests live next to the backend at
 [`../citosmart/tests/`](../citosmart/tests/). Frontend tests live under

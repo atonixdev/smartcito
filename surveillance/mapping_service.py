@@ -34,7 +34,7 @@ from surveillance.topics import LOCATION_ENRICHED_TOPIC
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
 
-app = FastAPI(title="SmartCito Mapping and Geospatial Service")
+app = FastAPI(title="Orca Mapping and Geospatial Service")
 _drones: dict[str, MapOverlay] = {}
 _sensors: dict[str, MapOverlay] = {}
 _threats: dict[str, MapOverlay] = {}

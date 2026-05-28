@@ -19,7 +19,7 @@ from surveillance.models import NormalizedEvent, PublishResult
 
 
 def _kafka_enabled() -> bool:
-    return os.getenv("SMARTCITO_KAFKA_ENABLED", "1").lower() not in {"0", "false", "no"}
+    return os.getenv("ORCA_KAFKA_ENABLED", "1").lower() not in {"0", "false", "no"}
 
 
 class KafkaPublisher:

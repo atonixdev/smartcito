@@ -11,7 +11,7 @@
 
 import axios, { AxiosError, AxiosInstance } from "axios";
 
-const TOKEN_STORAGE_KEY = "smartcito.jwt";
+const TOKEN_STORAGE_KEY = "orca.jwt";
 
 export const api: AxiosInstance = axios.create({
   baseURL: "/api/v1",

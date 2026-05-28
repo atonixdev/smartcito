@@ -2,13 +2,13 @@
 ================================================================================
  File: SECURITY.md
  Purpose:
-   Coordinated vulnerability disclosure policy for SmartCito.
+   Coordinated vulnerability disclosure policy for Orca.
 ================================================================================
 -->
 
 # Security Policy
 
-SmartCito powers critical urban infrastructure. We take security extremely
+Orca powers critical urban infrastructure. We take security extremely
 seriously and welcome responsible disclosure from researchers and users.
 
 ## Supported Versions
@@ -23,7 +23,7 @@ seriously and welcome responsible disclosure from researchers and users.
 
 **Please do _not_ open a public GitHub issue for security problems.**
 
-Instead, email: **security@smartcito.dev**
+Instead, email: **security@orca.dev**
 
 Include:
 
@@ -38,7 +38,7 @@ patched and disclosed within **90 days**.
 
 ## Hardening Guidelines
 
-- Always run SmartCito behind TLS (terminate at a reverse proxy or load balancer).
+- Always run Orca behind TLS (terminate at a reverse proxy or load balancer).
 - Rotate JWT signing keys regularly; never commit them.
 - Use least-privilege RBAC roles for city-department users.
 - Enable audit logging in production (`AUDIT_LOG_ENABLED=true`).

@@ -30,12 +30,12 @@ def test_train_from_dataset_dir_creates_versioned_model(tmp_path) -> None:
     result = train_from_dataset_dir(
         dataset_dir=dataset_dir,
         models_dir=models_dir,
-        version="smartcito_model_vtest",
+        version="orca_model_vtest",
         activate=False,
     )
 
     model_dir = Path(str(result["model_dir"]))
-    assert result["version"] == "smartcito_model_vtest"
+    assert result["version"] == "orca_model_vtest"
     assert result["records"] == 2
     assert model_dir.exists()
     assert (model_dir / "model.json").exists()

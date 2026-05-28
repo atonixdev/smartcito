@@ -2,11 +2,11 @@
 ================================================================================
  File: citosmart/app/services/frame_parser.py
  Purpose:
-   Pure-Python implementation of the SmartCito binary sensor frame parser.
+   Pure-Python implementation of the Orca binary sensor frame parser.
    This is the reference implementation; the C extension in `native/`
    produces identical output and is selected automatically when available.
 
- Wire format: see `native/smartcito_fast.c` for the layout diagram.
+ Wire format: see `native/orca_fast.c` for the layout diagram.
 ================================================================================
 """
 
@@ -38,7 +38,7 @@ def _xor_checksum(buf: bytes) -> int:
 
 
 def parse_frame(buf: bytes) -> ParsedFrame:
-    """Parse a 17-byte SmartCito sensor frame.
+    """Parse a 17-byte Orca sensor frame.
 
     Raises:
         ValueError: on wrong length, unsupported version, or bad checksum.
@@ -64,7 +64,7 @@ def parse_frame(buf: bytes) -> ParsedFrame:
 
 # Prefer the C accelerator when it's been compiled and installed.
 try:  # pragma: no cover - import side-effect
-    from smartcito_fast import parse_frame as _fast_parse_frame  # type: ignore[import-not-found]
+    from orca_fast import parse_frame as _fast_parse_frame  # type: ignore[import-not-found]
 
     parse_frame = _fast_parse_frame  # type: ignore[assignment]
 except ImportError:

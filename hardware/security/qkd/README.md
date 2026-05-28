@@ -1,6 +1,6 @@
 # Quantum Key Distribution
 
-Reference guidance for future QKD integration in SmartCito deployments.
+Reference guidance for future QKD integration in Orca deployments.
 
 ## Scope
 
@@ -10,7 +10,7 @@ Reference guidance for future QKD integration in SmartCito deployments.
 
 ## Design Principle
 
-SmartCito should not depend on QKD to operate. Instead, APIs and key-management
+Orca should not depend on QKD to operate. Instead, APIs and key-management
 interfaces should be ready to accept externally provisioned keys from QKD
 systems when available.
 
@@ -20,7 +20,7 @@ systems when available.
 - inject derived keys into approved KMS/HSM workflows
 - maintain audit trails for key provenance and rotation events
 
-## SmartCito Mapping
+## Orca Mapping
 
 See [`../../../security/qkd/README.md`](../../../security/qkd/README.md) for the
 software and policy layer.

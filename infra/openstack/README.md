@@ -2,14 +2,14 @@
 ================================================================================
  File: infra/openstack/README.md
  Purpose:
-   Index for SmartCito OpenStack infrastructure definitions.
+   Index for Orca OpenStack infrastructure definitions.
 ================================================================================
 -->
 
-# SmartCito OpenStack Infrastructure
+# Orca OpenStack Infrastructure
 
 This folder contains the OpenStack-specific infrastructure layer for running
-SmartCito on virtual machines that host Kubernetes, Kafka, Spark, and the
+Orca on virtual machines that host Kubernetes, Kafka, Spark, and the
 supporting service tier.
 
 The root Terraform module in this directory composes the child modules under
@@ -17,22 +17,22 @@ The root Terraform module in this directory composes the child modules under
 
 ## Layout
 
-- `networking/` defines `smartcito-public-net`, `smartcito-services-net`, and
-  `smartcito-database-net`, plus router and security groups for public,
+- `networking/` defines `orca-public-net`, `orca-services-net`, and
+  `orca-database-net`, plus router and security groups for public,
   Kubernetes, data-platform, and database traffic.
 - `compute/` defines API gateway, service nodes, Kubernetes control-plane and
   worker nodes, Kafka brokers, Spark master/workers, and database nodes.
 - `storage/` defines persistent volumes for databases, Kafka logs, Spark
   checkpoints, object storage, and logs.
-- `smartcito-os/` defines the official SmartCito base image build surface for
+- `orca-os/` defines the official Orca base image build surface for
   OpenStack and Kubernetes nodes.
 
-## SmartCito OS
+## Orca OS
 
-Use the official SmartCito OS image as the `image_name` for compute nodes.
+Use the official Orca OS image as the `image_name` for compute nodes.
 The build instructions, Packer template, validation helper, and Glance upload
-workflow live in [infra/openstack/smartcito-os/README.md](/home/atonixdev/smartcito/infra/openstack/smartcito-os/README.md).
-The promoted default image is auto-loaded from [infra/openstack/zz-smartcito-os.auto.tfvars](/home/atonixdev/smartcito/infra/openstack/zz-smartcito-os.auto.tfvars).
+workflow live in [infra/openstack/orca-os/README.md](/home/atonixdev/orca/infra/openstack/orca-os/README.md).
+The promoted default image is auto-loaded from [infra/openstack/zz-orca-os.auto.tfvars](/home/atonixdev/orca/infra/openstack/zz-orca-os.auto.tfvars).
 
 ## Apply Flow
 
@@ -80,8 +80,8 @@ Then point Terraform at that profile in `infra/openstack/terraform.tfvars`:
 cloud_name          = "openstack"
 region              = "RegionOne"
 external_network_id = "public-network-id"
-image_name          = "smartcito-os-ubuntu-22.04-2026.05"
-key_pair            = "smartcito-keypair"
+image_name          = "orca-os-ubuntu-22.04-2026.05"
+key_pair            = "orca-keypair"
 ```
 
 If Keystone requires a versioned endpoint in your environment, prefer
@@ -90,5 +90,5 @@ If Keystone requires a versioned endpoint in your environment, prefer
 Recommended image setting after promotion:
 
 ```hcl
-image_name = "smartcito-os-ubuntu-22.04-2026.05"
+image_name = "orca-os-ubuntu-22.04-2026.05"
 ```

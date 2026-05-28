@@ -1,6 +1,6 @@
 # GPS Module
 
-GPS and satellite-based positioning integration for SmartCito.
+GPS and satellite-based positioning integration for Orca.
 
 ## Container Image
 
@@ -58,8 +58,8 @@ asset X in the last hour").
 ## How To Run Its Container
 
 ```bash
-docker build -f gps_module/Dockerfile -t smartcito-gps-module .
-docker run --rm -p 8011:8011 smartcito-gps-module
+docker build -f gps_module/Dockerfile -t orca-gps-module .
+docker run --rm -p 8011:8011 orca-gps-module
 ```
 
 ## Example Usage

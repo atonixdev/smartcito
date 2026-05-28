@@ -8,7 +8,7 @@ from typing import Any
 
 
 SYSTEM_PROMPT = (
-    "You are SmartCito Model, a domain-specialized operations assistant for city safety, "
+    "You are Orca Model, a domain-specialized operations assistant for city safety, "
     "sensor fusion, drone missions, camera analytics, robot navigation, and geographic reasoning."
 )
 
@@ -52,7 +52,7 @@ DEMO_TASKS: list[dict[str, str]] = [
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Run SmartCito Model inference demos.")
+    parser = argparse.ArgumentParser(description="Run Orca Model inference demos.")
     parser.add_argument("--mode", choices=("api", "local"), default="api")
     parser.add_argument("--api-base-url", default="http://localhost:8012")
     parser.add_argument("--backend", default="merged-local")
@@ -133,7 +133,7 @@ async def main_async() -> int:
         results = await _run_local_demo(args)
 
     output = {
-        "demo": "SmartCito Model inference demo",
+        "demo": "Orca Model inference demo",
         "tasks": [item["task"] for item in DEMO_TASKS],
         "results": results,
     }

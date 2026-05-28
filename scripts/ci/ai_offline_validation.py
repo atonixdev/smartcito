@@ -9,8 +9,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 WRAPPER = ROOT / "scripts" / "ai.sh"
-DIST_DIR = ROOT / "dist" / "smartcito_ai_kaggle"
-OUTPUT_DIR = ROOT / "ai" / "output" / "smartcito-lora"
+DIST_DIR = ROOT / "dist" / "orca_ai_kaggle"
+OUTPUT_DIR = ROOT / "ai" / "output" / "orca-lora"
 
 
 def _run(command: list[str], *, extra_env: dict[str, str] | None = None) -> None:
@@ -40,7 +40,7 @@ def main() -> int:
     if missing:
         raise SystemExit(f"AI offline validation missing outputs: {', '.join(missing)}")
 
-    print("smartcito ai offline validation passed")
+    print("orca ai offline validation passed")
     return 0
 
 

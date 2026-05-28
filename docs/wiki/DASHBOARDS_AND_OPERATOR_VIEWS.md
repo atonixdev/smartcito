@@ -2,7 +2,7 @@
 ================================================================================
  File: docs/wiki/DASHBOARDS_AND_OPERATOR_VIEWS.md
  Purpose:
-   Dedicated wiki page for SmartCito dashboards, panels, operator workflows,
+   Dedicated wiki page for Orca dashboards, panels, operator workflows,
    and visual monitoring surfaces.
 ================================================================================
 -->

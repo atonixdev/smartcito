@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://smartcito.org/schemas/hardware/gps-ingest.v1.json",
-  "title": "SmartCito GPS Ingest Event",
+  "$id": "https://orca.org/schemas/hardware/gps-ingest.v1.json",
+  "title": "Orca GPS Ingest Event",
   "type": "object",
   "additionalProperties": false,
   "required": ["device_id", "timestamp", "lat", "lon", "source_standard"],

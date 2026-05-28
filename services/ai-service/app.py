@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-app = FastAPI(title="SmartCito AI Service")
+app = FastAPI(title="Orca AI Service")
 
 
 @app.get("/health")

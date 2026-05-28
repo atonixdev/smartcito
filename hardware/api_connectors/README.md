@@ -1,6 +1,6 @@
 # API Connectors
 
-Contracts and reference flows for registering hardware cameras with SmartCito.
+Contracts and reference flows for registering hardware cameras with Orca.
 
 ## Responsibilities
 

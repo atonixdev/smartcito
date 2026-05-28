@@ -3,7 +3,7 @@ from __future__ import annotations
 
 def build_manufacturer_spec() -> dict[str, object]:
     return {
-        "platform_goal": "PX4/ArduPilot airframe with a SmartCito-managed companion computer and cloud-controlled surveillance stack.",
+        "platform_goal": "PX4/ArduPilot airframe with a Orca-managed companion computer and cloud-controlled surveillance stack.",
         "flight_stack": {
             "autopilot": ["PX4", "ArduPilot"],
             "required_protocols": ["MAVLink", "mission upload", "telemetry egress"],
@@ -17,7 +17,7 @@ def build_manufacturer_spec() -> dict[str, object]:
             "requirements": [
                 "Enough CPU/GPU for H.264/H.265 encoding and ROS2 autonomy nodes.",
                 "RAM and storage sized for video buffering, logs, and AI models.",
-                "SSH access and full software installation rights for SmartCito software.",
+                "SSH access and full software installation rights for Orca software.",
             ],
             "interfaces": ["Ethernet", "USB", "UART", "4G/5G modem", "WiFi"],
         },
@@ -27,7 +27,7 @@ def build_manufacturer_spec() -> dict[str, object]:
             "operational_requirements": [
                 "Camera must be accessible from the companion computer user space.",
                 "Companion computer must be able to encode and stream video via RTSP or WebRTC.",
-                "Resolution, FPS, and bitrate must be configurable in SmartCito software.",
+                "Resolution, FPS, and bitrate must be configurable in Orca software.",
             ],
         },
         "power_and_form_factor": {
@@ -40,13 +40,13 @@ def build_manufacturer_spec() -> dict[str, object]:
         "operator_access": {
             "required": [
                 "SSH access to companion computer",
-                "Install SmartCito SDK, ROS2 nodes, and video streamer",
+                "Install Orca SDK, ROS2 nodes, and video streamer",
                 "Access MAVLink directly from companion computer",
             ],
         },
         "delivery_workflow": [
             "Manufacturer builds airframe, power system, and electronics to this spec.",
-            "SmartCito team owns companion-computer software, camera behavior, SDK, and cloud stack.",
-            "Flight validation uses PX4/ArduPilot plus SmartCito Mission Control, Camera Service, and Dashboard.",
+            "Orca team owns companion-computer software, camera behavior, SDK, and cloud stack.",
+            "Flight validation uses PX4/ArduPilot plus Orca Mission Control, Camera Service, and Dashboard.",
         ],
     }

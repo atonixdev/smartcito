@@ -2,7 +2,7 @@
 ================================================================================
  File: docs/wiki/SECURITY_AND_AUDIT_CONTROLS.md
  Purpose:
-   Dedicated wiki page for SmartCito's encryption, IAM, compliance, audit, and
+   Dedicated wiki page for Orca's encryption, IAM, compliance, audit, and
    quantum-safe security posture.
 ================================================================================
 -->
@@ -15,12 +15,12 @@
 
 ## What This Module Does
 
-This area documents the controls that protect SmartCito identities, services,
+This area documents the controls that protect Orca identities, services,
 data flows, storage, and audit artifacts.
 
 ## Why It Is Important
 
-SmartCito is intended for critical urban environments where weak security would
+Orca is intended for critical urban environments where weak security would
 turn operational convenience into public risk.
 
 ## How It Connects To Other Modules

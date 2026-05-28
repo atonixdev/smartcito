@@ -2,7 +2,7 @@
 ================================================================================
  File: scripts/ci/performance_smoke.py
  Purpose:
-   Lightweight performance smoke check for SmartCito hardware CI. Uses measured
+   Lightweight performance smoke check for Orca hardware CI. Uses measured
    or simulated metrics to gate obvious regressions in compute throughput.
 ================================================================================
 """

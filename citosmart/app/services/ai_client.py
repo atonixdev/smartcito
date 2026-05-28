@@ -2,7 +2,7 @@
 ================================================================================
  File: app/services/ai_client.py
  Purpose:
-   REST client for SmartCito AI inference services.
+   REST client for Orca AI inference services.
 ================================================================================
 """
 

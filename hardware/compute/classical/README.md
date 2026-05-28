@@ -1,6 +1,6 @@
 # Classical Compute
 
-Reference classical compute baseline for SmartCito.
+Reference classical compute baseline for Orca.
 
 ## Purpose
 
@@ -21,4 +21,4 @@ This layer runs the present-day production backbone:
 ## Placement
 
 Use this layer for all workloads that must run reliably today without any
-quantum dependency. This is the default execution plane for SmartCito.
+quantum dependency. This is the default execution plane for Orca.

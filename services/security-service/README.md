@@ -19,8 +19,8 @@ Encryption and IAM helper microservice.
 ## How To Run Its Container
 
 ```bash
-docker build -f services/security-service/Dockerfile -t smartcito-security-service .
-docker run --rm -p 8013:8013 smartcito-security-service
+docker build -f services/security-service/Dockerfile -t orca-security-service .
+docker run --rm -p 8013:8013 orca-security-service
 ```
 
 ## Example Usage

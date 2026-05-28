@@ -12,7 +12,7 @@
 
   <rect width="1000" height="540" fill="url(#bg4)"/>
   <text x="500" y="36" text-anchor="middle" fill="#e7eefc" font-size="22" font-weight="700">
-    SmartCito Dashboard — 2D / 3D Map View
+    Orca Dashboard — 2D / 3D Map View
   </text>
 
   <!-- Sidebar -->

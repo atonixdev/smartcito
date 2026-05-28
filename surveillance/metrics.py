@@ -24,11 +24,11 @@ class GatewayMetrics:
 
     def prometheus_text(self) -> str:
         lines = [
-            "# HELP smartcito_drone_gateway_events_total Drone gateway event counters.",
-            "# TYPE smartcito_drone_gateway_events_total counter",
+            "# HELP orca_drone_gateway_events_total Drone gateway event counters.",
+            "# TYPE orca_drone_gateway_events_total counter",
         ]
         for name, value in sorted(self._counters.items()):
-            lines.append(f'smartcito_drone_gateway_events_total{{event="{name}"}} {value}')
+            lines.append(f'orca_drone_gateway_events_total{{event="{name}"}} {value}')
         return "\n".join(lines) + "\n"
 
 

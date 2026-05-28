@@ -1,12 +1,12 @@
 <!--
 ================================================================================
  File: docs/API.md
- Purpose: Human-readable summary of the SmartCito v1 HTTP API.
+ Purpose: Human-readable summary of the Orca v1 HTTP API.
           The authoritative spec is auto-generated at /openapi.json.
 ================================================================================
 -->
 
-# SmartCito API (v1)
+# Orca API (v1)
 
 Base URL: `/api/v1`. All requests and responses are JSON.
 

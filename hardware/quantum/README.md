@@ -1,6 +1,6 @@
 # Quantum Standards and Procedures
 
-Contributor-facing reference for quantum-ready SmartCito work.
+Contributor-facing reference for quantum-ready Orca work.
 
 ## Contents
 
@@ -12,4 +12,4 @@ Contributor-facing reference for quantum-ready SmartCito work.
 ## Ground Rule
 
 This folder documents quantum readiness and experimentation. It does not change
-SmartCito's requirement to run correctly on classical infrastructure.
+Orca's requirement to run correctly on classical infrastructure.

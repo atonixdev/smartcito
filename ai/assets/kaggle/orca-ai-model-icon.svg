@@ -1,0 +1,32 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="icon-bg" x1="140" y1="88" x2="870" y2="916" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0A2239"/>
+      <stop offset="0.55" stop-color="#114A65"/>
+      <stop offset="1" stop-color="#E56B2F"/>
+    </linearGradient>
+    <linearGradient id="chip" x1="332" y1="264" x2="692" y2="760" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#15324B"/>
+      <stop offset="1" stop-color="#0B2438"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="220" fill="url(#icon-bg)"/>
+  <circle cx="794" cy="202" r="126" fill="#F2C14E" fill-opacity="0.16"/>
+  <circle cx="214" cy="810" r="174" fill="#70C1B3" fill-opacity="0.18"/>
+  <rect x="282" y="240" width="460" height="544" rx="72" fill="url(#chip)" stroke="#B8F2E6" stroke-opacity="0.4" stroke-width="6"/>
+  <rect x="386" y="350" width="252" height="14" rx="7" fill="#B8F2E6"/>
+  <rect x="386" y="414" width="252" height="14" rx="7" fill="#70C1B3"/>
+  <rect x="386" y="478" width="196" height="14" rx="7" fill="#E56B2F"/>
+  <circle cx="512" cy="620" r="82" fill="#0E2438" stroke="#F2C14E" stroke-width="10"/>
+  <path d="M512 564L544 620L512 676L480 620L512 564Z" fill="#F2C14E"/>
+  <path d="M282 356H228" stroke="#B8F2E6" stroke-width="10" stroke-linecap="round"/>
+  <path d="M282 468H220" stroke="#B8F2E6" stroke-width="10" stroke-linecap="round"/>
+  <path d="M282 580H234" stroke="#B8F2E6" stroke-width="10" stroke-linecap="round"/>
+  <path d="M282 692H220" stroke="#B8F2E6" stroke-width="10" stroke-linecap="round"/>
+  <path d="M742 356H796" stroke="#B8F2E6" stroke-width="10" stroke-linecap="round"/>
+  <path d="M742 468H804" stroke="#B8F2E6" stroke-width="10" stroke-linecap="round"/>
+  <path d="M742 580H790" stroke="#B8F2E6" stroke-width="10" stroke-linecap="round"/>
+  <path d="M742 692H804" stroke="#B8F2E6" stroke-width="10" stroke-linecap="round"/>
+  <text x="512" y="885" fill="#D9FFF8" font-size="74" font-weight="700" font-family="Helvetica, Arial, sans-serif" text-anchor="middle">AI</text>
+  <text x="512" y="945" fill="#D9FFF8" fill-opacity="0.9" font-size="34" font-family="Helvetica, Arial, sans-serif" letter-spacing="4" text-anchor="middle">ORCA AI MODEL</text>
+</svg>

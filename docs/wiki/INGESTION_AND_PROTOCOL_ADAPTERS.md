@@ -15,12 +15,12 @@
 
 ## What This Module Does
 
-This area explains how SmartCito receives data from heterogeneous devices and
+This area explains how Orca receives data from heterogeneous devices and
 protocols, normalizes them, and moves them into durable service boundaries.
 
 ## Why It Is Important
 
-Cities do not deploy one device type or one vendor stack. SmartCito only works
+Cities do not deploy one device type or one vendor stack. Orca only works
 if it can absorb multiple protocols and still produce a coherent operating view.
 
 ## How It Connects To Other Modules

@@ -2,7 +2,7 @@
 ================================================================================
  File: hardware/usb_module/service.py
  Purpose:
-   FastAPI service exposing detected USB devices for the SmartCito dashboard
+   FastAPI service exposing detected USB devices for the Orca dashboard
    device manager and hardware integration tests.
 ================================================================================
 """
@@ -13,7 +13,7 @@ from fastapi import FastAPI
 
 from hardware.usb_module.detector import detect_usb_devices
 
-app = FastAPI(title="SmartCito USB Module")
+app = FastAPI(title="Orca USB Module")
 
 
 @app.get("/health")

@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest an idea for SmartCito
+about: Suggest an idea for Orca
 title: "[feat] "
 labels: ["enhancement", "needs-triage"]
 ---

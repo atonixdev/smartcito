@@ -3,7 +3,7 @@
  File: citosmart/app/services/kafka_stream.py
  Purpose:
    Thin async wrappers around aiokafka for publishing and consuming sensor
-   events on the SmartCito event bus.
+   events on the Orca event bus.
 
    - `KafkaPublisher` is used by the API and the MQTT bridge to fan out
      readings to downstream consumers (analytics, dashboards, archives).
@@ -11,8 +11,8 @@
      such as the analytics service.
 
  Topic naming convention:
-     smartcito.<domain>.<stage>
-     e.g. smartcito.sensors.raw   smartcito.sensors.enriched
+     orca.<domain>.<stage>
+     e.g. orca.sensors.raw   orca.sensors.enriched
 
  Notes:
    - We deliberately keep this module small. Anything that smells like
@@ -82,7 +82,7 @@ class KafkaPublisher:
     async def publish_event(self, payload: dict[str, object], *, topic: str) -> None:
         if self._producer is None:
             raise RuntimeError("KafkaPublisher.start() must be called first")
-        key = str(payload.get("event_id") or payload.get("id") or "smartcito").encode("utf-8")
+        key = str(payload.get("event_id") or payload.get("id") or "orca").encode("utf-8")
         await self._producer.send_and_wait(topic, payload, key=key)
 
 

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Simulation-first USB device detection and driver mapping for SmartCito's device
+Simulation-first USB device detection and driver mapping for Orca's device
 manager and hardware plug-in flow.
 
 ## Container Image
@@ -20,8 +20,8 @@ manager and hardware plug-in flow.
 ## How To Run Its Container
 
 ```bash
-docker build -f hardware/usb_module/Dockerfile -t smartcito-usb-module .
-docker run --rm -p 8015:8015 smartcito-usb-module
+docker build -f hardware/usb_module/Dockerfile -t orca-usb-module .
+docker run --rm -p 8015:8015 orca-usb-module
 ```
 
 ## Example Usage

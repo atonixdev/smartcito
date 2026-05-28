@@ -2,7 +2,7 @@
 ================================================================================
  File: citosmart/app/core/security.py
  Purpose:
-   Authentication and authorization primitives for the SmartCito API.
+   Authentication and authorization primitives for the Orca API.
 
    Provides:
      - Password hashing (bcrypt via passlib).

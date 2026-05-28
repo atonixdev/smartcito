@@ -3,13 +3,13 @@ ENV_FILE ?= .env
 DATASET ?= ai/datasets/sample_training_data.json
 EVAL_DATASET ?= ai/datasets/sample_evaluation_data.json
 BASE_MODEL ?=
-ADAPTER_PATH ?= ai/output/smartcito-lora
-KAGGLE_BUNDLE_DIR ?= dist/smartcito_ai_kaggle
+ADAPTER_PATH ?= ai/output/orca-lora
+KAGGLE_BUNDLE_DIR ?= dist/orca_ai_kaggle
 EVAL_OUTPUT ?= $(ADAPTER_PATH)/evaluation_summary.json
 EVAL_REPORT ?= $(ADAPTER_PATH)/evaluation_report.md
 KAGGLE_OWNER ?= jackiedeven
-KAGGLE_SLUG ?= smartcito-ai-kaggle-bundle
-KAGGLE_TITLE ?= SmartCito Kaggle Bundle
+KAGGLE_SLUG ?= orca-ai-kaggle-bundle
+KAGGLE_TITLE ?= Orca Kaggle Bundle
 KAGGLE_LICENSE ?= Apache-2.0
 KAGGLE_PRIVATE ?= 0
 KAGGLE_UPDATE ?= 0
@@ -23,7 +23,7 @@ KAGGLE_DRY_RUN_FLAG := $(if $(filter 1,$(KAGGLE_DRY_RUN)),--dry-run,)
 .PHONY: ai-help ai-prepare ai-package ai-train-lora ai-train-qlora ai-evaluate ai-report ai-publish-kaggle ai-full openstack-env k8s-backend-secret
 
 ai-help:
-	@printf '%s\n' 'SmartCito AI workflow targets:'
+	@printf '%s\n' 'Orca AI workflow targets:'
 	@printf '%s\n' '  make ai-package                      Build the Kaggle upload bundle'
 	@printf '%s\n' '  make ai-prepare                      Prepare the default training dataset'
 	@printf '%s\n' '  make ai-train-lora                   Run LoRA fine-tuning'
@@ -38,7 +38,7 @@ ai-package:
 	$(PYTHON) ai/training/package_kaggle_bundle.py --output-dir $(KAGGLE_BUNDLE_DIR)
 
 ai-prepare:
-	$(PYTHON) ai/training/prepare_dataset.py --input $(DATASET) --output ai/datasets/prepared_smartcito_training_data.jsonl
+	$(PYTHON) ai/training/prepare_dataset.py --input $(DATASET) --output ai/datasets/prepared_orca_training_data.jsonl
 
 ai-train-lora:
 	$(PYTHON) ai/training/lora_training.py --dataset $(DATASET) $(if $(BASE_MODEL),--base-model $(BASE_MODEL),) --output-dir $(ADAPTER_PATH)

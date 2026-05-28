@@ -2,7 +2,7 @@
 ================================================================================
  File: citosmart/app/services/control_plane.py
  Purpose:
-   Aggregates SmartCito device, security, pipeline, and operator-control state
+   Aggregates Orca device, security, pipeline, and operator-control state
    for the dashboard control plane.
 ================================================================================
 """

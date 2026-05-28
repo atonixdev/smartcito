@@ -23,7 +23,7 @@ class HealthResponse(BaseModel):
     """Standard health-check payload."""
 
     status: str
-    service: str = "smartcito-api"
+    service: str = "orca-api"
     version: str = __version__
 
 

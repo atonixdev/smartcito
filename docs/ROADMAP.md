@@ -5,7 +5,7 @@
 ================================================================================
 -->
 
-# SmartCito Roadmap
+# Orca Roadmap
 
 ## Phase 0 — Foundations (current)
 - [x] Project scaffolding (FastAPI + React)

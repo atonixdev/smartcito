@@ -1,7 +1,7 @@
 """
 ================================================================================
  File: citosmart/tests/test_control_plane.py
- Purpose: Focused tests for SmartCito dashboard control-plane endpoints.
+ Purpose: Focused tests for Orca dashboard control-plane endpoints.
 ================================================================================
 """
 
@@ -50,7 +50,7 @@ def client(tmp_path: Path) -> Generator[TestClient, None, None]:
 
 
 def _auth_headers(role: str) -> dict[str, str]:
-    token = create_access_token(subject=f"{role}@smartcito.dev", role=role)
+    token = create_access_token(subject=f"{role}@orca.dev", role=role)
     return {"Authorization": f"Bearer {token}"}
 
 

@@ -3,7 +3,7 @@
  * File: webapp/src/api/events.ts
  * Purpose:
  *   Typed client for live events, historical analytics, and alerts exposed by
- *   the SmartCito backend event pipeline.
+ *   the Orca backend event pipeline.
  * ============================================================================
  */
 

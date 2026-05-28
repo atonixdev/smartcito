@@ -2,7 +2,7 @@
 ================================================================================
  File: docs/wiki/QUANTUM_SAFE_ENVELOPE_AND_OID_WRAPPERS.md
  Purpose:
-   Dedicated wiki page for SmartCito's quantum-safe migration layer, including
+   Dedicated wiki page for Orca's quantum-safe migration layer, including
    hybrid envelopes, PQC tracking, and QKD readiness.
 ================================================================================
 -->
@@ -15,13 +15,13 @@
 
 ## What This Module Does
 
-This area documents the quantum-ready abstraction layer in SmartCito, including
+This area documents the quantum-ready abstraction layer in Orca, including
 hybrid encryption envelopes, tracked PQC algorithm families, and imported QKD
 material used for future-ready security integration.
 
 ## Why It Is Important
 
-SmartCito is designed for long-lived infrastructure. That means crypto agility
+Orca is designed for long-lived infrastructure. That means crypto agility
 must be planned now instead of postponed until later migrations become costly.
 
 ## How It Connects To Other Modules

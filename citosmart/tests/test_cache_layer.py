@@ -123,7 +123,7 @@ def db_client(tmp_path: Path) -> Generator[TestClient, None, None]:
 
 
 def _auth_headers(role: str) -> dict[str, str]:
-    return {"Authorization": f"Bearer {create_access_token(subject=f'{role}@smartcito.dev', role=role)}"}
+    return {"Authorization": f"Bearer {create_access_token(subject=f'{role}@orca.dev', role=role)}"}
 
 
 def test_login_reuses_cached_session_token() -> None:
@@ -131,11 +131,11 @@ def test_login_reuses_cached_session_token() -> None:
         client = TestClient(app)
         response_a = client.post(
             "/api/v1/auth/token",
-            data={"username": "admin@smartcito.dev", "password": "changeme"},
+            data={"username": "admin@orca.dev", "password": "changeme"},
         )
         response_b = client.post(
             "/api/v1/auth/token",
-            data={"username": "admin@smartcito.dev", "password": "changeme"},
+            data={"username": "admin@orca.dev", "password": "changeme"},
         )
 
         assert response_a.status_code == 200

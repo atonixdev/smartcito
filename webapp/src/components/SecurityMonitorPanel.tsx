@@ -3,7 +3,7 @@
  * File: webapp/src/components/SecurityMonitorPanel.tsx
  * Purpose:
  *   Security monitor panel displaying encryption, IAM, audit, and intrusion
- *   status for the SmartCito control plane.
+ *   status for the Orca control plane.
  * ============================================================================
  */
 

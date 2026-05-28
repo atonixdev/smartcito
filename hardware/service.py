@@ -22,7 +22,7 @@ from hardware.monitoring.agent import collect_sample
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
 
-app = FastAPI(title="SmartCito Hardware Domain")
+app = FastAPI(title="Orca Hardware Domain")
 
 
 @app.get("/health")

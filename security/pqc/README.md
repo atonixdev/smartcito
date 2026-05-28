@@ -1,6 +1,6 @@
 # Post-Quantum Cryptography
 
-SmartCito's post-quantum cryptography migration guidance.
+Orca's post-quantum cryptography migration guidance.
 
 ## Strategy
 

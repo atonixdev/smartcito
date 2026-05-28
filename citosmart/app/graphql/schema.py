@@ -2,7 +2,7 @@
 ================================================================================
  File: citosmart/app/graphql/schema.py
  Purpose:
-   GraphQL integration surface for SmartCito. This sits alongside the REST API
+   GraphQL integration surface for Orca. This sits alongside the REST API
    so external dashboards and integration clients can aggregate data through a
    single typed endpoint without duplicating service logic.
 ================================================================================

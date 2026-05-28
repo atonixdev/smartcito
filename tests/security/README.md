@@ -1,6 +1,6 @@
 # Security Tests
 
-Security validation scripts and fixtures for SmartCito.
+Security validation scripts and fixtures for Orca.
 
 ## Scope
 

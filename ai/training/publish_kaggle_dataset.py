@@ -9,22 +9,22 @@ from pathlib import Path
 
 AI_ROOT = Path(__file__).resolve().parents[1]
 REPO_ROOT = AI_ROOT.parent
-DEFAULT_BUNDLE_DIR = REPO_ROOT / "dist" / "smartcito_ai_kaggle"
-DEFAULT_SLUG = "smartcito-ai-kaggle-bundle"
-DEFAULT_TITLE = "SmartCito Kaggle Bundle"
+DEFAULT_BUNDLE_DIR = REPO_ROOT / "dist" / "orca_ai_kaggle"
+DEFAULT_SLUG = "orca-ai-kaggle-bundle"
+DEFAULT_TITLE = "Orca Kaggle Bundle"
 DEFAULT_LICENSE = "Apache-2.0"
 DEFAULT_DIR_MODE = "zip"
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Publish the SmartCito Kaggle bundle as a Kaggle dataset.")
+    parser = argparse.ArgumentParser(description="Publish the Orca Kaggle bundle as a Kaggle dataset.")
     parser.add_argument("--bundle-dir", default=str(DEFAULT_BUNDLE_DIR))
     parser.add_argument("--owner", required=True, help="Kaggle username or organization name.")
     parser.add_argument("--slug", default=DEFAULT_SLUG, help="Kaggle dataset slug.")
     parser.add_argument("--title", default=DEFAULT_TITLE, help="Kaggle dataset title.")
     parser.add_argument("--license", dest="license_name", default=DEFAULT_LICENSE, help="Kaggle dataset license name.")
     parser.add_argument("--private", action="store_true", help="Create or update the dataset as private.")
-    parser.add_argument("--version-notes", default="SmartCito Kaggle bundle update", help="Version notes for Kaggle dataset updates.")
+    parser.add_argument("--version-notes", default="Orca Kaggle bundle update", help="Version notes for Kaggle dataset updates.")
     parser.add_argument(
         "--dir-mode",
         choices=("skip", "zip", "tar"),
@@ -47,12 +47,12 @@ def build_metadata(args: argparse.Namespace) -> dict[str, object]:
             "deep learning",
             "geospatial analysis",
         ],
-        "subtitle": "SmartCito training, inference, and synthetic data bundle",
+        "subtitle": "Orca training, inference, and synthetic data bundle",
         "description": (
-            "SmartCito Model is the AI workspace for SmartCito operational intelligence. "
+            "Orca Model is the AI workspace for Orca operational intelligence. "
             "This Kaggle bundle packages model structure, ingestion pipelines, datasets, training logic, notebooks, and documentation "
             "for navigation, mapping, alerts, sensor fusion, weather analysis, and satellite-driven operational reasoning. "
-            "SmartCito is designed to build on a compatible LLaMA-3 foundation model, but foundation-model weights are not included in this bundle."
+            "Orca is designed to build on a compatible LLaMA-3 foundation model, but foundation-model weights are not included in this bundle."
         ),
         "isPrivate": bool(args.private),
     }

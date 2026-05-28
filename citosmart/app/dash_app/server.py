@@ -4,7 +4,7 @@
  Purpose:
    Live sensor dashboard built with Plotly Dash. Intended for analysts and
    data engineers who want a quick, code-defined view of the data flowing
-   through SmartCito.
+   through Orca.
 
  How it works:
    - Every 5 seconds, callbacks fetch the latest readings from the API.
@@ -34,7 +34,7 @@ from app.core.logging import configure_logging
 
 logger = logging.getLogger(__name__)
 
-API_BASE = os.getenv("SMARTCITO_API_BASE", "http://localhost:8000/api/v1")
+API_BASE = os.getenv("ORCA_API_BASE", "http://localhost:8000/api/v1")
 REFRESH_MS = int(os.getenv("DASH_REFRESH_MS", "5000"))
 
 
@@ -60,13 +60,13 @@ def _fetch_readings(limit: int = 200) -> pd.DataFrame:
 
 def build_app() -> Dash:
     """Factory for the Dash application."""
-    app = Dash(__name__, title="SmartCito · Analytics")
+    app = Dash(__name__, title="Orca · Analytics")
 
     app.layout = html.Div(
         style={"fontFamily": "system-ui", "padding": "1.5rem", "background": "#0f172a",
                "color": "#e2e8f0", "minHeight": "100vh"},
         children=[
-            html.H2("SmartCito Live Analytics"),
+            html.H2("Orca Live Analytics"),
             html.P("Streaming view of recent sensor readings. Refreshes every "
                    f"{REFRESH_MS // 1000}s."),
             dcc.Interval(id="tick", interval=REFRESH_MS, n_intervals=0),

@@ -2,7 +2,7 @@
 ================================================================================
  File: citosmart/app/services/mqtt_ingestor.py
  Purpose:
-   Bridge MQTT-published sensor messages into the SmartCito ingestion
+   Bridge MQTT-published sensor messages into the Orca ingestion
    pipeline. Subscribes to a topic, parses each JSON payload into a
    `SensorReadingIn`, and forwards it to either:
 
@@ -40,7 +40,7 @@ from app.services.ingestion import ingestion_service
 logger = logging.getLogger(__name__)
 
 # Override via env var MQTT_TOPIC if desired.
-DEFAULT_TOPIC = "smartcito/sensors/+"   # `+` = single-level wildcard
+DEFAULT_TOPIC = "orca/sensors/+"   # `+` = single-level wildcard
 
 
 class MqttIngestor:
@@ -51,7 +51,7 @@ class MqttIngestor:
         host: str = "localhost",
         port: int = 1883,
         topic: str = DEFAULT_TOPIC,
-        client_id: str = "smartcito-ingestor",
+        client_id: str = "orca-ingestor",
     ) -> None:
         self.host = host
         self.port = port

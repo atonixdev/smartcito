@@ -1,6 +1,6 @@
-# SmartCito Kaggle Guide
+# Orca Kaggle Guide
 
-This repository is structured so contributors can upload it to Kaggle, fine-tune SmartCito adapters, and submit improvements back to the project.
+This repository is structured so contributors can upload it to Kaggle, fine-tune Orca adapters, and submit improvements back to the project.
 
 ## What To Upload
 
@@ -30,13 +30,13 @@ KAGGLE_OWNER=jackiedeven KAGGLE_DRY_RUN=1 ./scripts/ai.sh publish-kaggle
 
 Then upload the generated folder:
 
-- `dist/smartcito_ai_kaggle/`
+- `dist/orca_ai_kaggle/`
 
-That folder already contains the SmartCito Model code, training scripts, sample datasets, notebooks, and contributor docs needed for Kaggle.
+That folder already contains the Orca Model code, training scripts, sample datasets, notebooks, and contributor docs needed for Kaggle.
 
 Primary public demo assets inside the bundle:
 
-- `ai/examples/SmartCito_Training_Demo.ipynb`
+- `ai/examples/Orca_Training_Demo.ipynb`
 - `ai/examples/inference_demo.py`
 
 Do not upload Meta LLaMA-3 base weights.
@@ -44,7 +44,7 @@ Do not upload Meta LLaMA-3 base weights.
 ## Kaggle Setup
 
 1. Create a new Kaggle Notebook with GPU enabled.
-2. Add `dist/smartcito_ai_kaggle/` as a Dataset or upload that folder as a zip.
+2. Add `dist/orca_ai_kaggle/` as a Dataset or upload that folder as a zip.
 3. Install dependencies from `ai/ai_models/requirements.txt`.
 4. Provide a Hugging Face token through Kaggle Secrets if the base model requires gated access.
 5. Install the Kaggle CLI locally if you are publishing from your machine: `python3 -m pip install --user kaggle`.
@@ -53,19 +53,19 @@ Do not upload Meta LLaMA-3 base weights.
 Example setup cell:
 
 ```python
-!pip install -r /kaggle/input/smartcito/ai/ai_models/requirements.txt
+!pip install -r /kaggle/input/orca/ai/ai_models/requirements.txt
 ```
 
 ## Training Steps
 
-1. Open [ai/examples/SmartCito_Training_Demo.ipynb](ai/examples/SmartCito_Training_Demo.ipynb) locally or in Kaggle.
+1. Open [ai/examples/Orca_Training_Demo.ipynb](ai/examples/Orca_Training_Demo.ipynb) locally or in Kaggle.
 2. Prepare the dataset with `ai/training/prepare_dataset.py`.
 3. Run `ai/training/lora_training.py` or `ai/training/qlora_training.py`.
-4. Confirm the adapter output is written to `ai/output/smartcito-lora/`.
+4. Confirm the adapter output is written to `ai/output/orca-lora/`.
 5. Optionally evaluate the adapter before sharing it:
 
 ```bash
-python ai/training/evaluate_adapters.py --adapter-path ai/output/smartcito-lora
+python ai/training/evaluate_adapters.py --adapter-path ai/output/orca-lora
 ```
 
 Shell-wrapper equivalents:
@@ -78,8 +78,8 @@ scripts/ai.sh evaluate
 
 This writes:
 
-- `ai/output/smartcito-lora/evaluation_summary.json`
-- `ai/output/smartcito-lora/evaluation_report.md`
+- `ai/output/orca-lora/evaluation_summary.json`
+- `ai/output/orca-lora/evaluation_report.md`
 
 For offline scoring of saved predictions, run:
 
@@ -92,12 +92,12 @@ python ai/training/evaluate_adapters.py \
 ## Inference Steps
 
 1. Run [ai/examples/inference_demo.py](ai/examples/inference_demo.py) locally or from a Kaggle code environment.
-2. Point `SMARTCITO_BASE_MODEL_ID` to the gated base model id.
-3. Point `SMARTCITO_LORA_ADAPTER_PATH` to the generated adapter directory.
-4. Use local or API-backed inference to test SmartCito tasks.
+2. Point `ORCA_BASE_MODEL_ID` to the gated base model id.
+3. Point `ORCA_LORA_ADAPTER_PATH` to the generated adapter directory.
+4. Use local or API-backed inference to test Orca tasks.
 
-## Submission Back To SmartCito
+## Submission Back To Orca
 
 1. Export only the adapter folder and training summary.
 2. Publish the adapter as a Kaggle Dataset or attach it to your collaboration flow.
-3. Open a SmartCito pull request referencing the dataset, notebook, and adapter artifact.
+3. Open a Orca pull request referencing the dataset, notebook, and adapter artifact.

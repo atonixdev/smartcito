@@ -6,7 +6,7 @@ import { MemoryRouter } from "react-router-dom";
 import RobotDashboard from "./RobotDashboard";
 
 vi.mock("@/components/CommandCenterMap", () => ({
-  default: () => <div aria-label="SmartCito city command map" />,
+  default: () => <div aria-label="Orca city command map" />,
 }));
 
 vi.mock("@/api/map", () => ({
@@ -89,7 +89,7 @@ vi.mock("@/api/robotGateway", () => ({
     registry: [
       {
         robot_id: "robot-patrol-007",
-        model: "SmartCito Patrol UGV",
+        model: "Orca Patrol UGV",
         firmware_version: "ugv-2.4.1",
         max_speed_mps: 3.5,
         battery_capacity_mah: 18000,
@@ -138,7 +138,7 @@ vi.mock("@/api/robotGateway", () => ({
       registry: [
         {
           robot_id: "robot-patrol-007",
-          model: "SmartCito Patrol UGV",
+          model: "Orca Patrol UGV",
           firmware_version: "ugv-2.4.1",
           max_speed_mps: 3.5,
           battery_capacity_mah: 18000,

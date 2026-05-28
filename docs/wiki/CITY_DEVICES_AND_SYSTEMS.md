@@ -2,7 +2,7 @@
 ================================================================================
  File: docs/wiki/CITY_DEVICES_AND_SYSTEMS.md
  Purpose:
-   Dedicated wiki page for field devices, edge systems, and how SmartCito
+   Dedicated wiki page for field devices, edge systems, and how Orca
    connects cameras, GPS units, and sensors into the platform.
 ================================================================================
 -->
@@ -10,17 +10,17 @@
 # City Devices and Systems
 
 <p align="center">
-  <img src="assets/platform-overview.svg" alt="City devices in the SmartCito platform" width="100%" />
+  <img src="assets/platform-overview.svg" alt="City devices in the Orca platform" width="100%" />
 </p>
 
 ## What This Module Does
 
-This area describes the real-world field inputs that SmartCito expects:
+This area describes the real-world field inputs that Orca expects:
 cameras, GPS trackers, IoT sensors, and other city-connected systems.
 
 ## Why It Is Important
 
-SmartCito exists to unify fragmented urban telemetry. The device layer is the
+Orca exists to unify fragmented urban telemetry. The device layer is the
 source of truth for everything the platform tries to observe and act on.
 
 ## How It Connects To Other Modules
@@ -45,7 +45,7 @@ flowchart LR
     B[Micro Cameras] --> E
     C[GPS Units] --> F[Location and Telemetry Flow]
     D[IoT Sensors] --> G[Sensor Ingestion]
-    E --> H[Unified SmartCito Backbone]
+    E --> H[Unified Orca Backbone]
     F --> H
     G --> H
 ```

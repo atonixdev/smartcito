@@ -2,7 +2,7 @@
 ================================================================================
  File: database/bootstrap.py
  Purpose:
-   Lightweight database bootstrap helper for local SmartCito development.
+   Lightweight database bootstrap helper for local Orca development.
 ================================================================================
 """
 

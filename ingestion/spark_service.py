@@ -20,7 +20,7 @@ from ingestion.storage_config import storage_runtime_summary
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
 
-app = FastAPI(title="SmartCito Ingestion Spark Worker")
+app = FastAPI(title="Orca Ingestion Spark Worker")
 
 
 @app.get("/health")

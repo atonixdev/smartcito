@@ -2,7 +2,7 @@
  * ============================================================================
  * File: webapp/src/api/droneGateway.ts
  * Purpose:
- *   Typed React Query client for the SmartCito Drone Gateway. The dashboard
+ *   Typed React Query client for the Orca Drone Gateway. The dashboard
  *   talks to the gateway through the web proxy, never directly to drones.
  * ============================================================================
  */
@@ -236,7 +236,7 @@ export const demoDroneFleet: DroneFleet = {
   registry: [
     {
       drone_id: "drone-patrol-001",
-      model: "SmartCito Simulated Patrol Drone",
+      model: "Orca Simulated Patrol Drone",
       firmware_version: "sim-1.0.0",
       max_speed_mps: 18,
       max_altitude_m: 500,

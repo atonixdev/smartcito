@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const LEDGER_DIR = process.env.ATP_LEDGER_DIR || path.join(__dirname, '..', 'ledger');
-const ATP_SECRET = process.env.ATP_SECRET || 'smartcito-dev-secret';
+const ATP_SECRET = process.env.ATP_SECRET || 'orca-dev-secret';
 
 function ensureLedger() {
   if (!fs.existsSync(LEDGER_DIR)) {

@@ -3,7 +3,7 @@
  File: camera_module/service.py
  Purpose:
    Minimal FastAPI camera-domain service exposing protocol capabilities and
-   stream validation hooks for SmartCito contributors.
+   stream validation hooks for Orca contributors.
 ================================================================================
 """
 
@@ -20,7 +20,7 @@ from camera_module.drivers.rtsp_driver import build_rtsp_stream_config
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
 
-app = FastAPI(title="SmartCito Camera Module")
+app = FastAPI(title="Orca Camera Module")
 
 
 class CameraProbeRequest(BaseModel):

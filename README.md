@@ -1,10 +1,10 @@
 <!--
 ================================================================================
- SmartCito — Urban Data Backbone for Smart Cities
+ Orca — Urban Data Backbone for Smart Cities
 ================================================================================
  File: README.md
  Purpose:
-   Top-level entry point for the SmartCito project. This document gives
+   Top-level entry point for the Orca project. This document gives
    contributors, city stakeholders, and researchers a fast, complete overview
    of WHAT the project is, WHY it exists, HOW it is organized, and HOW to
    participate.
@@ -20,21 +20,21 @@
 ================================================================================
 -->
 
-# SmartCito
+# Orca
 
 **Secure edge-intelligence platform for cities and infrastructure.**
 
-SmartCito unifies IoT, GPS, cameras, 2D/3D maps, AI, cryptography, and secure edge compute into a single auditable operations dashboard.
+Orca unifies IoT, GPS, cameras, 2D/3D maps, AI, cryptography, and secure edge compute into a single auditable operations dashboard.
 
-The repository now also includes a Kaggle-ready fine-tuning pipeline for the SmartCito Model, with LoRA and QLoRA workflows for SmartCito operational intelligence.
+The repository now also includes a Kaggle-ready fine-tuning pipeline for the Orca Model, with LoRA and QLoRA workflows for Orca operational intelligence.
 
-This bundle does not include LLaMA-3 weights. It only ships SmartCito code, LoRA or QLoRA adapters, and synthetic or private datasets. Users must obtain any compatible base model from official provider sources.
+This bundle does not include LLaMA-3 weights. It only ships Orca code, LoRA or QLoRA adapters, and synthetic or private datasets. Users must obtain any compatible base model from official provider sources.
 
 ---
 
 ## Operational Overview
 
-![SmartCito Operational Flow](docs/diagrams/smartcito-architecture.svg)
+![Orca Operational Flow](docs/diagrams/orca-architecture.svg)
 
 End-to-end flow:
 **Edge Devices → Edge Compute → Location Fusion + ATP Ledger → Operator Dashboard**
@@ -43,7 +43,7 @@ End-to-end flow:
 
 ## Edge Data Flow
 
-![SmartCito Edge Data Flow](docs/diagrams/edge-data-flow.svg)
+![Orca Edge Data Flow](docs/diagrams/edge-data-flow.svg)
 
 Every hop is authenticated, encrypted, and logged to the ATP ledger.
 
@@ -51,7 +51,7 @@ Every hop is authenticated, encrypted, and logged to the ATP ledger.
 
 ## Location Intelligence (Map Module)
 
-The **Map module** (`/map`) powers SmartCito's location intelligence: country selection, region/area-code mapping, IP geolocation, GPS validation, and multi-source fusion with confidence scoring.
+The **Map module** (`/map`) powers Orca's location intelligence: country selection, region/area-code mapping, IP geolocation, GPS validation, and multi-source fusion with confidence scoring.
 
 ![Location Fusion Engine](docs/diagrams/location-fusion.svg)
 
@@ -68,7 +68,7 @@ See [`map/README.md`](map/README.md) for full API and usage.
 | Service     | URL                        | Purpose                       |
 |-------------|----------------------------|-------------------------------|
 | Webapp    | http://localhost:5173      | React dashboard               |
-| SmartCito API | http://localhost:8000      | FastAPI backend (OpenAPI at `/docs`)  |
+| Orca API | http://localhost:8000      | FastAPI backend (OpenAPI at `/docs`)  |
 | Drone Gateway | http://localhost:8020      | MAVLink / drone telemetry and command gateway |
 | Mission Control | http://localhost:8025      | Mission validation, upload, and monitoring |
 | Mapping Geospatial | http://localhost:8024   | Drone path, geofence, and overlay service |
@@ -88,7 +88,7 @@ That now brings up the main API, web dashboard, drone gateway, mission control,
 mapping, drone camera ingestion, threat detection, observability surfaces, and
 their local proxy routes in one stack.
 
-### Local SmartCito API Development
+### Local Orca API Development
 
 ```bash
 cd citosmart
@@ -115,14 +115,14 @@ For a single wiki-style project entry point, start with [`docs/WIKI.md`](docs/WI
 For pilot or hardware-backed deployments, see [`docs/DOCKER_DEPLOYMENT.md`](docs/DOCKER_DEPLOYMENT.md)
 and [`hardware/`](hardware/).
 
-For the official OpenStack and Kubernetes node image, see [`infra/openstack/smartcito-os/README.md`](infra/openstack/smartcito-os/README.md).
+For the official OpenStack and Kubernetes node image, see [`infra/openstack/orca-os/README.md`](infra/openstack/orca-os/README.md).
 
 
 ---
 
 ## Dashboard — 2D / 3D Map View
 
-![SmartCito Dashboard Map View](docs/diagrams/dashboard-map-view.svg)
+![Orca Dashboard Map View](docs/diagrams/dashboard-map-view.svg)
 
 The dashboard renders:
 
@@ -173,11 +173,11 @@ Use `services/` for separately deployable capabilities.
 
 AI-specific folders are consolidated under `ai/`. Use the `ai/` tree directly for model, dataset, training, runtime, and artifact workflows.
 
-## SmartCito Model
+## Orca Model
 
-The SmartCito Model pipeline supports LoRA and QLoRA fine-tuning workflows and exports adapter-only artifacts to `ai/output/smartcito-lora/`.
+The Orca Model pipeline supports LoRA and QLoRA fine-tuning workflows and exports adapter-only artifacts to `ai/output/orca-lora/`.
 
-The repository also now includes a SmartCito runtime pipeline for ingestion, versioned training, deployment, and inference without bundling third-party foundation-model weights.
+The repository also now includes a Orca runtime pipeline for ingestion, versioned training, deployment, and inference without bundling third-party foundation-model weights.
 
 - Dataset schema: [ai/training/dataset_format.md](ai/training/dataset_format.md)
 - Training scripts: [ai/training/lora_training.py](ai/training/lora_training.py) and [ai/training/qlora_training.py](ai/training/qlora_training.py)
@@ -186,35 +186,35 @@ The repository also now includes a SmartCito runtime pipeline for ingestion, ver
 - Kaggle publish helper: [ai/training/publish_kaggle_dataset.py](ai/training/publish_kaggle_dataset.py)
 - One-command workflow: [Makefile](Makefile)
 - Shell workflow wrapper: [scripts/ai.sh](scripts/ai.sh)
-- Public Kaggle demo notebook: [ai/examples/SmartCito_Training_Demo.ipynb](ai/examples/SmartCito_Training_Demo.ipynb)
-- Public Kaggle inference notebook: [ai/examples/smartcito_inference_demo.ipynb](ai/examples/smartcito_inference_demo.ipynb)
-- AI runtime package: [ai/smartcito_runtime](ai/smartcito_runtime)
+- Public Kaggle demo notebook: [ai/examples/Orca_Training_Demo.ipynb](ai/examples/Orca_Training_Demo.ipynb)
+- Public Kaggle inference notebook: [ai/examples/orca_inference_demo.ipynb](ai/examples/orca_inference_demo.ipynb)
+- AI runtime package: [ai/orca_runtime](ai/orca_runtime)
 - Model documentation: [docs/MODEL_CARD.md](docs/MODEL_CARD.md)
 - Operational flow: [docs/OPERATIONAL_FLOW.md](docs/OPERATIONAL_FLOW.md)
 - Kaggle workflow: [docs/KAGGLE_USAGE.md](docs/KAGGLE_USAGE.md)
-- Runtime documentation: [docs/SMARTCITO_MODEL_RUNTIME.md](docs/SMARTCITO_MODEL_RUNTIME.md)
+- Runtime documentation: [docs/ORCA_MODEL_RUNTIME.md](docs/ORCA_MODEL_RUNTIME.md)
 
 ### Runtime
 
-- Ingestion/DataStream batches operational events into `ai/smartcito_datasets/batch_YYYYMMDD_HHMMSS.json`
-- Versioned model artifacts are stored under `ai/models/smartcito_model_vN/`
+- Ingestion/DataStream batches operational events into `ai/orca_datasets/batch_YYYYMMDD_HHMMSS.json`
+- Versioned model artifacts are stored under `ai/models/orca_model_vN/`
 - The active deployed model is tracked via `ai/models/active_model.json`
-- FastAPI inference exposes SmartCito task endpoints under `/smartcito/*`
-- The project CLI supports `smartcito ingest`, `smartcito train`, `smartcito deploy`, and `smartcito dataset export`
+- FastAPI inference exposes Orca task endpoints under `/orca/*`
+- The project CLI supports `orca ingest`, `orca train`, `orca deploy`, and `orca dataset export`
 
-Important: the repository does not ship base foundation-model weights. Contributors should only publish LoRA adapters generated from SmartCito training runs.
+Important: the repository does not ship base foundation-model weights. Contributors should only publish LoRA adapters generated from Orca training runs.
 
 ---
 
 ## Releases
 
 
-- [SmartCito Edge v1.0](docs/SMARTCITO_EDGE_V1_RELEASE.md) — IoT, GPS, Map & Camera Integration
+- [Orca Edge v1.0](docs/ORCA_EDGE_V1_RELEASE.md) — IoT, GPS, Map & Camera Integration
 
 If you find a vulnerability, please **do not open a public issue**. Follow the
 disclosure process in [`SECURITY.md`](SECURITY.md).
 
-SmartCito targets compatibility with:
+Orca targets compatibility with:
 
 - **GDPR**
 - **POPIA**
@@ -239,7 +239,7 @@ Important environment variables include:
 - `AUTH_JWT_SECRET`, `AUTH_ISSUER`, `AUTH_AUDIENCE`
 - `OPENSTACK_AUTH_URL`, `OPENSTACK_PROJECT`, `OPENSTACK_USER`, `OPENSTACK_PASSWORD`, `OPENSTACK_REGION`
 
-SmartCito now standardizes CI/CD across GitHub Actions and GitLab around these
+Orca now standardizes CI/CD across GitHub Actions and GitLab around these
 stages: **build → test → package → deploy-staging → deploy-production**.
 
 - CI builds one Docker image per service tagged with the commit SHA.

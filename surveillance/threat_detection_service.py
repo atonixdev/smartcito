@@ -23,7 +23,7 @@ from surveillance.topics import DRONE_CAMERA_ALERTS_TOPIC, THREAT_ALERTS_TOPIC
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
 
-app = FastAPI(title="SmartCito Threat Detection Service")
+app = FastAPI(title="Orca Threat Detection Service")
 _alerts: dict[str, ThreatAlert] = {}
 
 

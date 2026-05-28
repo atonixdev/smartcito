@@ -1,7 +1,7 @@
 /**
  * ============================================================================
  * File: webapp/src/pages/Community.tsx
- * Purpose: Community and contribution page for SmartCito.
+ * Purpose: Community and contribution page for Orca.
  * ============================================================================
  */
 
@@ -30,7 +30,7 @@ export default function Community() {
       <span className="eyebrow">Community and contribution</span>
       <h2>Open to everyone who wants cities to be safer and more transparent.</h2>
       <p className="lead-text">
-        SmartCito is built for practical contribution. The repo contains active
+        Orca is built for practical contribution. The repo contains active
         backend code, frontend pages, hardware modules, security services,
         infrastructure automation, CI validation, and Wiki-ready documentation.
       </p>
@@ -63,7 +63,7 @@ export default function Community() {
           </p>
           <a
             className="text-link"
-            href="https://github.com/atonixdev/smartcito"
+            href="https://github.com/atonixdev/orca"
             target="_blank"
             rel="noreferrer"
           >

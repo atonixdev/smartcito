@@ -2,7 +2,7 @@
 ================================================================================
  File: citosmart/app/main.py
  Purpose:
-   ASGI entrypoint for the SmartCito Urban Data Backbone API.
+   ASGI entrypoint for the Orca Urban Data Backbone API.
 
    This module wires together:
      - Application configuration (env-driven, see app.core.config).
@@ -178,7 +178,7 @@ def create_app() -> FastAPI:
         title=settings.app_name,
         version="0.1.0",
         description=(
-            "SmartCito — Urban Data Backbone. A secure, open API gateway for "
+            "Orca — Urban Data Backbone. A secure, open API gateway for "
             "smart-city IoT, traffic, utilities, and citizen services."
         ),
         docs_url="/docs",

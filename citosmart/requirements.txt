@@ -1,7 +1,7 @@
 # ============================================================================
 # File: citosmart/requirements.txt
 # Purpose:
-#   Runtime Python dependencies for SmartCito — a Python-first urban data
+#   Runtime Python dependencies for Orca — a Python-first urban data
 #   backbone. Grouped by role so contributors can see what each library does.
 #   Pinned to compatible minor versions; bump with care and run the full
 #   test suite before merging.

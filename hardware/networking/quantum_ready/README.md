@@ -1,6 +1,6 @@
 # Quantum-Ready Networking
 
-Networking guidance for quantum-safe SmartCito deployments.
+Networking guidance for quantum-safe Orca deployments.
 
 ## Objectives
 
@@ -17,5 +17,5 @@ Networking guidance for quantum-safe SmartCito deployments.
 
 ## Current State
 
-Today, SmartCito runs on classical secure transport. This folder describes the
+Today, Orca runs on classical secure transport. This folder describes the
 interfaces that make that transport quantum-ready over time.

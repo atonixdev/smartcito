@@ -3,7 +3,7 @@
  File: docs/wiki/HARDWARE_FLEET_AND_RACK_INFRASTRUCTURE.md
  Purpose:
    Dedicated wiki page for hardware topology, racks, power, cooling, and CI
-   validation of SmartCito infrastructure.
+   validation of Orca infrastructure.
 ================================================================================
 -->
 
@@ -15,13 +15,13 @@
 
 ## What This Module Does
 
-This area documents the physical deployment model behind SmartCito: controller
+This area documents the physical deployment model behind Orca: controller
 nodes, compute servers, storage tiers, network edges, racks, PDUs, UPS units,
 and monitoring points.
 
 ## Why It Is Important
 
-SmartCito is intended for real operational environments. The hardware layer
+Orca is intended for real operational environments. The hardware layer
 must be clear enough that software, power, cooling, and physical security can
 be reasoned about together.
 

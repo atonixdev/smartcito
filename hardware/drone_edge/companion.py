@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from hardware.drone_edge.mavlink_bridge import normalize_mavlink_telemetry
 from hardware.drone_edge.schemas import CameraStreamProfile, DroneProfile, FrameSample, SensorSnapshot
-from hardware.drone_edge.sdk import SmartCitoDroneSDK
+from hardware.drone_edge.sdk import OrcaDroneSDK
 from hardware.drone_edge.streamer import VideoEncodingProfile, build_camera_stream_profile
 
 
@@ -10,7 +10,7 @@ class DroneCompanionRuntime:
     def __init__(
         self,
         *,
-        sdk: SmartCitoDroneSDK,
+        sdk: OrcaDroneSDK,
         drone_profile: DroneProfile,
         camera_profile: CameraStreamProfile | None = None,
         encoder_profile: VideoEncodingProfile | None = None,

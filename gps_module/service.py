@@ -3,7 +3,7 @@
  File: gps_module/service.py
  Purpose:
    Minimal FastAPI GPS-domain service exposing NMEA parsing and standards
-   metadata for SmartCito contributors.
+   metadata for Orca contributors.
 ================================================================================
 """
 
@@ -20,7 +20,7 @@ from gps_module.nmea import parse_gpgga
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
 
-app = FastAPI(title="SmartCito GPS Module")
+app = FastAPI(title="Orca GPS Module")
 
 
 class NmeaRequest(BaseModel):

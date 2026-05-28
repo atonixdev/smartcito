@@ -2,7 +2,7 @@
 ================================================================================
  File: gps_module/nmea.py
  Purpose:
-   Lightweight NMEA parsing helpers for SmartCito GPS contributors.
+   Lightweight NMEA parsing helpers for Orca GPS contributors.
 ================================================================================
 """
 

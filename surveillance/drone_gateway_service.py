@@ -2,9 +2,9 @@
 ================================================================================
  File: surveillance/drone_gateway_service.py
  Purpose:
-   Drone Gateway Service for SmartCito. It normalizes telemetry and commands
+   Drone Gateway Service for Orca. It normalizes telemetry and commands
    from MAVLink, vendor SDKs, REST, WebSocket, or simulated drones into the
-   shared SmartCito event contract and Kafka topics.
+   shared Orca event contract and Kafka topics.
 ================================================================================
 """
 
@@ -15,7 +15,7 @@ from uuid import uuid4
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Response
-from smartcito_shared.crypto import build_secure_envelope
+from orca_shared.crypto import build_secure_envelope
 
 from surveillance.adapters import adapter_for, supported_protocols
 from surveillance.geospatial import resolve_zone
@@ -28,7 +28,7 @@ from surveillance.topics import DRONE_EVENTS_TOPIC, DRONE_MISSIONS_TOPIC, DRONE_
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
 
-app = FastAPI(title="SmartCito Drone Gateway Service")
+app = FastAPI(title="Orca Drone Gateway Service")
 _commands: dict[str, DroneCommand] = {}
 _latest_telemetry: dict[str, DroneTelemetry] = {}
 _drone_protocols: dict[str, str] = {}

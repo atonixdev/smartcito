@@ -1,7 +1,7 @@
 import os
 from urllib.error import URLError
 
-os.environ["SMARTCITO_KAFKA_ENABLED"] = "0"
+os.environ["ORCA_KAFKA_ENABLED"] = "0"
 os.environ["DRONE_REGISTRY_ENABLED"] = "0"
 
 from fastapi.testclient import TestClient
@@ -35,7 +35,7 @@ def test_drone_gateway_normalizes_telemetry() -> None:
 
     assert response.status_code == 200
     payload = response.json()
-    assert payload["event"]["topic"] == "smartcito.drone.telemetry"
+    assert payload["event"]["topic"] == "orca.drone.telemetry"
     assert payload["event"]["payload"]["coordinate_system"] == "WGS84"
     assert payload["event"]["payload"]["zone"]["zone_id"] == "zone-1-cbd"
     assert payload["event"]["payload"]["security"]["algorithm"] == "AES-256-GCM"
@@ -86,7 +86,7 @@ def test_drone_gateway_metrics_endpoint() -> None:
     response = client.get("/metrics")
 
     assert response.status_code == 200
-    assert "smartcito_drone_gateway_events_total" in response.text
+    assert "orca_drone_gateway_events_total" in response.text
 
 
 def test_robot_gateway_discovers_capabilities_and_accepts_command() -> None:
@@ -115,7 +115,7 @@ def test_robot_gateway_discovers_capabilities_and_accepts_command() -> None:
         },
     )
     assert telemetry.status_code == 200
-    assert telemetry.json()["event"]["topic"] == "smartcito.robot.telemetry"
+    assert telemetry.json()["event"]["topic"] == "orca.robot.telemetry"
 
     command = client.post(
         "/robots/robot-cap-001/commands",
@@ -147,7 +147,7 @@ def test_sensor_gateway_splits_alert_topics() -> None:
     )
 
     assert response.status_code == 200
-    assert response.json()["event"]["topic"] == "smartcito.sensor.alerts"
+    assert response.json()["event"]["topic"] == "orca.sensor.alerts"
     assert response.json()["event"]["payload"]["security"]["integrity"]["signature"]["value"]
 
 
@@ -164,7 +164,7 @@ def test_camera_service_requires_stream_or_frame_url() -> None:
 
     frame = client.post("/frames", json={"drone_id": "drone-002", "width": 640, "height": 360})
     assert frame.status_code == 200
-    assert frame.json()["event"]["topic"] == "smartcito.drone.camera.frames"
+    assert frame.json()["event"]["topic"] == "orca.drone.camera.frames"
     assert frame.json()["event"]["payload"]["snapshot_integrity"]["hash"]["sha256"]
 
     feeds = client.get("/feeds")

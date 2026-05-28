@@ -98,7 +98,7 @@ def ingest_map(
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Ingest map or geographic context into SmartCito training batches.")
+    parser = argparse.ArgumentParser(description="Ingest map or geographic context into Orca training batches.")
     parser.add_argument("--api-url", default=DEFAULT_OVERPASS_URL)
     parser.add_argument("--input-file", default=None)
     parser.add_argument("--bbox", default="-26.25,27.98,-26.15,28.08", help="south,west,north,east")

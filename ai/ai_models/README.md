@@ -1,20 +1,20 @@
-# SmartCito
+# Orca
 
-Computer vision, local LLM inference, and predictive analytics models for SmartCito.
+Computer vision, local LLM inference, and predictive analytics models for Orca.
 
 ## About This File
 
-This file documents the SmartCito AI workspace and explains how the AI-facing parts of the project fit together. It gives developers and contributors a clear view of the model structure, ingestion paths, datasets, training flow, and runtime inference surfaces used across SmartCito.
+This file documents the Orca AI workspace and explains how the AI-facing parts of the project fit together. It gives developers and contributors a clear view of the model structure, ingestion paths, datasets, training flow, and runtime inference surfaces used across Orca.
 
 It is intended to help readers understand:
 
-- how SmartCito collects and processes operational data;
+- how Orca collects and processes operational data;
 - how raw events are converted into training-ready records;
-- how the SmartCito Model is trained from structured datasets;
+- how the Orca Model is trained from structured datasets;
 - how inference supports navigation, mapping, alerts, and operational reasoning;
 - how the project stays maintainable through versioned datasets and a clear folder layout.
 
-Use this README as the entry point for understanding how GPS, map, sensor, weather, and satellite-related data move through the SmartCito AI system and where to extend it safely.
+Use this README as the entry point for understanding how GPS, map, sensor, weather, and satellite-related data move through the Orca AI system and where to extend it safely.
 
 ## Container Image
 
@@ -24,10 +24,10 @@ Use this README as the entry point for understanding how GPS, map, sensor, weath
 
 This service now supports multiple inference modes:
 
-- Numeric anomaly scoring through `/infer` for existing SmartCito callers.
+- Numeric anomaly scoring through `/infer` for existing Orca callers.
 - Remote Llama Stack-backed text generation through `/models` and `/generate`.
 - Local Hugging Face inference using a base foundation model.
-- Local LoRA or LoRA-merged inference for SmartCito Model adapters.
+- Local LoRA or LoRA-merged inference for Orca Model adapters.
 
 It also includes structured operator workflows for:
 
@@ -98,13 +98,13 @@ Set these environment variables for the `ai_models` service:
 
 ## Local Hugging Face and LoRA Integration
 
-Set these environment variables for local SmartCito Model inference:
+Set these environment variables for local Orca Model inference:
 
-- `SMARTCITO_BASE_MODEL_ID` — your chosen compatible foundation model id from an official provider source
-- `SMARTCITO_LORA_ADAPTER_PATH` — path to `output/smartcito-lora/`
-- `SMARTCITO_LLM_BACKEND` — `auto`, `local`, `local-lora`, `merged-local`, or `remote`
-- `SMARTCITO_LOAD_IN_4BIT` — `true` to load a 4-bit quantized local model
-- `SMARTCITO_DEVICE_MAP` — optional device map, default `auto`
+- `ORCA_BASE_MODEL_ID` — your chosen compatible foundation model id from an official provider source
+- `ORCA_LORA_ADAPTER_PATH` — path to `output/orca-lora/`
+- `ORCA_LLM_BACKEND` — `auto`, `local`, `local-lora`, `merged-local`, or `remote`
+- `ORCA_LOAD_IN_4BIT` — `true` to load a 4-bit quantized local model
+- `ORCA_DEVICE_MAP` — optional device map, default `auto`
 - `HUGGINGFACE_HUB_TOKEN` or `HF_TOKEN` — optional gated model access token
 
 Example request for LoRA-merged inference:
@@ -116,7 +116,7 @@ curl -X POST http://localhost:8012/generate \
     "prompt":"Analyze drone telemetry for anomalies.",
     "backend":"merged-local",
     "model":"your-foundation-model-id",
-    "adapter_path":"./output/smartcito-lora",
+    "adapter_path":"./output/orca-lora",
     "merge_lora":true,
     "temperature":0.1,
     "max_tokens":160
@@ -125,16 +125,16 @@ curl -X POST http://localhost:8012/generate \
 
 ## Training and Kaggle Flow
 
-SmartCito ships a full adapter-training path for community contribution:
+Orca ships a full adapter-training path for community contribution:
 
 - [training/prepare_dataset.py](training/prepare_dataset.py) normalizes contributor data.
 - [training/lora_training.py](training/lora_training.py) runs standard LoRA fine-tuning.
 - [training/qlora_training.py](training/qlora_training.py) runs QLoRA fine-tuning.
 - [training/dataset_format.md](training/dataset_format.md) documents the dataset schema.
-- [examples/smartcito_training_demo.ipynb](examples/smartcito_training_demo.ipynb) is the Kaggle training notebook.
-- [examples/smartcito_inference_demo.ipynb](examples/smartcito_inference_demo.ipynb) is the Kaggle inference notebook.
+- [examples/orca_training_demo.ipynb](examples/orca_training_demo.ipynb) is the Kaggle training notebook.
+- [examples/orca_inference_demo.ipynb](examples/orca_inference_demo.ipynb) is the Kaggle inference notebook.
 
-Only adapter weights from `output/smartcito-lora/` should be shared.
+Only adapter weights from `output/orca-lora/` should be shared.
 
 The `llama-stack` package is a server/runtime CLI and currently exposes
 `llama stack ...` subcommands, not `llama model ...`.
@@ -165,10 +165,10 @@ If the downstream backend requires a bearer token, also set:
 export PASSTHROUGH_API_KEY=your-token
 ```
 
-This Kaggle bundle does not include LLaMA-3 weights. It only ships SmartCito code, LoRA or QLoRA adapters, and synthetic or private datasets. Users must obtain any compatible base model from official provider sources.
+This Kaggle bundle does not include LLaMA-3 weights. It only ships Orca code, LoRA or QLoRA adapters, and synthetic or private datasets. Users must obtain any compatible base model from official provider sources.
 
 Once your Llama Stack server is running and exposes an OpenAI-compatible API,
-the SmartCito AI service provides:
+the Orca AI service provides:
 
 - `GET /models` — lists model ids from the configured stack
 - `POST /generate` — sends chat-completions style requests to the configured stack
@@ -190,8 +190,8 @@ Add accuracy + smoke tests under [`../tests/ai_models/`](../tests/).
 ## How To Run Its Container
 
 ```bash
-docker build -f ai_models/Dockerfile -t smartcito-ai-models .
-docker run --rm -p 8012:8012 smartcito-ai-models
+docker build -f ai_models/Dockerfile -t orca-ai-models .
+docker run --rm -p 8012:8012 orca-ai-models
 ```
 
 Example `docker run` with Llama Stack integration:
@@ -200,7 +200,7 @@ Example `docker run` with Llama Stack integration:
 docker run --rm -p 8012:8012 \
   -e LLAMA_STACK_BASE_URL=http://host.docker.internal:8321 \
   -e LLAMA_STACK_MODEL=Llama-4-Maverick \
-  smartcito-ai-models
+  orca-ai-models
 ```
 
 ## Example Usage

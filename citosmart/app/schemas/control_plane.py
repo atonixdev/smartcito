@@ -2,7 +2,7 @@
 ================================================================================
  File: citosmart/app/schemas/control_plane.py
  Purpose:
-   Pydantic response and request models for the SmartCito dashboard control
+   Pydantic response and request models for the Orca dashboard control
    plane, including device manager, security monitor, pipeline flow, and
    operator control actions.
 ================================================================================

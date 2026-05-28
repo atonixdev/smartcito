@@ -7,7 +7,7 @@ x-logging: &stdout-logging
 services:
   api-router:
     image: nginx:1.27-alpine
-    container_name: smartcito-api-router
+    container_name: orca-api-router
     ports:
       - "${APP_PORT:-8000}:8000"
     volumes:
@@ -25,7 +25,7 @@ services:
     build:
       context: ./citosmart
       image: ${CITOSMART_IMAGE:-atonixdev/api-gateway:1.0.0}
-    container_name: smartcito-citosmart-blue
+    container_name: orca-citosmart-blue
     env_file: .env
     depends_on:
       postgres:
@@ -54,7 +54,7 @@ services:
     build:
       context: ./citosmart
       image: ${CITOSMART_IMAGE:-atonixdev/api-gateway:1.0.0}
-    container_name: smartcito-citosmart-green
+    container_name: orca-citosmart-green
     env_file: .env
     depends_on:
       postgres:
@@ -81,7 +81,7 @@ services:
 
   event-consumer-raw:
     image: ${CITOSMART_IMAGE:-atonixdev/api-gateway:1.0.0}
-    container_name: smartcito-event-consumer-raw
+    container_name: orca-event-consumer-raw
     env_file: .env
     command: ["python", "-m", "app.workers.event_consumer_runner"]
     environment:
@@ -94,7 +94,7 @@ services:
 
   event-consumer-clean:
     image: ${CITOSMART_IMAGE:-atonixdev/api-gateway:1.0.0}
-    container_name: smartcito-event-consumer-clean
+    container_name: orca-event-consumer-clean
     env_file: .env
     command: ["python", "-m", "app.workers.event_consumer_runner"]
     environment:
@@ -107,7 +107,7 @@ services:
 
   event-consumer-alerts:
     image: ${CITOSMART_IMAGE:-atonixdev/api-gateway:1.0.0}
-    container_name: smartcito-event-consumer-alerts
+    container_name: orca-event-consumer-alerts
     env_file: .env
     command: ["python", "-m", "app.workers.event_consumer_runner"]
     environment:
@@ -123,7 +123,7 @@ services:
       context: .
       dockerfile: ingestion/Dockerfile
       image: ${INGESTION_KAFKA_PRODUCER_IMAGE:-atonixdev/ingestion-kafka-producer:1.0.0}
-    container_name: smartcito-ingestion-kafka-producer
+    container_name: orca-ingestion-kafka-producer
     env_file: .env
     command: ["uvicorn", "ingestion.kafka_producer_service:app", "--host", "0.0.0.0", "--port", "8100"]
     ports:
@@ -146,7 +146,7 @@ services:
       context: .
       dockerfile: ingestion/Dockerfile.spark
       image: ${INGESTION_SPARK_IMAGE:-atonixdev/ingestion-spark:1.0.0}
-    container_name: smartcito-ingestion-spark
+    container_name: orca-ingestion-spark
     env_file: .env
     environment:
       SPARK_MASTER_URL: ${SPARK_MASTER_URL:-local[*]}
@@ -163,7 +163,7 @@ services:
       context: .
       dockerfile: camera_module/Dockerfile
       image: ${CAMERA_IMAGE:-atonixdev/camera-service:1.0.0}
-    container_name: smartcito-camera-service
+    container_name: orca-camera-service
     env_file: .env
     ports:
       - "${CAMERA_SERVICE_PORT:-8010}:8010"
@@ -175,7 +175,7 @@ services:
       context: .
       dockerfile: gps_module/Dockerfile
       image: ${GPS_IMAGE:-atonixdev/gps-service:1.0.0}
-    container_name: smartcito-gps-service
+    container_name: orca-gps-service
     env_file: .env
     ports:
       - "${GPS_SERVICE_PORT:-8011}:8011"
@@ -187,7 +187,7 @@ services:
       context: .
       dockerfile: ai/ai_models/Dockerfile
       image: ${AI_IMAGE:-atonixdev/ai-service:1.0.0}
-    container_name: smartcito-ai-service
+    container_name: orca-ai-service
     env_file: .env
     ports:
       - "${AI_SERVICE_PORT:-8012}:8012"
@@ -203,7 +203,7 @@ services:
       context: .
       dockerfile: security/Dockerfile
       image: ${SECURITY_IMAGE:-atonixdev/security-service:1.0.0}
-    container_name: smartcito-security-service
+    container_name: orca-security-service
     env_file: .env
     ports:
       - "${SECURITY_SERVICE_PORT:-8013}:8013"
@@ -217,7 +217,7 @@ services:
       context: .
       dockerfile: hardware/Dockerfile
       image: ${HARDWARE_IMAGE:-atonixdev/hardware-agent:1.0.0}
-    container_name: smartcito-hardware-agent
+    container_name: orca-hardware-agent
     env_file: .env
     ports:
       - "${HARDWARE_AGENT_PORT:-8014}:8014"
@@ -229,7 +229,7 @@ services:
       context: .
       dockerfile: surveillance/Dockerfile
       image: ${DRONE_GATEWAY_IMAGE:-atonixdev/drone-gateway:1.0.0}
-    container_name: smartcito-drone-gateway
+    container_name: orca-drone-gateway
     env_file: .env
     command: ["uvicorn", "surveillance.drone_gateway_service:app", "--host", "0.0.0.0", "--port", "8020"]
     ports:
@@ -245,7 +245,7 @@ services:
       context: .
       dockerfile: surveillance/Dockerfile
       image: ${SENSOR_GATEWAY_IMAGE:-atonixdev/sensor-gateway:1.0.0}
-    container_name: smartcito-sensor-gateway
+    container_name: orca-sensor-gateway
     env_file: .env
     command: ["uvicorn", "surveillance.sensor_gateway_service:app", "--host", "0.0.0.0", "--port", "8021"]
     ports:
@@ -260,7 +260,7 @@ services:
       context: .
       dockerfile: surveillance/Dockerfile
       image: ${DRONE_CAMERA_IMAGE:-atonixdev/drone-camera-ingestion:1.0.0}
-    container_name: smartcito-drone-camera-ingestion
+    container_name: orca-drone-camera-ingestion
     env_file: .env
     command: ["uvicorn", "surveillance.drone_camera_service:app", "--host", "0.0.0.0", "--port", "8022"]
     ports:
@@ -275,7 +275,7 @@ services:
       context: .
       dockerfile: surveillance/Dockerfile
       image: ${MISSION_CONTROL_IMAGE:-atonixdev/mission-control:1.0.0}
-    container_name: smartcito-mission-control
+    container_name: orca-mission-control
     env_file: .env
     command: ["uvicorn", "surveillance.mission_control_service:app", "--host", "0.0.0.0", "--port", "8025"]
     ports:
@@ -291,7 +291,7 @@ services:
       context: .
       dockerfile: surveillance/Dockerfile
       image: ${THREAT_DETECTION_IMAGE:-atonixdev/threat-detection:1.0.0}
-    container_name: smartcito-threat-detection
+    container_name: orca-threat-detection
     env_file: .env
     command: ["uvicorn", "surveillance.threat_detection_service:app", "--host", "0.0.0.0", "--port", "8023"]
     ports:
@@ -306,7 +306,7 @@ services:
       context: .
       dockerfile: surveillance/Dockerfile
       image: ${MAPPING_GEOSPATIAL_IMAGE:-atonixdev/mapping-geospatial:1.0.0}
-    container_name: smartcito-mapping-geospatial
+    container_name: orca-mapping-geospatial
     env_file: .env
     command: ["uvicorn", "surveillance.mapping_service:app", "--host", "0.0.0.0", "--port", "8024"]
     ports:
@@ -318,18 +318,18 @@ services:
 
   postgres:
     image: cgr.dev/chainguard/postgres:latest@sha256:34a4d686aa44583457bbdbdeb662243e7ab29e89e5c9b40df8e33baa6b75dc47
-    container_name: smartcito-postgres
+    container_name: orca-postgres
     environment:
-      POSTGRES_DB: ${DB_NAME:-smartcito}
-      POSTGRES_USER: ${DB_USER:-smartcito}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-smartcito}
+      POSTGRES_DB: ${DB_NAME:-orca}
+      POSTGRES_USER: ${DB_USER:-orca}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-orca}
     ports:
       - "${DB_PORT:-5432}:5432"
     volumes:
       - ./database/init/001_schema.sql:/docker-entrypoint-initdb.d/001_schema.sql:ro
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-smartcito}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-orca}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -338,7 +338,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: smartcito-redis
+    container_name: orca-redis
     ports:
       - "${REDIS_PORT:-6379}:6379"
     restart: unless-stopped
@@ -346,28 +346,28 @@ services:
 
   memcached-1:
     image: memcached:1.6-alpine
-    container_name: smartcito-memcached-1
+    container_name: orca-memcached-1
     command: ["memcached", "-m", "256", "-I", "4m", "-o", "modern", "-v"]
     restart: unless-stopped
     logging: *stdout-logging
 
   memcached-2:
     image: memcached:1.6-alpine
-    container_name: smartcito-memcached-2
+    container_name: orca-memcached-2
     command: ["memcached", "-m", "256", "-I", "4m", "-o", "modern", "-v"]
     restart: unless-stopped
     logging: *stdout-logging
 
   memcached-3:
     image: memcached:1.6-alpine
-    container_name: smartcito-memcached-3
+    container_name: orca-memcached-3
     command: ["memcached", "-m", "256", "-I", "4m", "-o", "modern", "-v"]
     restart: unless-stopped
     logging: *stdout-logging
 
   memcached-exporter:
     image: prom/memcached-exporter:v0.15.0
-    container_name: smartcito-memcached-exporter
+    container_name: orca-memcached-exporter
     command: ["--memcached.address=memcached-1:11211"]
     depends_on:
       - memcached-1
@@ -376,7 +376,7 @@ services:
 
   kafka:
     image: bitnami/kafka:3.7
-    container_name: smartcito-kafka
+    container_name: orca-kafka
     environment:
       KAFKA_CFG_NODE_ID: 1
       KAFKA_CFG_PROCESS_ROLES: "broker,controller"
@@ -393,7 +393,7 @@ services:
 
   mqtt:
     image: eclipse-mosquitto:2.0
-    container_name: smartcito-mqtt
+    container_name: orca-mqtt
     ports:
       - "${MQTT_PORT:-1883}:1883"
     volumes:
@@ -405,7 +405,7 @@ services:
     build:
       context: ./webapp
       image: ${WEBAPP_IMAGE:-atonixdev/webapp:1.0.0}
-    container_name: smartcito-webapp
+    container_name: orca-webapp
     env_file: .env
     ports:
       - "${WEBAPP_PORT:-5173}:80"

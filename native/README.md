@@ -2,14 +2,14 @@
 ================================================================================
  File: native/README.md
  Purpose:
-   Explains the role of C in SmartCito and how to build the optional
+   Explains the role of C in Orca and how to build the optional
    native acceleration module.
 ================================================================================
 -->
 
 # `native/` — C performance extensions
 
-SmartCito is **Python-first**. This directory contains optional C code for
+Orca is **Python-first**. This directory contains optional C code for
 the narrow cases where Python is genuinely the wrong tool:
 
 1. **Low-level IoT drivers** — talking to a serial/SPI/I²C sensor where
@@ -24,8 +24,8 @@ keep it in pure Python. Python is the project's lingua franca.
 
 ## What's included
 
-- `smartcito_fast.c` — a CPython extension module with a `parse_frame()`
-  function that decodes the SmartCito binary sensor frame format
+- `orca_fast.c` — a CPython extension module with a `parse_frame()`
+  function that decodes the Orca binary sensor frame format
   ~10–50x faster than a pure-Python implementation.
 
 ## Building
@@ -41,7 +41,7 @@ cd native
 python setup.py build_ext --inplace
 ```
 
-This produces a `smartcito_fast*.so` (or `.pyd` on Windows) next to
+This produces a `orca_fast*.so` (or `.pyd` on Windows) next to
 `setup.py`. Drop it onto `PYTHONPATH` or install with:
 
 ```bash
@@ -52,7 +52,7 @@ pip install .
 
 ```python
 try:
-    from smartcito_fast import parse_frame  # C accelerator
+    from orca_fast import parse_frame  # C accelerator
 except ImportError:
     from app.services.frame_parser import parse_frame  # Pure-Python fallback
 ```

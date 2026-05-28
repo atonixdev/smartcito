@@ -2,13 +2,13 @@
 # ============================================================================
 # File: scripts/gitflow/bootstrap.sh
 # Purpose:
-#   Bootstrap SmartCito GitFlow branches and branch-protection rules using the
+#   Bootstrap Orca GitFlow branches and branch-protection rules using the
 #   GitHub CLI. Requires an authenticated `gh` session with repo admin rights.
 # ============================================================================
 
 set -euo pipefail
 
-repo="${1:-atonixdev/smartcito}"
+repo="${1:-atonixdev/orca}"
 remote="${2:-origin}"
 
 if ! command -v gh >/dev/null 2>&1; then

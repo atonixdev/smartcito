@@ -2,14 +2,14 @@
 ================================================================================
  File: docs/ISSUE_BACKLOG.md
  Purpose:
-   Suggested GitHub issue backlog for SmartCito maintainers and contributors.
+   Suggested GitHub issue backlog for Orca maintainers and contributors.
    Use this document to create roadmap-aligned issues, labels, and milestones.
 ================================================================================
 -->
 
-# SmartCito Issue Backlog
+# Orca Issue Backlog
 
-This file contains suggested GitHub issues for SmartCito. Copy the titles into
+This file contains suggested GitHub issues for Orca. Copy the titles into
 GitHub Issues, then expand the description using the notes under each section.
 
 ## Suggested Labels
@@ -151,7 +151,7 @@ validation and persistence.
 
 Labels: `backend`, `enhancement`, `streaming`, `iot`
 
-Problem: MQTT device messages need a durable path into the SmartCito event bus.
+Problem: MQTT device messages need a durable path into the Orca event bus.
 
 Proposed solution: Subscribe to configured MQTT topics, validate payloads, and
 forward normalized messages to Kafka.
@@ -289,7 +289,7 @@ and location.
 
 Labels: `analytics`, `backend`, `help wanted`
 
-Problem: SmartCito should flag unusual readings for operator review.
+Problem: Orca should flag unusual readings for operator review.
 
 Proposed solution: Implement a simple statistical anomaly detector as a baseline
 before adding advanced ML pipelines.
@@ -395,7 +395,7 @@ action, resource, and time range.
 
 ## Phase 5 - Production Deployment
 
-### `[infra] Add Helm chart for SmartCito services`
+### `[infra] Add Helm chart for Orca services`
 
 Labels: `infra`, `kubernetes`, `enhancement`
 
@@ -418,7 +418,7 @@ commands.
 
 Labels: `infra`, `security`, `kubernetes`
 
-Problem: Operators need a clear example for exposing SmartCito over HTTPS.
+Problem: Operators need a clear example for exposing Orca over HTTPS.
 
 Proposed solution: Add ingress examples for common controllers and TLS setup.
 
@@ -445,7 +445,7 @@ Kafka, Redis, and PostgreSQL examples.
 
 Labels: `infra`, `security`, `ci`
 
-Problem: Production users need a way to verify SmartCito container provenance.
+Problem: Production users need a way to verify Orca container provenance.
 
 Proposed solution: Add CI support and docs for signing images with cosign.
 
@@ -583,7 +583,7 @@ Labels: `hardware`, `backend`, `iot`
 
 Problem: MQTT is a core ingestion path and needs an example connector.
 
-Proposed solution: Add a sample connector that publishes valid SmartCito sensor
+Proposed solution: Add a sample connector that publishes valid Orca sensor
 payloads to a configured MQTT topic.
 
 ### `[hardware] Add RTSP camera health checks`

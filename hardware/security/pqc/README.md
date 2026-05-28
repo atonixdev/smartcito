@@ -1,7 +1,7 @@
 # Post-Quantum Cryptography Hardware Controls
 
 Reference material for integrating NIST-standardized post-quantum cryptography
-into SmartCito deployments.
+into Orca deployments.
 
 ## Priority Algorithms
 
@@ -15,7 +15,7 @@ into SmartCito deployments.
 - keep AES-256 for symmetric encryption while upgrading asymmetric primitives
 - store PQC private material in HSM-backed or equivalent hardened key stores
 
-## SmartCito Mapping
+## Orca Mapping
 
 See [`../../../security/pqc/README.md`](../../../security/pqc/README.md) for the
 software control layer.

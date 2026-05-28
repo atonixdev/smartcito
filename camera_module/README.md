@@ -1,6 +1,6 @@
 # Camera Module
 
-CCTV and drone feed processing for SmartCito.
+CCTV and drone feed processing for Orca.
 
 ## Container Image
 
@@ -61,8 +61,8 @@ Any face / biometric processing requires:
 ## How To Run Its Container
 
 ```bash
-docker build -f camera_module/Dockerfile -t smartcito-camera-module .
-docker run --rm -p 8010:8010 smartcito-camera-module
+docker build -f camera_module/Dockerfile -t orca-camera-module .
+docker run --rm -p 8010:8010 orca-camera-module
 ```
 
 ## Example Usage

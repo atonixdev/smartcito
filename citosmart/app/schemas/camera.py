@@ -2,7 +2,7 @@
 ================================================================================
  File: citosmart/app/schemas/camera.py
  Purpose:
-   Pydantic models for SmartCito camera registration and telemetry.
+   Pydantic models for Orca camera registration and telemetry.
 
    These schemas define the wire contract for hardware devices and the
    dashboard/API consumers that need camera fleet state.
@@ -26,7 +26,7 @@ class CameraDeviceType(str, Enum):
 
 
 class StreamProtocol(str, Enum):
-    """Protocols SmartCito accepts for camera media/control."""
+    """Protocols Orca accepts for camera media/control."""
 
     ONVIF = "onvif"
     RTSP = "rtsp"

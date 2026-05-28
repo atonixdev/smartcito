@@ -49,7 +49,7 @@ app.post('/api/location/log', (req, res) => {
 const port = process.env.PORT || 4010;
 if (require.main === module) {
   app.listen(port, () => {
-    console.log(`SmartCito Location Intelligence API on :${port}`);
+    console.log(`Orca Location Intelligence API on :${port}`);
   });
 }
 

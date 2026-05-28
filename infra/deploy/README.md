@@ -1,6 +1,6 @@
 # Deployment Scripts
 
-This folder contains the deploy tooling used by CI/CD to roll SmartCito out to
+This folder contains the deploy tooling used by CI/CD to roll Orca out to
 OpenStack VMs.
 
 ## Expected inputs

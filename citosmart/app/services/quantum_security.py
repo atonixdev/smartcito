@@ -2,7 +2,7 @@
 ================================================================================
  File: citosmart/app/services/quantum_security.py
  Purpose:
-   Quantum-ready security helpers for SmartCito.
+   Quantum-ready security helpers for Orca.
 
    This service does three concrete things today:
      - Advertises a PQC migration profile.
@@ -10,7 +10,7 @@
      - Produces hybrid envelopes using AES-256-GCM plus PQC/QKD metadata.
 
    It does NOT claim to implement production PQC KEMs itself. Instead, it
-   creates the abstraction boundary SmartCito will need when mature PQC/QKD
+   creates the abstraction boundary Orca will need when mature PQC/QKD
    libraries and hardware are plugged in later.
 ================================================================================
 """
@@ -180,7 +180,7 @@ class QuantumSecurityService:
             algorithm=hashes.SHA384(),
             length=_KEY_LEN,
             salt=None,
-            info=f"smartcito-hybrid:{purpose}:{pqc_kem.value}".encode("utf-8"),
+            info=f"orca-hybrid:{purpose}:{pqc_kem.value}".encode("utf-8"),
         )
         return hkdf.derive(ikm)
 

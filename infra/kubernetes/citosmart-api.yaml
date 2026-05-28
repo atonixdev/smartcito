@@ -29,9 +29,9 @@ spec:
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
-                name: smartcito-platform-config
+                name: orca-platform-config
             - secretRef:
-                name: smartcito-platform-secrets
+                name: orca-platform-secrets
           ports:
             - containerPort: 8000
           readinessProbe:
@@ -113,9 +113,9 @@ spec:
               value: raw
           envFrom:
             - configMapRef:
-                name: smartcito-platform-config
+                name: orca-platform-config
             - secretRef:
-                name: smartcito-platform-secrets
+                name: orca-platform-secrets
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -147,9 +147,9 @@ spec:
               value: clean
           envFrom:
             - configMapRef:
-                name: smartcito-platform-config
+                name: orca-platform-config
             - secretRef:
-                name: smartcito-platform-secrets
+                name: orca-platform-secrets
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -181,9 +181,9 @@ spec:
               value: alerts
           envFrom:
             - configMapRef:
-                name: smartcito-platform-config
+                name: orca-platform-config
             - secretRef:
-                name: smartcito-platform-secrets
+                name: orca-platform-secrets
 ---
 apiVersion: policy/v1
 kind: PodDisruptionBudget

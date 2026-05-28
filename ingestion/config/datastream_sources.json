@@ -1,10 +1,10 @@
 {
   "sources": [
     {
-      "name": "smartcito-drone-demo",
+      "name": "orca-drone-demo",
       "backend": "sqlite",
       "source_type": "drone",
-      "connection": "ai/smartcito_datasets/datastream_demo.sqlite3",
+      "connection": "ai/orca_datasets/datastream_demo.sqlite3",
       "table_or_collection": "drone_events",
       "id_field": "id",
       "processed_field": "processed",

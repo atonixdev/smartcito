@@ -1,13 +1,13 @@
-# SmartCito Model Card
+# Orca Model Card
 
 ## Model Overview
 
-- Model name: `SmartCito Model`
+- Model name: `Orca Model`
 - Base model: user-supplied compatible foundation model from an official provider source
 - Adaptation method: LoRA and QLoRA fine-tuning
-- Distribution: SmartCito LoRA adapter weights only
+- Distribution: Orca LoRA adapter weights only
 
-SmartCito Model is a domain-specialized operational assistant for city monitoring, drone and robot missions, camera analytics, sensor fusion, security triage, geographic reasoning, and OpenStack or Kubernetes incident response.
+Orca Model is a domain-specialized operational assistant for city monitoring, drone and robot missions, camera analytics, sensor fusion, security triage, geographic reasoning, and OpenStack or Kubernetes incident response.
 
 ## Intended Use
 
@@ -20,7 +20,7 @@ SmartCito Model is a domain-specialized operational assistant for city monitorin
 
 ## Training Data
 
-SmartCito adapters are fine-tuned on structured instruction data using the schema documented in [training/dataset_format.md](training/dataset_format.md). Example domains include:
+Orca adapters are fine-tuned on structured instruction data using the schema documented in [training/dataset_format.md](training/dataset_format.md). Example domains include:
 
 - drone telemetry and mission logs
 - robot navigation traces
@@ -31,7 +31,7 @@ SmartCito adapters are fine-tuned on structured instruction data using the schem
 
 The repository ships only sample and prepared contributor data. Base model weights are not included.
 
-This bundle does not include LLaMA-3 weights. It only ships SmartCito code, LoRA or QLoRA adapters, and synthetic or private datasets. Users must obtain LLaMA-3 or any other compatible base model from official provider sources.
+This bundle does not include LLaMA-3 weights. It only ships Orca code, LoRA or QLoRA adapters, and synthetic or private datasets. Users must obtain LLaMA-3 or any other compatible base model from official provider sources.
 
 ## Limitations
 
@@ -45,10 +45,10 @@ This bundle does not include LLaMA-3 weights. It only ships SmartCito code, LoRA
 - Do not contribute personal data, secrets, or regulated data without approval.
 - Remove access tokens, passwords, and raw credentials from logs before training.
 - Upload only adapter weights to Kaggle or pull requests.
-- Validate deployment behavior against SmartCito security and privacy policies before production rollout.
+- Validate deployment behavior against Orca security and privacy policies before production rollout.
 
 ## Distribution Notes
 
-- Legal artifact to share: `output/smartcito-lora/`
+- Legal artifact to share: `output/orca-lora/`
 - Do not commit or redistribute third-party base checkpoints through this repository.
-- Contributors may reference a compatible base model from an official provider source and combine it locally with SmartCito adapters for inference.
+- Contributors may reference a compatible base model from an official provider source and combine it locally with Orca adapters for inference.

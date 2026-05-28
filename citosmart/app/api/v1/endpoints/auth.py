@@ -35,11 +35,11 @@ router = APIRouter()
 # ----- Demo user store (replace with database lookups) ----------------------
 # Passwords are pre-hashed at import to avoid logging plaintext anywhere.
 FAKE_USERS: dict[str, dict[str, str]] = {
-    "admin@smartcito.dev": {
+    "admin@orca.dev": {
         "hashed_password": hash_password("changeme"),
         "role": "admin",
     },
-    "viewer@smartcito.dev": {
+    "viewer@orca.dev": {
         "hashed_password": hash_password("changeme"),
         "role": "viewer",
     },

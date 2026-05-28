@@ -1,4 +1,4 @@
-"""RTSP stream validation helpers for SmartCito camera integrations."""
+"""RTSP stream validation helpers for Orca camera integrations."""
 
 from __future__ import annotations
 
@@ -75,7 +75,7 @@ def validate_rtsp_stream(stream_uri: str, timeout: float = 5.0) -> RtspStreamPro
     request = (
         f"OPTIONS {request_target} RTSP/1.0\r\n"
         "CSeq: 1\r\n"
-        "User-Agent: SmartCito/0.1\r\n\r\n"
+        "User-Agent: Orca/0.1\r\n\r\n"
     ).encode("utf-8")
 
     with socket.create_connection((host, port), timeout=timeout) as sock:

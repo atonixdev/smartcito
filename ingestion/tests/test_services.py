@@ -21,7 +21,7 @@ def test_kafka_ready_defaults() -> None:
     assert response.status_code == 200
     payload = response.json()
     assert payload["bootstrap_servers"] == "kafka:9092"
-    assert payload["topic"] == "smartcito.sensors.raw"
+    assert payload["topic"] == "orca.sensors.raw"
     assert payload["storage"]["postgres"]["primary_host"] == "postgres"
     assert payload["storage"]["hdfs"]["enabled"] is False
     assert payload["storage"]["hbase"]["enabled"] is False
@@ -42,5 +42,5 @@ def test_spark_ready_reports_storage_contract() -> None:
     assert response.status_code == 200
     payload = response.json()
     assert payload["storage"]["postgres"]["primary_host"] == "postgres"
-    assert payload["storage"]["hdfs"]["raw_path"] == "/smartcito/raw"
-    assert payload["storage"]["hbase"]["sensor_table"] == "smartcito_sensor_events"
+    assert payload["storage"]["hdfs"]["raw_path"] == "/orca/raw"
+    assert payload["storage"]["hbase"]["sensor_table"] == "orca_sensor_events"

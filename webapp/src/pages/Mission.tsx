@@ -1,7 +1,7 @@
 /**
  * ============================================================================
  * File: webapp/src/pages/Mission.tsx
- * Purpose: Mission and project-positioning page for SmartCito.
+ * Purpose: Mission and project-positioning page for Orca.
  * ============================================================================
  */
 
@@ -19,7 +19,7 @@ export default function Mission() {
       <span className="eyebrow">Mission statement</span>
       <h2>Build a future-proof foundation for secure smart cities.</h2>
       <p className="lead-text">
-        SmartCito exists to connect cameras, GPS, IoT devices, cloud systems,
+        Orca exists to connect cameras, GPS, IoT devices, cloud systems,
         and hardware validation into one open backbone that communities can
         understand, inspect, deploy, and improve.
       </p>
@@ -45,8 +45,8 @@ export default function Mission() {
         <div className="outcome-panel">
           <h4>Foundation-ready posture</h4>
           <p>
-            The current shape positions SmartCito as a serious open initiative
-            that can later grow into a formal SmartCito Foundation without
+            The current shape positions Orca as a serious open initiative
+            that can later grow into a formal Orca Foundation without
             losing its personal-project roots.
           </p>
           <Link className="text-link" to="/roadmap">See the roadmap</Link>

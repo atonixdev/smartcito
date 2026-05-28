@@ -1,6 +1,6 @@
 # Security Hardware
 
-Physical and appliance-level controls that support the SmartCito software
+Physical and appliance-level controls that support the Orca software
 security posture.
 
 ## Reference Components

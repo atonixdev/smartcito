@@ -2,7 +2,7 @@
  * ============================================================================
  * File: webapp/src/api/scene.ts
  * Purpose:
- *   Typed client for the SmartCito 3D dashboard control-plane scene.
+ *   Typed client for the Orca 3D dashboard control-plane scene.
  * ============================================================================
  */
 

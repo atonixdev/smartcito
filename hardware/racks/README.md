@@ -1,6 +1,6 @@
 # Rack Layout and Power
 
-Reference rack placement for SmartCito installations.
+Reference rack placement for Orca installations.
 
 ## Placement Pattern
 

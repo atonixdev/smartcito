@@ -38,7 +38,7 @@ Examples of unacceptable behavior:
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the maintainers at **conduct@smartcito.dev**. All complaints will
+reported to the maintainers at **conduct@orca.dev**. All complaints will
 be reviewed and investigated promptly and fairly.
 
 ## Attribution

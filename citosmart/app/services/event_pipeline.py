@@ -2,7 +2,7 @@
 ================================================================================
  File: app/services/event_pipeline.py
  Purpose:
-   End-to-end message-bus processing for SmartCito: cleaning, validation,
+   End-to-end message-bus processing for Orca: cleaning, validation,
    enrichment, DB persistence, object-storage handoff, AI scoring, and alert
    emission for dashboard consumers.
 ================================================================================

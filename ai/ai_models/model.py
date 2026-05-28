@@ -2,7 +2,7 @@
 ================================================================================
  File: ai_models/model.py
  Purpose:
-   Tiny scoring model used as a placeholder for real SmartCito inference.
+   Tiny scoring model used as a placeholder for real Orca inference.
 ================================================================================
 """
 
@@ -108,7 +108,7 @@ def classify_alert(
     tags: list[str] | None = None,
     anomaly_score: float | None = None,
 ) -> AlertClassification:
-    """Classify a SmartCito alert into an operational category and severity."""
+    """Classify a Orca alert into an operational category and severity."""
     normalized_tags = tags or []
     combined_text = " ".join(part for part in [source or "", message, *normalized_tags] if part).lower()
 
@@ -323,7 +323,7 @@ def _detect_with_yolo(
     labels: list[str] | None,
     threshold: float,
 ) -> tuple[list[ObjectDetection], dict[str, object]]:
-    model_path = os.getenv("SMARTCITO_YOLO_MODEL", "yolov8n.pt")
+    model_path = os.getenv("ORCA_YOLO_MODEL", "yolov8n.pt")
     model = _load_yolo_model(model_path)
     results = model(image, verbose=False, conf=threshold)
     candidate_labels = _candidate_labels(labels)
@@ -363,7 +363,7 @@ def _detect_with_auto(
     threshold: float,
 ) -> tuple[list[ObjectDetection], dict[str, object]]:
     backend_functions = []
-    if os.getenv("SMARTCITO_YOLO_MODEL"):
+    if os.getenv("ORCA_YOLO_MODEL"):
         backend_functions.append(_detect_with_yolo)
     backend_functions.extend((_detect_with_opencv, _detect_with_heuristic))
 

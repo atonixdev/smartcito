@@ -1,4 +1,4 @@
-"""ONVIF discovery/control helpers for SmartCito camera integrations."""
+"""ONVIF discovery/control helpers for Orca camera integrations."""
 
 from __future__ import annotations
 
@@ -80,7 +80,7 @@ def fetch_onvif_device_information(
         content=SOAP_GET_DEVICE_INFORMATION,
         headers={
             "Content-Type": "application/soap+xml; charset=utf-8",
-            "User-Agent": "SmartCito/0.1",
+            "User-Agent": "Orca/0.1",
         },
         auth=(username, password),
         timeout=timeout,

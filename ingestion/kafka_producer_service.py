@@ -21,7 +21,7 @@ from ingestion.storage_config import storage_runtime_summary
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
 
-app = FastAPI(title="SmartCito Ingestion Kafka Producer")
+app = FastAPI(title="Orca Ingestion Kafka Producer")
 
 
 def _broker_url() -> str:
@@ -46,6 +46,6 @@ async def readiness() -> dict[str, object]:
     return {
         "status": "ready",
         "bootstrap_servers": _broker_url(),
-        "topic": os.getenv("KAFKA_SENSOR_TOPIC", "smartcito.sensors.raw"),
+        "topic": os.getenv("KAFKA_SENSOR_TOPIC", "orca.sensors.raw"),
         "storage": storage_runtime_summary(),
     }

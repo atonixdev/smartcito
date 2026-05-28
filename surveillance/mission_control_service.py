@@ -2,7 +2,7 @@
 ================================================================================
  File: surveillance/mission_control_service.py
  Purpose:
-   Mission Control Service for SmartCito. It validates patrol routes, tracks
+   Mission Control Service for Orca. It validates patrol routes, tracks
    mission lifecycle, uploads missions through Drone Gateway, and exposes a
    monitoring-friendly API for the operator dashboard.
 ================================================================================
@@ -18,7 +18,7 @@ from urllib import error, request
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
-from smartcito_shared.crypto import build_integrity_record, build_secure_envelope
+from orca_shared.crypto import build_integrity_record, build_secure_envelope
 
 from surveillance.geospatial import evaluate_geofence_activity, resolve_zone, route_mission
 from surveillance.kafka import get_publisher
@@ -38,7 +38,7 @@ from surveillance.topics import DRONE_EVENTS_TOPIC, DRONE_MISSIONS_TOPIC, ROBOT_
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
 
-app = FastAPI(title="SmartCito Mission Control Service")
+app = FastAPI(title="Orca Mission Control Service")
 _missions: dict[str, DroneMission] = {}
 _city_missions: dict[str, CityMission] = {}
 

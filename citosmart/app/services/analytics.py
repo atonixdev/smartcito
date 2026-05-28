@@ -2,7 +2,7 @@
 ================================================================================
  File: citosmart/app/services/analytics.py
  Purpose:
-   Lightweight, dependency-light analytics primitives for SmartCito.
+   Lightweight, dependency-light analytics primitives for Orca.
 
    - `RollingAnomalyDetector`: online z-score detector. Cheap, robust,
      interpretable. Good default before reaching for ML.

@@ -20,7 +20,7 @@ spec:
           command: ["python", "-m", "app.dash_app.server"]
           envFrom:
             - configMapRef:
-                name: smartcito-platform-config
+                name: orca-platform-config
           env:
             - name: DASH_REFRESH_MS
               value: "5000"

@@ -1,6 +1,6 @@
 # Security
 
-Encryption, IAM, RBAC, and audit logging for SmartCito.
+Encryption, IAM, RBAC, and audit logging for Orca.
 
 For the full design, see [`../docs/SECURITY_DEEP_DIVE.md`](../docs/SECURITY_DEEP_DIVE.md)
 and [`../SECURITY.md`](../SECURITY.md).
@@ -66,8 +66,8 @@ security/
 ## How To Run Its Container
 
 ```bash
-docker build -f security/Dockerfile -t smartcito-security-domain .
-docker run --rm -p 8013:8013 --env-file .env smartcito-security-domain
+docker build -f security/Dockerfile -t orca-security-domain .
+docker run --rm -p 8013:8013 --env-file .env orca-security-domain
 ```
 
 ## Example Usage

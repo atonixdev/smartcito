@@ -18,7 +18,7 @@ def main() -> int:
 
     client = HashClient(endpoints, connect_timeout=1.0, timeout=1.0, no_delay=True)
     key = "ci:smoke:memcached"
-    value = b"smartcito-ok"
+    value = b"orca-ok"
 
     client.set(key, value, expire=30)
     fetched = client.get(key)

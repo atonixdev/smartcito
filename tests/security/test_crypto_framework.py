@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from smartcito_shared.crypto import (
+from orca_shared.crypto import (
     build_integrity_record,
     build_secure_envelope,
     decrypt_secure_envelope,
@@ -29,9 +29,9 @@ def test_secure_envelope_round_trip_decrypts() -> None:
 
 
 def test_device_certificate_is_issued_from_ca() -> None:
-    ca = generate_certificate_authority("smartcito-test-ca")
+    ca = generate_certificate_authority("orca-test-ca")
     device = issue_device_certificate(
-        "drone-001.smartcito",
+        "drone-001.orca",
         ca_certificate_pem=ca["certificate_pem"],
         ca_private_key_pem=ca["private_key_pem"],
     )

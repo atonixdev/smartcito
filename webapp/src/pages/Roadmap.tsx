@@ -1,7 +1,7 @@
 /**
  * ============================================================================
  * File: webapp/src/pages/Roadmap.tsx
- * Purpose: Product roadmap page for SmartCito.
+ * Purpose: Product roadmap page for Orca.
  * ============================================================================
  */
 

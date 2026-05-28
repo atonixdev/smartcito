@@ -2,7 +2,7 @@
 ================================================================================
  File: citosmart/app/schemas/quantum.py
  Purpose:
-   Pydantic schemas for SmartCito's quantum-ready security surface.
+   Pydantic schemas for Orca's quantum-ready security surface.
 
    These models describe supported PQC algorithms, imported QKD key metadata,
    and the hybrid envelope API used to protect sensitive payloads.
@@ -26,7 +26,7 @@ class PqcKemAlgorithm(str, Enum):
 
 
 class PqcSignatureAlgorithm(str, Enum):
-    """PQC signature families SmartCito tracks for future adoption."""
+    """PQC signature families Orca tracks for future adoption."""
 
     ML_DSA_65 = "ml-dsa-65"
     SLH_DSA_SHA2_128S = "slh-dsa-sha2-128s"
@@ -66,7 +66,7 @@ class QkdKeyMetadata(BaseModel):
 
 
 class HybridEnvelopeIn(BaseModel):
-    """Payload to encrypt using SmartCito's hybrid quantum-ready envelope."""
+    """Payload to encrypt using Orca's hybrid quantum-ready envelope."""
 
     model_config = ConfigDict(extra="forbid")
 

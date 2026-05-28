@@ -1,6 +1,6 @@
-# SmartCito Hardware Integration
+# Orca Hardware Integration
 
-This folder captures the reference hardware footprint for SmartCito pilot and
+This folder captures the reference hardware footprint for Orca pilot and
 production deployments. It complements the software implementation in
 [`../citosmart/`](../citosmart/) and [`../webapp/`](../webapp/) and the local
 Docker stack in [`../docker-compose.yml`](../docker-compose.yml).
@@ -23,7 +23,7 @@ hardware/
 ├── body_cameras/   # Body-worn camera reference builds and firmware notes
 ├── micro_cameras/  # Compact magnetic camera designs and streaming notes
 ├── gps_modules/    # GNSS chip configs and device-side location guidance
-├── drone_edge/     # PX4/ROS2 companion runtime, MAVLink bridge, and SmartCito SDK
+├── drone_edge/     # PX4/ROS2 companion runtime, MAVLink bridge, and Orca SDK
 ├── api_connectors/ # Registration, heartbeat, and stream API contracts
 ├── quantum/        # Quantum-ready procedures and contributor guidance
 ├── compute/        # Controller + GPU compute node specs
@@ -45,7 +45,7 @@ hardware/
   intrusion detection, and key protection.
 - **Drone companion computers** run PX4-facing MAVLink uplinks, ROS2 autonomy
   integration, sensor fusion packaging, and camera/video registration into the
-  SmartCito cloud services.
+  Orca cloud services.
 
 ## Software Mapping
 
@@ -70,8 +70,8 @@ hardware/
 ## How To Run Its Container
 
 ```bash
-docker build -f hardware/Dockerfile -t smartcito-hardware-domain .
-docker run --rm -p 8014:8014 smartcito-hardware-domain
+docker build -f hardware/Dockerfile -t orca-hardware-domain .
+docker run --rm -p 8014:8014 orca-hardware-domain
 ```
 
 ## Example Usage

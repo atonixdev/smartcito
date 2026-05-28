@@ -2,21 +2,21 @@
 ================================================================================
  File: docs/WIKI.md
  Purpose:
-   Wiki-style home page for the SmartCito repository. This page gives readers
+   Wiki-style home page for the Orca repository. This page gives readers
    one navigable starting point for the platform's purpose, architecture,
    deployment model, hardware story, security posture, and contributor flows.
 ================================================================================
 -->
 
-# SmartCito Wiki
+# Orca Wiki
 
-> A single entry point for understanding SmartCito as a platform, a codebase,
+> A single entry point for understanding Orca as a platform, a codebase,
 > a hardware-aware deployment model, and a contributor ecosystem.
 
 For a GitHub Wiki-ready version of this documentation set, start with
 [wiki/Home.md](wiki/Home.md).
 
-SmartCito aims to become a secure urban operations backbone that connects city
+Orca aims to become a secure urban operations backbone that connects city
 devices, edge systems, analytics, storage, dashboards, and governance into one
 auditable and scalable platform. This wiki is the visual encyclopedia of that
 goal: what each module does, why it exists, how it connects to the rest of the
@@ -24,13 +24,13 @@ system, and what security controls protect it.
 
 ---
 
-## What SmartCito Is
+## What Orca Is
 
-SmartCito is an urban data backbone designed to unify software services,
+Orca is an urban data backbone designed to unify software services,
 hardware integrations, security controls, and operational workflows into one
  platform for smart-city deployments.
 
-At its core, SmartCito brings together:
+At its core, Orca brings together:
 
 - real-time ingestion for sensors, cameras, and GPS devices,
 - secure APIs and RBAC-governed services,
@@ -81,7 +81,7 @@ Each major capability area now has its own dedicated wiki page.
 ```mermaid
 flowchart TD
     A[City Devices and Systems] --> B[Ingestion and Protocol Adapters]
-    B --> C[SmartCito API and Control Plane]
+    B --> C[Orca API and Control Plane]
     C --> D[Storage and Event Backbone]
     C --> E[Dashboards and Operator Views]
     C --> F[Security and Audit Controls]
@@ -91,13 +91,13 @@ flowchart TD
     I --> H
 ```
 
-SmartCito is not only an API and web dashboard. It is a full deployment model
+Orca is not only an API and web dashboard. It is a full deployment model
 that spans application code, containers, infrastructure automation, hardware
 validation, and security controls.
 
 ### What We Are Trying To Achieve
 
-SmartCito is meant to evolve into a platform where:
+Orca is meant to evolve into a platform where:
 
 - city devices can be onboarded through open protocols rather than vendor lock-in,
 - operational teams can see events, telemetry, and risk in near real time,
@@ -134,7 +134,7 @@ The React and Vite dashboard for operators, analysts, and demo flows.
 
 Purpose:
 These folders hold the split domain implementations, Docker surfaces, and
-living documentation for major SmartCito functions.
+living documentation for major Orca functions.
 
 ### Infrastructure and Delivery
 
@@ -201,7 +201,7 @@ flowchart LR
 
 ## Hardware Story
 
-SmartCito treats hardware as a first-class concern, not as an afterthought.
+Orca treats hardware as a first-class concern, not as an afterthought.
 
 The hardware tree covers:
 
@@ -244,7 +244,7 @@ flowchart TD
 
 ## Security and Quantum Readiness
 
-SmartCito’s security model spans both software and infrastructure.
+Orca’s security model spans both software and infrastructure.
 
 Current controls include:
 
@@ -281,7 +281,7 @@ flowchart LR
 
 ## CI/CD and Quality Gates
 
-SmartCito now uses multiple repository workflows to protect changes:
+Orca now uses multiple repository workflows to protect changes:
 
 - [../.github/workflows/ci.yml](../.github/workflows/ci.yml)
 Purpose:
@@ -322,7 +322,7 @@ flowchart TD
 
 ## GitFlow in Practice
 
-SmartCito uses GitFlow to keep active work stable and reviewable.
+Orca uses GitFlow to keep active work stable and reviewable.
 
 | Branch Type | Source | Merge Target | Use |
 |---|---|---|---|
@@ -419,7 +419,7 @@ workflow documents. This page exists to make them usable as one coherent system.
 Use this page as the project home when you want:
 
 - a guided entry point,
-- a review checklist for what SmartCito already covers,
+- a review checklist for what Orca already covers,
 - a clean map for contributors and maintainers,
 - a single page you can share with new team members.
 
@@ -427,7 +427,7 @@ Use this page as the project home when you want:
 
 ## Contributor Roles In Wiki Development
 
-SmartCito’s wiki is intended to be maintained collaboratively.
+Orca’s wiki is intended to be maintained collaboratively.
 
 | Role | Expected Contribution |
 |---|---|

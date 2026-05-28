@@ -1,6 +1,6 @@
 # Hardware Camera Module Standardization
 
-Hardware-side standardization surface for SmartCito camera integrations.
+Hardware-side standardization surface for Orca camera integrations.
 
 ## Layout
 

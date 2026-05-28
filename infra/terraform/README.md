@@ -1,6 +1,6 @@
 # Terraform Infra
 
-Terraform modules for SmartCito infrastructure provisioning.
+Terraform modules for Orca infrastructure provisioning.
 
 This directory contains a simplified OpenStack stack. The segmented, canonical
 OpenStack layout lives in `infra/openstack/`.

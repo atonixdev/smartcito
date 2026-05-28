@@ -1,15 +1,15 @@
 # ============================================================================
 # File: citosmart/Dockerfile
 # Purpose:
-#   Multi-stage container build for the SmartCito FastAPI service.
+#   Multi-stage container build for the Orca FastAPI service.
 #   Stage 1 installs dependencies in a slim base; stage 2 produces a
 #   minimal, non-root runtime image.
 #
 # Build:
-#   docker build -t smartcito-citosmart ./citosmart
+#   docker build -t orca-citosmart ./citosmart
 #
 # Run (standalone, requires env vars):
-#   docker run --rm -p 8000:8000 --env-file ../.env smartcito-citosmart
+#   docker run --rm -p 8000:8000 --env-file ../.env orca-citosmart
 # ============================================================================
 
 # ---- Stage 1: builder ------------------------------------------------------

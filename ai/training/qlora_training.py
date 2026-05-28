@@ -10,8 +10,8 @@ except ModuleNotFoundError:
 
 def build_qlora_arg_parser():
     parser = build_arg_parser()
-    parser.description = "Fine-tune SmartCito adapters with QLoRA."
-    parser.set_defaults(output_dir="ai/output/smartcito-lora")
+    parser.description = "Fine-tune Orca adapters with QLoRA."
+    parser.set_defaults(output_dir="ai/output/orca-lora")
     parser.set_defaults(fp16=True)
     return parser
 

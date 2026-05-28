@@ -6,7 +6,7 @@ import { MemoryRouter } from "react-router-dom";
 import DroneDashboard from "./DroneDashboard";
 
 vi.mock("@/components/CommandCenterMap", () => ({
-  default: () => <div aria-label="SmartCito city command map" />,
+  default: () => <div aria-label="Orca city command map" />,
 }));
 
 vi.mock("@/api/droneGateway", () => ({
@@ -29,7 +29,7 @@ vi.mock("@/api/droneGateway", () => ({
     registry: [
       {
         drone_id: "drone-patrol-001",
-        model: "SmartCito Simulated Patrol Drone",
+        model: "Orca Simulated Patrol Drone",
         firmware_version: "sim-1.0.0",
         max_speed_mps: 18,
         max_altitude_m: 500,
@@ -95,7 +95,7 @@ vi.mock("@/api/droneGateway", () => ({
       registry: [
         {
           drone_id: "drone-patrol-001",
-          model: "SmartCito Simulated Patrol Drone",
+          model: "Orca Simulated Patrol Drone",
           firmware_version: "sim-1.0.0",
           max_speed_mps: 18,
           max_altitude_m: 500,
@@ -110,7 +110,7 @@ vi.mock("@/api/droneGateway", () => ({
       ],
     },
   }),
-  useDroneGatewayMetrics: () => ({ data: "smartcito_drone_gateway_events_total{event=\"telemetry_received\"} 4" }),
+  useDroneGatewayMetrics: () => ({ data: "orca_drone_gateway_events_total{event=\"telemetry_received\"} 4" }),
   useDroneMissions: () => ({
     data: [
       {
@@ -186,6 +186,6 @@ describe("DroneDashboard", () => {
     expect(screen.getByRole("heading", { name: /Flight Operations Console/i })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /Live Map View/i })).toBeInTheDocument();
     expect(screen.getByText(/Mission Planner/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/SmartCito city command map/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Orca city command map/i)).toBeInTheDocument();
   });
 });

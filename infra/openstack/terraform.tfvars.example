@@ -5,14 +5,14 @@ region              = "RegionOne"
 # Optional direct credentials if you are not using clouds.yaml.
 # auth_url            = "https://openstack.example.com:5000/v3"
 # project_id          = "00000000000000000000000000000000"
-# project_name        = "smartcito"
-# username            = "smartcito-admin"
+# project_name        = "orca"
+# username            = "orca-admin"
 # password            = "change-me"
 # user_domain_name    = "Default"
 
 external_network_id = "public-network-id"
-image_name          = "smartcito-os-ubuntu-22.04-2026.05"
-key_pair            = "smartcito-keypair"
+image_name          = "orca-os-ubuntu-22.04-2026.05"
+key_pair            = "orca-keypair"
 
 public_subnet_cidr   = "172.20.10.0/24"
 services_subnet_cidr = "172.20.20.0/24"

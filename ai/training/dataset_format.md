@@ -1,6 +1,6 @@
-# SmartCito Dataset Format
+# Orca Dataset Format
 
-SmartCito fine-tuning data uses four fields per record:
+Orca fine-tuning data uses four fields per record:
 
 - `instruction`: the task the model must complete.
 - `input`: the structured mission, telemetry, sensor, map, or security context.
@@ -43,14 +43,14 @@ SmartCito fine-tuning data uses four fields per record:
 ## Preparation Flow
 
 1. Add or collect JSON/JSONL records using the schema above.
-2. Run `python ai/training/prepare_dataset.py --input <raw-data> --output ai/datasets/prepared_smartcito_training_data.jsonl` when your source data already follows the SmartCito schema.
-3. For edge-device logs, pass a source type to normalize them into SmartCito training records:
+2. Run `python ai/training/prepare_dataset.py --input <raw-data> --output ai/datasets/prepared_orca_training_data.jsonl` when your source data already follows the Orca schema.
+3. For edge-device logs, pass a source type to normalize them into Orca training records:
 
 ```bash
 python ai/training/prepare_dataset.py \
   --input ai/datasets/raw_drone_logs.json \
   --source-type drone \
-  --output ai/datasets/prepared_smartcito_training_data.jsonl
+  --output ai/datasets/prepared_orca_training_data.jsonl
 ```
 
 Supported source types:
@@ -73,6 +73,6 @@ The normalizer exposes source-specific hooks in [prepare_dataset.py](prepare_dat
 - `build_record_from_threat_log`
 - `build_record_from_operator_log`
 
-Contributors can extend these helpers or add their own source type to convert private operational data into SmartCito instruction records.
+Contributors can extend these helpers or add their own source type to convert private operational data into Orca instruction records.
 4. Train with `python ai/training/lora_training.py --base-model <provider-model-id>` or `python ai/training/qlora_training.py --base-model <provider-model-id>`.
-5. Share only the adapter directory from `ai/output/smartcito-lora/`.
+5. Share only the adapter directory from `ai/output/orca-lora/`.

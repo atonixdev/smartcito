@@ -117,7 +117,7 @@ export const demoRobotFleet: RobotFleet = {
   registry: [
     {
       robot_id: "robot-patrol-007",
-      model: "SmartCito Patrol UGV",
+      model: "Orca Patrol UGV",
       firmware_version: "ugv-2.4.1",
       max_speed_mps: 3.5,
       battery_capacity_mah: 18000,
@@ -131,7 +131,7 @@ export const demoRobotFleet: RobotFleet = {
     },
     {
       robot_id: "robot-tunnel-003",
-      model: "SmartCito Tunnel Inspector",
+      model: "Orca Tunnel Inspector",
       firmware_version: "tunnel-1.8.0",
       max_speed_mps: 2.2,
       battery_capacity_mah: 15000,

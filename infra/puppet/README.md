@@ -1,6 +1,6 @@
 # Puppet Infra
 
-Puppet manifests for SmartCito node configuration.
+Puppet manifests for Orca node configuration.
 
 ## Purpose
 

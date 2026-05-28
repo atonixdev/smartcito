@@ -1,6 +1,6 @@
 /* ============================================================================
    File: webapp/src/styles/global.css
-   Purpose: Minimal, dependency-free design system for the SmartCito UI.
+   Purpose: Minimal, dependency-free design system for the Orca UI.
    The intent is "looks good out of the box" without pulling in a CSS
    framework. Contributors can swap in Tailwind/Mantine/etc. without
    touching the component tree.

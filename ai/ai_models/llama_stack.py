@@ -97,13 +97,13 @@ def _parse_bool(value: str | None, *, default: bool = False) -> bool:
 
 def load_local_generation_settings() -> LocalGenerationSettings:
     return LocalGenerationSettings(
-        base_model_id=os.getenv("SMARTCITO_BASE_MODEL_ID") or os.getenv("HF_MODEL_ID"),
-        adapter_path=os.getenv("SMARTCITO_LORA_ADAPTER_PATH"),
-        backend=os.getenv("SMARTCITO_LLM_BACKEND", "auto").strip().lower() or "auto",
-        device_map=os.getenv("SMARTCITO_DEVICE_MAP", "auto"),
+        base_model_id=os.getenv("ORCA_BASE_MODEL_ID") or os.getenv("HF_MODEL_ID"),
+        adapter_path=os.getenv("ORCA_LORA_ADAPTER_PATH"),
+        backend=os.getenv("ORCA_LLM_BACKEND", "auto").strip().lower() or "auto",
+        device_map=os.getenv("ORCA_DEVICE_MAP", "auto"),
         hf_token=os.getenv("HUGGINGFACE_HUB_TOKEN") or os.getenv("HF_TOKEN"),
-        trust_remote_code=_parse_bool(os.getenv("SMARTCITO_TRUST_REMOTE_CODE"), default=False),
-        load_in_4bit=_parse_bool(os.getenv("SMARTCITO_LOAD_IN_4BIT"), default=False),
+        trust_remote_code=_parse_bool(os.getenv("ORCA_TRUST_REMOTE_CODE"), default=False),
+        load_in_4bit=_parse_bool(os.getenv("ORCA_LOAD_IN_4BIT"), default=False),
     )
 
 
@@ -129,7 +129,7 @@ def _resolve_backend(requested_backend: str | None = None) -> tuple[str, LlamaSt
     if backend in {"local", "local-lora", "merged-local"}:
         if not local_settings.configured:
             raise RuntimeError(
-                "SMARTCITO_BASE_MODEL_ID must be set for local or LoRA-merged inference."
+                "ORCA_BASE_MODEL_ID must be set for local or LoRA-merged inference."
             )
         return backend, remote_settings, local_settings
 
@@ -142,7 +142,7 @@ def _resolve_backend(requested_backend: str | None = None) -> tuple[str, LlamaSt
         return "local", remote_settings, local_settings
 
     raise RuntimeError(
-        "LLAMA_STACK_BASE_URL and LLAMA_STACK_MODEL must be set for remote inference, or SMARTCITO_BASE_MODEL_ID must be set for local inference."
+        "LLAMA_STACK_BASE_URL and LLAMA_STACK_MODEL must be set for remote inference, or ORCA_BASE_MODEL_ID must be set for local inference."
     )
 
 
@@ -247,7 +247,7 @@ def _generate_text_locally(
     settings = load_local_generation_settings()
     base_model_id = model or settings.base_model_id
     if not base_model_id:
-        raise RuntimeError("SMARTCITO_BASE_MODEL_ID must be set for local inference.")
+        raise RuntimeError("ORCA_BASE_MODEL_ID must be set for local inference.")
 
     normalized_adapter = _validate_adapter_path(adapter_path or settings.adapter_path)
     tokenizer, loaded_model = _get_local_generator(

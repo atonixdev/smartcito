@@ -1,4 +1,4 @@
-class smartcito::database {
+class orca::database {
   package { 'postgresql':
     ensure => installed,
   }
@@ -9,9 +9,9 @@ class smartcito::database {
     require => Package['postgresql'],
   }
 
-  file { '/etc/smartcito/database.conf':
+  file { '/etc/orca/database.conf':
     ensure  => file,
-    content => "database=smartcito\nrole=storage\n",
+    content => "database=orca\nrole=storage\n",
     mode    => '0644',
   }
 }

@@ -4,7 +4,7 @@
  Purpose:
    Vendor-agnostic drone adapter contracts for the Drone Gateway. Real MAVLink,
    vendor SDK, REST, or WebSocket integrations plug in behind this interface;
-   the gateway API remains stable for the rest of SmartCito.
+   the gateway API remains stable for the rest of Orca.
 ================================================================================
 """
 
@@ -42,7 +42,7 @@ class SimulatedDroneAdapter:
     def discover_capabilities(self, request: DroneConnectionRequest) -> DroneCapabilities:
         return DroneCapabilities(
             drone_id=request.drone_id,
-            model="SmartCito Simulated Patrol Drone",
+            model="Orca Simulated Patrol Drone",
             firmware_version="sim-1.0.0",
             max_speed_mps=18.0,
             max_altitude_m=500.0,
@@ -71,13 +71,13 @@ class MavlinkDroneAdapter(SimulatedDroneAdapter):
         self._endpoints: dict[str, str] = {}
 
     def _camera_types(self) -> list[str]:
-        raw = os.getenv("SMARTCITO_MAVLINK_CAMERA_TYPES", "rgb,thermal,zoom")
+        raw = os.getenv("ORCA_MAVLINK_CAMERA_TYPES", "rgb,thermal,zoom")
         return [item.strip() for item in raw.split(",") if item.strip()]
 
     def _resolve_endpoint(self, drone_id: str, endpoint: str | None) -> str:
-        resolved = endpoint or self._endpoints.get(drone_id) or os.getenv("SMARTCITO_MAVLINK_ENDPOINT")
+        resolved = endpoint or self._endpoints.get(drone_id) or os.getenv("ORCA_MAVLINK_ENDPOINT")
         if not resolved:
-            raise ValueError("mavlink connections require endpoint or SMARTCITO_MAVLINK_ENDPOINT")
+            raise ValueError("mavlink connections require endpoint or ORCA_MAVLINK_ENDPOINT")
         return resolved
 
     def _open_connection(self, endpoint: str) -> object:
@@ -146,9 +146,9 @@ class MavlinkDroneAdapter(SimulatedDroneAdapter):
             drone_id=request.drone_id,
             model=self._vehicle_model(connection),
             firmware_version=self._firmware_version(connection),
-            max_speed_mps=float(os.getenv("SMARTCITO_MAVLINK_MAX_SPEED_MPS", "20")),
-            max_altitude_m=float(os.getenv("SMARTCITO_MAVLINK_MAX_ALTITUDE_M", "500")),
-            battery_capacity_mah=int(os.getenv("SMARTCITO_MAVLINK_BATTERY_CAPACITY_MAH", "6000")),
+            max_speed_mps=float(os.getenv("ORCA_MAVLINK_MAX_SPEED_MPS", "20")),
+            max_altitude_m=float(os.getenv("ORCA_MAVLINK_MAX_ALTITUDE_M", "500")),
+            battery_capacity_mah=int(os.getenv("ORCA_MAVLINK_BATTERY_CAPACITY_MAH", "6000")),
             camera_types=self._camera_types(),
             sensors=sorted(set(sensors)),
             payload_supported=True,

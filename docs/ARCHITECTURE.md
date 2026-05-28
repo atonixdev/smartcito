@@ -2,12 +2,12 @@
 ================================================================================
  File: docs/ARCHITECTURE.md
  Purpose:
-   Deep-dive into the SmartCito architecture. This is the document to read
+   Deep-dive into the Orca architecture. This is the document to read
    after the root README and before writing your first feature.
 ================================================================================
 -->
 
-# SmartCito Architecture
+# Orca Architecture
 
 ## Goals
 

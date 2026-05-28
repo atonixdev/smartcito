@@ -1,1 +1,1 @@
-SmartCito Wiki: architecture, operations, security, hardware, and delivery guidance in one place.
+Orca Wiki: architecture, operations, security, hardware, and delivery guidance in one place.

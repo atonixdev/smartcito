@@ -8,14 +8,14 @@ from typing import Any
 
 
 DEFAULT_SYSTEM_PROMPT = (
-    "You are SmartCito Model, a domain-specialized operations assistant for "
+    "You are Orca Model, a domain-specialized operations assistant for "
     "city safety, sensor fusion, drone missions, camera analytics, geographic "
     "reasoning, and infrastructure orchestration."
 )
 
 
 @dataclass(slots=True)
-class SmartCitoTrainingRecord:
+class OrcaTrainingRecord:
     instruction: str
     input: str
     output: str
@@ -44,13 +44,13 @@ def _normalize_metadata(raw_metadata: Any, index: int) -> dict[str, Any]:
     else:
         metadata = {"source": str(raw_metadata) if raw_metadata is not None else "unknown"}
 
-    metadata.setdefault("record_id", f"smartcito-{index:05d}")
+    metadata.setdefault("record_id", f"orca-{index:05d}")
     metadata.setdefault("license", "contributor-provided")
     metadata.setdefault("reviewed", False)
     return metadata
 
 
-def normalize_record(raw_record: dict[str, Any], index: int) -> SmartCitoTrainingRecord:
+def normalize_record(raw_record: dict[str, Any], index: int) -> OrcaTrainingRecord:
     instruction = str(raw_record.get("instruction", "")).strip()
     input_text = str(raw_record.get("input", "")).strip()
     output_text = str(raw_record.get("output", "")).strip()
@@ -59,7 +59,7 @@ def normalize_record(raw_record: dict[str, Any], index: int) -> SmartCitoTrainin
     if not output_text:
         raise ValueError(f"Record {index} is missing an output.")
 
-    return SmartCitoTrainingRecord(
+    return OrcaTrainingRecord(
         instruction=instruction,
         input=input_text,
         output=output_text,
@@ -67,10 +67,10 @@ def normalize_record(raw_record: dict[str, Any], index: int) -> SmartCitoTrainin
     )
 
 
-def build_record_from_drone_log(raw_record: dict[str, Any], index: int) -> SmartCitoTrainingRecord:
+def build_record_from_drone_log(raw_record: dict[str, Any], index: int) -> OrcaTrainingRecord:
     metadata = _normalize_metadata(raw_record.get("metadata"), index)
     metadata.setdefault("domain", "drone-operations")
-    return SmartCitoTrainingRecord(
+    return OrcaTrainingRecord(
         instruction=str(raw_record.get("instruction") or "Plan a safe drone mission response."),
         input=str(raw_record.get("input") or _stringify_fields(raw_record)),
         output=str(raw_record.get("output") or "Recommend a safe flight path, altitude, and operator action based on the drone telemetry."),
@@ -78,10 +78,10 @@ def build_record_from_drone_log(raw_record: dict[str, Any], index: int) -> Smart
     )
 
 
-def build_record_from_robot_log(raw_record: dict[str, Any], index: int) -> SmartCitoTrainingRecord:
+def build_record_from_robot_log(raw_record: dict[str, Any], index: int) -> OrcaTrainingRecord:
     metadata = _normalize_metadata(raw_record.get("metadata"), index)
     metadata.setdefault("domain", "robot-navigation")
-    return SmartCitoTrainingRecord(
+    return OrcaTrainingRecord(
         instruction=str(raw_record.get("instruction") or "Summarize robot navigation risk and the next operator action."),
         input=str(raw_record.get("input") or _stringify_fields(raw_record)),
         output=str(raw_record.get("output") or "Describe the navigation issue, recommend a reroute, and state the speed or safety adjustment required."),
@@ -89,10 +89,10 @@ def build_record_from_robot_log(raw_record: dict[str, Any], index: int) -> Smart
     )
 
 
-def build_record_from_camera_log(raw_record: dict[str, Any], index: int) -> SmartCitoTrainingRecord:
+def build_record_from_camera_log(raw_record: dict[str, Any], index: int) -> OrcaTrainingRecord:
     metadata = _normalize_metadata(raw_record.get("metadata"), index)
     metadata.setdefault("domain", "camera-analytics")
-    return SmartCitoTrainingRecord(
+    return OrcaTrainingRecord(
         instruction=str(raw_record.get("instruction") or "Assess a city camera anomaly and recommend the next response step."),
         input=str(raw_record.get("input") or _stringify_fields(raw_record)),
         output=str(raw_record.get("output") or "Classify the event, state confidence, and recommend monitoring or escalation actions."),
@@ -100,10 +100,10 @@ def build_record_from_camera_log(raw_record: dict[str, Any], index: int) -> Smar
     )
 
 
-def build_record_from_sensor_log(raw_record: dict[str, Any], index: int) -> SmartCitoTrainingRecord:
+def build_record_from_sensor_log(raw_record: dict[str, Any], index: int) -> OrcaTrainingRecord:
     metadata = _normalize_metadata(raw_record.get("metadata"), index)
     metadata.setdefault("domain", "sensor-fusion")
-    return SmartCitoTrainingRecord(
+    return OrcaTrainingRecord(
         instruction=str(raw_record.get("instruction") or "Fuse edge sensor readings into an operational assessment."),
         input=str(raw_record.get("input") or _stringify_fields(raw_record)),
         output=str(raw_record.get("output") or "Summarize the risk level, explain the correlated signals, and recommend the next city-operations action."),
@@ -111,10 +111,10 @@ def build_record_from_sensor_log(raw_record: dict[str, Any], index: int) -> Smar
     )
 
 
-def build_record_from_geographic_log(raw_record: dict[str, Any], index: int) -> SmartCitoTrainingRecord:
+def build_record_from_geographic_log(raw_record: dict[str, Any], index: int) -> OrcaTrainingRecord:
     metadata = _normalize_metadata(raw_record.get("metadata"), index)
     metadata.setdefault("domain", "geographic-reasoning")
-    return SmartCitoTrainingRecord(
+    return OrcaTrainingRecord(
         instruction=str(raw_record.get("instruction") or "Reason about a geographic deployment plan."),
         input=str(raw_record.get("input") or _stringify_fields(raw_record)),
         output=str(raw_record.get("output") or "Select the safest nearby assets, describe the route, and explain the geographic constraints."),
@@ -122,10 +122,10 @@ def build_record_from_geographic_log(raw_record: dict[str, Any], index: int) -> 
     )
 
 
-def build_record_from_threat_log(raw_record: dict[str, Any], index: int) -> SmartCitoTrainingRecord:
+def build_record_from_threat_log(raw_record: dict[str, Any], index: int) -> OrcaTrainingRecord:
     metadata = _normalize_metadata(raw_record.get("metadata"), index)
     metadata.setdefault("domain", "threat-reasoning")
-    return SmartCitoTrainingRecord(
+    return OrcaTrainingRecord(
         instruction=str(raw_record.get("instruction") or "Assess a threat or incident and recommend the immediate response."),
         input=str(raw_record.get("input") or _stringify_fields(raw_record)),
         output=str(raw_record.get("output") or "State the threat level, justify it from the evidence, and recommend containment and notification actions."),
@@ -133,10 +133,10 @@ def build_record_from_threat_log(raw_record: dict[str, Any], index: int) -> Smar
     )
 
 
-def build_record_from_operator_log(raw_record: dict[str, Any], index: int) -> SmartCitoTrainingRecord:
+def build_record_from_operator_log(raw_record: dict[str, Any], index: int) -> OrcaTrainingRecord:
     metadata = _normalize_metadata(raw_record.get("metadata"), index)
     metadata.setdefault("domain", "operator-workflows")
-    return SmartCitoTrainingRecord(
+    return OrcaTrainingRecord(
         instruction=str(raw_record.get("instruction") or "Summarize the operator action and recommended follow-up."),
         input=str(raw_record.get("input") or _stringify_fields(raw_record)),
         output=str(raw_record.get("output") or "Describe the decision the operator made, the reason it was taken, and the next action the system should coordinate."),
@@ -145,7 +145,7 @@ def build_record_from_operator_log(raw_record: dict[str, Any], index: int) -> Sm
 
 
 RAW_LOG_BUILDERS = {
-    "smartcito": normalize_record,
+    "orca": normalize_record,
     "drone": build_record_from_drone_log,
     "robot": build_record_from_robot_log,
     "camera": build_record_from_camera_log,
@@ -156,7 +156,7 @@ RAW_LOG_BUILDERS = {
 }
 
 
-def load_records(input_path: str | Path, *, source_type: str = "smartcito") -> list[SmartCitoTrainingRecord]:
+def load_records(input_path: str | Path, *, source_type: str = "orca") -> list[OrcaTrainingRecord]:
     path = Path(input_path)
     payload = _load_json_payload(path)
     if not isinstance(payload, list):
@@ -167,7 +167,7 @@ def load_records(input_path: str | Path, *, source_type: str = "smartcito") -> l
 
     builder = RAW_LOG_BUILDERS[source_type]
 
-    normalized: list[SmartCitoTrainingRecord] = []
+    normalized: list[OrcaTrainingRecord] = []
     for index, raw_record in enumerate(payload, start=1):
         if not isinstance(raw_record, dict):
             raise ValueError(f"Record {index} must be a JSON object.")
@@ -176,7 +176,7 @@ def load_records(input_path: str | Path, *, source_type: str = "smartcito") -> l
 
 
 def build_chat_example(
-    record: SmartCitoTrainingRecord,
+    record: OrcaTrainingRecord,
     *,
     system_prompt: str = DEFAULT_SYSTEM_PROMPT,
 ) -> dict[str, Any]:
@@ -208,7 +208,7 @@ def export_prepared_dataset(
     output_path: str | Path,
     *,
     system_prompt: str = DEFAULT_SYSTEM_PROMPT,
-    source_type: str = "smartcito",
+    source_type: str = "orca",
 ) -> int:
     records = load_records(input_path, source_type=source_type)
     prepared = [build_chat_example(record, system_prompt=system_prompt) for record in records]
@@ -226,15 +226,15 @@ def export_prepared_dataset(
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Prepare SmartCito fine-tuning datasets.")
+    parser = argparse.ArgumentParser(description="Prepare Orca fine-tuning datasets.")
     parser.add_argument(
         "--input",
         default="ai/datasets/sample_training_data.json",
-        help="Path to raw SmartCito training data in JSON or JSONL format.",
+        help="Path to raw Orca training data in JSON or JSONL format.",
     )
     parser.add_argument(
         "--output",
-        default="ai/datasets/prepared_smartcito_training_data.jsonl",
+        default="ai/datasets/prepared_orca_training_data.jsonl",
         help="Path to the prepared supervised fine-tuning dataset.",
     )
     parser.add_argument(
@@ -245,8 +245,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--source-type",
         choices=tuple(RAW_LOG_BUILDERS.keys()),
-        default="smartcito",
-        help="Interpret the input as an existing SmartCito dataset or normalize raw drone, robot, camera, sensor, geographic, or threat logs.",
+        default="orca",
+        help="Interpret the input as an existing Orca dataset or normalize raw drone, robot, camera, sensor, geographic, or threat logs.",
     )
     return parser
 
@@ -259,7 +259,7 @@ def main() -> int:
         system_prompt=args.system_prompt,
         source_type=args.source_type,
     )
-    print(f"Prepared {record_count} SmartCito training records at {args.output}")
+    print(f"Prepared {record_count} Orca training records at {args.output}")
     return 0
 
 

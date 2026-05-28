@@ -1,6 +1,6 @@
 # Hardware Deployment Procedure
 
-Reference implementation steps for a SmartCito pilot or production rack.
+Reference implementation steps for a Orca pilot or production rack.
 
 ## 1. Provision Hardware
 

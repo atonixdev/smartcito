@@ -2,7 +2,7 @@
  * ============================================================================
  * File: webapp/src/api/map.ts
  * Purpose:
- *   Typed client for the SmartCito IoT -> GPS -> Map -> Camera control-plane
+ *   Typed client for the Orca IoT -> GPS -> Map -> Camera control-plane
  *   integration.
  * ============================================================================
  */

@@ -15,10 +15,10 @@ def build_reference_stack() -> dict[str, object]:
             "cameras": ["rgb", "thermal", "zoom"],
         },
         "communication_layer": {
-            "telemetry": "MAVLink telemetry stream via SmartCito drone SDK",
+            "telemetry": "MAVLink telemetry stream via Orca drone SDK",
             "video": ["rtsp", "webrtc"],
             "links": ["4g", "5g", "wifi"],
-            "sdk": "hardware.drone_edge.sdk.SmartCitoDroneSDK",
+            "sdk": "hardware.drone_edge.sdk.OrcaDroneSDK",
         },
         "cloud_surfaces": {
             "drone_gateway": "http://drone-gateway:8020",

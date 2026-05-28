@@ -1,7 +1,7 @@
 # ============================================================================
 # File: .github/CODEOWNERS
 # Purpose:
-#   Require review coverage for SmartCito's critical areas.
+#   Require review coverage for Orca's critical areas.
 # ============================================================================
 
 * @atonixdev

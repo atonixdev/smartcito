@@ -20,7 +20,7 @@ def test_liveness_returns_200() -> None:
     assert res.status_code == 200
     body = res.json()
     assert body["status"] == "alive"
-    assert body["service"] == "smartcito-api"
+    assert body["service"] == "orca-api"
 
 
 def test_readiness_returns_200() -> None:
@@ -32,4 +32,4 @@ def test_readiness_returns_200() -> None:
 def test_openapi_schema_available() -> None:
     res = client.get("/openapi.json")
     assert res.status_code == 200
-    assert res.json()["info"]["title"] == "SmartCito"
+    assert res.json()["info"]["title"] == "Orca"

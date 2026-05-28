@@ -14,7 +14,7 @@ from hardware.test_support import HardwareSnapshot, assert_snapshot, collect_sna
 def test_compute_nodes() -> None:
     snapshot = collect_snapshot(
         component="compute-nodes",
-        endpoint_env="SMARTCITO_COMPUTE_ENDPOINT",
+        endpoint_env="ORCA_COMPUTE_ENDPOINT",
         defaults=HardwareSnapshot(
             component="compute-nodes",
             endpoint="simulation://compute",

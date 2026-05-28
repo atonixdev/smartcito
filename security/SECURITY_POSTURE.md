@@ -1,9 +1,9 @@
-# SmartCito Security Posture
+# Orca Security Posture
 
 > **Pillars:** Zero Trust • Encryption Everywhere • Strict IAM + RBAC •
 > Audit, Compliance & Intrusion Detection • Hardening & Secure Coding.
 
-This document is the authoritative description of SmartCito's security
+This document is the authoritative description of Orca's security
 posture. Every contributor is expected to read it before submitting code
 that touches authentication, data, networking, or infrastructure.
 

@@ -19,9 +19,9 @@ spec:
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
-                name: smartcito-platform-config
+                name: orca-platform-config
             - secretRef:
-                name: smartcito-platform-secrets
+                name: orca-platform-secrets
           ports:
             - containerPort: 8011
           readinessProbe:

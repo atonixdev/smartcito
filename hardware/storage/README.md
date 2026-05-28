@@ -1,6 +1,6 @@
 # Storage Layer
 
-SmartCito uses tiered storage so high-rate camera and sensor streams do not
+Orca uses tiered storage so high-rate camera and sensor streams do not
 compete with archives and analytics.
 
 ## Storage Tiers

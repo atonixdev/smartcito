@@ -2,7 +2,7 @@
 ================================================================================
  File: app/services/realtime_bus.py
  Purpose:
-   Aggregates dashboard snapshots for the SmartCito WebSocket event bus.
+   Aggregates dashboard snapshots for the Orca WebSocket event bus.
 ================================================================================
 """
 

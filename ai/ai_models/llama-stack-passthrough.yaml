@@ -1,5 +1,5 @@
 version: 2
-distro_name: smartcito-passthrough
+distro_name: orca-passthrough
 apis:
   - inference
 providers:

@@ -16,10 +16,10 @@ Every hardware driver document should state:
 - discovery method
 - auth mode
 - stream URI format
-- metadata fields mapped into SmartCito
+- metadata fields mapped into Orca
 - failure and reconnect behavior
 
 ## Interoperability Goal
 
-By anchoring on ONVIF and RTSP, SmartCito can ingest globally compliant IP
+By anchoring on ONVIF and RTSP, Orca can ingest globally compliant IP
 camera feeds without coupling the platform to a single brand.

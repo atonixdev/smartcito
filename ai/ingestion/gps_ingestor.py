@@ -74,7 +74,7 @@ def ingest_gps(
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Ingest GPS or GNSS data into SmartCito training batches.")
+    parser = argparse.ArgumentParser(description="Ingest GPS or GNSS data into Orca training batches.")
     parser.add_argument("--api-url", default=None, help="Optional API endpoint for JSON GPS/GNSS logs.")
     parser.add_argument("--input-file", default=None, help="Optional JSON or JSONL file containing GPS/GNSS logs.")
     parser.add_argument("--output-dir", default=str(DEFAULT_DATASET_DIR))

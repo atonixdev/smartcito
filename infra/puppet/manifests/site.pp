@@ -1,15 +1,15 @@
-# SmartCito Puppet site manifest.
+# Orca Puppet site manifest.
 
 node /^controller/ {
-  include smartcito::roles::controller
+  include orca::roles::controller
 }
 
 node /^compute/ {
-  include smartcito::roles::compute
+  include orca::roles::compute
 }
 
 node /^storage/ {
-  include smartcito::roles::storage
+  include orca::roles::storage
 }
 
 node default {

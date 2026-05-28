@@ -12,16 +12,16 @@ except ModuleNotFoundError:
     from prepare_dataset import DEFAULT_SYSTEM_PROMPT, build_chat_example, load_records
 
 
-DEFAULT_OUTPUT_DIR = Path("ai/output/smartcito-lora")
+DEFAULT_OUTPUT_DIR = Path("ai/output/orca-lora")
 DEFAULT_TARGET_MODULES = "q_proj,k_proj,v_proj,o_proj,gate_proj,up_proj,down_proj"
 
 
 def _default_base_model() -> str:
-    return os.getenv("SMARTCITO_BASE_MODEL_ID", "")
+    return os.getenv("ORCA_BASE_MODEL_ID", "")
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Fine-tune SmartCito adapters with LoRA.")
+    parser = argparse.ArgumentParser(description="Fine-tune Orca adapters with LoRA.")
     parser.add_argument("--dataset", default="ai/datasets/sample_training_data.json")
     parser.add_argument("--base-model", default=_default_base_model())
     parser.add_argument("--output-dir", default=str(DEFAULT_OUTPUT_DIR))
@@ -50,7 +50,7 @@ def _resolve_base_model_id(args: argparse.Namespace) -> str:
     if base_model:
         return base_model
     raise RuntimeError(
-        "A base model id is required. Set SMARTCITO_BASE_MODEL_ID or pass --base-model with a compatible model from an official provider source."
+        "A base model id is required. Set ORCA_BASE_MODEL_ID or pass --base-model with a compatible model from an official provider source."
     )
 
 
@@ -166,7 +166,7 @@ def run_training(args: argparse.Namespace, *, load_in_4bit: bool = False) -> dic
     tokenizer.save_pretrained(output_dir)
 
     summary = {
-        "model_name": "SmartCito Model",
+        "model_name": "Orca Model",
         "base_model": base_model_id,
         "training_mode": "qlora" if load_in_4bit else "lora",
         "records": len(prepared_examples),

@@ -1,6 +1,6 @@
 # Open Protocols
 
-Protocol baseline for SmartCito interoperability.
+Protocol baseline for Orca interoperability.
 
 ## Video and Device Standards
 
@@ -17,5 +17,5 @@ Protocol baseline for SmartCito interoperability.
 
 ## Outcome
 
-These protocols keep SmartCito open and extensible across vendors,
+These protocols keep Orca open and extensible across vendors,
 geographies, and deployment models.

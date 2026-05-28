@@ -4,11 +4,11 @@ from hardware.drone_edge.mavlink_bridge import build_drone_profile, normalize_ma
 from hardware.drone_edge.rfp_packet import build_rfp_packet
 from hardware.drone_edge.ros2_contract import build_ros2_node_contract
 from hardware.drone_edge.schemas import CameraStreamProfile, GeoPoint, SensorSnapshot
-from hardware.drone_edge.sdk import SmartCitoDroneSDK
+from hardware.drone_edge.sdk import OrcaDroneSDK
 from hardware.drone_edge.streamer import VideoEncodingProfile, build_camera_stream_profile
 
 
-class RecordingDroneSDK(SmartCitoDroneSDK):
+class RecordingDroneSDK(OrcaDroneSDK):
     def __init__(self) -> None:
         super().__init__()
         self.calls: list[tuple[str, dict[str, object]]] = []
@@ -151,15 +151,15 @@ def test_ros2_contract_covers_autonomy_nodes() -> None:
     contract = build_ros2_node_contract()
 
     node_names = [node["name"] for node in contract["nodes"]]
-    assert "smartcito_slam_node" in node_names
-    assert "smartcito_obstacle_avoidance_node" in node_names
-    assert "smartcito_visual_odometry_node" in node_names
+    assert "orca_slam_node" in node_names
+    assert "orca_obstacle_avoidance_node" in node_names
+    assert "orca_visual_odometry_node" in node_names
     assert "Mission Control" in contract["cloud_publish_contract"]["operator_surfaces"]
 
 
 def test_rfp_packet_includes_bom_and_acceptance_sections() -> None:
     packet = build_rfp_packet()
 
-    assert packet["title"] == "SmartCito Drone Platform RFP Packet"
+    assert packet["title"] == "Orca Drone Platform RFP Packet"
     assert "companion computer SKU" in packet["bom_fields"]
     assert any("SSH" in item for item in packet["acceptance_checklist"])

@@ -43,7 +43,7 @@ async def _consumer(topic: str, group_id: str) -> AIOKafkaConsumer:
 
 async def consume_raw_events() -> None:
     topics = load_topics()
-    consumer = await _consumer(topics["raw_events"], "smartcito-raw-events")
+    consumer = await _consumer(topics["raw_events"], "orca-raw-events")
     publisher = KafkaPublisher()
     await publisher.start()
     try:
@@ -69,7 +69,7 @@ async def consume_raw_events() -> None:
 
 async def consume_clean_events() -> None:
     topics = load_topics()
-    consumer = await _consumer(topics["clean_events"], "smartcito-clean-events")
+    consumer = await _consumer(topics["clean_events"], "orca-clean-events")
     try:
         async for message in consumer:
             event = NormalizedEvent.model_validate(message.value)
@@ -91,7 +91,7 @@ async def consume_clean_events() -> None:
 
 async def consume_alerts() -> None:
     topics = load_topics()
-    consumer = await _consumer(topics["alerts"], "smartcito-alerts")
+    consumer = await _consumer(topics["alerts"], "orca-alerts")
     try:
         async for message in consumer:
             alert = AlertEvent.model_validate(message.value)

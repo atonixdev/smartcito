@@ -29,7 +29,7 @@ def fetch_json(url: str, *, timeout: int = DEFAULT_TIMEOUT_SECONDS, headers: dic
         url,
         headers={
             "Accept": "application/json",
-            "User-Agent": "SmartCito-Ingestion/1.0",
+            "User-Agent": "Orca-Ingestion/1.0",
             **(headers or {}),
         },
     )
@@ -48,7 +48,7 @@ def post_json(url: str, payload: str, *, timeout: int = DEFAULT_TIMEOUT_SECONDS,
         headers={
             "Accept": "application/json",
             "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
-            "User-Agent": "SmartCito-Ingestion/1.0",
+            "User-Agent": "Orca-Ingestion/1.0",
             **(headers or {}),
         },
         method="POST",

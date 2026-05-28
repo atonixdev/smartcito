@@ -1,6 +1,6 @@
 # Contrib
 
-External and experimental contributions to SmartCito.
+External and experimental contributions to Orca.
 
 Use this folder to propose new modules, dashboards, connectors, or AI models
 that are **not yet ready** to live in the core tree. Promoted contributions

@@ -2,13 +2,13 @@
 ================================================================================
  File: docs/REPOSITORY_STRUCTURE.md
  Purpose:
-   Canonical repository structure and ownership guide for SmartCito.
+   Canonical repository structure and ownership guide for Orca.
    This document defines what each top-level folder is responsible for and
    clarifies current overlaps that contributors should avoid growing.
 ================================================================================
 -->
 
-# SmartCito Repository Structure
+# Orca Repository Structure
 
 ## Canonical Ownership
 
@@ -47,7 +47,7 @@ backend API; folders in `services/` are separate service units.
 
 - Connectors for Kafka, MQTT, REST polling, and WebSockets.
 - Input normalization and validation before data enters queues or raw storage.
-- Lightweight producer jobs that bridge external systems into SmartCito.
+- Lightweight producer jobs that bridge external systems into Orca.
 
 **Do not put here:**
 
@@ -107,8 +107,8 @@ notebooks, runtime code, and model artifacts.
 - `ai/training/` for fine-tuning, evaluation, and Kaggle packaging scripts.
 - `ai/datasets/` for synthetic and private AI datasets.
 - `ai/examples/` for notebooks and demo assets.
-- `ai/smartcito_runtime/` for the runtime model code.
-- `ai/smartcito_datasets/` for generated ingestion batches.
+- `ai/orca_runtime/` for the runtime model code.
+- `ai/orca_datasets/` for generated ingestion batches.
 - `ai/models/` and `ai/output/` for versioned artifacts and adapter outputs.
 
 **Compatibility rule:**

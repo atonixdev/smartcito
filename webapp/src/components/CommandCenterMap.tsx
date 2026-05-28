@@ -448,8 +448,8 @@ export default function CommandCenterMap({
   }, [mode, sceneOverview]);
 
   if (mode === "3d") {
-    return <div ref={sceneElementRef} className="command-three-map" aria-label="SmartCito city command map" />;
+    return <div ref={sceneElementRef} className="command-three-map" aria-label="Orca city command map" />;
   }
 
-  return <div ref={mapElementRef} className="command-leaflet-map" aria-label="SmartCito city command map" />;
+  return <div ref={mapElementRef} className="command-leaflet-map" aria-label="Orca city command map" />;
 }

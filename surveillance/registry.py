@@ -34,9 +34,9 @@ class DroneRegistry:
 
         host = os.getenv("DB_HOST", "postgres")
         port = os.getenv("DB_PORT", "5432")
-        name = os.getenv("DB_NAME", "smartcito")
-        user = os.getenv("DB_USER", "smartcito")
-        password = os.getenv("DB_PASSWORD", "smartcito")
+        name = os.getenv("DB_NAME", "orca")
+        user = os.getenv("DB_USER", "orca")
+        password = os.getenv("DB_PASSWORD", "orca")
         return f"postgresql+psycopg://{user}:{password}@{host}:{port}/{name}"
 
     def _load_engine(self) -> Any | None:

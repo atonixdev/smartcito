@@ -1,4 +1,4 @@
-"""Repo-owned Spark Structured Streaming job for SmartCito."""
+"""Repo-owned Spark Structured Streaming job for Orca."""
 
 from __future__ import annotations
 
@@ -163,19 +163,19 @@ def main() -> None:
     from pyspark.sql.functions import current_timestamp, expr
 
     kafka_bootstrap = _env("KAFKA_BROKER_URL", "kafka:9092")
-    raw_topic = _env("KAFKA_RAW_EVENTS_TOPIC", "smartcito.sensors.raw")
-    alerts_topic = _env("KAFKA_ALERTS_TOPIC", "smartcito.alerts")
+    raw_topic = _env("KAFKA_RAW_EVENTS_TOPIC", "orca.sensors.raw")
+    alerts_topic = _env("KAFKA_ALERTS_TOPIC", "orca.alerts")
     surveillance_topics = _env(
         "KAFKA_SURVEILLANCE_TOPICS",
         ",".join(
             [
                 raw_topic,
-                _env("KAFKA_DRONE_TELEMETRY_TOPIC", "smartcito.drone.telemetry"),
-                _env("KAFKA_DRONE_EVENTS_TOPIC", "smartcito.drone.events"),
-                _env("KAFKA_DRONE_CAMERA_FRAMES_TOPIC", "smartcito.drone.camera.frames"),
-                _env("KAFKA_SENSOR_ALERTS_TOPIC", "smartcito.sensor.alerts"),
-                _env("KAFKA_THREAT_ALERTS_TOPIC", "smartcito.threat.alerts"),
-                _env("KAFKA_LOCATION_ENRICHED_TOPIC", "smartcito.location.enriched"),
+                _env("KAFKA_DRONE_TELEMETRY_TOPIC", "orca.drone.telemetry"),
+                _env("KAFKA_DRONE_EVENTS_TOPIC", "orca.drone.events"),
+                _env("KAFKA_DRONE_CAMERA_FRAMES_TOPIC", "orca.drone.camera.frames"),
+                _env("KAFKA_SENSOR_ALERTS_TOPIC", "orca.sensor.alerts"),
+                _env("KAFKA_THREAT_ALERTS_TOPIC", "orca.threat.alerts"),
+                _env("KAFKA_LOCATION_ENRICHED_TOPIC", "orca.location.enriched"),
             ]
         ),
     )
@@ -184,7 +184,7 @@ def main() -> None:
     spark_master = _env("SPARK_MASTER_URL", "local[*]")
 
     spark = (
-        SparkSession.builder.appName("smartcito-streaming")
+        SparkSession.builder.appName("orca-streaming")
         .master(spark_master)
         .getOrCreate()
     )

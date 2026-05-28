@@ -1,6 +1,6 @@
 # GPS Modules
 
-GNSS reference components and integration notes for SmartCito camera hardware.
+GNSS reference components and integration notes for Orca camera hardware.
 
 ## Recommended Chip Families
 
@@ -23,7 +23,7 @@ Every device location sample should include:
 
 - local device firmware can emit NMEA or structured JSON
 - Linux-based devices can bridge through `gpsd`
-- SmartCito services normalize location events in [`../../gps_module/`](../../gps_module/)
+- Orca services normalize location events in [`../../gps_module/`](../../gps_module/)
 
 ## Security
 

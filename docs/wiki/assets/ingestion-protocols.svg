@@ -14,7 +14,7 @@
   </defs>
   <rect width="1400" height="820" fill="url(#bg)"/>
   <text x="80" y="90" class="title">Ingestion and Protocol Adapters</text>
-  <text x="80" y="130" class="body">Multiple field protocols converge into one normalized SmartCito data path.</text>
+  <text x="80" y="130" class="body">Multiple field protocols converge into one normalized Orca data path.</text>
   <rect x="120" y="260" width="220" height="120" class="card"/>
   <text x="185" y="325" class="label">RTSP and ONVIF</text>
   <rect x="120" y="460" width="220" height="120" class="card"/>

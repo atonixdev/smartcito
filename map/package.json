@@ -1,7 +1,7 @@
 {
-  "name": "@smartcito/location-intelligence",
+  "name": "@orca/location-intelligence",
   "version": "1.0.0",
-  "description": "SmartCito Location Intelligence Engine: country/region/area-code/IP/GPS fusion.",
+  "description": "Orca Location Intelligence Engine: country/region/area-code/IP/GPS fusion.",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/server.js",

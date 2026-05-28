@@ -2,7 +2,7 @@
 ================================================================================
  File: scripts/ci/quantum_protect_audit.py
  Purpose:
-   Wrap a CI audit log in SmartCito's quantum-ready hybrid envelope so only the
+   Wrap a CI audit log in Orca's quantum-ready hybrid envelope so only the
    encrypted artifact needs to leave the CI runner.
 ================================================================================
 """
@@ -31,7 +31,7 @@ def main() -> int:
     output_path = Path(sys.argv[2])
     plaintext = input_path.read_text()
 
-    key_material = os.getenv("SMARTCITO_QKD_KEY_B64")
+    key_material = os.getenv("ORCA_QKD_KEY_B64")
     if not key_material:
         key_material = base64.b64encode(os.urandom(32)).decode("utf-8")
 

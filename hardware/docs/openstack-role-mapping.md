@@ -1,11 +1,11 @@
 # OpenStack Role Mapping
 
-Suggested mapping between SmartCito workloads and an OpenStack-backed hardware
+Suggested mapping between Orca workloads and an OpenStack-backed hardware
 estate.
 
 ## Node Roles
 
-| Role | OpenStack Services | SmartCito Responsibilities |
+| Role | OpenStack Services | Orca Responsibilities |
 |------|--------------------|----------------------------|
 | Controller | Keystone, Neutron API, Glance, Horizon, schedulers | auth, network control, orchestration integration |
 | Compute | Nova compute, GPU passthrough / vGPU | `citosmart`, analytics workers, AI inference |

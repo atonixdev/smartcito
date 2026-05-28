@@ -1,10 +1,10 @@
 # Quantum Compute
 
-Quantum-ready compute guidance for SmartCito.
+Quantum-ready compute guidance for Orca.
 
 ## Scope
 
-This folder documents how SmartCito can consume:
+This folder documents how Orca can consume:
 - cloud-hosted quantum simulators
 - managed quantum processing units (QPUs)
 - post-quantum cryptography acceleration services
@@ -12,7 +12,7 @@ This folder documents how SmartCito can consume:
 
 ## Model
 
-SmartCito remains a classical backbone first. Quantum services are attached via
+Orca remains a classical backbone first. Quantum services are attached via
 modular APIs so they can be introduced incrementally without rewriting the
 platform.
 

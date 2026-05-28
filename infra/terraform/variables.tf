@@ -22,7 +22,7 @@ variable "region" {
 
 variable "network_name" {
   type    = string
-  default = "smartcito-net"
+  default = "orca-net"
 }
 
 variable "subnet_cidr" {

@@ -3,7 +3,7 @@
  File: surveillance/geospatial.py
  Purpose:
    Shared geographic processing engine for GPS normalization, geofence
-   evaluation, search, and Folium map rendering across SmartCito services.
+   evaluation, search, and Folium map rendering across Orca services.
 ================================================================================
 """
 
@@ -576,7 +576,7 @@ def _fetch_nominatim_results(query: str, limit: int) -> list[dict[str, Any]]:
     encoded_query = parse.urlencode({"q": query, "format": "jsonv2", "limit": limit})
     req = request.Request(
         url=f"https://nominatim.openstreetmap.org/search?{encoded_query}",
-        headers={"User-Agent": "SMARTCITO-GeographicEngine/1.0"},
+        headers={"User-Agent": "ORCA-GeographicEngine/1.0"},
     )
     try:
         with request.urlopen(req, timeout=4) as response:

@@ -54,7 +54,7 @@ metadata:
 data:
   alerts.yml: |
     groups:
-      - name: smartcito-cache
+      - name: orca-cache
         rules:
           - alert: MemcachedExporterDown
             expr: up{job="memcached"} == 0
@@ -65,27 +65,27 @@ data:
               summary: Memcached exporter is down
               description: Memcached metrics have not been scraped successfully for more than 2 minutes.
 
-          - alert: SmartCitoCacheLowHitRatio
+          - alert: OrcaCacheLowHitRatio
             expr: |
               (
-                sum(rate(smartcito_cache_hits_total[10m]))
+                sum(rate(orca_cache_hits_total[10m]))
                 /
-                clamp_min(sum(rate(smartcito_cache_hits_total[10m])) + sum(rate(smartcito_cache_misses_total[10m])), 1)
+                clamp_min(sum(rate(orca_cache_hits_total[10m])) + sum(rate(orca_cache_misses_total[10m])), 1)
               ) < 0.60
             for: 15m
             labels:
               severity: warning
             annotations:
-              summary: SmartCito cache hit ratio is low
+              summary: Orca cache hit ratio is low
               description: Cache hit ratio has been below 60% for 15 minutes. Review cache coverage and TTL choices.
 
-          - alert: SmartCitoCacheErrorsHigh
-            expr: sum(rate(smartcito_cache_errors_total[5m])) > 0.05
+          - alert: OrcaCacheErrorsHigh
+            expr: sum(rate(orca_cache_errors_total[5m])) > 0.05
             for: 10m
             labels:
               severity: warning
             annotations:
-              summary: SmartCito cache errors are elevated
+              summary: Orca cache errors are elevated
               description: Cache get/set/delete operations are failing more often than expected.
 ---
 apiVersion: v1
@@ -191,9 +191,9 @@ data:
   dashboards.yaml: |
     apiVersion: 1
     providers:
-      - name: smartcito
+      - name: orca
         orgId: 1
-        folder: SmartCito
+        folder: Orca
         type: file
         options:
           path: /var/lib/grafana/dashboards
@@ -201,12 +201,12 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: grafana-smartcito-dashboard
+  name: grafana-orca-dashboard
   namespace: observability
 data:
-  smartcito-overview.json: |
+  orca-overview.json: |
     {
-      "uid": "smartcito-overview",
+      "uid": "orca-overview",
       "annotations": {"list": []},
       "editable": true,
       "graphTooltip": 0,
@@ -217,7 +217,7 @@ data:
           "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}}, "overrides": []},
           "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
           "id": 1,
-          "targets": [{"expr": "sum(rate(smartcito_cache_hits_total[5m]))", "refId": "A"}],
+          "targets": [{"expr": "sum(rate(orca_cache_hits_total[5m]))", "refId": "A"}],
           "title": "Cache Hits / s",
           "type": "timeseries"
         },
@@ -226,7 +226,7 @@ data:
           "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}}, "overrides": []},
           "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
           "id": 2,
-          "targets": [{"expr": "sum(rate(smartcito_cache_misses_total[5m]))", "refId": "A"}],
+          "targets": [{"expr": "sum(rate(orca_cache_misses_total[5m]))", "refId": "A"}],
           "title": "Cache Misses / s",
           "type": "timeseries"
         },
@@ -251,10 +251,10 @@ data:
       ],
       "refresh": "15s",
       "schemaVersion": 39,
-      "tags": ["smartcito"],
+      "tags": ["orca"],
       "templating": {"list": []},
       "time": {"from": "now-6h", "to": "now"},
-      "title": "SmartCito Overview",
+      "title": "Orca Overview",
       "version": 1
     }
 ---
@@ -294,8 +294,8 @@ spec:
               mountPath: /etc/grafana/provisioning/dashboards/dashboards.yaml
               subPath: dashboards.yaml
             - name: dashboards
-              mountPath: /var/lib/grafana/dashboards/smartcito-overview.json
-              subPath: smartcito-overview.json
+              mountPath: /var/lib/grafana/dashboards/orca-overview.json
+              subPath: orca-overview.json
       volumes:
         - name: datasources
           configMap:
@@ -305,7 +305,7 @@ spec:
             name: grafana-dashboard-provider
         - name: dashboards
           configMap:
-            name: grafana-smartcito-dashboard
+            name: grafana-orca-dashboard
 ---
 apiVersion: v1
 kind: Service
@@ -340,13 +340,13 @@ spec:
           image: prometheuscommunity/postgres-exporter:v0.16.0
           env:
             - name: DATA_SOURCE_URI
-              value: postgres.database.svc.cluster.local:5432/smartcito?sslmode=disable
+              value: postgres.database.svc.cluster.local:5432/orca?sslmode=disable
             - name: DATA_SOURCE_USER
-              value: smartcito
+              value: orca
             - name: DATA_SOURCE_PASS
               valueFrom:
                 secretKeyRef:
-                  name: smartcito-platform-secrets
+                  name: orca-platform-secrets
                   key: DB_PASSWORD
                   optional: true
           ports:

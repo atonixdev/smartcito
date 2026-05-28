@@ -14,7 +14,7 @@ from hardware.test_support import HardwareSnapshot, assert_snapshot, collect_sna
 def test_network_transmission() -> None:
     snapshot = collect_snapshot(
         component="network-transmission",
-        endpoint_env="SMARTCITO_NETWORK_ENDPOINT",
+        endpoint_env="ORCA_NETWORK_ENDPOINT",
         defaults=HardwareSnapshot(
             component="network-transmission",
             endpoint="simulation://network",

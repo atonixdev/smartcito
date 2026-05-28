@@ -15,7 +15,7 @@
 
   <rect width="1000" height="420" fill="url(#bg2)"/>
   <text x="500" y="40" text-anchor="middle" fill="#e7eefc" font-size="22" font-weight="700">
-    SmartCito Edge — Data Flow
+    Orca Edge — Data Flow
   </text>
   <text x="500" y="64" text-anchor="middle" fill="#8aa0c8" font-size="13">
     Sensors → Raspberry Pi → Secure Gateway → Cloud → Dashboard

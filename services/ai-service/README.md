@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Inference microservice for SmartCito model serving.
+Inference microservice for Orca model serving.
 
 ## Container Image
 
@@ -19,8 +19,8 @@ Inference microservice for SmartCito model serving.
 ## How To Run Its Container
 
 ```bash
-docker build -f services/ai-service/Dockerfile -t smartcito-ai-service .
-docker run --rm -p 8012:8012 smartcito-ai-service
+docker build -f services/ai-service/Dockerfile -t orca-ai-service .
+docker run --rm -p 8012:8012 orca-ai-service
 ```
 
 ## Example Usage

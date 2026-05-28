@@ -7,7 +7,7 @@ from urllib import request
 from hardware.drone_edge.schemas import CameraStreamProfile, DroneProfile, FrameSample, SensorSnapshot, TelemetrySample
 
 
-class SmartCitoDroneSDK:
+class OrcaDroneSDK:
     def __init__(
         self,
         *,

@@ -1,12 +1,12 @@
 # Camera Hardware Integration Guide
 
-This guide maps body cameras and micro cameras into the SmartCito platform.
+This guide maps body cameras and micro cameras into the Orca platform.
 
 ## Ingestion Path
 
 1. Device registers through the contract in
    [`../api_connectors/schemas/camera_registration.schema.json`](../api_connectors/schemas/camera_registration.schema.json).
-2. SmartCito issues a short-lived token and stream destination.
+2. Orca issues a short-lived token and stream destination.
 3. Device publishes video into [`../../camera_module/`](../../camera_module/).
 4. Device publishes GNSS samples into [`../../gps_module/`](../../gps_module/).
 5. Mount, tamper, battery, and heartbeat events are logged and surfaced in the dashboard.

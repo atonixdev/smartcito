@@ -1,9 +1,9 @@
 apiVersion: 1
 
 providers:
-  - name: smartcito
+  - name: orca
     orgId: 1
-    folder: SmartCito
+    folder: Orca
     type: file
     disableDeletion: false
     allowUiUpdates: true

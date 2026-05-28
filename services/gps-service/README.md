@@ -19,8 +19,8 @@ GPS stream normalization microservice.
 ## How To Run Its Container
 
 ```bash
-docker build -f services/gps-service/Dockerfile -t smartcito-gps-service .
-docker run --rm -p 8011:8011 smartcito-gps-service
+docker build -f services/gps-service/Dockerfile -t orca-gps-service .
+docker run --rm -p 8011:8011 orca-gps-service
 ```
 
 ## Example Usage

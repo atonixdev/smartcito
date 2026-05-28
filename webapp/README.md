@@ -1,11 +1,11 @@
 <!--
 ================================================================================
  File: webapp/README.md
- Purpose: Dev quickstart for the SmartCito React dashboard.
+ Purpose: Dev quickstart for the Orca React dashboard.
 ================================================================================
 -->
 
-# SmartCito Webapp (React + Vite)
+# Orca Webapp (React + Vite)
 
 The operator dashboard for the Urban Data Backbone.
 

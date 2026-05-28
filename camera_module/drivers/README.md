@@ -5,7 +5,7 @@ Vendor-specific and protocol-specific camera drivers live here.
 ## Purpose
 
 This folder standardizes how contributors add support for new camera vendors
-without changing the rest of SmartCito.
+without changing the rest of Orca.
 
 ## Supported Standards
 
@@ -26,7 +26,7 @@ camera_module/drivers/
 
 Each driver folder should include:
 - transport and authentication assumptions
-- capability mapping to SmartCito camera metadata
+- capability mapping to Orca camera metadata
 - tests or fixtures for discovery and stream setup
 - a local README describing supported devices
 

@@ -2,7 +2,7 @@
 ================================================================================
  File: scripts/ci/validate_repo_structure.py
  Purpose:
-   Enforce SmartCito's hardware CI repository standards for documentation,
+   Enforce Orca's hardware CI repository standards for documentation,
    manifests, and test coverage.
 ================================================================================
 """

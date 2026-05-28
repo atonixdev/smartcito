@@ -12,7 +12,7 @@ runtime_dir="infra/deploy/runtime"
 api_upstream_runtime_file="$runtime_dir/api-upstream.conf"
 active_api_slot_file="$runtime_dir/active_api_slot"
 keep_previous_api_slot="${BLUE_GREEN_KEEP_OLD_SLOT:-false}"
-legacy_api_container_name="smartcito-citosmart"
+legacy_api_container_name="orca-citosmart"
 
 cd "$DEPLOY_PATH"
 
@@ -20,9 +20,9 @@ cat > .env <<EOF
 APP_ENV=${APP_ENV:-staging}
 DB_HOST=${DB_HOST:-postgres}
 DB_PORT=${DB_PORT:-5432}
-DB_USER=${DB_USER:-smartcito}
+DB_USER=${DB_USER:-orca}
 DB_PASSWORD=${DB_PASSWORD:-change-me}
-DB_NAME=${DB_NAME:-smartcito}
+DB_NAME=${DB_NAME:-orca}
 MEMCACHED_SERVERS=${MEMCACHED_SERVERS:-memcached-1:11211,memcached-2:11211,memcached-3:11211}
 MEMCACHED_DEFAULT_TTL_SECONDS=${MEMCACHED_DEFAULT_TTL_SECONDS:-60}
 MEMCACHED_API_TTL_SECONDS=${MEMCACHED_API_TTL_SECONDS:-60}
@@ -32,17 +32,17 @@ MEMCACHED_AI_TTL_SECONDS=${MEMCACHED_AI_TTL_SECONDS:-1800}
 MEMCACHED_SESSION_TTL_SECONDS=${MEMCACHED_SESSION_TTL_SECONDS:-3600}
 KAFKA_BROKER_URL=${KAFKA_BROKER_URL:-kafka:9092}
 MESSAGE_BUS_URL=${MESSAGE_BUS_URL:-${KAFKA_BROKER_URL:-kafka:9092}}
-OBJECT_STORAGE_ENDPOINT=${OBJECT_STORAGE_ENDPOINT:-file:///srv/smartcito/object_storage}
-OBJECT_STORAGE_BUCKET=${OBJECT_STORAGE_BUCKET:-smartcito-artifacts}
+OBJECT_STORAGE_ENDPOINT=${OBJECT_STORAGE_ENDPOINT:-file:///srv/orca/object_storage}
+OBJECT_STORAGE_BUCKET=${OBJECT_STORAGE_BUCKET:-orca-artifacts}
 AUTH_JWT_SECRET=${AUTH_JWT_SECRET:-change-me}
-AUTH_ISSUER=${AUTH_ISSUER:-smartcito.local}
-AUTH_AUDIENCE=${AUTH_AUDIENCE:-smartcito-clients}
+AUTH_ISSUER=${AUTH_ISSUER:-orca.local}
+AUTH_AUDIENCE=${AUTH_AUDIENCE:-orca-clients}
 SECRET_KEY=${AUTH_JWT_SECRET:-change-me}
 POSTGRES_HOST=${DB_HOST:-postgres}
 POSTGRES_PORT=${DB_PORT:-5432}
-POSTGRES_USER=${DB_USER:-smartcito}
+POSTGRES_USER=${DB_USER:-orca}
 POSTGRES_PASSWORD=${DB_PASSWORD:-change-me}
-POSTGRES_DB=${DB_NAME:-smartcito}
+POSTGRES_DB=${DB_NAME:-orca}
 KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BROKER_URL:-kafka:9092}
 CITOSMART_IMAGE=${IMAGE_REGISTRY}/api-gateway:${IMAGE_TAG}
 WEBAPP_IMAGE=${IMAGE_REGISTRY}/webapp:${IMAGE_TAG}

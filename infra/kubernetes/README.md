@@ -1,11 +1,11 @@
 # Kubernetes Infra
 
-Kubernetes manifests for the SmartCito application layer and the connected
+Kubernetes manifests for the Orca application layer and the connected
 data-movement backbone.
 
 ## Purpose
 
-Deploy SmartCito services, Memcached, Kafka, Spark Streaming, visualization,
+Deploy Orca services, Memcached, Kafka, Spark Streaming, visualization,
 logging, and supporting storage on a Kubernetes cluster that runs on OpenStack.
 
 ## Included platform layers
@@ -16,7 +16,7 @@ logging, and supporting storage on a Kubernetes cluster that runs on OpenStack.
 - OpenStack Cinder-backed persistent storage.
 - Kafka KRaft cluster and topic bootstrap job.
 - Spark master, workers, and a packaged streaming job image with checkpoint storage.
-- SmartCito API and standalone Kafka consumer deployments.
+- Orca API and standalone Kafka consumer deployments.
 - Plotly Dash, a private visualization gateway, and internal frontend exposure.
 - Prometheus, Grafana, PostgreSQL and Kafka exporters, and node metrics collection.
 - Elasticsearch, Kibana, and Fluent Bit for centralized platform logs.
@@ -43,8 +43,8 @@ Use the OpenStack cloud controller manager and Cinder CSI driver so
 the underlying OpenStack cluster.
 
 `infra/kubernetes/apply-backend-secret.sh` rebuilds the backend
-`smartcito-platform-secrets` Secret from `.env`, including both the canonical
-`OPENSTACK_*` variables used by SmartCito and `OS_*` aliases commonly expected
+`orca-platform-secrets` Secret from `.env`, including both the canonical
+`OPENSTACK_*` variables used by Orca and `OS_*` aliases commonly expected
 by OpenStack tooling.
 
 Replace placeholder secrets such as Grafana admin credentials, PostgreSQL

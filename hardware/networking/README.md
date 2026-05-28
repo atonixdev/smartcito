@@ -1,6 +1,6 @@
 # Networking Layer
 
-Reference network topology for SmartCito hardware deployments.
+Reference network topology for Orca hardware deployments.
 
 ## Switching Tiers
 

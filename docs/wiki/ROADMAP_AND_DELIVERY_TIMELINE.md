@@ -2,7 +2,7 @@
 ================================================================================
  File: docs/wiki/ROADMAP_AND_DELIVERY_TIMELINE.md
  Purpose:
-   Dedicated wiki page for SmartCito's delivery roadmap across short-, mid-,
+   Dedicated wiki page for Orca's delivery roadmap across short-, mid-,
    and long-term platform goals.
 ================================================================================
 -->
@@ -10,12 +10,12 @@
 # Roadmap and Delivery Timeline
 
 <p align="center">
-  <img src="assets/platform-overview.svg" alt="SmartCito roadmap context" width="100%" />
+  <img src="assets/platform-overview.svg" alt="Orca roadmap context" width="100%" />
 </p>
 
 ## What This Page Does
 
-This page turns SmartCito's roadmap into a clear visual sequence so developers,
+This page turns Orca's roadmap into a clear visual sequence so developers,
 designers, operators, and stakeholders can see what the platform is trying to
 achieve over time.
 
@@ -40,7 +40,7 @@ security, and quantum-safe goals fit together.
 
 ```mermaid
 timeline
-    title SmartCito Delivery Timeline
+    title Orca Delivery Timeline
     Short-term : Containerization
                : CI/CD and GitFlow governance
                : Hardware validation and traceability
@@ -70,7 +70,7 @@ timeline
 
 - mature quantum-safe deployment patterns,
 - support satellite and off-grid data links,
-- connect SmartCito into digital twin simulation environments.
+- connect Orca into digital twin simulation environments.
 
 ## Related Pages
 

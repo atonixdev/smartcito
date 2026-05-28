@@ -3,7 +3,7 @@
  * File: webapp/src/components/DataFlowViewPanel.tsx
  * Purpose:
  *   Pipeline view showing how device and protocol flows move through the
- *   SmartCito event backbone.
+ *   Orca event backbone.
  * ============================================================================
  */
 

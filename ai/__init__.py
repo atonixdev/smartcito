@@ -1,1 +1,1 @@
-"""SmartCito AI workspace package."""
+"""Orca AI workspace package."""

@@ -1,6 +1,6 @@
 # IAM — Identity & Access Management
 
-SmartCito uses **OIDC / OAuth2** for human authentication and **JWT** for
+Orca uses **OIDC / OAuth2** for human authentication and **JWT** for
 service-to-service authentication.
 
 ## Standards

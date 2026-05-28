@@ -14,7 +14,7 @@ from hardware.test_support import HardwareSnapshot, assert_snapshot, collect_sna
 def test_storage_arrays() -> None:
     snapshot = collect_snapshot(
         component="storage-arrays",
-        endpoint_env="SMARTCITO_STORAGE_ENDPOINT",
+        endpoint_env="ORCA_STORAGE_ENDPOINT",
         defaults=HardwareSnapshot(
             component="storage-arrays",
             endpoint="simulation://storage",

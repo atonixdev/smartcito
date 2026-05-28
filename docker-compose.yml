@@ -1,7 +1,7 @@
 # ============================================================================
 # File: docker-compose.yml
 # Purpose:
-#   One-command local stack for SmartCito. Brings up the API, the React
+#   One-command local stack for Orca. Brings up the API, the React
 #   dashboard, PostgreSQL, Redis, and a single-node Kafka (KRaft mode).
 #
 # Usage:
@@ -12,25 +12,25 @@
 services:
   memcached-1:
     image: memcached:1.6-alpine
-    container_name: smartcito-memcached-1-local
+    container_name: orca-memcached-1-local
     command: ["memcached", "-m", "128", "-I", "2m", "-o", "modern"]
     restart: unless-stopped
 
   memcached-2:
     image: memcached:1.6-alpine
-    container_name: smartcito-memcached-2-local
+    container_name: orca-memcached-2-local
     command: ["memcached", "-m", "128", "-I", "2m", "-o", "modern"]
     restart: unless-stopped
 
   memcached-3:
     image: memcached:1.6-alpine
-    container_name: smartcito-memcached-3-local
+    container_name: orca-memcached-3-local
     command: ["memcached", "-m", "128", "-I", "2m", "-o", "modern"]
     restart: unless-stopped
 
   api-router:
     image: nginx:1.27-alpine
-    container_name: smartcito-api-router
+    container_name: orca-api-router
     ports:
       - "8000:8000"
     volumes:
@@ -44,7 +44,7 @@ services:
     build:
       context: ./citosmart
       image: atonixdev/api-gateway:1.0.0
-    container_name: smartcito-citosmart
+    container_name: orca-citosmart
     env_file: .env
     depends_on:
       postgres:
@@ -65,7 +65,7 @@ services:
     build:
       context: ./webapp
       image: atonixdev/webapp:1.0.0
-    container_name: smartcito-webapp
+    container_name: orca-webapp
     env_file: .env
     ports:
       - "5173:80"
@@ -83,7 +83,7 @@ services:
       context: .
       dockerfile: surveillance/Dockerfile
       image: atonixdev/drone-gateway:1.0.0
-    container_name: smartcito-drone-gateway
+    container_name: orca-drone-gateway
     env_file: .env
     command: ["uvicorn", "surveillance.drone_gateway_service:app", "--host", "0.0.0.0", "--port", "8020"]
     ports:
@@ -100,7 +100,7 @@ services:
       context: .
       dockerfile: surveillance/Dockerfile
       image: atonixdev/sensor-gateway:1.0.0
-    container_name: smartcito-sensor-gateway
+    container_name: orca-sensor-gateway
     env_file: .env
     command: ["uvicorn", "surveillance.sensor_gateway_service:app", "--host", "0.0.0.0", "--port", "8021"]
     ports:
@@ -115,7 +115,7 @@ services:
       context: .
       dockerfile: surveillance/Dockerfile
       image: atonixdev/drone-camera-ingestion:1.0.0
-    container_name: smartcito-drone-camera-ingestion
+    container_name: orca-drone-camera-ingestion
     env_file: .env
     command: ["uvicorn", "surveillance.drone_camera_service:app", "--host", "0.0.0.0", "--port", "8022"]
     ports:
@@ -130,7 +130,7 @@ services:
       context: .
       dockerfile: surveillance/Dockerfile
       image: atonixdev/threat-detection:1.0.0
-    container_name: smartcito-threat-detection
+    container_name: orca-threat-detection
     env_file: .env
     command: ["uvicorn", "surveillance.threat_detection_service:app", "--host", "0.0.0.0", "--port", "8023"]
     ports:
@@ -145,7 +145,7 @@ services:
       context: .
       dockerfile: surveillance/Dockerfile
       image: atonixdev/mapping-geospatial:1.0.0
-    container_name: smartcito-mapping-geospatial
+    container_name: orca-mapping-geospatial
     env_file: .env
     command: ["uvicorn", "surveillance.mapping_service:app", "--host", "0.0.0.0", "--port", "8024"]
     ports:
@@ -160,7 +160,7 @@ services:
       context: .
       dockerfile: surveillance/Dockerfile
       image: atonixdev/mission-control:1.0.0
-    container_name: smartcito-mission-control
+    container_name: orca-mission-control
     env_file: .env
     command: ["uvicorn", "surveillance.mission_control_service:app", "--host", "0.0.0.0", "--port", "8025"]
     environment:
@@ -179,7 +179,7 @@ services:
       context: .
       dockerfile: camera_module/Dockerfile
       image: atonixdev/camera-service:1.0.0
-    container_name: smartcito-camera-service
+    container_name: orca-camera-service
     env_file: .env
     ports:
       - "8010:8010"
@@ -190,7 +190,7 @@ services:
       context: .
       dockerfile: gps_module/Dockerfile
       image: atonixdev/gps-service:1.0.0
-    container_name: smartcito-gps-service
+    container_name: orca-gps-service
     env_file: .env
     ports:
       - "8011:8011"
@@ -201,7 +201,7 @@ services:
       context: .
       dockerfile: ai/ai_models/Dockerfile
       image: atonixdev/ai-service:1.0.0
-    container_name: smartcito-ai-service
+    container_name: orca-ai-service
     env_file: .env
     ports:
       - "8012:8012"
@@ -212,7 +212,7 @@ services:
       context: .
       dockerfile: security/Dockerfile
       image: atonixdev/security-service:1.0.0
-    container_name: smartcito-security-service
+    container_name: orca-security-service
     env_file: .env
     ports:
       - "8013:8013"
@@ -225,7 +225,7 @@ services:
       context: .
       dockerfile: hardware/Dockerfile
       image: atonixdev/hardware-agent:1.0.0
-    container_name: smartcito-hardware-agent
+    container_name: orca-hardware-agent
     env_file: .env
     ports:
       - "8014:8014"
@@ -233,32 +233,32 @@ services:
 
   postgres:
     image: cgr.dev/chainguard/postgres:latest@sha256:34a4d686aa44583457bbdbdeb662243e7ab29e89e5c9b40df8e33baa6b75dc47
-    container_name: smartcito-postgres
+    container_name: orca-postgres
     environment:
-      POSTGRES_DB: ${DB_NAME:-smartcito}
-      POSTGRES_USER: ${DB_USER:-smartcito}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-smartcito}
+      POSTGRES_DB: ${DB_NAME:-orca}
+      POSTGRES_USER: ${DB_USER:-orca}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-orca}
     ports:
       - "${DB_PORT:-5432}:5432"
     volumes:
       - ./database/init/001_schema.sql:/docker-entrypoint-initdb.d/001_schema.sql:ro
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-smartcito}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-orca}"]
       interval: 5s
       timeout: 5s
       retries: 10
 
   redis:
     image: redis:7-alpine
-    container_name: smartcito-redis
+    container_name: orca-redis
     ports:
       - "6379:6379"
 
   kafka:
     # Single-node KRaft (no ZooKeeper) — fine for local dev only.
     image: bitnami/kafka:3.7
-    container_name: smartcito-kafka
+    container_name: orca-kafka
     environment:
       KAFKA_CFG_NODE_ID: 1
       KAFKA_CFG_PROCESS_ROLES: "broker,controller"
@@ -275,7 +275,7 @@ services:
     # Eclipse Mosquitto broker. Listener config is bind-mounted so it can
     # be customized without rebuilding the image.
     image: eclipse-mosquitto:2.0
-    container_name: smartcito-mqtt
+    container_name: orca-mqtt
     ports:
       - "1883:1883"
     volumes:
@@ -288,10 +288,10 @@ services:
     build:
       context: ./citosmart
     image: atonixdev/dash:1.0.0
-    container_name: smartcito-dash
+    container_name: orca-dash
     command: ["python", "-m", "app.dash_app.server"]
     environment:
-      SMARTCITO_API_BASE: "http://api-router:8000/api/v1"
+      ORCA_API_BASE: "http://api-router:8000/api/v1"
     ports:
       - "8050:8050"
     depends_on:
@@ -300,7 +300,7 @@ services:
 
   memcached-exporter:
     image: prom/memcached-exporter:v0.15.0
-    container_name: smartcito-memcached-exporter
+    container_name: orca-memcached-exporter
     command: ["--memcached.address=memcached-1:11211"]
     depends_on:
       - memcached-1
@@ -308,11 +308,11 @@ services:
 
   postgres-exporter:
     image: prometheuscommunity/postgres-exporter:v0.16.0
-    container_name: smartcito-postgres-exporter
+    container_name: orca-postgres-exporter
     environment:
-      DATA_SOURCE_URI: postgres:5432/${DB_NAME:-smartcito}?sslmode=disable
-      DATA_SOURCE_USER: ${DB_USER:-smartcito}
-      DATA_SOURCE_PASS: ${DB_PASSWORD:-smartcito}
+      DATA_SOURCE_URI: postgres:5432/${DB_NAME:-orca}?sslmode=disable
+      DATA_SOURCE_USER: ${DB_USER:-orca}
+      DATA_SOURCE_PASS: ${DB_PASSWORD:-orca}
     depends_on:
       postgres:
         condition: service_healthy
@@ -320,7 +320,7 @@ services:
 
   kafka-exporter:
     image: danielqsj/kafka-exporter:v1.7.0
-    container_name: smartcito-kafka-exporter
+    container_name: orca-kafka-exporter
     command: ["--kafka.server=kafka:9092"]
     depends_on:
       - kafka
@@ -328,7 +328,7 @@ services:
 
   node-exporter:
     image: prom/node-exporter:v1.8.2
-    container_name: smartcito-node-exporter
+    container_name: orca-node-exporter
     command: ["--path.rootfs=/host"]
     volumes:
       - /:/host:ro,rslave
@@ -336,7 +336,7 @@ services:
 
   prometheus:
     image: prom/prometheus:v2.54.1
-    container_name: smartcito-prometheus
+    container_name: orca-prometheus
     command:
       - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.path=/prometheus
@@ -361,7 +361,7 @@ services:
 
   grafana:
     image: grafana/grafana:11.2.0
-    container_name: smartcito-grafana
+    container_name: orca-grafana
     environment:
       GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-change-me}
@@ -373,7 +373,7 @@ services:
     volumes:
       - ./infra/observability/grafana/datasources/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml:ro
       - ./infra/observability/grafana/dashboards/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml:ro
-      - ./infra/observability/grafana/dashboards/smartcito-overview.json:/var/lib/grafana/dashboards/smartcito-overview.json:ro
+      - ./infra/observability/grafana/dashboards/orca-overview.json:/var/lib/grafana/dashboards/orca-overview.json:ro
       - grafanadata:/var/lib/grafana
     depends_on:
       - prometheus
@@ -381,7 +381,7 @@ services:
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.15.2
-    container_name: smartcito-elasticsearch
+    container_name: orca-elasticsearch
     environment:
       discovery.type: single-node
       xpack.security.enabled: "false"
@@ -392,7 +392,7 @@ services:
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.15.2
-    container_name: smartcito-kibana
+    container_name: orca-kibana
     volumes:
       - ./infra/observability/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
     depends_on:
@@ -401,7 +401,7 @@ services:
 
   fluent-bit:
     image: fluent/fluent-bit:3.1.9
-    container_name: smartcito-fluent-bit
+    container_name: orca-fluent-bit
     volumes:
       - ./infra/observability/fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf:ro
       - ./infra/observability/fluent-bit/parsers.conf:/fluent-bit/etc/parsers.conf:ro
@@ -413,7 +413,7 @@ services:
 
   visualization-gateway:
     image: nginx:1.27-alpine
-    container_name: smartcito-visualization-gateway
+    container_name: orca-visualization-gateway
     ports:
       - "8088:80"
     volumes:

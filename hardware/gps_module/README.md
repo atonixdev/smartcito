@@ -1,6 +1,6 @@
 # Hardware GPS Module Standardization
 
-Hardware-side GPS and GNSS standardization surface for SmartCito.
+Hardware-side GPS and GNSS standardization surface for Orca.
 
 ## Layout
 

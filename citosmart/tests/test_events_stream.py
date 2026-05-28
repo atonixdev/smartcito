@@ -28,7 +28,7 @@ def test_events_stream_emits_command_center_snapshot(monkeypatch: pytest.MonkeyP
 
     monkeypatch.setattr(realtime_bus_service, "snapshot", _snapshot)
 
-    token = create_access_token(subject="viewer@smartcito.dev", role="viewer")
+    token = create_access_token(subject="viewer@orca.dev", role="viewer")
 
     with TestClient(app) as client:
         with client.websocket_connect(f"/api/v1/events/stream?token={token}") as websocket:

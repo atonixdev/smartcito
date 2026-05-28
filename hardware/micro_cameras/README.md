@@ -1,6 +1,6 @@
 # Micro Cameras
 
-Reference design for ultra-compact SmartCito micro cameras.
+Reference design for ultra-compact Orca micro cameras.
 
 ## Capabilities
 
@@ -34,4 +34,4 @@ Micro cameras are suited to:
 - `camera.tamper.detected`
 - `camera.battery.low`
 
-All events must be auditable and flow into the SmartCito API.
+All events must be auditable and flow into the Orca API.

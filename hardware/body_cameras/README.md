@@ -1,6 +1,6 @@
 # Body Cameras
 
-Reference design for SmartCito body-worn cameras.
+Reference design for Orca body-worn cameras.
 
 ## Capabilities
 
@@ -8,7 +8,7 @@ Reference design for SmartCito body-worn cameras.
 - secure wireless backhaul via LTE, 5G, or Wi-Fi 6
 - encrypted local storage using AES-256
 - tamper-resistant enclosure with open-case and power-loss events
-- direct API registration into the SmartCito backbone
+- direct API registration into the Orca backbone
 
 ## Reference Build
 

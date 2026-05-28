@@ -8,9 +8,9 @@
 ================================================================================
 -->
 
-# Contributing to SmartCito
+# Contributing to Orca
 
-First off — **thank you** for considering contributing. SmartCito is a
+First off — **thank you** for considering contributing. Orca is a
 community-driven, open project, and every PR, issue, or doc fix matters.
 
 This document explains how to contribute effectively. If anything is unclear,
@@ -96,7 +96,7 @@ docker compose up --build
 
 ## Branching & Commit Style
 
-- SmartCito follows GitFlow:
+- Orca follows GitFlow:
   - `main` stays production-ready.
   - `develop` is the integration branch for active feature work.
   - `feature/<module-name>` branches start from `develop` and merge back into `develop`.
@@ -164,7 +164,7 @@ See [`docs/GITFLOW.md`](docs/GITFLOW.md) for the branch map and release flow.
 
 ## Documentation Standards
 
-**Every file** in SmartCito starts with a documentation header describing:
+**Every file** in Orca starts with a documentation header describing:
 
 - The file's purpose
 - Its inputs / outputs / side effects

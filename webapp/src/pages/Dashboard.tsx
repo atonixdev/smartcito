@@ -581,7 +581,7 @@ export default function Dashboard() {
         assetId: options?.assetId,
         sourceLabel: options?.sourceLabel ?? activeDroneRegistry?.model ?? operatorName,
         rawPacket: `MAVLINK[${category.toUpperCase()}] ${message}`,
-        rosMessage: `topic=/smartcito/${category} payload=${message}`,
+        rosMessage: `topic=/orca/${category} payload=${message}`,
       },
       ...currentLogs,
     ].slice(0, 32));
@@ -845,12 +845,12 @@ export default function Dashboard() {
 
   function exportLogs(format: "csv" | "json") {
     if (format === "csv") {
-      downloadTextFile(`smartcito-logs-${Date.now()}.csv`, buildCsv(filteredLogs), "text/csv;charset=utf-8");
+      downloadTextFile(`orca-logs-${Date.now()}.csv`, buildCsv(filteredLogs), "text/csv;charset=utf-8");
       return;
     }
 
     downloadTextFile(
-      `smartcito-logs-${Date.now()}.json`,
+      `orca-logs-${Date.now()}.json`,
       JSON.stringify(filteredLogs, null, 2),
       "application/json;charset=utf-8",
     );
@@ -1243,7 +1243,7 @@ export default function Dashboard() {
                   <span>The preview below is served from the mapping service HTML output.</span>
                 </div>
                 <iframe
-                  title="SmartCito Folium city map"
+                  title="Orca Folium city map"
                   srcDoc={cityMapPayload?.html ?? "<html><body><p>Map preview unavailable.</p></body></html>"}
                   style={{ width: "100%", minHeight: 220, border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, background: "#071520" }}
                 />

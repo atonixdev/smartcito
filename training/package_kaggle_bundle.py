@@ -7,11 +7,11 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_OUTPUT = ROOT / "dist" / "smartcito_ai_kaggle"
+DEFAULT_OUTPUT = ROOT / "dist" / "orca_ai_kaggle"
 FOLDERS_TO_COPY = ("ai_models", "training", "datasets")
 FILES_TO_COPY = ("README.md", "LICENSE")
 DOCS_TO_COPY = ("MODEL_CARD.md", "OPERATIONAL_FLOW.md", "KAGGLE_USAGE.md")
-EXAMPLE_FILES_TO_COPY = ("smartcito_training_demo.ipynb", "smartcito_inference_demo.ipynb")
+EXAMPLE_FILES_TO_COPY = ("orca_training_demo.ipynb", "orca_inference_demo.ipynb")
 PROHIBITED_WEIGHT_PATTERNS = (
     "*.bin",
     "*.ckpt",
@@ -29,7 +29,7 @@ PROHIBITED_WEIGHT_PATTERNS = (
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Package SmartCito AI assets into one Kaggle-uploadable folder.")
+    parser = argparse.ArgumentParser(description="Package Orca AI assets into one Kaggle-uploadable folder.")
     parser.add_argument("--output-dir", default=str(DEFAULT_OUTPUT))
     return parser
 
@@ -84,28 +84,28 @@ def package_bundle(output_dir: str | Path) -> Path:
     _assert_no_prohibited_weights(destination)
 
     manifest = {
-        "bundle_name": "smartcito_ai_kaggle",
+        "bundle_name": "orca_ai_kaggle",
         "upload_this_folder": str(destination),
         "folders": list(FOLDERS_TO_COPY) + ["docs", "examples"],
         "files": list(FILES_TO_COPY),
         "notes": [
             "Upload this folder to Kaggle as a Dataset or zip it for notebook input.",
             "This bundle does not include LLaMA-3 weights.",
-            "It only ships SmartCito code, LoRA/QLoRA adapters, and synthetic or sovereign datasets.",
+            "It only ships Orca code, LoRA/QLoRA adapters, and synthetic or sovereign datasets.",
             "Users must obtain any compatible base model from official provider sources.",
-            "Generated adapters belong in output/smartcito-lora after training."
+            "Generated adapters belong in output/orca-lora after training."
         ]
     }
     (destination / "kaggle_bundle_manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
 
     bundle_readme = destination / "README_KAGGLE_UPLOAD.md"
     bundle_readme.write_text(
-        "# SmartCito Model Kaggle Bundle\n\n"
-        "Upload this folder to Kaggle. It contains SmartCito inference code, training scripts, synthetic datasets, notebooks, and contributor documentation.\n\n"
+        "# Orca Model Kaggle Bundle\n\n"
+        "Upload this folder to Kaggle. It contains Orca inference code, training scripts, synthetic datasets, notebooks, and contributor documentation.\n\n"
         "## What To Upload\n\n"
         f"Upload the entire folder at `{destination}`.\n\n"
         "## Weight Policy\n\n"
-        "This bundle does not include LLaMA-3 weights. It only ships SmartCito code, LoRA/QLoRA adapters, and synthetic or sovereign datasets. Users must obtain any compatible base model from official provider sources.\n\n"
+        "This bundle does not include LLaMA-3 weights. It only ships Orca code, LoRA/QLoRA adapters, and synthetic or sovereign datasets. Users must obtain any compatible base model from official provider sources.\n\n"
         "## What Not To Upload\n\n"
         "- LLaMA-3 or other foundation-model weights\n"
         "- API keys or local secrets\n"
@@ -119,7 +119,7 @@ def package_bundle(output_dir: str | Path) -> Path:
 def main() -> int:
     args = build_arg_parser().parse_args()
     output_dir = package_bundle(args.output_dir)
-    print(f"Packaged SmartCito AI Kaggle bundle at {output_dir}")
+    print(f"Packaged Orca AI Kaggle bundle at {output_dir}")
     return 0
 
 

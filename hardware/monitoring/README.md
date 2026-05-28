@@ -1,6 +1,6 @@
 # Monitoring and Cooling
 
-Hardware health monitoring for SmartCito deployments.
+Hardware health monitoring for Orca deployments.
 
 ## Environmental Monitoring
 

@@ -2,7 +2,7 @@
  * ============================================================================
  * File: webapp/src/pages/Home.tsx
  * Purpose:
- *   Landing page describing what SmartCito is and pointing visitors at the
+ *   Landing page describing what Orca is and pointing visitors at the
  *   dashboard, docs, and GitHub.
  * ============================================================================
  */
@@ -60,9 +60,9 @@ export default function Home() {
       <section className="landing-hero">
         <div className="hero-copy">
           <span className="eyebrow">Open smart city infrastructure</span>
-          <h2>SmartCito</h2>
+          <h2>Orca</h2>
           <p>
-            SmartCito is an open project dedicated to building secure,
+            Orca is an open project dedicated to building secure,
             quantum-ready smart city infrastructure. It connects cameras, GPS,
             IoT devices, hardware services, and cloud systems into one unified
             backbone designed for transparency, security, and innovation.
@@ -96,7 +96,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="proof-band" aria-label="SmartCito proof points">
+      <section className="proof-band" aria-label="Orca proof points">
         {proofPoints.map((item) => (
           <div className="proof-item" key={item.label}>
             <strong>{item.value}</strong>
@@ -131,7 +131,7 @@ export default function Home() {
           <article className="governance-panel primary-panel">
             <h4>Open governance baseline</h4>
             <p>
-              SmartCito is positioned as an open project with clear contribution
+              Orca is positioned as an open project with clear contribution
               surfaces, visible security controls, modular infrastructure, and
               documentation that can grow into a foundation-style program.
             </p>
@@ -178,7 +178,7 @@ export default function Home() {
         <img
           className="wide-visual"
           src="/assets/platform-overview.svg"
-          alt="SmartCito platform overview"
+          alt="Orca platform overview"
         />
       </section>
 
@@ -196,7 +196,7 @@ export default function Home() {
         <div className="outcome-panel">
           <h4>Outcome</h4>
           <p>
-            SmartCito now reads as a personal open project with foundation-level
+            Orca now reads as a personal open project with foundation-level
             ambition: transparent, visual, collaborative, and ready to evolve
             into a professional smart city infrastructure initiative.
           </p>

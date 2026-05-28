@@ -1,6 +1,6 @@
-# Contributing SmartCito Adapters
+# Contributing Orca Adapters
 
-This document covers the SmartCito AI contribution path for LoRA and QLoRA improvements.
+This document covers the Orca AI contribution path for LoRA and QLoRA improvements.
 
 ## Contribution Flow
 
@@ -8,8 +8,8 @@ This document covers the SmartCito AI contribution path for LoRA and QLoRA impro
 2. Add or clean domain examples in your own dataset copy.
 3. Prepare the dataset with `python ai/training/prepare_dataset.py`.
 4. Train with `python ai/training/lora_training.py` or `python ai/training/qlora_training.py`.
-5. Evaluate the adapter with `python ai/training/evaluate_adapters.py --adapter-path ai/output/smartcito-lora`.
-6. Verify that only adapter artifacts are present in `ai/output/smartcito-lora/`.
+5. Evaluate the adapter with `python ai/training/evaluate_adapters.py --adapter-path ai/output/orca-lora`.
+6. Verify that only adapter artifacts are present in `ai/output/orca-lora/`.
 7. Upload the adapter folder to Kaggle or attach it to your pull request workflow.
 8. Open a pull request describing the dataset source, target task, and observed results.
 
@@ -43,6 +43,6 @@ Base model: meta-llama/Meta-Llama-3-8B-Instruct
 Training mode: QLoRA
 Dataset size: 12,400 records
 Primary domains: drone telemetry, camera analytics, sensor fusion
-Output artifact: ai/output/smartcito-lora/
+Output artifact: ai/output/orca-lora/
 Evaluation summary: improved anomaly triage accuracy on internal validation prompts
 ```

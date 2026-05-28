@@ -2,7 +2,7 @@
 ================================================================================
  File: docs/wiki/SMARTEDGE_API_AND_CONTROL_PLANE.md
  Purpose:
-   Dedicated wiki page for the SmartCito API gateway, orchestration logic, and
+   Dedicated wiki page for the Orca API gateway, orchestration logic, and
    control-plane responsibilities.
 ================================================================================
 -->
@@ -15,7 +15,7 @@
 
 ## What This Module Does
 
-The SmartCito control plane exposes APIs, orchestrates secure access, mediates
+The Orca control plane exposes APIs, orchestrates secure access, mediates
 device registration, and provides the central operational surface for services
 and dashboards.
 

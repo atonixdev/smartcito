@@ -1,8 +1,8 @@
-# SmartCito Drone and Surveillance Layer
+# Orca Drone and Surveillance Layer
 
-The SmartCito drone and surveillance layer connects mobile drones, fixed sensors, camera streams, geospatial enrichment, AI threat detection, Kafka, Spark Streaming, storage, and operator dashboards.
+The Orca drone and surveillance layer connects mobile drones, fixed sensors, camera streams, geospatial enrichment, AI threat detection, Kafka, Spark Streaming, storage, and operator dashboards.
 
-Drones and sensors are not baked into the SmartCito OS image. They run as services on Kubernetes or Docker Compose and publish normalized real-time events into the platform backbone.
+Drones and sensors are not baked into the Orca OS image. They run as services on Kubernetes or Docker Compose and publish normalized real-time events into the platform backbone.
 
 ## Container Image
 
@@ -14,16 +14,16 @@ Drones and sensors are not baked into the SmartCito OS image. They run as servic
 
 | Service | Local port | Purpose | Main topics |
 | --- | ---: | --- | --- |
-| Drone Gateway | 8020 | Receives drone telemetry and accepts commands such as takeoff, land, move-to, patrol path, hover, and return-to-base | `smartcito.drone.telemetry`, `smartcito.drone.events`, `smartcito.drone.missions` |
-| Sensor Gateway | 8021 | Receives fixed/mobile sensor readings over HTTP bridge payloads from MQTT, TCP, LoRaWAN, or vendor adapters | `smartcito.sensors.raw`, `smartcito.sensor.alerts` |
-| Drone Camera Ingestion | 8022 | Registers RTSP/WebRTC/vendor streams and publishes frame metadata or key-frame events | `smartcito.drone.camera.frames`, `smartcito.drone.camera.alerts` |
-| Mission Control | 8025 | Validates mission routes, uploads patrol paths through Drone Gateway, and monitors mission status for operators | `smartcito.drone.missions`, `smartcito.drone.events` |
-| Threat Detection | 8023 | Classifies AI detections and correlated sensor/video/GPS events into low, medium, high, or critical alerts | `smartcito.threat.alerts` |
-| Mapping and Geospatial | 8024 | Converts WGS84 GPS into zones, geofences, routes, heatmaps, and dashboard overlays | `smartcito.location.enriched` |
+| Drone Gateway | 8020 | Receives drone telemetry and accepts commands such as takeoff, land, move-to, patrol path, hover, and return-to-base | `orca.drone.telemetry`, `orca.drone.events`, `orca.drone.missions` |
+| Sensor Gateway | 8021 | Receives fixed/mobile sensor readings over HTTP bridge payloads from MQTT, TCP, LoRaWAN, or vendor adapters | `orca.sensors.raw`, `orca.sensor.alerts` |
+| Drone Camera Ingestion | 8022 | Registers RTSP/WebRTC/vendor streams and publishes frame metadata or key-frame events | `orca.drone.camera.frames`, `orca.drone.camera.alerts` |
+| Mission Control | 8025 | Validates mission routes, uploads patrol paths through Drone Gateway, and monitors mission status for operators | `orca.drone.missions`, `orca.drone.events` |
+| Threat Detection | 8023 | Classifies AI detections and correlated sensor/video/GPS events into low, medium, high, or critical alerts | `orca.threat.alerts` |
+| Mapping and Geospatial | 8024 | Converts WGS84 GPS into zones, geofences, routes, heatmaps, and dashboard overlays | `orca.location.enriched` |
 
 ## Drone Gateway Contract
 
-The Drone Gateway is the only SmartCito service that talks directly to drones. Mission Control, dashboards, AI, analytics, and operator APIs talk to the gateway instead of opening their own drone connections.
+The Drone Gateway is the only Orca service that talks directly to drones. Mission Control, dashboards, AI, analytics, and operator APIs talk to the gateway instead of opening their own drone connections.
 
 Mission Control endpoints:
 
@@ -44,8 +44,8 @@ Implemented endpoints:
 | `POST /connect` | Selects an adapter, discovers capabilities, syncs the Drone Registry, and emits `drone.capabilities.discovered` |
 | `POST /capabilities` | Upserts externally supplied capability records into the Drone Registry |
 | `GET /drones/{drone_id}/capabilities` | Reads cached or PostgreSQL-backed capability records |
-| `POST /telemetry` | Normalizes GPS, altitude, speed, heading, battery, link quality, flight mode, status, and health flags into `smartcito.drone.telemetry` |
-| `POST /commands` | Sends commands through the selected drone adapter and emits `smartcito.drone.events` |
+| `POST /telemetry` | Normalizes GPS, altitude, speed, heading, battery, link quality, flight mode, status, and health flags into `orca.drone.telemetry` |
+| `POST /commands` | Sends commands through the selected drone adapter and emits `orca.drone.events` |
 | `POST /drones/{drone_id}/commands` | Mission Control command route with path/body drone ID validation |
 | `GET /drones` | Returns latest telemetry plus known registry capability records |
 
@@ -69,7 +69,7 @@ The Drone Registry persists:
 ## End-to-End Flow
 
 1. Drones and sensors send telemetry, video metadata, readings, and alerts.
-2. Drone Gateway and Sensor Gateway normalize payloads into SmartCito event envelopes.
+2. Drone Gateway and Sensor Gateway normalize payloads into Orca event envelopes.
 3. Drone Camera Ingestion registers live streams and publishes frame metadata for AI analysis.
 4. When a frame includes `image_b64`, Drone Camera Ingestion calls the shared AI service `/detect_objects` endpoint and stores summarized detections on the frame event and feed status.
 5. Kafka carries drone, camera, sensor, location, and threat topics in real time.
@@ -99,7 +99,7 @@ docker compose up --build
 The services default to Kafka publishing. For endpoint-only development without a broker, set:
 
 ```bash
-export SMARTCITO_KAFKA_ENABLED=0
+export ORCA_KAFKA_ENABLED=0
 export DRONE_REGISTRY_ENABLED=0
 ```
 
@@ -248,7 +248,7 @@ The existing control-plane dashboard now includes:
 Run the focused tests:
 
 ```bash
-SMARTCITO_KAFKA_ENABLED=0 pytest tests/test_surveillance_layer.py -q
+ORCA_KAFKA_ENABLED=0 pytest tests/test_surveillance_layer.py -q
 ```
 
 Run compile validation:

@@ -15,7 +15,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
-from smartcito_shared.crypto import build_secure_envelope
+from orca_shared.crypto import build_secure_envelope
 
 from surveillance.geospatial import normalize_point, resolve_zone
 from surveillance.kafka import get_publisher
@@ -25,7 +25,7 @@ from surveillance.topics import SENSOR_ALERTS_TOPIC, SENSOR_READINGS_TOPIC
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
 
-app = FastAPI(title="SmartCito Sensor Gateway Service")
+app = FastAPI(title="Orca Sensor Gateway Service")
 _latest_readings: dict[str, SensorReading] = {}
 
 

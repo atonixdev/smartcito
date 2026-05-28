@@ -2,31 +2,31 @@ FROM apache/spark:3.5.1
 
 USER 0
 
-WORKDIR /opt/smartcito
+WORKDIR /opt/orca
 
-COPY ingestion /opt/smartcito/ingestion
+COPY ingestion /opt/orca/ingestion
 
 RUN python3 -m pip install --no-cache-dir --upgrade pip setuptools wheel \
-    && python3 -m pip install --no-cache-dir --default-timeout=120 --retries 10 -r /opt/smartcito/ingestion/requirements.txt
+    && python3 -m pip install --no-cache-dir --default-timeout=120 --retries 10 -r /opt/orca/ingestion/requirements.txt
 
 RUN mkdir -p /opt/spark/checkpoints /opt/spark/object-store \
-    && chown -R 185:0 /opt/smartcito /opt/spark/checkpoints /opt/spark/object-store
+    && chown -R 185:0 /opt/orca /opt/spark/checkpoints /opt/spark/object-store
 
-ENV PYTHONPATH=/opt/smartcito \
+ENV PYTHONPATH=/opt/orca \
     SPARK_MASTER_URL=local[*] \
     KAFKA_BROKER_URL=kafka:9092 \
-    KAFKA_RAW_EVENTS_TOPIC=smartcito.sensors.raw \
-    KAFKA_ALERTS_TOPIC=smartcito.alerts \
+    KAFKA_RAW_EVENTS_TOPIC=orca.sensors.raw \
+    KAFKA_ALERTS_TOPIC=orca.alerts \
     MEMCACHED_SERVERS=memcached-1:11211,memcached-2:11211,memcached-3:11211 \
     SPARK_CHECKPOINT_DIR=/opt/spark/checkpoints \
     SPARK_OBJECT_STORAGE_PATH=/opt/spark/object-store \
     DB_HOST=postgres \
     DB_PORT=5432 \
-    DB_NAME=smartcito \
-    DB_USER=smartcito \
+    DB_NAME=orca \
+    DB_USER=orca \
     DB_PASSWORD=change-me
 
 USER 185
 
 ENTRYPOINT ["/opt/spark/bin/spark-submit"]
-CMD ["--master", "local[*]", "--packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1,org.postgresql:postgresql:42.7.4", "/opt/smartcito/ingestion/streaming_job.py"]
+CMD ["--master", "local[*]", "--packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1,org.postgresql:postgresql:42.7.4", "/opt/orca/ingestion/streaming_job.py"]

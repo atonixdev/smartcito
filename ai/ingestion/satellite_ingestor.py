@@ -85,7 +85,7 @@ def ingest_satellite(
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Ingest satellite or earth-observation data into SmartCito training batches.")
+    parser = argparse.ArgumentParser(description="Ingest satellite or earth-observation data into Orca training batches.")
     parser.add_argument("--api-url", default=DEFAULT_SATELLITE_URL)
     parser.add_argument("--input-file", default=None)
     parser.add_argument("--region", default="global")

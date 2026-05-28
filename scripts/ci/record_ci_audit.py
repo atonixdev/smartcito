@@ -76,7 +76,7 @@ def main() -> int:
         "branch": os.getenv("GITHUB_REF_NAME", _git("rev-parse", "--abbrev-ref", "HEAD")),
         "commit": os.getenv("GITHUB_SHA", _git("rev-parse", "HEAD")),
         "actor": actor,
-        "repository": os.getenv("GITHUB_REPOSITORY", "local/smartcito"),
+        "repository": os.getenv("GITHUB_REPOSITORY", "local/orca"),
         "run_id": os.getenv("GITHUB_RUN_ID", "local-run"),
         "identity": _verify_actor(actor),
         "hardware_artifacts": _collect_hardware_artifacts(),

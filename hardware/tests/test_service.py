@@ -29,7 +29,7 @@ def test_drone_edge_reference_stack() -> None:
     assert response.status_code == 200
     payload = response.json()
     assert payload["hardware_layer"]["autopilot"] == "PX4 Autopilot"
-    assert "MAVLink telemetry stream via SmartCito drone SDK" == payload["communication_layer"]["telemetry"]
+    assert "MAVLink telemetry stream via Orca drone SDK" == payload["communication_layer"]["telemetry"]
 
 
 def test_drone_edge_hardware_spec() -> None:
@@ -47,7 +47,7 @@ def test_drone_edge_ros2_contract() -> None:
     assert response.status_code == 200
     payload = response.json()
     assert payload["runtime"]["middleware"] == "ROS2"
-    assert payload["nodes"][0]["name"].startswith("smartcito_")
+    assert payload["nodes"][0]["name"].startswith("orca_")
 
 
 def test_drone_edge_rfp_packet() -> None:
@@ -55,5 +55,5 @@ def test_drone_edge_rfp_packet() -> None:
 
     assert response.status_code == 200
     payload = response.json()
-    assert payload["title"] == "SmartCito Drone Platform RFP Packet"
+    assert payload["title"] == "Orca Drone Platform RFP Packet"
     assert "battery capacity" in payload["bom_fields"]

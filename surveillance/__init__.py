@@ -1,1 +1,1 @@
-"""SmartCito drone, sensor, and surveillance service package."""
+"""Orca drone, sensor, and surveillance service package."""

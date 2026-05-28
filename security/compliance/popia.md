@@ -1,9 +1,9 @@
 # POPIA Compliance Mapping
 
 Mapping of the **Protection of Personal Information Act, 2013 (South Africa)**
-conditions to SmartCito controls.
+conditions to Orca controls.
 
-| POPIA Condition (s.8)       | SmartCito Control                                        |
+| POPIA Condition (s.8)       | Orca Control                                        |
 |-----------------------------|----------------------------------------------------------|
 | 1. Accountability           | Governance Council; ownership defined in `CODEOWNERS`    |
 | 2. Processing limitation    | RBAC (`security/rbac/policies.yaml`); consent flags      |

@@ -21,7 +21,7 @@ from app.services.gps_tracking import gps_tracking_service
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_TOPIC = "smartcito/gps/+"
+DEFAULT_TOPIC = "orca/gps/+"
 
 
 class GPSMqttIngestor:
@@ -32,7 +32,7 @@ class GPSMqttIngestor:
         host: str = "localhost",
         port: int = 1883,
         topic: str = DEFAULT_TOPIC,
-        client_id: str = "smartcito-gps-ingestor",
+        client_id: str = "orca-gps-ingestor",
     ) -> None:
         self.host = host
         self.port = port

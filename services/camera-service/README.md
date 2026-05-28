@@ -19,8 +19,8 @@ Video ingestion microservice for camera protocols and stream validation.
 ## How To Run Its Container
 
 ```bash
-docker build -f services/camera-service/Dockerfile -t smartcito-camera-service .
-docker run --rm -p 8010:8010 smartcito-camera-service
+docker build -f services/camera-service/Dockerfile -t orca-camera-service .
+docker run --rm -p 8010:8010 orca-camera-service
 ```
 
 ## Example Usage

@@ -45,7 +45,7 @@ locals {
 }
 
 resource "openstack_compute_instance_v2" "api_gateway" {
-  name            = "smartcito-api-gateway"
+  name            = "orca-api-gateway"
   image_name      = var.image_name
   flavor_name     = var.api_flavor_name
   key_pair        = var.key_pair
@@ -63,7 +63,7 @@ resource "openstack_compute_instance_v2" "api_gateway" {
 
 resource "openstack_compute_instance_v2" "service_nodes" {
   count           = var.service_node_count
-  name            = "smartcito-service-${count.index + 1}"
+  name            = "orca-service-${count.index + 1}"
   image_name      = var.image_name
   flavor_name     = var.service_flavor_name
   key_pair        = var.key_pair
@@ -77,7 +77,7 @@ resource "openstack_compute_instance_v2" "service_nodes" {
 
 resource "openstack_compute_instance_v2" "database_nodes" {
   count           = var.database_node_count
-  name            = "smartcito-database-${count.index + 1}"
+  name            = "orca-database-${count.index + 1}"
   image_name      = var.image_name
   flavor_name     = var.database_flavor_name
   key_pair        = var.key_pair
@@ -90,7 +90,7 @@ resource "openstack_compute_instance_v2" "database_nodes" {
 }
 
 resource "openstack_compute_instance_v2" "kubernetes_control_plane" {
-  name            = "smartcito-k8s-control-plane"
+  name            = "orca-k8s-control-plane"
   image_name      = var.image_name
   flavor_name     = var.kubernetes_control_plane_flavor_name
   key_pair        = var.key_pair
@@ -108,7 +108,7 @@ resource "openstack_compute_instance_v2" "kubernetes_control_plane" {
 
 resource "openstack_compute_instance_v2" "kubernetes_workers" {
   count           = var.kubernetes_worker_count
-  name            = "smartcito-k8s-worker-${count.index + 1}"
+  name            = "orca-k8s-worker-${count.index + 1}"
   image_name      = var.image_name
   flavor_name     = var.kubernetes_worker_flavor_name
   key_pair        = var.key_pair
@@ -122,7 +122,7 @@ resource "openstack_compute_instance_v2" "kubernetes_workers" {
 
 resource "openstack_compute_instance_v2" "kafka_brokers" {
   count           = var.kafka_broker_count
-  name            = "smartcito-kafka-${count.index + 1}"
+  name            = "orca-kafka-${count.index + 1}"
   image_name      = var.image_name
   flavor_name     = var.kafka_broker_flavor_name
   key_pair        = var.key_pair
@@ -135,7 +135,7 @@ resource "openstack_compute_instance_v2" "kafka_brokers" {
 }
 
 resource "openstack_compute_instance_v2" "spark_master" {
-  name            = "smartcito-spark-master"
+  name            = "orca-spark-master"
   image_name      = var.image_name
   flavor_name     = var.spark_master_flavor_name
   key_pair        = var.key_pair
@@ -149,7 +149,7 @@ resource "openstack_compute_instance_v2" "spark_master" {
 
 resource "openstack_compute_instance_v2" "spark_workers" {
   count           = var.spark_worker_count
-  name            = "smartcito-spark-worker-${count.index + 1}"
+  name            = "orca-spark-worker-${count.index + 1}"
   image_name      = var.image_name
   flavor_name     = var.spark_worker_flavor_name
   key_pair        = var.key_pair
@@ -162,7 +162,7 @@ resource "openstack_compute_instance_v2" "spark_workers" {
 }
 
 resource "openstack_compute_instance_v2" "postgres_primary" {
-  name            = "smartcito-postgres-primary"
+  name            = "orca-postgres-primary"
   image_name      = var.image_name
   flavor_name     = var.postgres_primary_flavor_name
   key_pair        = var.key_pair
@@ -176,7 +176,7 @@ resource "openstack_compute_instance_v2" "postgres_primary" {
 
 resource "openstack_compute_instance_v2" "postgres_replicas" {
   count           = var.postgres_replica_count
-  name            = "smartcito-postgres-replica-${count.index + 1}"
+  name            = "orca-postgres-replica-${count.index + 1}"
   image_name      = var.image_name
   flavor_name     = var.postgres_replica_flavor_name
   key_pair        = var.key_pair
@@ -190,7 +190,7 @@ resource "openstack_compute_instance_v2" "postgres_replicas" {
 
 resource "openstack_compute_instance_v2" "hdfs_namenodes" {
   count           = var.hdfs_namenode_count
-  name            = "smartcito-hdfs-namenode-${count.index + 1}"
+  name            = "orca-hdfs-namenode-${count.index + 1}"
   image_name      = var.image_name
   flavor_name     = var.hdfs_namenode_flavor_name
   key_pair        = var.key_pair
@@ -204,7 +204,7 @@ resource "openstack_compute_instance_v2" "hdfs_namenodes" {
 
 resource "openstack_compute_instance_v2" "hdfs_datanodes" {
   count           = var.hdfs_datanode_count
-  name            = "smartcito-hdfs-datanode-${count.index + 1}"
+  name            = "orca-hdfs-datanode-${count.index + 1}"
   image_name      = var.image_name
   flavor_name     = var.hdfs_datanode_flavor_name
   key_pair        = var.key_pair
@@ -218,7 +218,7 @@ resource "openstack_compute_instance_v2" "hdfs_datanodes" {
 
 resource "openstack_compute_instance_v2" "zookeeper_nodes" {
   count           = var.zookeeper_node_count
-  name            = "smartcito-zookeeper-${count.index + 1}"
+  name            = "orca-zookeeper-${count.index + 1}"
   image_name      = var.image_name
   flavor_name     = var.zookeeper_flavor_name
   key_pair        = var.key_pair
@@ -231,7 +231,7 @@ resource "openstack_compute_instance_v2" "zookeeper_nodes" {
 }
 
 resource "openstack_compute_instance_v2" "hbase_master" {
-  name            = "smartcito-hbase-master"
+  name            = "orca-hbase-master"
   image_name      = var.image_name
   flavor_name     = var.hbase_master_flavor_name
   key_pair        = var.key_pair
@@ -245,7 +245,7 @@ resource "openstack_compute_instance_v2" "hbase_master" {
 
 resource "openstack_compute_instance_v2" "hbase_regionservers" {
   count           = var.hbase_regionserver_count
-  name            = "smartcito-hbase-regionserver-${count.index + 1}"
+  name            = "orca-hbase-regionserver-${count.index + 1}"
   image_name      = var.image_name
   flavor_name     = var.hbase_regionserver_flavor_name
   key_pair        = var.key_pair

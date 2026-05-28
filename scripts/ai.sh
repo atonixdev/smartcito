@@ -9,14 +9,14 @@ PYTHON_BIN=${PYTHON_BIN:-python3}
 DATASET=${DATASET:-ai/datasets/sample_training_data.json}
 EVAL_DATASET=${EVAL_DATASET:-ai/datasets/sample_evaluation_data.json}
 BASE_MODEL=${BASE_MODEL:-}
-ADAPTER_PATH=${ADAPTER_PATH:-ai/output/smartcito-lora}
-KAGGLE_BUNDLE_DIR=${KAGGLE_BUNDLE_DIR:-dist/smartcito_ai_kaggle}
+ADAPTER_PATH=${ADAPTER_PATH:-ai/output/orca-lora}
+KAGGLE_BUNDLE_DIR=${KAGGLE_BUNDLE_DIR:-dist/orca_ai_kaggle}
 EVAL_OUTPUT=${EVAL_OUTPUT:-$ADAPTER_PATH/evaluation_summary.json}
 EVAL_REPORT=${EVAL_REPORT:-$ADAPTER_PATH/evaluation_report.md}
 PREDICTIONS_FILE=${PREDICTIONS_FILE:-}
 KAGGLE_OWNER=${KAGGLE_OWNER:-jackiedeven}
-KAGGLE_SLUG=${KAGGLE_SLUG:-smartcito-ai-kaggle-bundle}
-KAGGLE_TITLE=${KAGGLE_TITLE:-SmartCito Kaggle Bundle}
+KAGGLE_SLUG=${KAGGLE_SLUG:-orca-ai-kaggle-bundle}
+KAGGLE_TITLE=${KAGGLE_TITLE:-Orca Kaggle Bundle}
 KAGGLE_LICENSE=${KAGGLE_LICENSE:-Apache-2.0}
 KAGGLE_PRIVATE=${KAGGLE_PRIVATE:-0}
 KAGGLE_UPDATE=${KAGGLE_UPDATE:-0}
@@ -25,7 +25,7 @@ KAGGLE_DIR_MODE=${KAGGLE_DIR_MODE:-zip}
 
 print_help() {
 	cat <<'EOF'
-SmartCito AI workflow wrapper
+Orca AI workflow wrapper
 
 Usage:
   scripts/ai.sh help
@@ -64,7 +64,7 @@ run_package() {
 }
 
 run_prepare() {
-	"$PYTHON_BIN" ai/training/prepare_dataset.py --input "$DATASET" --output ai/datasets/prepared_smartcito_training_data.jsonl
+	"$PYTHON_BIN" ai/training/prepare_dataset.py --input "$DATASET" --output ai/datasets/prepared_orca_training_data.jsonl
 }
 
 run_train_lora() {

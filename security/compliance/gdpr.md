@@ -1,11 +1,11 @@
 # GDPR Compliance Mapping
 
 Mapping of **Regulation (EU) 2016/679 (GDPR)** principles and articles
-to SmartCito controls.
+to Orca controls.
 
 ## Article 5 Principles
 
-| Principle                       | SmartCito Control                                    |
+| Principle                       | Orca Control                                    |
 |---------------------------------|------------------------------------------------------|
 | Lawfulness, fairness, transparency | Public privacy notice; consent records          |
 | Purpose limitation              | Purpose tag per dataset; enforced via RBAC           |

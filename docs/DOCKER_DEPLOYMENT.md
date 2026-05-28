@@ -1,6 +1,6 @@
 # Docker Deployment Guide
 
-SmartCito ships with two Compose entry points:
+Orca ships with two Compose entry points:
 
 - [`../docker-compose.yml`](../docker-compose.yml): local development stack
 - [`../docker-compose.hardware.yml`](../docker-compose.hardware.yml): hardware-aware overlay for pilot or on-prem environments

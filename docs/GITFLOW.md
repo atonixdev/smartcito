@@ -2,12 +2,12 @@
 ================================================================================
  File: docs/GITFLOW.md
  Purpose:
-   SmartCito's GitFlow operating model: branch roles, gate checks, and the
+   Orca's GitFlow operating model: branch roles, gate checks, and the
    workflow used by contributors and maintainers.
 ================================================================================
 -->
 
-# SmartCito GitFlow
+# Orca GitFlow
 
 ## Main Branches
 

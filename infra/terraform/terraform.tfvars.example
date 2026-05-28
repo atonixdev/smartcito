@@ -1,14 +1,14 @@
 auth_url      = "https://openstack.example.com:5000/v3"
-project_name  = "smartcito"
-username      = "smartcito-admin"
+project_name  = "orca"
+username      = "orca-admin"
 password      = "change-me"
 region        = "RegionOne"
 
-network_name = "smartcito-net"
+network_name = "orca-net"
 subnet_cidr  = "10.42.0.0/24"
 
 image_name = "ubuntu-22.04"
-key_pair   = "smartcito-keypair"
+key_pair   = "orca-keypair"
 
 controller_flavor = "m1.large"
 compute_flavor    = "g1.xlarge"

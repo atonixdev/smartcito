@@ -1,6 +1,6 @@
 # Services
 
-Split-function container services for SmartCito.
+Split-function container services for Orca.
 
 ## Purpose
 

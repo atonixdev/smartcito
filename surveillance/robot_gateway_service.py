@@ -2,8 +2,8 @@
 ================================================================================
  File: surveillance/robot_gateway_service.py
  Purpose:
-   Robot Gateway Service for SmartCito. It normalizes telemetry and commands
-   from UGVs, patrol bots, and tunnel robots into the shared SmartCito event
+   Robot Gateway Service for Orca. It normalizes telemetry and commands
+   from UGVs, patrol bots, and tunnel robots into the shared Orca event
    contract used by Mission Control and the operator dashboards.
 ================================================================================
 """
@@ -16,7 +16,7 @@ from uuid import uuid4
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
-from smartcito_shared.crypto import build_secure_envelope
+from orca_shared.crypto import build_secure_envelope
 
 from surveillance.kafka import get_publisher
 from surveillance.geospatial import normalize_point, resolve_zone
@@ -38,7 +38,7 @@ from surveillance.topics import ROBOT_EVENTS_TOPIC, ROBOT_MISSIONS_TOPIC, ROBOT_
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
 
-app = FastAPI(title="SmartCito Robot Gateway Service")
+app = FastAPI(title="Orca Robot Gateway Service")
 _commands: dict[str, RobotCommand] = {}
 _latest_telemetry: dict[str, RobotTelemetry] = {}
 _robot_protocols: dict[str, str] = {}
@@ -53,7 +53,7 @@ def _seed_robot_state() -> None:
     now = datetime.now(UTC)
     first = RobotCapabilities(
         robot_id="robot-patrol-007",
-        model="SmartCito Patrol UGV",
+        model="Orca Patrol UGV",
         firmware_version="ugv-2.4.1",
         max_speed_mps=3.5,
         battery_capacity_mah=18000,
@@ -67,7 +67,7 @@ def _seed_robot_state() -> None:
     )
     second = RobotCapabilities(
         robot_id="robot-tunnel-003",
-        model="SmartCito Tunnel Inspector",
+        model="Orca Tunnel Inspector",
         firmware_version="tunnel-1.8.0",
         max_speed_mps=2.2,
         battery_capacity_mah=15000,
@@ -134,7 +134,7 @@ def _seed_robot_state() -> None:
 def _discover_capabilities(request: RobotConnectionRequest) -> RobotCapabilities:
     return RobotCapabilities(
         robot_id=request.robot_id,
-        model="SmartCito Connected Robot",
+        model="Orca Connected Robot",
         firmware_version="robot-1.0.0",
         max_speed_mps=3.0,
         battery_capacity_mah=16000,

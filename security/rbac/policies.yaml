@@ -1,4 +1,4 @@
-# SmartCito RBAC policy matrix.
+# Orca RBAC policy matrix.
 #
 # Source of truth for roles and permissions across the platform.
 # Changes require Governance Council approval (see SECURITY_POSTURE.md).

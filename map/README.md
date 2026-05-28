@@ -1,6 +1,6 @@
-# SmartCito Location Intelligence
+# Orca Location Intelligence
 
-Sovereign location intelligence for SmartCito: country selection, region/area-code mapping, IP geolocation, GPS validation, and multi-source fusion with confidence scoring.
+Sovereign location intelligence for Orca: country selection, region/area-code mapping, IP geolocation, GPS validation, and multi-source fusion with confidence scoring.
 
 ## Container Image
 

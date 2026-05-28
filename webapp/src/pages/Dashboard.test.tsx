@@ -6,7 +6,7 @@ import { MemoryRouter } from "react-router-dom";
 import Dashboard from "./Dashboard";
 
 vi.mock("@/components/CommandCenterMap", () => ({
-  default: () => <div aria-label="SmartCito city command map" />,
+  default: () => <div aria-label="Orca city command map" />,
 }));
 
 vi.mock("@/api/controlPlane", () => ({
@@ -181,7 +181,7 @@ vi.mock("@/api/droneGateway", () => ({
     registry: [
       {
         drone_id: "drone-patrol-001",
-        model: "SmartCito Simulated Patrol Drone",
+        model: "Orca Simulated Patrol Drone",
         firmware_version: "sim-1.0.0",
         max_speed_mps: 18,
         max_altitude_m: 500,
@@ -230,8 +230,8 @@ vi.mock("@/api/droneGateway", () => ({
     data: {
       service: "drone-gateway",
       topics: {
-        telemetry: "smartcito.drone.telemetry",
-        events: "smartcito.drone.events",
+        telemetry: "orca.drone.telemetry",
+        events: "orca.drone.events",
       },
       protocols: ["simulated", "mavlink"],
       registry: "synced",
@@ -258,7 +258,7 @@ vi.mock("@/api/droneGateway", () => ({
       registry: [
         {
           drone_id: "drone-patrol-001",
-          model: "SmartCito Simulated Patrol Drone",
+          model: "Orca Simulated Patrol Drone",
           firmware_version: "sim-1.0.0",
           max_speed_mps: 18,
           max_altitude_m: 500,
@@ -273,7 +273,7 @@ vi.mock("@/api/droneGateway", () => ({
       ],
     },
   }),
-  useDroneGatewayMetrics: () => ({ data: 'smartcito_drone_gateway_events_total{event="commands_accepted"} 1' }),
+  useDroneGatewayMetrics: () => ({ data: 'orca_drone_gateway_events_total{event="commands_accepted"} 1' }),
   useDroneMissions: () => ({ data: [] }),
   useMappingOverlays: () => ({ data: { drones: [], sensors: [], threats: [], geofences: [] } }),
   useMappingGeofences: () => ({
@@ -593,6 +593,6 @@ describe("Dashboard", () => {
     expect(screen.getByText(/Street-level navigation/i)).toBeInTheDocument();
     expect(screen.getByRole("group", { name: /robot mission assignees/i })).toBeInTheDocument();
     expect(screen.getByText(/2 robots/i)).toBeInTheDocument();
-    expect(screen.getByTitle(/SmartCito Folium city map/i)).toBeInTheDocument();
+    expect(screen.getByTitle(/Orca Folium city map/i)).toBeInTheDocument();
   });
 });

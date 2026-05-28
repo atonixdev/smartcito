@@ -18,7 +18,7 @@ describe("Visualization", () => {
     expect(screen.getByTitle("Plotly Dash embed")).toHaveAttribute("src", "/dash/");
     expect(screen.getByTitle("Grafana embed")).toHaveAttribute(
       "src",
-      "/grafana/d/smartcito-overview/smartcito-overview?kiosk",
+      "/grafana/d/orca-overview/orca-overview?kiosk",
     );
     expect(screen.getByTitle("Kibana embed")).toHaveAttribute(
       "src",

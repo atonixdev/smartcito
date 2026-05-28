@@ -28,7 +28,7 @@ from app.core.crypto import (
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
 
-app = FastAPI(title="SmartCito Security Domain")
+app = FastAPI(title="Orca Security Domain")
 
 
 class EncryptRequest(BaseModel):
@@ -50,7 +50,7 @@ class DeviceCertificateRequest(BaseModel):
 
 
 class CertificateAuthorityRequest(BaseModel):
-    common_name: str = Field(default="smartcito-dev-ca", min_length=3)
+    common_name: str = Field(default="orca-dev-ca", min_length=3)
 
 
 class IntegrityVerifyRequest(BaseModel):

@@ -1,6 +1,6 @@
 # GPS Standards
 
-SmartCito standardizes GPS and GNSS integrations around open, globally adopted
+Orca standardizes GPS and GNSS integrations around open, globally adopted
 formats.
 
 ## Supported Standards
@@ -20,5 +20,5 @@ formats.
 
 ## Goal
 
-By standardizing on NMEA-derived fields, SmartCito can accept positioning data
+By standardizing on NMEA-derived fields, Orca can accept positioning data
 from global device vendors without rewriting the rest of the platform.

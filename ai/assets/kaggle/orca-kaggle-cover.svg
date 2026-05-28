@@ -1,0 +1,41 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="180" y1="80" x2="1420" y2="820" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#081B2F"/>
+      <stop offset="0.5" stop-color="#114A65"/>
+      <stop offset="1" stop-color="#E56B2F"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="220" y1="170" x2="1370" y2="710" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0E2438" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#092032" stop-opacity="0.72"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" rx="36" fill="url(#bg)"/>
+  <circle cx="1315" cy="170" r="214" fill="#F2C14E" fill-opacity="0.14"/>
+  <circle cx="248" cy="762" r="286" fill="#70C1B3" fill-opacity="0.18"/>
+  <path d="M0 700C178 622 301 564 453 584C611 605 702 747 853 760C1024 774 1129 618 1293 594C1411 577 1504 618 1600 668V900H0V700Z" fill="#062033" fill-opacity="0.52"/>
+  <rect x="168" y="148" width="1264" height="604" rx="34" fill="url(#panel)" stroke="#B8F2E6" stroke-opacity="0.34"/>
+  <rect x="226" y="210" width="320" height="46" rx="23" fill="#B8F2E6" fill-opacity="0.16"/>
+  <text x="386" y="240" fill="#D9FFF8" font-size="24" font-family="Helvetica, Arial, sans-serif" letter-spacing="3" text-anchor="middle">ORCA AI MODEL</text>
+  <text x="226" y="346" fill="#FFFFFF" font-size="78" font-weight="700" font-family="Helvetica, Arial, sans-serif">Orca AI Model</text>
+  <text x="226" y="414" fill="#D6E9F2" font-size="31" font-family="Helvetica, Arial, sans-serif">Operational intelligence for mapping, alerts, GPS, weather,</text>
+  <text x="226" y="454" fill="#D6E9F2" font-size="31" font-family="Helvetica, Arial, sans-serif">cameras, satellite reasoning, structured training, and</text>
+  <text x="226" y="494" fill="#D6E9F2" font-size="31" font-family="Helvetica, Arial, sans-serif">LLaMA-3-based adaptation.</text>
+  <g opacity="0.96">
+    <rect x="226" y="548" width="284" height="78" rx="20" fill="#F2C14E"/>
+    <text x="368" y="598" fill="#0D2233" font-size="30" font-weight="700" font-family="Helvetica, Arial, sans-serif" text-anchor="middle">Training + Inference</text>
+    <rect x="530" y="548" width="246" height="78" rx="20" fill="#70C1B3"/>
+    <text x="653" y="598" fill="#0D2233" font-size="30" font-weight="700" font-family="Helvetica, Arial, sans-serif" text-anchor="middle">Geospatial AI</text>
+  </g>
+  <g transform="translate(1038 220)">
+    <rect width="318" height="366" rx="30" fill="#0C2133" fill-opacity="0.8" stroke="#D9FFF8" stroke-opacity="0.26"/>
+    <circle cx="159" cy="88" r="58" fill="#B8F2E6" fill-opacity="0.14"/>
+    <path d="M159 45L191 88L159 131L127 88L159 45Z" fill="#F2C14E"/>
+    <rect x="68" y="176" width="182" height="14" rx="7" fill="#B8F2E6"/>
+    <rect x="68" y="218" width="182" height="14" rx="7" fill="#70C1B3"/>
+    <rect x="68" y="260" width="142" height="14" rx="7" fill="#E56B2F"/>
+    <rect x="68" y="308" width="104" height="14" rx="7" fill="#F2C14E" fill-opacity="0.82"/>
+    <text x="159" y="336" fill="#D9FFF8" font-size="24" font-family="Helvetica, Arial, sans-serif" text-anchor="middle">Adapters + Runtime</text>
+  </g>
+  <text x="226" y="688" fill="#B8F2E6" font-size="26" font-family="Helvetica, Arial, sans-serif" letter-spacing="1.1">Structured datasets  •  Adapter training  •  Runtime deployment  •  Orca AI workflows</text>
+</svg>

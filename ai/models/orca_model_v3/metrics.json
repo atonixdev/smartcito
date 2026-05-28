@@ -1,0 +1,12 @@
+{
+  "version": "orca_model_v3",
+  "records": 1,
+  "domains": {
+    "drone-operations": 1
+  },
+  "average_instruction_tokens": 10.0,
+  "vocabulary_size": 32,
+  "task_types": {
+    "drone_mission_logic": 1
+  }
+}

@@ -2,7 +2,7 @@
  * ============================================================================
  * File: webapp/src/components/ThreeDashboardPanel.tsx
  * Purpose:
- *   Three.js 3D dashboard scene for SmartCito IoT, GPS, cameras, Raspberry Pi
+ *   Three.js 3D dashboard scene for Orca IoT, GPS, cameras, Raspberry Pi
  *   edge nodes, and AI threat waves.
  * ============================================================================
  */
@@ -171,9 +171,9 @@ export default function ThreeDashboardPanel({ scene }: { scene: SceneOverview })
   }
 
   return (
-    <section className="three-dashboard-stage" aria-label="SmartCito 3D control plane">
+    <section className="three-dashboard-stage" aria-label="Orca 3D control plane">
       <div className="three-stage-copy">
-        <h3>SmartCito 3D Dashboard</h3>
+        <h3>Orca 3D Dashboard</h3>
       </div>
 
       <div className="three-stage-layout">

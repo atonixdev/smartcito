@@ -1,18 +1,18 @@
 # Ingestion
 
-IoT + camera data pipelines for SmartCito.
+IoT + camera data pipelines for Orca.
 
 ## Purpose
 
 This module hosts connectors and streaming pipelines that move raw data from
 edge devices (IoT sensors, CCTV cameras, GPS modules, third-party APIs) into
-the SmartCito core for processing, storage, and analytics.
+the Orca core for processing, storage, and analytics.
 
 ## Container Images
 
 - `ingestion/Dockerfile`: runs the default Python ingestion job container with `python -m ingestion.spark_job`.
 - `ingestion/Dockerfile.spark`: runs the Structured Streaming container with `spark-submit` against `ingestion/streaming_job.py`.
-- Both builds copy the `ingestion/` tree, so the image includes this README at `/app/ingestion/README.md` or `/opt/smartcito/ingestion/README.md`.
+- Both builds copy the `ingestion/` tree, so the image includes this README at `/app/ingestion/README.md` or `/opt/orca/ingestion/README.md`.
 
 ## Stack
 
@@ -62,13 +62,13 @@ ingestion/
 ## How To Run Its Container
 
 ```bash
-docker build -f ingestion/Dockerfile -t smartcito-ingestion .
-docker run --rm smartcito-ingestion
+docker build -f ingestion/Dockerfile -t orca-ingestion .
+docker run --rm orca-ingestion
 ```
 
 ```bash
-docker build -f ingestion/Dockerfile.spark -t smartcito-ingestion-spark .
-docker run --rm smartcito-ingestion-spark
+docker build -f ingestion/Dockerfile.spark -t orca-ingestion-spark .
+docker run --rm orca-ingestion-spark
 ```
 
 ## Example Usage

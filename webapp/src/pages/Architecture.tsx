@@ -1,7 +1,7 @@
 /**
  * ============================================================================
  * File: webapp/src/pages/Architecture.tsx
- * Purpose: Frontend architecture overview page for SmartCito.
+ * Purpose: Frontend architecture overview page for Orca.
  * ============================================================================
  */
 
@@ -34,7 +34,7 @@ export default function Architecture() {
       <span className="eyebrow">Architecture overview</span>
       <h2>Layered from field devices to operator decisions.</h2>
       <p className="lead-text">
-        SmartCito is built as a layered architecture so protocol adapters,
+        Orca is built as a layered architecture so protocol adapters,
         storage, security, cloud orchestration, and dashboards can evolve
         independently while still operating as one backbone.
       </p>
@@ -42,7 +42,7 @@ export default function Architecture() {
       <img
         className="wide-visual"
         src="/assets/platform-overview.svg"
-        alt="SmartCito platform architecture"
+        alt="Orca platform architecture"
       />
 
       <div className="architecture-list">

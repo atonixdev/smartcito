@@ -150,11 +150,11 @@ export default function SmartMapPanel({ devices }: { devices: SmartMapDevice[] }
   return (
     <article className="panel panel-wide smart-map-panel">
       <header className="panel-header map-panel-header">
-        <h3>SmartCito Map</h3>
+        <h3>Orca Map</h3>
       </header>
 
       <div className="map-layout">
-        <div ref={mapElementRef} className="smart-map" aria-label="SmartCito verified device map" />
+        <div ref={mapElementRef} className="smart-map" aria-label="Orca verified device map" />
         <aside className="map-sidebar">
           <div className="map-layer-controls" aria-label="Map layer controls">
             {[

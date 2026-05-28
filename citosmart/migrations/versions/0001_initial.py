@@ -5,7 +5,7 @@ Revises:
 Create Date: 2026-05-20 00:00:00.000000
 
 Purpose:
-    Bootstrap the relational schema for SmartCito. Creates the
+    Bootstrap the relational schema for Orca. Creates the
     `sensor_readings` time-series table that mirrors
     `app.db.models.SensorReadingORM`.
 

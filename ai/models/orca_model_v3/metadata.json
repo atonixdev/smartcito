@@ -1,0 +1,8 @@
+{
+  "version": "orca_model_v3",
+  "sources": [
+    "orca_datasets/batch_20260526_061658.json"
+  ],
+  "records": 1,
+  "artifact_dir": "models/orca_model_v3"
+}

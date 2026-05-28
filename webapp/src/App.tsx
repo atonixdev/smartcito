@@ -29,7 +29,7 @@ export default function App() {
     <div className={isCommandCenterRoute ? "app-shell app-shell-dashboard" : "app-shell"}>
       {!isCommandCenterRoute ? (
         <header className="app-header">
-          <h1 className="app-title">SmartCito</h1>
+          <h1 className="app-title">Orca</h1>
           <nav className="app-nav">
             <Link to="/home">Home</Link>
             <Link to="/mission">Mission</Link>
@@ -62,9 +62,9 @@ export default function App() {
       {!isCommandCenterRoute ? (
         <footer className="app-footer">
           <small>
-            SmartCito · Urban Data Backbone · Apache 2.0 ·{" "}
+            Orca · Urban Data Backbone · Apache 2.0 ·{" "}
             <a
-              href="https://github.com/atonixdev/smartcito"
+              href="https://github.com/atonixdev/orca"
               target="_blank"
               rel="noreferrer"
             >

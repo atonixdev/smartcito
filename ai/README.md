@@ -1,8 +1,8 @@
-# SmartCito Model
+# Orca Model
 
-![SmartCito Kaggle Cover](assets/kaggle/smartcito-kaggle-cover.svg)
+![Orca Kaggle Cover](assets/kaggle/orca-kaggle-cover.svg)
 
-SmartCito Model is the AI workspace for SmartCito operational intelligence. It packages enterprise-ready training, evaluation, inference, and deployment assets for city operations, critical infrastructure monitoring, sensor fusion, camera analytics, robotic workflows, and geospatial decision support.
+Orca Model is the AI workspace for Orca operational intelligence. It packages enterprise-ready training, evaluation, inference, and deployment assets for city operations, critical infrastructure monitoring, sensor fusion, camera analytics, robotic workflows, and geospatial decision support.
 
 This `ai/` directory is the canonical AI bundle entry point for Kaggle and internal model operations.
 
@@ -10,27 +10,27 @@ This `ai/` directory is the canonical AI bundle entry point for Kaggle and inter
 
 This bundle includes Kaggle-ready visuals under `ai/assets/kaggle/`:
 
-- `smartcito-kaggle-cover.svg` for the main bundle banner
-- `smartcito-data-pipeline.svg` for ingestion and training flow diagrams
-- `smartcito-runtime-map.svg` for runtime, mapping, and operations visuals
-- `smartcito-ai-model-icon.svg` for SmartCito AI model branding and avatars
+- `orca-kaggle-cover.svg` for the main bundle banner
+- `orca-data-pipeline.svg` for ingestion and training flow diagrams
+- `orca-runtime-map.svg` for runtime, mapping, and operations visuals
+- `orca-ai-model-icon.svg` for Orca AI model branding and avatars
 
 ## What This Bundle Is
 
-SmartCito Model is designed for controlled, auditable AI workflows:
+Orca Model is designed for controlled, auditable AI workflows:
 
-- LoRA and QLoRA fine-tuning for SmartCito task adaptation
+- LoRA and QLoRA fine-tuning for Orca task adaptation
 - adapter-only output sharing for compliant collaboration
 - runtime support for versioned local deployment
 - inference services for operational reasoning and alert handling
-- training data preparation for structured SmartCito task records
+- training data preparation for structured Orca task records
 - Kaggle-ready examples for reproducible experimentation
 
-This bundle does not include LLaMA-3 weights or any other foundation-model weights. It only ships SmartCito code, LoRA or QLoRA adapters, and synthetic or private datasets. Users must obtain any compatible base model from official provider sources.
+This bundle does not include LLaMA-3 weights or any other foundation-model weights. It only ships Orca code, LoRA or QLoRA adapters, and synthetic or private datasets. Users must obtain any compatible base model from official provider sources.
 
 ## Enterprise Scope
 
-SmartCito Model is intended for organizations that need:
+Orca Model is intended for organizations that need:
 
 - auditable AI workflows with clear artifact boundaries
 - controlled adapter training instead of raw foundation-model redistribution
@@ -43,18 +43,18 @@ SmartCito Model is intended for organizations that need:
 - `ai/ai_models/` — inference APIs, model utilities, and runtime dependencies
 - `ai/ingestion/` — external data ingestion for space weather, satellite, GPS, and map sources
 - `ai/training/` — dataset preparation, fine-tuning, evaluation, Kaggle packaging, and publishing
-- `ai/datasets/` — sample and prepared datasets for SmartCito AI workflows
+- `ai/datasets/` — sample and prepared datasets for Orca AI workflows
 - `ai/examples/` — Kaggle-ready notebook and demo assets
-- `ai/smartcito_runtime/` — runtime and model loading logic
-- `ai/smartcito_datasets/` — generated ingestion batches for training flows
-- `ai/models/` — versioned SmartCito runtime model artifacts
+- `ai/orca_runtime/` — runtime and model loading logic
+- `ai/orca_datasets/` — generated ingestion batches for training flows
+- `ai/models/` — versioned Orca runtime model artifacts
 - `ai/output/` — LoRA adapter outputs and evaluation reports
 
 ## Core Workflows
 
 ### 1. Ingest External Data
 
-Pull external operational context into SmartCito training batches stored under `ai/datasets/`:
+Pull external operational context into Orca training batches stored under `ai/datasets/`:
 
 ```bash
 python ai/ingestion/space_weather_ingestor.py
@@ -65,17 +65,17 @@ python ai/ingestion/map_ingestor.py --bbox "-26.25,27.98,-26.15,28.08"
 
 ### 2. Prepare Training Data
 
-Convert SmartCito task records or normalized source data into supervised training examples:
+Convert Orca task records or normalized source data into supervised training examples:
 
 ```bash
 python ai/training/prepare_dataset.py \
 	--input ai/datasets/sample_training_data.json \
-	--output ai/datasets/prepared_smartcito_training_data.jsonl
+	--output ai/datasets/prepared_orca_training_data.jsonl
 ```
 
 ### 3. Train the Runtime Model
 
-Train the versioned SmartCito runtime model directly from JSON records in `ai/datasets/`:
+Train the versioned Orca runtime model directly from JSON records in `ai/datasets/`:
 
 ```bash
 python ai/training/train.py --dataset-dir ai/datasets --models-dir ai/models
@@ -89,14 +89,14 @@ Run LoRA or QLoRA against a user-supplied compatible base model:
 python ai/training/lora_training.py \
 	--dataset ai/datasets/sample_training_data.json \
 	--base-model your-foundation-model-id \
-	--output-dir ai/output/smartcito-lora
+	--output-dir ai/output/orca-lora
 ```
 
 ```bash
 python ai/training/qlora_training.py \
 	--dataset ai/datasets/sample_training_data.json \
 	--base-model your-foundation-model-id \
-	--output-dir ai/output/smartcito-lora
+	--output-dir ai/output/orca-lora
 ```
 
 ### 5. Evaluate Outputs
@@ -107,20 +107,20 @@ Score trained adapters and generate review-ready reports:
 python ai/training/evaluate_adapters.py \
 	--dataset ai/datasets/sample_evaluation_data.json \
 	--base-model your-foundation-model-id \
-	--adapter-path ai/output/smartcito-lora \
-	--output ai/output/smartcito-lora/evaluation_summary.json \
-	--markdown-report ai/output/smartcito-lora/evaluation_report.md
+	--adapter-path ai/output/orca-lora \
+	--output ai/output/orca-lora/evaluation_summary.json \
+	--markdown-report ai/output/orca-lora/evaluation_report.md
 ```
 
 ### 6. Run Inference
 
-Use the FastAPI inference service for SmartCito task execution:
+Use the FastAPI inference service for Orca task execution:
 
 ```bash
 uvicorn ai.ai_models.inference:app --host 0.0.0.0 --port 8012
 ```
 
-The inference layer supports SmartCito decision surfaces for mission planning, robot navigation, camera analysis, sensor fusion, threat assessment, geographic reasoning, and infrastructure operations.
+The inference layer supports Orca decision surfaces for mission planning, robot navigation, camera analysis, sensor fusion, threat assessment, geographic reasoning, and infrastructure operations.
 
 ### 7. Package for Kaggle
 
@@ -133,40 +133,40 @@ python ai/training/package_kaggle_bundle.py
 Publish metadata for Kaggle dataset distribution:
 
 ```bash
-python ai/training/publish_kaggle_dataset.py --bundle-dir dist/smartcito_ai_kaggle
+python ai/training/publish_kaggle_dataset.py --bundle-dir dist/orca_ai_kaggle
 ```
 
 ## Runtime
 
-SmartCito Model also includes a local runtime for organizations that need versioned, self-managed deployment without bundling foundation-model weights.
+Orca Model also includes a local runtime for organizations that need versioned, self-managed deployment without bundling foundation-model weights.
 
-- generated training batches land in `ai/smartcito_datasets/`
-- versioned runtime models are stored in `ai/models/smartcito_model_vN/`
+- generated training batches land in `ai/orca_datasets/`
+- versioned runtime models are stored in `ai/models/orca_model_vN/`
 - active deployment state is tracked in `ai/models/active_model.json`
-- runtime orchestration is exposed through the root `smartcito` CLI
+- runtime orchestration is exposed through the root `orca` CLI
 
 Example commands:
 
 ```bash
-./smartcito ingest --config ingestion/config/datastream_sources.json
-./smartcito train --batch-dir ai/smartcito_datasets
-./smartcito deploy --version smartcito_model_v1
-./smartcito dataset export --batch-dir ai/smartcito_datasets --output-path exports/smartcito_external.json
+./orca ingest --config ingestion/config/datastream_sources.json
+./orca train --batch-dir ai/orca_datasets
+./orca deploy --version orca_model_v1
+./orca dataset export --batch-dir ai/orca_datasets --output-path exports/orca_external.json
 ```
 
 ## Kaggle Assets
 
 This bundle includes the primary public AI deliverables:
 
-- `ai/examples/SmartCito_Training_Demo.ipynb`
-- `ai/examples/smartcito_inference_demo.ipynb`
+- `ai/examples/Orca_Training_Demo.ipynb`
+- `ai/examples/orca_inference_demo.ipynb`
 - `ai/examples/inference_demo.py`
 
-These assets are intended to demonstrate the SmartCito Model workflow without exposing regulated data, secrets, or foundation-model weights.
+These assets are intended to demonstrate the Orca Model workflow without exposing regulated data, secrets, or foundation-model weights.
 
 ## Compliance Boundary
 
-SmartCito Model should be shared with the following controls:
+Orca Model should be shared with the following controls:
 
 - publish adapters, not base weights
 - publish synthetic or sanitized private data only
@@ -180,8 +180,8 @@ SmartCito Model should be shared with the following controls:
 - Model card: `docs/MODEL_CARD.md`
 - Operational flow: `docs/OPERATIONAL_FLOW.md`
 - Kaggle workflow: `docs/KAGGLE_USAGE.md`
-- Runtime flow: `docs/SMARTCITO_MODEL_RUNTIME.md`
+- Runtime flow: `docs/ORCA_MODEL_RUNTIME.md`
 
 ## Operational Standard
 
-For enterprise use, treat `ai/` as the single source of truth for SmartCito AI assets. New training scripts, evaluation logic, datasets, notebooks, runtime code, and adapter artifacts should live under this directory so packaging, validation, and distribution remain auditable and repeatable.
+For enterprise use, treat `ai/` as the single source of truth for Orca AI assets. New training scripts, evaluation logic, datasets, notebooks, runtime code, and adapter artifacts should live under this directory so packaging, validation, and distribution remain auditable and repeatable.

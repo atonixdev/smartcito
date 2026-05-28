@@ -7,7 +7,7 @@ x-logging: &stdout-logging
 services:
   memcached-1:
     image: memcached:1.6-alpine
-    container_name: smartcito-memcached-1-hardware
+    container_name: orca-memcached-1-hardware
     command: ["memcached", "-m", "256", "-I", "4m", "-o", "modern"]
     read_only: true
     tmpfs:
@@ -21,7 +21,7 @@ services:
 
   memcached-2:
     image: memcached:1.6-alpine
-    container_name: smartcito-memcached-2-hardware
+    container_name: orca-memcached-2-hardware
     command: ["memcached", "-m", "256", "-I", "4m", "-o", "modern"]
     read_only: true
     tmpfs:
@@ -35,7 +35,7 @@ services:
 
   memcached-3:
     image: memcached:1.6-alpine
-    container_name: smartcito-memcached-3-hardware
+    container_name: orca-memcached-3-hardware
     command: ["memcached", "-m", "256", "-I", "4m", "-o", "modern"]
     read_only: true
     tmpfs:
@@ -49,7 +49,7 @@ services:
 
   api-router:
     image: nginx:1.27-alpine
-    container_name: smartcito-api-router-hardware
+    container_name: orca-api-router-hardware
     ports:
       - "${APP_PORT:-8000}:8000"
     read_only: true
@@ -73,10 +73,10 @@ services:
     build:
       context: ./citosmart
       image: atonixdev/api-gateway:1.0.0
-    container_name: smartcito-citosmart-hardware
+    container_name: orca-citosmart-hardware
     env_file: .env
     environment:
-      SMARTCITO_DEPLOYMENT_MODE: ${SMARTCITO_DEPLOYMENT_MODE:-hardware}
+      ORCA_DEPLOYMENT_MODE: ${ORCA_DEPLOYMENT_MODE:-hardware}
     read_only: true
     tmpfs:
       - /tmp
@@ -107,7 +107,7 @@ services:
     build:
       context: ./webapp
       image: atonixdev/webapp:1.0.0
-    container_name: smartcito-webapp-hardware
+    container_name: orca-webapp-hardware
     env_file: .env
     read_only: true
     tmpfs:
@@ -130,7 +130,7 @@ services:
       context: .
       dockerfile: camera_module/Dockerfile
       image: atonixdev/camera-simulator:1.0.0
-    container_name: smartcito-camera-simulator
+    container_name: orca-camera-simulator
     env_file: .env
     environment:
       CAMERA_SIMULATOR_PROFILE: ${CAMERA_SIMULATOR_PROFILE:-default}
@@ -152,7 +152,7 @@ services:
       context: .
       dockerfile: gps_module/Dockerfile
       image: atonixdev/gps-simulator:1.0.0
-    container_name: smartcito-gps-simulator
+    container_name: orca-gps-simulator
     env_file: .env
     environment:
       GPS_SIMULATOR_PROFILE: ${GPS_SIMULATOR_PROFILE:-default}
@@ -174,7 +174,7 @@ services:
       context: .
       dockerfile: hardware/Dockerfile
       image: atonixdev/hardware-agent:1.0.0
-    container_name: smartcito-hardware-agent
+    container_name: orca-hardware-agent
     env_file: .env
     ports:
       - "${HARDWARE_AGENT_PORT:-8014}:8014"
@@ -194,7 +194,7 @@ services:
       context: .
       dockerfile: hardware/usb_module/Dockerfile
       image: atonixdev/usb-module:1.0.0
-    container_name: smartcito-usb-module
+    container_name: orca-usb-module
     env_file: .env
     environment:
       USB_EMULATION_ENABLED: ${USB_EMULATION_ENABLED:-true}
@@ -216,7 +216,7 @@ services:
       context: .
       dockerfile: ai/ai_models/Dockerfile
       image: atonixdev/ai-service:1.0.0
-    container_name: smartcito-ai-service
+    container_name: orca-ai-service
     env_file: .env
     ports:
       - "${AI_SERVICE_PORT:-8012}:8012"
@@ -236,7 +236,7 @@ services:
       context: .
       dockerfile: security/Dockerfile
       image: atonixdev/security-service:1.0.0
-    container_name: smartcito-security-service
+    container_name: orca-security-service
     env_file: .env
     ports:
       - "${SECURITY_SERVICE_PORT:-8013}:8013"
@@ -255,11 +255,11 @@ services:
 
   postgres:
     image: cgr.dev/chainguard/postgres:latest@sha256:34a4d686aa44583457bbdbdeb662243e7ab29e89e5c9b40df8e33baa6b75dc47
-    container_name: smartcito-postgres-hardware
+    container_name: orca-postgres-hardware
     environment:
-      POSTGRES_DB: ${DB_NAME:-smartcito}
-      POSTGRES_USER: ${DB_USER:-smartcito}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-smartcito}
+      POSTGRES_DB: ${DB_NAME:-orca}
+      POSTGRES_USER: ${DB_USER:-orca}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-orca}
     ports:
       - "${DB_PORT:-5432}:5432"
     volumes:
@@ -269,7 +269,7 @@ services:
     networks:
       - backend
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-smartcito}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-orca}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -278,7 +278,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: smartcito-redis-hardware
+    container_name: orca-redis-hardware
     command: ["redis-server", "--appendonly", "yes"]
     ports:
       - "${REDIS_PORT:-6379}:6379"
@@ -294,7 +294,7 @@ services:
 
   kafka:
     image: bitnami/kafka:3.7
-    container_name: smartcito-kafka-hardware
+    container_name: orca-kafka-hardware
     environment:
       KAFKA_CFG_NODE_ID: 1
       KAFKA_CFG_PROCESS_ROLES: "broker,controller"
@@ -315,7 +315,7 @@ services:
 
   mqtt:
     image: eclipse-mosquitto:2.0
-    container_name: smartcito-mqtt-hardware
+    container_name: orca-mqtt-hardware
     ports:
       - "${MQTT_PORT:-1883}:1883"
     volumes:
@@ -327,7 +327,7 @@ services:
 
   prometheus:
     image: prom/prometheus:v2.53.0
-    container_name: smartcito-prometheus
+    container_name: orca-prometheus
     command:
       - --config.file=/etc/prometheus/prometheus.yml
     volumes:
@@ -342,7 +342,7 @@ services:
 
   grafana:
     image: grafana/grafana:11.1.0
-    container_name: smartcito-grafana
+    container_name: orca-grafana
     environment:
       GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}

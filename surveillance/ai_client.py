@@ -7,7 +7,7 @@ import httpx
 
 class SurveillanceAIClient:
     def __init__(self) -> None:
-        self._base_url = os.getenv("SMARTCITO_AI_MODELS_URL", "http://ai-service:8012").rstrip("/")
+        self._base_url = os.getenv("ORCA_AI_MODELS_URL", "http://ai-service:8012").rstrip("/")
 
     async def detect_objects(
         self,

@@ -13,17 +13,17 @@ TOKEN_PATTERN = re.compile(r"[a-z0-9]+")
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Evaluate SmartCito LoRA adapters before submission.")
+    parser = argparse.ArgumentParser(description="Evaluate Orca LoRA adapters before submission.")
     parser.add_argument("--dataset", default="ai/datasets/sample_evaluation_data.json")
-    parser.add_argument("--base-model", default=os.getenv("SMARTCITO_BASE_MODEL_ID", ""))
-    parser.add_argument("--adapter-path", default="ai/output/smartcito-lora")
+    parser.add_argument("--base-model", default=os.getenv("ORCA_BASE_MODEL_ID", ""))
+    parser.add_argument("--adapter-path", default="ai/output/orca-lora")
     parser.add_argument("--backend", default="merged-local")
     parser.add_argument("--temperature", type=float, default=0.1)
     parser.add_argument("--max-tokens", type=int, default=180)
-    parser.add_argument("--output", default="ai/output/smartcito-lora/evaluation_summary.json")
+    parser.add_argument("--output", default="ai/output/orca-lora/evaluation_summary.json")
     parser.add_argument(
         "--markdown-report",
-        default="ai/output/smartcito-lora/evaluation_report.md",
+        default="ai/output/orca-lora/evaluation_report.md",
         help="Path for a PR-ready Markdown evaluation report.",
     )
     parser.add_argument(
@@ -137,7 +137,7 @@ def _resolve_base_model_id(args: argparse.Namespace) -> str:
     if base_model:
         return base_model
     raise ValueError(
-        "A base model id is required for live evaluation. Set SMARTCITO_BASE_MODEL_ID or pass --base-model with a compatible model from an official provider source."
+        "A base model id is required for live evaluation. Set ORCA_BASE_MODEL_ID or pass --base-model with a compatible model from an official provider source."
     )
 
 
@@ -208,7 +208,7 @@ def _summarize_domains(item_results: list[dict[str, Any]]) -> list[dict[str, Any
 
 def _render_markdown_report(summary: dict[str, Any]) -> str:
     lines = [
-        "# SmartCito Adapter Evaluation Report",
+        "# Orca Adapter Evaluation Report",
         "",
         f"- Model: {summary['model_name']}",
         f"- Base model: {summary['base_model']}",
@@ -268,7 +268,7 @@ async def _evaluate_async(args: argparse.Namespace) -> dict[str, Any]:
             prompt = instruction if not input_text else f"{instruction}\n\nInput:\n{input_text}"
             response = await generate_text(
                 prompt,
-                system_prompt="You are a SmartCito evaluation assistant.",
+                system_prompt="You are a Orca evaluation assistant.",
                 model=base_model_id,
                 temperature=args.temperature,
                 max_tokens=args.max_tokens,
@@ -294,7 +294,7 @@ async def _evaluate_async(args: argparse.Namespace) -> dict[str, Any]:
     domain_summary = _summarize_domains(item_results)
 
     return {
-        "model_name": "SmartCito Model",
+        "model_name": "Orca Model",
         "base_model": base_model_id or None,
         "adapter_path": args.adapter_path,
         "backend": args.backend,

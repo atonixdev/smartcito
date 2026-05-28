@@ -1,7 +1,7 @@
 """
 ================================================================================
  File: citosmart/tests/test_graphql.py
- Purpose: Focused tests for the SmartCito GraphQL integration endpoint.
+ Purpose: Focused tests for the Orca GraphQL integration endpoint.
 ================================================================================
 """
 
@@ -51,7 +51,7 @@ def client(tmp_path: Path) -> Generator[TestClient, None, None]:
 
 
 def _auth_headers(role: str) -> dict[str, str]:
-    token = create_access_token(subject=f"{role}@smartcito.dev", role=role)
+    token = create_access_token(subject=f"{role}@orca.dev", role=role)
     return {"Authorization": f"Bearer {token}"}
 
 

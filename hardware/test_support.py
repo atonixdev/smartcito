@@ -2,7 +2,7 @@
 ================================================================================
  File: hardware/test_support.py
  Purpose:
-   Shared helpers for SmartCito hardware CI probes. Supports simulation-first
+   Shared helpers for Orca hardware CI probes. Supports simulation-first
    validation in CI and optional live endpoint checks in hardware-backed runs.
 ================================================================================
 """
@@ -45,7 +45,7 @@ def collect_snapshot(
     defaults: HardwareSnapshot,
 ) -> HardwareSnapshot:
     """Return live hardware data when configured, otherwise a simulation snapshot."""
-    mode = os.getenv("SMARTCITO_HARDWARE_CI_MODE", "simulation")
+    mode = os.getenv("ORCA_HARDWARE_CI_MODE", "simulation")
     endpoint = os.getenv(endpoint_env, defaults.endpoint)
 
     if mode != "simulation" and endpoint:
@@ -81,7 +81,7 @@ def assert_snapshot(
     minimum_power_kw: float,
     require_quantum_ready: bool = False,
 ) -> None:
-    """Assert that a snapshot satisfies the SmartCito CI baseline."""
+    """Assert that a snapshot satisfies the Orca CI baseline."""
     assert snapshot.reachable, f"{snapshot.component} endpoint is unreachable"
     assert _semver_tuple(snapshot.firmware_version) >= _semver_tuple(minimum_firmware)
     assert snapshot.temperature_c <= maximum_temperature_c
@@ -93,7 +93,7 @@ def assert_snapshot(
 
 def record_probe_result(snapshot: HardwareSnapshot) -> None:
     """Write a JSON artifact per hardware probe for CI collection."""
-    result_dir = Path(os.getenv("SMARTCITO_HARDWARE_RESULTS_DIR", "logs/hardware_results"))
+    result_dir = Path(os.getenv("ORCA_HARDWARE_RESULTS_DIR", "logs/hardware_results"))
     result_dir.mkdir(parents=True, exist_ok=True)
     payload = asdict(snapshot)
     payload["captured_at"] = datetime.now(UTC).isoformat()

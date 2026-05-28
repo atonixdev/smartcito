@@ -1,7 +1,7 @@
 # Container Hardening
 
 This standard applies to every Docker/Kubernetes workload used by
-SmartCito.
+Orca.
 
 ## Image Build
 

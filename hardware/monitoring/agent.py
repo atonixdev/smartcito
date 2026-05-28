@@ -2,7 +2,7 @@
 ================================================================================
  File: hardware/monitoring/agent.py
  Purpose:
-   Tiny hardware monitoring agent model for SmartCito deployments.
+   Tiny hardware monitoring agent model for Orca deployments.
 ================================================================================
 """
 

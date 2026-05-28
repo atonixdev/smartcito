@@ -14,7 +14,7 @@ from hardware.test_support import HardwareSnapshot, assert_snapshot, collect_sna
 def test_hsm_integrity() -> None:
     snapshot = collect_snapshot(
         component="security-hsm",
-        endpoint_env="SMARTCITO_HSM_ENDPOINT",
+        endpoint_env="ORCA_HSM_ENDPOINT",
         defaults=HardwareSnapshot(
             component="security-hsm",
             endpoint="simulation://security",

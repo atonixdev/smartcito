@@ -26,7 +26,7 @@ class VideoEncodingProfile:
                 return f"{self.signaling_endpoint.rstrip('/')}/{self.stream_path.lstrip('/')}"
             return f"webrtc://{self.stream_host}/{self.stream_path.lstrip('/')}"
         if self.protocol == "custom":
-            return f"smartcito://{self.stream_host}/{self.stream_path.lstrip('/')}"
+            return f"orca://{self.stream_host}/{self.stream_path.lstrip('/')}"
         return f"rtsp://{self.stream_host}/{self.stream_path.lstrip('/')}"
 
     def _video_codec_args(self) -> list[str]:

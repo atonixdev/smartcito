@@ -2,7 +2,7 @@
 ================================================================================
  File: ai_models/inference.py
  Purpose:
-   Minimal FastAPI inference service for SmartCito AI contributors.
+   Minimal FastAPI inference service for Orca AI contributors.
 ================================================================================
 """
 
@@ -18,12 +18,12 @@ from dotenv import load_dotenv
 
 from ai.ai_models.llama_stack import generate_text, list_models, load_llama_stack_settings
 from ai.ai_models.model import classify_alert, detect_objects, score_anomaly, summarize_event
-from ai.smartcito_runtime import load_active_model
+from ai.orca_runtime import load_active_model
 
 
 load_dotenv(Path(__file__).resolve().parents[2] / ".env", override=False)
 
-app = FastAPI(title="SmartCito")
+app = FastAPI(title="Orca")
 
 
 class InferenceRequest(BaseModel):
@@ -67,7 +67,7 @@ class EventSummaryRequest(BaseModel):
 
 
 class ObjectDetectionRequest(BaseModel):
-    """Image payload for SmartCito object detection."""
+    """Image payload for Orca object detection."""
 
     image_b64: str = Field(min_length=1)
     backend: str = Field(default="auto")
@@ -75,19 +75,19 @@ class ObjectDetectionRequest(BaseModel):
     threshold: float = Field(default=0.6, ge=0.0, le=1.0)
 
 
-class SmartCitoDecisionRequest(BaseModel):
+class OrcaDecisionRequest(BaseModel):
     instruction: str = Field(min_length=1)
     input: str = Field(min_length=1)
     context: dict[str, Any] = Field(default_factory=dict)
 
 
-def _smartcito_predict(task_type: str, request: SmartCitoDecisionRequest) -> dict[str, object]:
+def _orca_predict(task_type: str, request: OrcaDecisionRequest) -> dict[str, object]:
     try:
         model = load_active_model()
     except FileNotFoundError as exc:
         raise HTTPException(
             status_code=503,
-            detail="No active SmartCito model is deployed. Train and deploy a model version first.",
+            detail="No active Orca model is deployed. Train and deploy a model version first.",
         ) from exc
 
     prediction = model.predict(
@@ -119,7 +119,7 @@ async def health() -> dict[str, str]:
         "status": "ok",
         "service": "ai-models",
         "llama_stack": "configured" if settings.configured else "not-configured",
-        "smartcito_model": model_status,
+        "orca_model": model_status,
     }
 
 
@@ -128,14 +128,14 @@ async def models() -> dict[str, object]:
     return await list_models()
 
 
-@app.get("/smartcito/model")
-async def smartcito_model_status() -> dict[str, object]:
+@app.get("/orca/model")
+async def orca_model_status() -> dict[str, object]:
     try:
         model = load_active_model()
     except FileNotFoundError as exc:
         raise HTTPException(
             status_code=503,
-            detail="No active SmartCito model is deployed. Train and deploy a model version first.",
+            detail="No active Orca model is deployed. Train and deploy a model version first.",
         ) from exc
     return {
         "version": model.version,
@@ -236,36 +236,36 @@ async def detect_objects_endpoint(request: ObjectDetectionRequest) -> dict[str, 
     }
 
 
-@app.post("/smartcito/drone-mission")
-async def smartcito_drone_mission(request: SmartCitoDecisionRequest) -> dict[str, object]:
-    return _smartcito_predict("drone_mission_logic", request)
+@app.post("/orca/drone-mission")
+async def orca_drone_mission(request: OrcaDecisionRequest) -> dict[str, object]:
+    return _orca_predict("drone_mission_logic", request)
 
 
-@app.post("/smartcito/robot-navigation")
-async def smartcito_robot_navigation(request: SmartCitoDecisionRequest) -> dict[str, object]:
-    return _smartcito_predict("robot_navigation", request)
+@app.post("/orca/robot-navigation")
+async def orca_robot_navigation(request: OrcaDecisionRequest) -> dict[str, object]:
+    return _orca_predict("robot_navigation", request)
 
 
-@app.post("/smartcito/camera-analysis")
-async def smartcito_camera_analysis(request: SmartCitoDecisionRequest) -> dict[str, object]:
-    return _smartcito_predict("camera_analytics", request)
+@app.post("/orca/camera-analysis")
+async def orca_camera_analysis(request: OrcaDecisionRequest) -> dict[str, object]:
+    return _orca_predict("camera_analytics", request)
 
 
-@app.post("/smartcito/sensor-fusion")
-async def smartcito_sensor_fusion(request: SmartCitoDecisionRequest) -> dict[str, object]:
-    return _smartcito_predict("sensor_fusion", request)
+@app.post("/orca/sensor-fusion")
+async def orca_sensor_fusion(request: OrcaDecisionRequest) -> dict[str, object]:
+    return _orca_predict("sensor_fusion", request)
 
 
-@app.post("/smartcito/threat-assessment")
-async def smartcito_threat_assessment(request: SmartCitoDecisionRequest) -> dict[str, object]:
-    return _smartcito_predict("threat_reasoning", request)
+@app.post("/orca/threat-assessment")
+async def orca_threat_assessment(request: OrcaDecisionRequest) -> dict[str, object]:
+    return _orca_predict("threat_reasoning", request)
 
 
-@app.post("/smartcito/geographic-reasoning")
-async def smartcito_geographic_reasoning(request: SmartCitoDecisionRequest) -> dict[str, object]:
-    return _smartcito_predict("geographic_reasoning", request)
+@app.post("/orca/geographic-reasoning")
+async def orca_geographic_reasoning(request: OrcaDecisionRequest) -> dict[str, object]:
+    return _orca_predict("geographic_reasoning", request)
 
 
-@app.post("/smartcito/infrastructure-ops")
-async def smartcito_infrastructure_ops(request: SmartCitoDecisionRequest) -> dict[str, object]:
-    return _smartcito_predict("infrastructure_operations", request)
+@app.post("/orca/infrastructure-ops")
+async def orca_infrastructure_ops(request: OrcaDecisionRequest) -> dict[str, object]:
+    return _orca_predict("infrastructure_operations", request)

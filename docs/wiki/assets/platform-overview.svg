@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-label="SmartCito platform overview">
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-label="Orca platform overview">
   <defs>
     <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
       <stop offset="0%" stop-color="#f6f8ef"/>
@@ -18,7 +18,7 @@
     </style>
   </defs>
   <rect width="1600" height="900" fill="url(#bg)"/>
-  <text x="90" y="110" class="title">SmartCito Platform Overview</text>
+  <text x="90" y="110" class="title">Orca Platform Overview</text>
   <text x="90" y="155" class="subtitle">City devices, software services, hardware infrastructure, dashboards, and security operating as one governed backbone.</text>
   <rect x="95" y="240" width="270" height="160" class="box"/>
   <text x="130" y="295" class="label">City Devices</text>

@@ -2,7 +2,7 @@
 ================================================================================
  File: citosmart/app/api/v1/endpoints/quantum.py
  Purpose:
-   Quantum-ready security endpoints for SmartCito.
+   Quantum-ready security endpoints for Orca.
 
  Endpoints:
    GET  /api/v1/quantum/profile      Advertise PQC/QKD posture.

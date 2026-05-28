@@ -2,7 +2,7 @@
 ================================================================================
  File: surveillance/models.py
  Purpose:
-   Shared domain schemas for SmartCito drone, sensor, camera, threat, and map
+   Shared domain schemas for Orca drone, sensor, camera, threat, and map
    surveillance services.
 ================================================================================
 """

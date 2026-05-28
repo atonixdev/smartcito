@@ -7,10 +7,10 @@ from pathlib import Path
 import sys
 
 try:
-    from ai.smartcito_runtime.model import SmartCitoTrainingRecord, next_model_version, set_active_model, train_model
+    from ai.orca_runtime.model import OrcaTrainingRecord, next_model_version, set_active_model, train_model
 except ModuleNotFoundError:
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-    from ai.smartcito_runtime.model import SmartCitoTrainingRecord, next_model_version, set_active_model, train_model
+    from ai.orca_runtime.model import OrcaTrainingRecord, next_model_version, set_active_model, train_model
 
 
 DEFAULT_DATASET_DIR = Path("ai/datasets")
@@ -18,8 +18,8 @@ DEFAULT_MODELS_DIR = Path("ai/models")
 SKIP_FILE_NAMES = {"sample_evaluation_data.json", "sample_predictions.json"}
 
 
-def _load_dataset_records(dataset_dir: Path) -> tuple[list[SmartCitoTrainingRecord], list[Path]]:
-    records: list[SmartCitoTrainingRecord] = []
+def _load_dataset_records(dataset_dir: Path) -> tuple[list[OrcaTrainingRecord], list[Path]]:
+    records: list[OrcaTrainingRecord] = []
     sources: list[Path] = []
     for path in sorted(dataset_dir.glob("*.json")):
         if path.name in SKIP_FILE_NAMES:
@@ -36,7 +36,7 @@ def _load_dataset_records(dataset_dir: Path) -> tuple[list[SmartCitoTrainingReco
             if not instruction or not output:
                 continue
             records.append(
-                SmartCitoTrainingRecord(
+                OrcaTrainingRecord(
                     instruction=instruction,
                     input=str(item.get("input") or "").strip(),
                     output=output,
@@ -50,7 +50,7 @@ def _load_dataset_records(dataset_dir: Path) -> tuple[list[SmartCitoTrainingReco
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Train the SmartCito runtime model from JSON datasets in ai/datasets.")
+    parser = argparse.ArgumentParser(description="Train the Orca runtime model from JSON datasets in ai/datasets.")
     parser.add_argument("--dataset-dir", default=str(DEFAULT_DATASET_DIR))
     parser.add_argument("--models-dir", default=str(DEFAULT_MODELS_DIR))
     parser.add_argument("--version", default=None)

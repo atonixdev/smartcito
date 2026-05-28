@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://smartcito.org/schemas/hardware/camera-metadata.v1.json",
-  "title": "SmartCito Camera Metadata",
+  "$id": "https://orca.org/schemas/hardware/camera-metadata.v1.json",
+  "title": "Orca Camera Metadata",
   "type": "object",
   "additionalProperties": false,
   "required": ["device_id", "timestamp", "protocol", "stream_uri"],

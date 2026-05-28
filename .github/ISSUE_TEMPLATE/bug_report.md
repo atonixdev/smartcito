@@ -21,7 +21,7 @@ What you expected to happen.
 ## Environment
 - OS:
 - Browser / Python / Node version:
-- SmartCito version / commit:
+- Orca version / commit:
 
 ## Logs / screenshots
 <details>

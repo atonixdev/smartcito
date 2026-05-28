@@ -176,7 +176,7 @@ data:
         Match           kube.*
         Host            elasticsearch.observability.svc.cluster.local
         Port            9200
-        Index           smartcito-logs
+        Index           orca-logs
         Logstash_Format On
         Retry_Limit     False
 

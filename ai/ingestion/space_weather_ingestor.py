@@ -86,7 +86,7 @@ def ingest_space_weather(
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Ingest space-weather data into SmartCito training batches.")
+    parser = argparse.ArgumentParser(description="Ingest space-weather data into Orca training batches.")
     parser.add_argument("--region", default="global")
     parser.add_argument("--k-index-url", default=DEFAULT_K_INDEX_URL)
     parser.add_argument("--xray-url", default=DEFAULT_XRAY_URL)

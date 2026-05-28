@@ -116,10 +116,10 @@ def test_generate_supports_local_lora_backend(monkeypatch) -> None:
         assert prompt == "Analyze drone telemetry for anomalies."
         assert backend == "merged-local"
         assert model == "meta-llama/Meta-Llama-3-8B-Instruct"
-        assert adapter_path == "./ai/output/smartcito-lora"
+        assert adapter_path == "./ai/output/orca-lora"
         assert merge_lora is True
         return {
-            "model": "SmartCito Model",
+            "model": "Orca Model",
             "provider": "local-peft-merged",
             "text": "Rotor imbalance detected on drone alpha.",
             "raw": {"adapter_path": adapter_path},
@@ -133,7 +133,7 @@ def test_generate_supports_local_lora_backend(monkeypatch) -> None:
             "prompt": "Analyze drone telemetry for anomalies.",
             "model": "meta-llama/Meta-Llama-3-8B-Instruct",
             "backend": "merged-local",
-            "adapter_path": "./ai/output/smartcito-lora",
+            "adapter_path": "./ai/output/orca-lora",
             "merge_lora": True,
             "temperature": 0.0,
             "max_tokens": 128,

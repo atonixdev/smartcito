@@ -57,5 +57,5 @@ jobs:
             const prefixes = ['feature/', 'release/', 'hotfix/'];
             const valid = allowed.includes(ref) || prefixes.some((prefix) => ref.startsWith(prefix));
             if (!valid) {
-              core.setFailed(`Branch '${ref}' does not follow SmartCito GitFlow naming.`);
+              core.setFailed(`Branch '${ref}' does not follow Orca GitFlow naming.`);
             }

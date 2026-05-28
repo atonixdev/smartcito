@@ -2,7 +2,7 @@
 ================================================================================
  File: ingestion/kafka_producer.py
  Purpose:
-   Small JSON producer helper for SmartCito ingestion experiments.
+   Small JSON producer helper for Orca ingestion experiments.
 ================================================================================
 """
 

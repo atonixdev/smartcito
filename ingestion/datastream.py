@@ -11,7 +11,7 @@ from ai.training.prepare_dataset import RAW_LOG_BUILDERS
 
 
 DEFAULT_CONFIG = Path("ingestion/config/datastream_sources.json")
-DEFAULT_OUTPUT_DIR = Path("ai/smartcito_datasets")
+DEFAULT_OUTPUT_DIR = Path("ai/orca_datasets")
 
 
 @dataclass(slots=True)

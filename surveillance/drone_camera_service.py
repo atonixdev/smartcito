@@ -13,7 +13,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
-from smartcito_shared.crypto import build_integrity_record, build_secure_envelope
+from orca_shared.crypto import build_integrity_record, build_secure_envelope
 
 from surveillance.ai_client import ai_client
 from surveillance.geospatial import resolve_zone
@@ -24,7 +24,7 @@ from surveillance.topics import DRONE_CAMERA_ALERTS_TOPIC, DRONE_CAMERA_FRAMES_T
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
 
-app = FastAPI(title="SmartCito Drone Camera Ingestion Service")
+app = FastAPI(title="Orca Drone Camera Ingestion Service")
 _streams: dict[str, CameraStreamRegistration] = {}
 _latest_frames: dict[str, FrameMetadata] = {}
 _latest_detections: dict[str, list[CameraDetection]] = {}

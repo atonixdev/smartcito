@@ -2,7 +2,7 @@
 ================================================================================
  File: docs/wiki/CI_CD_AND_GITFLOW_GOVERNANCE.md
  Purpose:
-   Dedicated wiki page for SmartCito's branching model, approvals, CI/CD
+   Dedicated wiki page for Orca's branching model, approvals, CI/CD
    pipeline structure, and repository governance.
 ================================================================================
 -->
@@ -10,17 +10,17 @@
 # CI/CD and GitFlow Governance
 
 <p align="center">
-  <img src="assets/platform-overview.svg" alt="SmartCito governance overview" width="100%" />
+  <img src="assets/platform-overview.svg" alt="Orca governance overview" width="100%" />
 </p>
 
 ## What This Module Does
 
-This area defines how SmartCito changes move from local development to reviewed
+This area defines how Orca changes move from local development to reviewed
 integration, security validation, and deploy-ready states.
 
 ## Why It Is Important
 
-Without governance, SmartCito would accumulate unstable code, weak reviews,
+Without governance, Orca would accumulate unstable code, weak reviews,
 untracked changes, and inconsistent deployment behavior across software and
 hardware domains.
 

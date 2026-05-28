@@ -1,4 +1,4 @@
-"""Shared Memcached-backed cache helpers for SmartCito services."""
+"""Shared Memcached-backed cache helpers for Orca services."""
 
 from __future__ import annotations
 
@@ -16,15 +16,15 @@ from app.core.config import get_settings
 
 logger = logging.getLogger(__name__)
 
-CACHE_HITS = Counter("smartcito_cache_hits_total", "Total SmartCito cache hits", ["purpose"])
-CACHE_MISSES = Counter("smartcito_cache_misses_total", "Total SmartCito cache misses", ["purpose"])
-CACHE_STORES = Counter("smartcito_cache_stores_total", "Total SmartCito cache writes", ["purpose"])
+CACHE_HITS = Counter("orca_cache_hits_total", "Total Orca cache hits", ["purpose"])
+CACHE_MISSES = Counter("orca_cache_misses_total", "Total Orca cache misses", ["purpose"])
+CACHE_STORES = Counter("orca_cache_stores_total", "Total Orca cache writes", ["purpose"])
 CACHE_INVALIDATIONS = Counter(
-    "smartcito_cache_invalidations_total",
-    "Total SmartCito cache invalidations",
+    "orca_cache_invalidations_total",
+    "Total Orca cache invalidations",
     ["purpose"],
 )
-CACHE_ERRORS = Counter("smartcito_cache_errors_total", "Total SmartCito cache errors", ["operation"])
+CACHE_ERRORS = Counter("orca_cache_errors_total", "Total Orca cache errors", ["operation"])
 
 
 @dataclass(frozen=True)

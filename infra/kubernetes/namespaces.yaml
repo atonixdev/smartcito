@@ -2,54 +2,54 @@ apiVersion: v1
 kind: Namespace
 metadata:
   labels:
-    smartcito.io/tier: backend
+    orca.io/tier: backend
   name: ingestion
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
   labels:
-    smartcito.io/tier: ai
+    orca.io/tier: ai
   name: ai
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
   labels:
-    smartcito.io/tier: security
+    orca.io/tier: security
   name: security
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
   labels:
-    smartcito.io/tier: visualization
+    orca.io/tier: visualization
   name: visualization
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
   labels:
-    smartcito.io/tier: backend
+    orca.io/tier: backend
   name: backend
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
   labels:
-    smartcito.io/tier: data-platform
+    orca.io/tier: data-platform
   name: data-platform
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
   labels:
-    smartcito.io/tier: database
+    orca.io/tier: database
   name: database
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
   labels:
-    smartcito.io/tier: observability
+    orca.io/tier: observability
   name: observability

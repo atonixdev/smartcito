@@ -20,8 +20,8 @@ def postgres_storage_target() -> dict[str, str]:
         "primary_host": primary_host,
         "replica_host": replica_host,
         "port": _env("DB_PORT", "5432"),
-        "database": _env("DB_NAME", "smartcito"),
-        "user": _env("DB_USER", "smartcito"),
+        "database": _env("DB_NAME", "orca"),
+        "user": _env("DB_USER", "orca"),
     }
 
 
@@ -33,9 +33,9 @@ def hdfs_storage_target() -> dict[str, Any]:
         "enabled": enabled,
         "rpc_address": rpc_address,
         "http_address": http_address,
-        "raw_path": _env("HDFS_RAW_DATA_PATH", "/smartcito/raw"),
-        "archive_path": _env("HDFS_ARCHIVE_PATH", "/smartcito/archive"),
-        "ai_training_path": _env("HDFS_AI_TRAINING_PATH", "/smartcito/ai/training"),
+        "raw_path": _env("HDFS_RAW_DATA_PATH", "/orca/raw"),
+        "archive_path": _env("HDFS_ARCHIVE_PATH", "/orca/archive"),
+        "ai_training_path": _env("HDFS_AI_TRAINING_PATH", "/orca/ai/training"),
     }
 
 
@@ -51,7 +51,7 @@ def hbase_storage_target() -> dict[str, Any]:
         "zookeeper_client_port": _env("HBASE_ZOOKEEPER_CLIENT_PORT", "2181"),
         "master_address": _env("HBASE_MASTER_ADDRESS"),
         "thrift_address": thrift_address,
-        "sensor_table": _env("HBASE_SENSOR_TABLE", "smartcito_sensor_events"),
+        "sensor_table": _env("HBASE_SENSOR_TABLE", "orca_sensor_events"),
         "column_family": _env("HBASE_COLUMN_FAMILY", "d"),
     }
 

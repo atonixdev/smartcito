@@ -5,9 +5,9 @@
 ================================================================================
 -->
 
-# SmartCito Security Deep Dive
+# Orca Security Deep Dive
 
-> Cities are critical infrastructure. SmartCito is built with that in mind.
+> Cities are critical infrastructure. Orca is built with that in mind.
 
 ## Threat Model (summary)
 
@@ -25,7 +25,7 @@
 
 ### OWASP API Security Top 10 (2023)
 
-| Risk | SmartCito Control                                |
+| Risk | Orca Control                                |
 |------|--------------------------------------------------|
 | API1 — BOLA            | Resource-scoped RBAC, never trust client IDs |
 | API2 — Broken AuthN    | OAuth2 + JWT, optional OIDC                  |
@@ -48,7 +48,7 @@
 
 - **GDPR**: right of access, right to erasure, data-processing register.
 - **POPIA**: consent records, breach notification within 72h.
-- **ISO/IEC 27001**: SmartCito does not certify, but maps controls to A.5–A.18.
+- **ISO/IEC 27001**: Orca does not certify, but maps controls to A.5–A.18.
 
 ## Operational Practices
 
