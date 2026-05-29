@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
         - name: orcaapi-api
-          image: atonixdev/api-gateway:1.0.0
+          image: atonixdev/orca-api-gateway:1.0.0
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
@@ -105,7 +105,7 @@ spec:
     spec:
       containers:
         - name: event-consumer-raw
-          image: atonixdev/api-gateway:1.0.0
+          image: atonixdev/orca-api-gateway:1.0.0
           imagePullPolicy: IfNotPresent
           command: ["python", "-m", "app.workers.event_consumer_runner"]
           env:
@@ -139,7 +139,7 @@ spec:
     spec:
       containers:
         - name: event-consumer-clean
-          image: atonixdev/api-gateway:1.0.0
+          image: atonixdev/orca-api-gateway:1.0.0
           imagePullPolicy: IfNotPresent
           command: ["python", "-m", "app.workers.event_consumer_runner"]
           env:
@@ -173,7 +173,7 @@ spec:
     spec:
       containers:
         - name: event-consumer-alerts
-          image: atonixdev/api-gateway:1.0.0
+          image: atonixdev/orca-api-gateway:1.0.0
           imagePullPolicy: IfNotPresent
           command: ["python", "-m", "app.workers.event_consumer_runner"]
           env:

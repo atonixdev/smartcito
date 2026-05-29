@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: ingestion-kafka-producer
-          image: atonixdev/ingestion-kafka-producer:1.0.0
+          image: atonixdev/orca-ingestion-kafka-producer:1.0.0
           imagePullPolicy: IfNotPresent
           command: ["uvicorn", "ingestion.kafka_producer_service:app", "--host", "0.0.0.0", "--port", "8100"]
           envFrom:

@@ -72,7 +72,7 @@ services:
   orcaapi:
     build:
       context: ./orcaapi
-      image: atonixdev/api-gateway:1.0.0
+      image: atonixdev/orca-api-gateway:1.0.0
     container_name: orca-orcaapi-hardware
     env_file: .env
     environment:
@@ -106,7 +106,7 @@ services:
   webapp:
     build:
       context: ./webapp
-      image: atonixdev/webapp:1.0.0
+      image: atonixdev/orca-webapp:1.0.0
     container_name: orca-webapp-hardware
     env_file: .env
     read_only: true
@@ -129,7 +129,7 @@ services:
     build:
       context: .
       dockerfile: camera_module/Dockerfile
-      image: atonixdev/camera-simulator:1.0.0
+      image: atonixdev/orca-camera-simulator:1.0.0
     container_name: orca-camera-simulator
     env_file: .env
     environment:
@@ -151,7 +151,7 @@ services:
     build:
       context: .
       dockerfile: gps_module/Dockerfile
-      image: atonixdev/gps-simulator:1.0.0
+      image: atonixdev/orca-gps-simulator:1.0.0
     container_name: orca-gps-simulator
     env_file: .env
     environment:
@@ -173,7 +173,7 @@ services:
     build:
       context: .
       dockerfile: hardware/Dockerfile
-      image: atonixdev/hardware-agent:1.0.0
+      image: atonixdev/orca-hardware-agent:1.0.0
     container_name: orca-hardware-agent
     env_file: .env
     ports:
@@ -193,7 +193,7 @@ services:
     build:
       context: .
       dockerfile: hardware/usb_module/Dockerfile
-      image: atonixdev/usb-module:1.0.0
+      image: atonixdev/orca-usb-module:1.0.0
     container_name: orca-usb-module
     env_file: .env
     environment:
@@ -215,7 +215,7 @@ services:
     build:
       context: .
       dockerfile: ai/ai_models/Dockerfile
-      image: atonixdev/ai-service:1.0.0
+      image: atonixdev/orca-ai-service:1.0.0
     container_name: orca-ai-service
     env_file: .env
     ports:
@@ -235,7 +235,7 @@ services:
     build:
       context: .
       dockerfile: security/Dockerfile
-      image: atonixdev/security-service:1.0.0
+      image: atonixdev/orca-security-service:1.0.0
     container_name: orca-security-service
     env_file: .env
     ports:

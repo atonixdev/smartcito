@@ -47,14 +47,14 @@ check_environment() {
 
 verify_core_images() {
   local images=(
-    atonixdev/api-gateway:1.0.0
-    atonixdev/webapp:1.0.0
-    atonixdev/ai-service:1.0.0
-    atonixdev/gps-service:1.0.0
-    atonixdev/camera-service:1.0.0
-    atonixdev/drone-camera-ingestion:1.0.0
-    atonixdev/mapping-geospatial:1.0.0
-    atonixdev/mission-control:1.0.0
+    atonixdev/orca-api-gateway:1.0.0
+    atonixdev/orca-webapp:1.0.0
+    atonixdev/orca-ai-service:1.0.0
+    atonixdev/orca-gps-service:1.0.0
+    atonixdev/orca-camera-service:1.0.0
+    atonixdev/orca-drone-camera-ingestion:1.0.0
+    atonixdev/orca-mapping-geospatial:1.0.0
+    atonixdev/orca-mission-control:1.0.0
   )
 
   for image in "${images[@]}"; do

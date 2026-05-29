@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: dash
-          image: atonixdev/api-gateway:1.0.0
+          image: atonixdev/orca-api-gateway:1.0.0
           imagePullPolicy: IfNotPresent
           command: ["python", "-m", "app.dash_app.server"]
           envFrom:

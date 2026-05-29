@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: security-service
-          image: atonixdev/security-service:1.0.0
+          image: atonixdev/orca-security-service:1.0.0
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
