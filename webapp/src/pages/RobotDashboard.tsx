@@ -1,10 +1,10 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { useCityMapPayload, useMappingGeofences } from "@/api/droneGateway";
 import CommandCenterMap from "@/components/CommandCenterMap";
 import OperationsSwitcher from "@/components/OperationsSwitcher";
-import { demoSmartMapDevices, useSmartMapOverview } from "@/api/map";
-import { demoRobotFleet, useRobotFleet, useRobotGatewayReady, useSendRobotCommand } from "@/api/robotGateway";
+import { useSmartMapOverview } from "@/api/map";
+import { useRobotFleet, useRobotGatewayReady, useSendRobotCommand } from "@/api/robotGateway";
 import { useRecentSensors } from "@/api/sensors";
 
 type RobotSensorStatus = "nominal" | "watch" | "offline";
@@ -27,7 +27,7 @@ function sensorTone(status: RobotSensorStatus) {
 }
 
 export default function RobotDashboard() {
-  const [selectedRobotId, setSelectedRobotId] = useState(demoRobotFleet.registry[0].robot_id);
+  const [selectedRobotId, setSelectedRobotId] = useState("");
   const readyQuery = useRobotGatewayReady();
   const fleetQuery = useRobotFleet();
   const sendRobotCommand = useSendRobotCommand();
@@ -36,20 +36,26 @@ export default function RobotDashboard() {
   const cityMapPayloadQuery = useCityMapPayload();
   const sensorQuery = useRecentSensors(8);
 
-  const fleet = fleetQuery.data && fleetQuery.data.registry.length > 0 ? fleetQuery.data : demoRobotFleet;
-  const registry = fleet.registry;
-  const telemetry = fleet.robots;
-  const routes = fleet.routes;
+  const fleet = fleetQuery.data;
+  const registry = fleet?.registry ?? [];
+  const telemetry = fleet?.robots ?? [];
+  const routes = fleet?.routes ?? [];
   const selectedTelemetry = telemetry.find((robot) => robot.robot_id === selectedRobotId) ?? telemetry[0];
   const selectedRegistry = registry.find((robot) => robot.robot_id === selectedRobotId) ?? registry[0];
   const selectedRoutes = routes.filter((route) => route.robot_id === (selectedTelemetry?.robot_id ?? selectedRegistry?.robot_id));
-  const mapDevices = mapQuery.data?.devices?.length ? mapQuery.data.devices : demoSmartMapDevices;
+  const mapDevices = mapQuery.data?.devices ?? [];
   const liveGeofences = mappingGeofencesQuery.data;
   const cityMapPayload = cityMapPayloadQuery.data ?? null;
   const liveReadings = sensorQuery.data ?? [];
 
+  useEffect(() => {
+    if (!selectedRobotId && registry[0]?.robot_id) {
+      setSelectedRobotId(registry[0].robot_id);
+    }
+  }, [registry, selectedRobotId]);
+
   const selectedRobot = {
-    id: selectedTelemetry?.robot_id ?? selectedRegistry?.robot_id ?? demoRobotFleet.registry[0].robot_id,
+    id: selectedTelemetry?.robot_id ?? selectedRegistry?.robot_id ?? "robot-unassigned",
     name: selectedRegistry?.model ?? "Robot unit",
     role: selectedTelemetry?.autonomy_state?.replaceAll("_", " ") ?? "robot operator",
     batteryPercent: Math.round(selectedTelemetry?.battery_percent ?? 0),
@@ -146,7 +152,7 @@ export default function RobotDashboard() {
           </div>
           <div>
             <span>Gateway</span>
-            <strong>{readyQuery.data?.registry ?? "demo"}</strong>
+            <strong>{readyQuery.data?.registry ?? "offline"}</strong>
           </div>
         </div>
       </header>

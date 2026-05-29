@@ -6,4 +6,4 @@ metadata:
 data:
   HDFS_ENABLED: "false"
   HBASE_ENABLED: "false"
-  OBJECT_STORAGE_ENDPOINT: file:///app/data/object_storage
+  OBJECT_STORAGE_ENDPOINT: file:///tmp/orca-object-storage

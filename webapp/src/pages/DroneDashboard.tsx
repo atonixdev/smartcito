@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import OperationsSwitcher from "@/components/OperationsSwitcher";
 import DroneOperationsPanel from "@/components/DroneOperationsPanel";
-import { demoDroneFleet, demoThreatAlerts, useDroneFleet, useDroneGatewayReady, useThreatAlerts } from "@/api/droneGateway";
+import { useDroneFleet, useDroneGatewayReady, useThreatAlerts } from "@/api/droneGateway";
 
 function summarizeStatus(ready: boolean, alerts: number) {
   if (!ready) {
@@ -19,23 +19,22 @@ export default function DroneDashboard() {
   const fleetQuery = useDroneFleet();
   const alertsQuery = useThreatAlerts();
 
-  const fleet = fleetQuery.data && fleetQuery.data.registry.length > 0 ? fleetQuery.data : demoDroneFleet;
-  const telemetry = fleet.drones[0] ?? demoDroneFleet.drones[0];
-  const registry = fleet.registry[0] ?? demoDroneFleet.registry[0];
-  const alerts = alertsQuery.data && alertsQuery.data.length > 0 ? alertsQuery.data : demoThreatAlerts;
-  const linkQualityPercent = Math.round((telemetry.link_quality ?? 0) * 100);
-  const altitudeMeters = Math.round(telemetry.position.altitude_m ?? 0);
+  const telemetry = fleetQuery.data?.drones?.[0];
+  const registry = fleetQuery.data?.registry?.[0];
+  const alerts = alertsQuery.data ?? [];
+  const linkQualityPercent = Math.round((telemetry?.link_quality ?? 0) * 100);
+  const altitudeMeters = Math.round(telemetry?.position.altitude_m ?? 0);
 
   const statusCards = useMemo(
     () => [
-      { label: "Gateway", value: gatewayReady.data?.registry ?? "demo" },
-      { label: "Active drone", value: registry.model },
-      { label: "Battery", value: `${Math.round(telemetry.battery_percent)}%` },
-      { label: "Flight mode", value: telemetry.flight_mode },
+      { label: "Gateway", value: gatewayReady.data?.registry ?? "offline" },
+      { label: "Active drone", value: registry?.model ?? "--" },
+      { label: "Battery", value: telemetry ? `${Math.round(telemetry.battery_percent)}%` : "--" },
+      { label: "Flight mode", value: telemetry?.flight_mode ?? "--" },
       { label: "Link", value: `${linkQualityPercent}%` },
       { label: "Threats", value: `${alerts.length}` },
     ],
-    [alerts.length, gatewayReady.data?.registry, linkQualityPercent, registry.model, telemetry.battery_percent, telemetry.flight_mode],
+    [alerts.length, gatewayReady.data?.registry, linkQualityPercent, registry?.model, telemetry?.battery_percent, telemetry?.flight_mode],
   );
 
   return (
@@ -44,7 +43,7 @@ export default function DroneDashboard() {
         <div className="command-topbar-block">
           <span className="command-kicker">Drone dashboard</span>
           <h2>Flight Operations Console</h2>
-          <p>Dedicated aviation-grade workspace for live flight video, telemetry, command dispatch, and mission execution.</p>
+          <p>Live simulation cockpit for telemetry, mission control, camera feed, and threat response.</p>
         </div>
 
         <div className="command-topbar-meta">
@@ -54,7 +53,7 @@ export default function DroneDashboard() {
           </div>
           <div>
             <span>Primary aircraft</span>
-            <strong>{registry.drone_id}</strong>
+            <strong>{registry?.drone_id ?? "--"}</strong>
           </div>
           <div>
             <span>Altitude</span>

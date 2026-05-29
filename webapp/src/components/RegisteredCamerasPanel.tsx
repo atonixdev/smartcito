@@ -7,7 +7,7 @@
  * ============================================================================
  */
 
-import { demoCameraFleet, useCameras } from "@/api/cameras";
+import { useCameras } from "@/api/cameras";
 
 function formatLocation(lat?: number, lon?: number) {
   if (lat == null || lon == null) {
@@ -18,7 +18,7 @@ function formatLocation(lat?: number, lon?: number) {
 
 export default function RegisteredCamerasPanel() {
   const { data, isLoading, isError, error } = useCameras();
-  const cameras = data && data.length > 0 ? data : demoCameraFleet;
+  const cameras = data ?? [];
 
   return (
     <article className="panel panel-wide">
@@ -29,7 +29,7 @@ export default function RegisteredCamerasPanel() {
       {isLoading && <p>Loading camera fleet…</p>}
       {isError && (
         <p className="muted">
-          Camera API unavailable: {(error as { message?: string }).message}. Showing demo fleet.
+          Camera API unavailable: {(error as { message?: string }).message}.
         </p>
       )}
 

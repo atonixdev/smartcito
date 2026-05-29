@@ -20,7 +20,7 @@ KAGGLE_PRIVATE_FLAG := $(if $(filter 1,$(KAGGLE_PRIVATE)),--private,)
 KAGGLE_UPDATE_FLAG := $(if $(filter 1,$(KAGGLE_UPDATE)),--update,)
 KAGGLE_DRY_RUN_FLAG := $(if $(filter 1,$(KAGGLE_DRY_RUN)),--dry-run,)
 
-.PHONY: ai-help ai-prepare ai-package ai-train-lora ai-train-qlora ai-evaluate ai-report ai-publish-kaggle ai-full openstack-env k8s-backend-secret repo-check repo-help workflow-help workflow-preflight workflow-test workflow-local workflow-docker workflow-full
+.PHONY: ai-help ai-prepare ai-package ai-train-lora ai-train-qlora ai-evaluate ai-report ai-publish-kaggle ai-full openstack-env k8s-backend-secret repo-check repo-help workflow-help workflow-preflight workflow-test workflow-local workflow-docker workflow-full orcos-help orcos-build orcos-run orcos-docker-build orcos-clean
 
 ai-help:
 	@printf '%s\n' 'Orca AI workflow targets:'
@@ -91,3 +91,23 @@ workflow-docker:
 
 workflow-full:
 	$(PYTHON) scripts/project_workflow.py full --mode local
+
+orcos-help:
+	@printf '%s\n' 'OrcOS targets:'
+	@printf '%s\n' '  make orcos-build                   Build OrcOS with host toolchain'
+	@printf '%s\n' '  make orcos-run                     Boot OrcOS in QEMU (host tools required)'
+	@printf '%s\n' '  make orcos-docker-build            Build OrcOS using containerized toolchain (docker/podman)'
+	@printf '%s\n' '  make orcos-clean                   Remove OrcOS build artifacts'
+	@printf '%s\n' '  pwsh -File scripts/orcos.ps1 docker-build   Windows PowerShell entrypoint'
+
+orcos-build:
+	bash scripts/orcos.sh build
+
+orcos-run:
+	bash scripts/orcos.sh run
+
+orcos-docker-build:
+	bash scripts/orcos.sh docker-build
+
+orcos-clean:
+	bash scripts/orcos.sh clean

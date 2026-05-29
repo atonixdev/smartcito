@@ -1,0 +1,110 @@
+name: OrcaOS ISO Matrix Build
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - OrcaOs/**
+      - scripts/orcos.sh
+      - scripts/orcos.ps1
+      - .github/workflows/orcaos-iso-matrix.yml
+  pull_request:
+    paths:
+      - OrcaOs/**
+      - scripts/orcos.sh
+      - scripts/orcos.ps1
+      - .github/workflows/orcaos-iso-matrix.yml
+  workflow_dispatch:
+
+jobs:
+  build-iso:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Ensure container runtime (Ubuntu)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker --version
+
+      - name: Install and start Podman (macOS)
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v podman >/dev/null 2>&1; then
+            brew update
+            brew install podman
+          fi
+          podman --version
+          podman machine init --cpus 2 --memory 4096 --disk-size 20 || true
+          podman machine start
+
+      - name: Install and start Podman (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          if (-not (Get-Command podman -ErrorAction SilentlyContinue)) {
+            choco install podman -y --no-progress
+            $env:Path += ";C:\Program Files\RedHat\Podman"
+          }
+          podman --version
+          try {
+            podman machine init --cpus 2 --memory 4096 --disk-size 20 | Out-Null
+          }
+          catch {
+            Write-Host "Podman machine already exists or init warning encountered; continuing."
+          }
+          podman machine start
+
+      - name: Build OrcaOS ISO (Linux/macOS)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ runner.os }}" == "macOS" ]]; then
+            export CONTAINER_RUNTIME=podman
+          fi
+          bash scripts/orcos.sh docker-build
+
+      - name: Build OrcaOS ISO (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $env:CONTAINER_RUNTIME = 'podman'
+          pwsh -File scripts/orcos.ps1 docker-build
+
+      - name: Generate SHA256 (Linux/macOS)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha256sum OrcaOs/build/orcos.iso > OrcaOs/build/orcos.iso.sha256
+
+      - name: Generate SHA256 (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $hash = (Get-FileHash -Algorithm SHA256 OrcaOs/build/orcos.iso).Hash.ToLower()
+          "$hash  OrcaOs/build/orcos.iso" | Out-File -Encoding ascii OrcaOs/build/orcos.iso.sha256
+
+      - name: Upload ISO Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: orcaos-iso-${{ matrix.os }}
+          path: |
+            OrcaOs/build/orcos.iso
+            OrcaOs/build/orcos.iso.sha256
+          if-no-files-found: error

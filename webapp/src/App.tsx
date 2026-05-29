@@ -53,6 +53,9 @@ export default function App() {
           <Route path="/dashboard" element={<Navigate to="/dashboard/drone" replace />} />
           <Route path="/dashboard/drone" element={<DroneDashboard />} />
           <Route path="/dashboard/robot" element={<RobotDashboard />} />
+          <Route path="/dashboard/city" element={<Navigate to="/dashboard/cityview" replace />} />
+          <Route path="/dashboard/city-view" element={<Navigate to="/dashboard/cityview" replace />} />
+          <Route path="/dashboard/cityview/" element={<Navigate to="/dashboard/cityview" replace />} />
           <Route path="/dashboard/cityview" element={<Dashboard />} />
           <Route path="/visualization" element={<Visualization />} />
           <Route path="*" element={<NotFound />} />

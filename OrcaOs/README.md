@@ -27,15 +27,31 @@ OrcOS Phase 1 is a bootable 32-bit freestanding kernel skeleton aligned with:
 
 ## Build and Run (Host Tools Installed)
 
-1. `cd orcos`
+1. `cd OrcaOs`
 2. `make all`
 3. `make run`
 
 ## Build and Run (Docker Recommended)
 
-1. `cd orcos`
+1. `cd OrcaOs`
 2. `bash scripts/build-in-docker.sh`
 3. `qemu-system-i386 -cdrom build/orcos.iso -m 256M`
+
+The containerized build script auto-detects `docker` or `podman`.
+
+## Cross-Platform Host Commands
+
+Linux/macOS:
+
+1. `cd ..` (repo root)
+2. `bash scripts/orcos.sh docker-build`
+
+Windows (PowerShell):
+
+1. `Set-Location <repo-root>`
+2. `pwsh -File scripts/orcos.ps1 docker-build`
+
+If you need a specific container runtime, set `CONTAINER_RUNTIME` to `docker` or `podman` before running the command.
 
 If your host lacks `qemu-system-i386`, run QEMU from a separate container or install QEMU locally.
 

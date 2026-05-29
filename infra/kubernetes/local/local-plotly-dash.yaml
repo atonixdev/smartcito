@@ -30,7 +30,7 @@ spec:
             - containerPort: 8050
           volumeMounts:
             - name: orca-shared
-              mountPath: /app/orca_shared
+              mountPath: /app/smartcito_shared
               readOnly: true
             - name: orca-hardware
               mountPath: /app/hardware

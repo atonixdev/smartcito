@@ -3,14 +3,10 @@ import { startTransition, useDeferredValue, useEffect, useMemo, useState } from 
 import CommandCenterMap from "@/components/CommandCenterMap";
 import OperationsSwitcher from "@/components/OperationsSwitcher";
 
-import { useCameras, demoCameraFleet } from "@/api/cameras";
+import { useCameras } from "@/api/cameras";
 import { useControlPlaneOverview } from "@/api/controlPlane";
 import {
-  demoCameraFeed,
   useCityMapPayload,
-  demoDroneFleet,
-  demoDroneMission,
-  demoThreatAlerts,
   useCameraFeeds,
   useDroneFleet,
   useDroneGatewayReady,
@@ -25,11 +21,11 @@ import {
   type DroneTelemetry,
 } from "@/api/droneGateway";
 import { useAlerts, useLiveEvents } from "@/api/events";
-import { demoSmartMapOverview, useSmartMapOverview, type SmartMapDevice } from "@/api/map";
+import { useSmartMapOverview, type SmartMapDevice } from "@/api/map";
 import { useCreateCityMission, useCityMissions } from "@/api/missionControl";
 import { useRealtimeCommandCenter } from "@/api/realtime";
-import { demoRobotFleet, useRobotFleet } from "@/api/robotGateway";
-import { demoSceneOverview, useSceneOverview } from "@/api/scene";
+import { useRobotFleet } from "@/api/robotGateway";
+import { useSceneOverview } from "@/api/scene";
 import { useRecentSensors, type SensorReading } from "@/api/sensors";
 
 type AssetKind = "drone" | "robot" | "camera" | "sensor" | "deterrent" | "alert";
@@ -58,28 +54,6 @@ interface CommandCenterSensor {
   linkedCameraIds: string[];
   linkedDroneIds: string[];
   history: SensorReading[];
-}
-
-interface DeterrentAsset {
-  id: string;
-  name: string;
-  status: "armed" | "disarmed" | "active";
-  zone: string;
-  latitude: number;
-  longitude: number;
-  linkedSensorIds: string[];
-  authorizedRoles: string[];
-  rule: string;
-}
-
-interface ZoneOverlay {
-  id: string;
-  label: string;
-  kind: "critical" | "restricted" | "geofence";
-  top: number;
-  left: number;
-  width: number;
-  height: number;
 }
 
 interface MapPoint {
@@ -135,79 +109,6 @@ const citySearchPresets = [
     detail: "Waterfront perimeter, transport nodes, and public-safety sensors.",
   },
 ] as const;
-
-const demoDeterrents: DeterrentAsset[] = [
-  {
-    id: "deterrent-zone-a-siren",
-    name: "Zone A Smart Siren",
-    status: "armed",
-    zone: "CBD perimeter",
-    latitude: -25.7452,
-    longitude: 28.2446,
-    linkedSensorIds: ["sensor-em-001", "sensor-motion-004"],
-    authorizedRoles: ["supervisor", "incident_commander"],
-    rule: "If intrusion in Zone A, trigger siren and dispatch nearest drone.",
-  },
-  {
-    id: "deterrent-plaza-light-02",
-    name: "Transit Plaza Floodlight",
-    status: "disarmed",
-    zone: "Transit plaza",
-    latitude: -25.7484,
-    longitude: 28.2314,
-    linkedSensorIds: ["sensor-vibration-002"],
-    authorizedRoles: ["supervisor"],
-    rule: "Auto-enable on after-hours motion and camera confirmation.",
-  },
-];
-
-const zoneOverlays: ZoneOverlay[] = [
-  { id: "zone-cbd", label: "CBD perimeter", kind: "critical", top: 18, left: 50, width: 24, height: 28 },
-  { id: "zone-government", label: "Restricted district", kind: "restricted", top: 46, left: 18, width: 22, height: 20 },
-  { id: "zone-logistics", label: "Logistics geofence", kind: "geofence", top: 56, left: 58, width: 20, height: 18 },
-];
-
-const fallbackSensors: Array<Omit<CommandCenterSensor, "history">> = [
-  {
-    id: "sensor-em-001",
-    name: "Magnetic Wave Grid A1",
-    category: "magnetic/em",
-    status: "alert",
-    currentValue: 13.4,
-    unit: "mT",
-    lastTriggeredAt: new Date().toISOString(),
-    latitude: -25.7448,
-    longitude: 28.2455,
-    linkedCameraIds: ["demo-body-001"],
-    linkedDroneIds: ["drone-patrol-001"],
-  },
-  {
-    id: "sensor-vibration-002",
-    name: "Utility Tunnel Vibration 02",
-    category: "vibration",
-    status: "ok",
-    currentValue: 0.22,
-    unit: "g",
-    lastTriggeredAt: new Date(Date.now() - 28 * 60 * 1000).toISOString(),
-    latitude: -25.7481,
-    longitude: 28.232,
-    linkedCameraIds: ["demo-micro-007"],
-    linkedDroneIds: [],
-  },
-  {
-    id: "sensor-motion-004",
-    name: "Perimeter Beam 04",
-    category: "motion",
-    status: "offline",
-    currentValue: 0,
-    unit: "state",
-    lastTriggeredAt: new Date(Date.now() - 95 * 60 * 1000).toISOString(),
-    latitude: -25.7472,
-    longitude: 28.2394,
-    linkedCameraIds: ["demo-body-001"],
-    linkedDroneIds: ["drone-patrol-001"],
-  },
-];
 
 function formatTime(isoTimestamp: string) {
   return new Intl.DateTimeFormat("en-ZA", {
@@ -348,10 +249,10 @@ export default function Dashboard() {
     controls?: Array<unknown>;
   } | undefined;
   const realtimeMap = realtime.snapshot?.map as { devices?: SmartMapDevice[] } | undefined;
-  const realtimeFleet = realtimeSurveillance?.drones as unknown as typeof demoDroneFleet | undefined;
+  const realtimeFleet = realtimeSurveillance?.drones as typeof droneFleetQuery.data;
   const realtimeMissions = realtimeSurveillance?.missions as unknown as DroneMission[] | undefined;
-  const realtimeCameraFeeds = realtimeSurveillance?.camera_feeds as unknown as Array<typeof demoCameraFeed> | undefined;
-  const realtimeThreatAlerts = realtimeSurveillance?.threat_alerts as unknown as typeof demoThreatAlerts | undefined;
+  const realtimeCameraFeeds = realtimeSurveillance?.camera_feeds as NonNullable<typeof cameraFeedsQuery.data> | undefined;
+  const realtimeThreatAlerts = realtimeSurveillance?.threat_alerts as NonNullable<typeof threatAlertsQuery.data> | undefined;
   const realtimeEvents = realtime.snapshot?.events as Array<{
     event_id: string;
     source: string;
@@ -374,54 +275,39 @@ export default function Dashboard() {
   const fleet =
     realtimeFleet && (Array.isArray(realtimeFleet.drones) || Array.isArray(realtimeFleet.registry))
       ? realtimeFleet
-      : droneFleetQuery.data && (droneFleetQuery.data.drones.length > 0 || droneFleetQuery.data.registry.length > 0)
-        ? droneFleetQuery.data
-        : demoDroneFleet;
+      : droneFleetQuery.data;
 
-  const droneTelemetries = fleet.drones.length > 0 ? fleet.drones : demoDroneFleet.drones;
-  const droneRegistry = fleet.registry.length > 0 ? fleet.registry : demoDroneFleet.registry;
+  const droneTelemetries = fleet?.drones ?? [];
+  const droneRegistry = fleet?.registry ?? [];
   const missionItems = Array.isArray(realtimeMissions) && realtimeMissions.length > 0
     ? realtimeMissions
-    : droneMissionsQuery.data && droneMissionsQuery.data.length > 0
-      ? droneMissionsQuery.data
-      : [demoDroneMission];
-  const cameraDevices = cameraQuery.data && cameraQuery.data.length > 0 ? cameraQuery.data : demoCameraFleet;
+    : droneMissionsQuery.data ?? [];
+  const cameraDevices = cameraQuery.data ?? [];
   const cameraFeeds = Array.isArray(realtimeCameraFeeds) && realtimeCameraFeeds.length > 0
     ? realtimeCameraFeeds
-    : cameraFeedsQuery.data && cameraFeedsQuery.data.length > 0
-      ? cameraFeedsQuery.data
-      : [demoCameraFeed];
-  const smartMapOverview = smartMapQuery.data && smartMapQuery.data.devices.length > 0
-    ? smartMapQuery.data
-    : demoSmartMapOverview;
+    : cameraFeedsQuery.data ?? [];
+  const smartMapOverview = smartMapQuery.data;
   const mapDevices = realtimeMap?.devices && realtimeMap.devices.length > 0
     ? realtimeMap.devices
-    : smartMapOverview.devices;
+    : smartMapOverview?.devices ?? [];
   const threatAlerts = Array.isArray(realtimeThreatAlerts) && realtimeThreatAlerts.length > 0
     ? realtimeThreatAlerts
-    : threatAlertsQuery.data && threatAlertsQuery.data.length > 0
-      ? threatAlertsQuery.data
-      : demoThreatAlerts;
+    : threatAlertsQuery.data ?? [];
   const eventAlerts = realtimeAlerts ?? eventAlertsQuery.data ?? [];
   const liveEvents = realtimeEvents ?? liveEventsQuery.data ?? [];
-  const robotFleet = robotFleetQuery.data && robotFleetQuery.data.registry.length > 0 ? robotFleetQuery.data : demoRobotFleet;
-  const robotRegistry = robotFleet.registry;
-  const robotTelemetries = robotFleet.robots;
-  const robotRoutes = robotFleet.routes;
-  const sceneOverview = sceneOverviewQuery.data && sceneOverviewQuery.data.devices.length > 0
-    ? sceneOverviewQuery.data
-    : demoSceneOverview;
-  const cameraCorridors = smartMapOverview.camera_corridors;
+  const robotFleet = robotFleetQuery.data;
+  const robotRegistry = robotFleet?.registry ?? [];
+  const robotTelemetries = robotFleet?.robots ?? [];
+  const robotRoutes = robotFleet?.routes ?? [];
+  const sceneOverview = sceneOverviewQuery.data ?? null;
+  const cameraCorridors = smartMapOverview?.camera_corridors ?? [];
   const overlayCounts = realtimeSurveillance?.mapping_overlays && typeof realtimeSurveillance.mapping_overlays === "object"
     ? (realtimeSurveillance.mapping_overlays as { drones: unknown[]; sensors: unknown[]; threats: unknown[]; geofences: unknown[] })
     : mappingOverlaysQuery.data ?? { drones: [], sensors: [], threats: [], geofences: [] };
   const serviceHealth = controlPlaneQuery.data;
   const recentReadings = recentSensorsQuery.data ?? [];
 
-  const sensors: CommandCenterSensor[] = fallbackSensors.map((sensor) => ({
-    ...sensor,
-    history: recentReadings.filter((reading) => reading.sensor_id === sensor.id).slice(0, 4),
-  }));
+  const sensors: CommandCenterSensor[] = [];
 
   for (const reading of recentReadings) {
     if (sensors.some((sensor) => sensor.id === reading.sensor_id)) {
@@ -485,15 +371,7 @@ export default function Dashboard() {
     longitude: sensor.longitude,
   }));
 
-  const deterrentAssets: AssetListItem[] = demoDeterrents.map((device) => ({
-    id: device.id,
-    kind: "deterrent",
-    label: device.name,
-    status: device.status,
-    subtitle: `${device.zone} · ${device.authorizedRoles.join(", ")}`,
-    latitude: device.latitude,
-    longitude: device.longitude,
-  }));
+  const deterrentAssets: AssetListItem[] = [];
 
   const robotAssets: AssetListItem[] = robotRegistry.map((robot) => {
     const telemetry = robotTelemetries.find((candidate) => candidate.robot_id === robot.robot_id);
@@ -824,7 +702,7 @@ export default function Dashboard() {
   const selectedSearchResult = liveSearch?.results[0] ?? null;
   const liveGeofences = mappingGeofencesQuery.data;
   const cityMapPayload = cityMapPayloadQuery.data ?? null;
-  const dynamicZoneCount = (liveGeofences?.overlays.length ?? overlayCounts.geofences.length) || zoneOverlays.length;
+  const dynamicZoneCount = liveGeofences?.overlays.length ?? overlayCounts.geofences.length;
   const mapGeoJsonLayers = [
     { id: "geofences", data: liveGeofences?.geojson ?? null, color: "#57c7d4" },
     { id: "search-radius", data: liveSearch?.radius ?? null, color: "#f1c96b" },
@@ -1182,7 +1060,7 @@ export default function Dashboard() {
                 <CommandCenterMap
                   assets={mapAssets}
                   threatAlerts={threatAlerts}
-                  zones={liveGeofences ? [] : zoneOverlays}
+                  zones={[]}
                   selectedAssetId={selectedAsset?.id ?? focusedDroneId}
                   drawPoints={drawPoints}
                   mode={mapMode}
@@ -1192,6 +1070,11 @@ export default function Dashboard() {
                   onMapClick={handleMapClick}
                   onSelectAsset={(kind, id) => selectAsset(kind, id)}
                 />
+                {mapAssets.length === 0 && (
+                  <div className="command-map-empty" role="status" aria-live="polite">
+                    No live city assets available yet. Start drone, robot, camera, and sensor services to populate CityView.
+                  </div>
+                )}
               </div>
             </main>
 
@@ -1218,12 +1101,18 @@ export default function Dashboard() {
               <section className="command-context-card">
                 <h4>Patrol routes</h4>
                 <div className="command-history-list">
-                  {(robotRoutes.length > 0 ? robotRoutes : demoRobotFleet.routes).slice(0, 4).map((robot, index) => (
+                  {robotRoutes.slice(0, 4).map((robot, index) => (
                     <div key={robot.route_id} className="command-history-row">
                       <span>Route {index + 1}</span>
                       <strong>{robot.name}</strong>
                     </div>
                   ))}
+                  {robotRoutes.length === 0 && (
+                    <div className="command-history-row">
+                      <span>Route</span>
+                      <strong>No routes available</strong>
+                    </div>
+                  )}
                 </div>
               </section>
 
@@ -1239,7 +1128,7 @@ export default function Dashboard() {
               <section className="command-context-card">
                 <h4>Folium map preview</h4>
                 <div className="command-map-summary">
-                  <strong>{cityMapPayload ? "Live geographic render" : "Fallback map render"}</strong>
+                  <strong>{cityMapPayload ? "Live geographic render" : "Map render unavailable"}</strong>
                   <span>The preview below is served from the mapping service HTML output.</span>
                 </div>
                 <iframe
