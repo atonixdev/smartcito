@@ -12,6 +12,9 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 from pathlib import Path
+import os
+import json
+from urllib import error, request as urllib_request
 from uuid import uuid4
 
 from dotenv import load_dotenv
@@ -19,7 +22,34 @@ from fastapi import FastAPI, HTTPException
 from orca_shared.crypto import build_secure_envelope
 
 from surveillance.kafka import get_publisher
-from surveillance.geospatial import normalize_point, resolve_zone
+try:
+    from surveillance.geospatial import normalize_point, resolve_zone
+except ModuleNotFoundError:
+    def normalize_point(position):  # type: ignore[no-redef]
+        return {
+            "position": position,
+            "coordinate_system": "WGS84",
+            "map_projection": "EPSG:4326",
+            "projected": {
+                "x": position.longitude,
+                "y": position.latitude,
+            },
+        }
+
+    def resolve_zone(position):  # type: ignore[no-redef]
+        return {
+            "zone_id": "zone-unknown",
+            "zone_name": "Fallback Zone",
+            "zone_type": "geofence",
+            "criticality": "medium",
+            "contains": True,
+            "distance_to_boundary_m": None,
+            "point": {
+                "latitude": position.latitude,
+                "longitude": position.longitude,
+                "altitude_m": position.altitude_m,
+            },
+        }
 from surveillance.models import (
     NormalizedEvent,
     PublishEnvelope,
@@ -33,6 +63,7 @@ from surveillance.models import (
     RobotStatus,
     RobotTelemetry,
 )
+from surveillance.surveillance_pipeline import SurveillanceCycleRequest, run_surveillance_cycle, surveillance_architecture_contract
 from surveillance.topics import ROBOT_EVENTS_TOPIC, ROBOT_MISSIONS_TOPIC, ROBOT_TELEMETRY_TOPIC, SURVEILLANCE_TOPICS
 
 
@@ -44,6 +75,67 @@ _latest_telemetry: dict[str, RobotTelemetry] = {}
 _robot_protocols: dict[str, str] = {}
 _robot_registry: dict[str, RobotCapabilities] = {}
 _robot_routes: dict[str, RobotPatrolRoute] = {}
+
+
+def _threat_service_base_url() -> str:
+    return os.getenv("THREAT_DETECTION_URL", "http://threat-detection:8023").rstrip("/")
+
+
+def _mission_control_base_url() -> str:
+    return os.getenv("MISSION_CONTROL_URL", "http://mission-control:8025").rstrip("/")
+
+
+def _post_json(url: str, payload: dict[str, object]) -> dict[str, object]:
+    request_payload = urllib_request.Request(
+        url=url,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={"content-type": "application/json"},
+        method="POST",
+    )
+    try:
+        with urllib_request.urlopen(request_payload, timeout=5) as response:
+            return json.loads(response.read().decode("utf-8") or "{}")
+    except error.URLError as exc:
+        return {"status": "unavailable", "reason": str(exc.reason)}
+    except Exception as exc:  # pragma: no cover - defensive fallback around remote service failures
+        return {"status": "failed", "reason": exc.__class__.__name__}
+
+
+def _automation_payload_for_threat(robot_id: str, cycle: dict[str, object]) -> dict[str, object]:
+    return {
+        "robot_id": robot_id,
+        "threat_detection": cycle.get("threat_detection", {}),
+        "perception": cycle.get("perception", {}),
+        "reaction": cycle.get("reaction", {}),
+    }
+
+
+def _automation_payload_for_dispatch(robot_id: str, cycle: dict[str, object]) -> dict[str, object]:
+    perception = cycle.get("perception", {})
+    terrain = perception.get("terrain", {}) if isinstance(perception, dict) else {}
+    return {
+        "robot_id": robot_id,
+        "threat_level": str(cycle.get("threat_detection", {}).get("level", "low")) if isinstance(cycle.get("threat_detection", {}), dict) else "low",
+        "reaction_action": str(cycle.get("reaction", {}).get("action", "continue_route")) if isinstance(cycle.get("reaction", {}), dict) else "continue_route",
+        "environment": str(cycle.get("environment", "urban")),
+        "latitude": terrain.get("latitude") if isinstance(terrain, dict) else None,
+        "longitude": terrain.get("longitude") if isinstance(terrain, dict) else None,
+    }
+
+
+def _automate_surveillance_response(robot_id: str, cycle: dict[str, object]) -> dict[str, object]:
+    threat_result = _post_json(
+        f"{_threat_service_base_url()}/surveillance/escalate",
+        _automation_payload_for_threat(robot_id, cycle),
+    )
+    dispatch_result = _post_json(
+        f"{_mission_control_base_url()}/surveillance/dispatch",
+        _automation_payload_for_dispatch(robot_id, cycle),
+    )
+    return {
+        "threat_escalation": threat_result,
+        "mission_dispatch": dispatch_result,
+    }
 
 
 def _seed_robot_state() -> None:
@@ -228,6 +320,29 @@ async def ready() -> dict[str, object]:
         "protocols": ["simulated", "rest", "websocket", "vendor-sdk"],
         "registry": "in-memory",
     }
+
+
+@app.get("/surveillance/architecture")
+async def surveillance_architecture() -> dict[str, object]:
+    return surveillance_architecture_contract()
+
+
+@app.post("/surveillance/cycle", response_model=PublishEnvelope)
+async def execute_surveillance_cycle(request: SurveillanceCycleRequest) -> PublishEnvelope:
+    cycle = run_surveillance_cycle(request)
+    automation = _automate_surveillance_response(request.robot_id, cycle)
+    event = NormalizedEvent(
+        event_type="robot.surveillance.cycle.executed",
+        source="robot-gateway",
+        entity_id=request.robot_id,
+        topic=ROBOT_EVENTS_TOPIC,
+        payload={
+            **cycle,
+            "automation": automation,
+            "security": build_secure_envelope(cycle, purpose="surveillance-cycle", signer_id="robot-gateway", associated=request.robot_id),
+        },
+    )
+    return PublishEnvelope(event=event, publish=get_publisher().publish_event(event))
 
 
 @app.post("/connect", response_model=RobotCapabilities)

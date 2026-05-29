@@ -88,6 +88,29 @@ That now brings up the main API, web dashboard, drone gateway, mission control,
 mapping, drone camera ingestion, threat detection, observability surfaces, and
 their local proxy routes in one stack.
 
+### Unified Project Workflow
+
+Use the workflow runner to execute preflight checks, focused tests, and stack
+smoke checks from one interface.
+
+```bash
+make workflow-help
+make workflow-preflight
+make workflow-test
+make workflow-local
+make workflow-full
+```
+
+Direct script usage:
+
+```bash
+python3 scripts/project_workflow.py preflight
+python3 scripts/project_workflow.py test
+python3 scripts/project_workflow.py local --smoke-only
+python3 scripts/project_workflow.py full --mode local
+python3 scripts/project_workflow.py docker --compose-file docker-compose.services.yml --build
+```
+
 ### Local Orca API Development
 
 ```bash
@@ -109,6 +132,11 @@ Detailed walkthroughs live in [`docs/`](docs/).
 
 Repository ownership and folder responsibilities are defined in
 [`docs/REPOSITORY_STRUCTURE.md`](docs/REPOSITORY_STRUCTURE.md).
+
+Quick placement guide for contributors is in
+[`docs/WORKSPACE_ORGANIZATION.md`](docs/WORKSPACE_ORGANIZATION.md).
+
+Run `make repo-check` to validate repository structure guardrails.
 
 For a single wiki-style project entry point, start with [`docs/WIKI.md`](docs/WIKI.md).
 
@@ -147,6 +175,15 @@ vendor-agnostic adapters.
 See [surveillance/README.md](surveillance/README.md) for service APIs,
 Kafka topics, Kubernetes deployment, Docker Compose usage, and validation steps.
 
+## Robot Stack
+
+The robot stack now lives in [robot/](robot/). It provides the modular
+building blocks for ground-robot motion, traction, sensor fusion, perception,
+navigation, cloud contracts, and ROS2 integration.
+
+Start with [robot/README.md](robot/README.md) for the layout and validation
+entry points.
+
 ---
 
 ## Repository Layout
@@ -154,6 +191,8 @@ Kafka topics, Kubernetes deployment, Docker Compose usage, and validation steps.
 | Folder | Purpose |
 | ------ | ------- |
 | `ai/` | Consolidated home for AI inference, training, datasets, notebooks, runtime code, and model artifacts |
+| `gpuops/` | JAX-first intelligence engine modules for physics, robotics, mapping, distance, camera, solvers, and optimization |
+| `robot/` | Robot autonomy stack for physics, perception, navigation, cloud integration, and ROS2 workspace contracts |
 | `orcaapi/` | Primary FastAPI application, schemas, services, and migrations |
 | `ingestion/` | External data ingestion pipelines and connectors |
 | `services/` | Deployable microservice workspace for separately scoped services |
@@ -189,6 +228,8 @@ The repository also now includes a Orca runtime pipeline for ingestion, versione
 - Public Kaggle demo notebook: [ai/examples/Orca_Training_Demo.ipynb](ai/examples/Orca_Training_Demo.ipynb)
 - Public Kaggle inference notebook: [ai/examples/orca_inference_demo.ipynb](ai/examples/orca_inference_demo.ipynb)
 - AI runtime package: [ai/orca_runtime](ai/orca_runtime)
+- ORCA JAX intelligence engine: [gpuops/README.md](gpuops/README.md)
+- ORCA developer directive: [gpuops/DEVELOPER_DIRECTIVE.md](gpuops/DEVELOPER_DIRECTIVE.md)
 - Model documentation: [docs/MODEL_CARD.md](docs/MODEL_CARD.md)
 - Operational flow: [docs/OPERATIONAL_FLOW.md](docs/OPERATIONAL_FLOW.md)
 - Kaggle workflow: [docs/KAGGLE_USAGE.md](docs/KAGGLE_USAGE.md)

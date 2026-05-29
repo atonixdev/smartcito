@@ -4,6 +4,12 @@ The Orca drone and surveillance layer connects mobile drones, fixed sensors, cam
 
 Drones and sensors are not baked into the Orca OS image. They run as services on Kubernetes or Docker Compose and publish normalized real-time events into the platform backbone.
 
+## Surveillance Architecture (Sees, Thinks, Reacts)
+
+For the complete SmartCito surveillance architecture reference, including perception, intelligence, autonomy, sensor fusion, threat classification, tracking/interception, cloud integration, security, and end-to-end workflow, see:
+
+- `docs/SURVEILLANCE_SYSTEM.md`
+
 ## Container Image
 
 - Build file: `surveillance/Dockerfile`

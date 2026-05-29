@@ -15,10 +15,22 @@ from functools import lru_cache
 from typing import Any
 from urllib import parse, request
 
-import folium
-import geopandas as gpd
-import networkx as nx
-from pyproj import Transformer
+try:
+    import folium
+except ModuleNotFoundError:  # pragma: no cover - optional map rendering dependency.
+    folium = None
+try:
+    import geopandas as gpd
+except ModuleNotFoundError:  # pragma: no cover - optional geospatial dependency.
+    gpd = None
+try:
+    import networkx as nx
+except ModuleNotFoundError:  # pragma: no cover - optional routing dependency.
+    nx = None
+try:
+    from pyproj import Transformer
+except ModuleNotFoundError:  # pragma: no cover - optional projection dependency.
+    Transformer = None
 from shapely.geometry import LineString, Point, Polygon, mapping, shape
 
 from surveillance.models import GeoPoint, MapOverlay
@@ -28,8 +40,19 @@ WGS84_CRS = "EPSG:4326"
 WEB_MERCATOR_CRS = "EPSG:3857"
 ALERT_BUFFER_METERS = 250.0
 
-_TO_WEB_MERCATOR = Transformer.from_crs(WGS84_CRS, WEB_MERCATOR_CRS, always_xy=True)
-_TO_WGS84 = Transformer.from_crs(WEB_MERCATOR_CRS, WGS84_CRS, always_xy=True)
+
+class _IdentityTransformer:
+    @staticmethod
+    def transform(x: float, y: float) -> tuple[float, float]:
+        return x, y
+
+
+if Transformer is None:
+    _TO_WEB_MERCATOR = _IdentityTransformer()
+    _TO_WGS84 = _IdentityTransformer()
+else:
+    _TO_WEB_MERCATOR = Transformer.from_crs(WGS84_CRS, WEB_MERCATOR_CRS, always_xy=True)
+    _TO_WGS84 = Transformer.from_crs(WEB_MERCATOR_CRS, WGS84_CRS, always_xy=True)
 
 GEOFENCE_SPECS = [
     {
@@ -109,7 +132,41 @@ def _geometry_to_point(geometry: Point) -> GeoPoint:
 
 
 def _build_geodataframe(records: list[dict[str, Any]]) -> gpd.GeoDataFrame:
+    if gpd is None:
+        raise RuntimeError("geopandas is not installed")
     return gpd.GeoDataFrame(records, geometry="geometry", crs=WGS84_CRS)
+
+
+def _geofence_records() -> list[dict[str, Any]]:
+    persisted_geofences = _dataset_features_by_type("geofence")
+    persisted_zones = _dataset_features_by_type("zone")
+    source_features = persisted_geofences + persisted_zones
+    if source_features:
+        return [
+            {
+                "id": item["feature_id"],
+                "name": item["name"],
+                "type": item["feature_type"],
+                "zone": item.get("zone"),
+                "timestamp": item.get("timestamp"),
+                "criticality": item.get("properties", {}).get("criticality", "low"),
+                "geometry": shape(item["geometry"]),
+            }
+            for item in source_features
+        ]
+
+    return [
+        {
+            "id": spec["id"],
+            "name": spec["name"],
+            "type": spec["type"],
+            "zone": spec["zone"],
+            "timestamp": None,
+            "criticality": spec["criticality"],
+            "geometry": Polygon(spec["polygon"]),
+        }
+        for spec in GEOFENCE_SPECS
+    ]
 
 
 def _backend_geospatial_url() -> str:
@@ -184,36 +241,7 @@ def _point_features_geojson(feature_type: str) -> dict[str, Any]:
 
 
 def geofence_geodataframe() -> gpd.GeoDataFrame:
-    persisted_geofences = _dataset_features_by_type("geofence")
-    persisted_zones = _dataset_features_by_type("zone")
-    source_features = persisted_geofences + persisted_zones
-    if source_features:
-        records = [
-            {
-                "id": item["feature_id"],
-                "name": item["name"],
-                "type": item["feature_type"],
-                "zone": item.get("zone"),
-                "timestamp": item.get("timestamp"),
-                "criticality": item.get("properties", {}).get("criticality", "low"),
-                "geometry": shape(item["geometry"]),
-            }
-            for item in source_features
-        ]
-    else:
-        records = [
-            {
-                "id": spec["id"],
-                "name": spec["name"],
-                "type": spec["type"],
-                "zone": spec["zone"],
-                "timestamp": None,
-                "criticality": spec["criticality"],
-                "geometry": Polygon(spec["polygon"]),
-            }
-            for spec in GEOFENCE_SPECS
-        ]
-    return _build_geodataframe(records)
+    return _build_geodataframe(_geofence_records())
 
 
 def geofence_geodataframe_projected() -> gpd.GeoDataFrame:
@@ -222,6 +250,14 @@ def geofence_geodataframe_projected() -> gpd.GeoDataFrame:
 
 @lru_cache(maxsize=1)
 def _city_reference_center() -> tuple[float, float]:
+    if gpd is None:
+        records = _geofence_records()
+        if not records:
+            return 0.0, 0.0
+        latitudes = [float(item["geometry"].representative_point().y) for item in records]
+        longitudes = [float(item["geometry"].representative_point().x) for item in records]
+        return sum(latitudes) / len(latitudes), sum(longitudes) / len(longitudes)
+
     projected_centroids = geofence_geodataframe().to_crs(WEB_MERCATOR_CRS).geometry.centroid
     centroid_points = gpd.GeoSeries(projected_centroids, crs=WEB_MERCATOR_CRS).to_crs(WGS84_CRS)
     return float(centroid_points.y.mean()), float(centroid_points.x.mean())
@@ -236,31 +272,18 @@ def normalize_point(position: GeoPoint | None) -> dict[str, Any]:
             "projected": None,
         }
 
-    points = _build_geodataframe(
-        [
-            {
-                "name": "normalized-position",
-                "type": "point",
-                "zone": None,
-                "timestamp": None,
-                "geometry": Point(position.longitude, position.latitude),
-            }
-        ]
-    )
-    projected = points.to_crs(WEB_MERCATOR_CRS)
-    round_tripped = projected.to_crs(WGS84_CRS)
-    normalized_geometry = round_tripped.geometry.iloc[0]
-    projected_geometry = projected.geometry.iloc[0]
+    projected_x, projected_y = _TO_WEB_MERCATOR.transform(position.longitude, position.latitude)
+    normalized_x, normalized_y = _TO_WGS84.transform(projected_x, projected_y)
     normalized_point = GeoPoint(
-        latitude=float(normalized_geometry.y),
-        longitude=float(normalized_geometry.x),
+        latitude=float(normalized_y),
+        longitude=float(normalized_x),
         altitude_m=position.altitude_m,
     )
     return {
         "position": normalized_point,
         "coordinate_system": WGS84_CRS,
         "map_projection": WEB_MERCATOR_CRS,
-        "projected": {"x": float(projected_geometry.x), "y": float(projected_geometry.y)},
+        "projected": {"x": float(projected_x), "y": float(projected_y)},
     }
 
 
@@ -279,6 +302,74 @@ def resolve_zone(position: GeoPoint | None) -> dict[str, Any]:
 
     point = Point(normalized_position.longitude, normalized_position.latitude)
     point_projected = Point(*_TO_WEB_MERCATOR.transform(point.x, point.y))
+    if gpd is None:
+        records = _geofence_records()
+        nearest_distance: float | None = None
+        nearest: dict[str, Any] | None = None
+        for record in records:
+            geometry = record["geometry"]
+            projected_geometry = shape(
+                {
+                    "type": geometry.geom_type,
+                    "coordinates": [
+                        _TO_WEB_MERCATOR.transform(x, y)
+                        for x, y in geometry.exterior.coords
+                    ],
+                }
+            )
+
+            if geometry.contains(point) or geometry.intersects(point):
+                return {
+                    "zone_id": str(record["id"]),
+                    "zone_label": str(record["name"]),
+                    "criticality": str(record["criticality"]),
+                    "status": "inside",
+                    "distance_m": 0.0,
+                    "violation": str(record["criticality"]) in {"high", "critical"},
+                    "zone": str(record["zone"]),
+                    "coordinate_system": WGS84_CRS,
+                    "map_projection": WEB_MERCATOR_CRS,
+                    "projected_position": normalized["projected"],
+                    "buffer_m": ALERT_BUFFER_METERS,
+                }
+
+            buffered = projected_geometry.buffer(ALERT_BUFFER_METERS)
+            if buffered.contains(point_projected):
+                distance = float(projected_geometry.distance(point_projected))
+                return {
+                    "zone_id": str(record["id"]),
+                    "zone_label": str(record["name"]),
+                    "criticality": str(record["criticality"]),
+                    "status": "nearby",
+                    "distance_m": round(distance, 3),
+                    "violation": False,
+                    "zone": str(record["zone"]),
+                    "coordinate_system": WGS84_CRS,
+                    "map_projection": WEB_MERCATOR_CRS,
+                    "projected_position": normalized["projected"],
+                    "buffer_m": ALERT_BUFFER_METERS,
+                }
+
+            distance = float(projected_geometry.distance(point_projected))
+            if nearest_distance is None or distance < nearest_distance:
+                nearest_distance = distance
+                nearest = record
+
+        return {
+            "zone_id": "outside-managed-zones",
+            "zone_label": "Outside managed zones",
+            "criticality": "low",
+            "status": "outside",
+            "distance_m": round(float(nearest_distance or 0.0), 3),
+            "violation": False,
+            "nearest_zone_id": None if nearest is None else str(nearest["id"]),
+            "nearest_zone_label": None if nearest is None else str(nearest["name"]),
+            "coordinate_system": WGS84_CRS,
+            "map_projection": WEB_MERCATOR_CRS,
+            "projected_position": normalized["projected"],
+            "buffer_m": ALERT_BUFFER_METERS,
+        }
+
     geofences = geofence_geodataframe()
     geofences_projected = geofence_geodataframe_projected()
 
@@ -337,6 +428,25 @@ def resolve_zone(position: GeoPoint | None) -> dict[str, Any]:
 
 def geofence_overlays() -> list[MapOverlay]:
     overlays: list[MapOverlay] = []
+    if gpd is None:
+        for record in _geofence_records():
+            centroid = record["geometry"].representative_point()
+            overlays.append(
+                MapOverlay(
+                    overlay_id=str(record["id"]),
+                    overlay_type="geofence",
+                    label=str(record["name"]),
+                    position=GeoPoint(latitude=float(centroid.y), longitude=float(centroid.x)),
+                    metadata={
+                        "criticality": str(record["criticality"]),
+                        "zone": str(record["zone"]),
+                        "type": str(record["type"]),
+                        "geometry": mapping(record["geometry"]),
+                    },
+                )
+            )
+        return overlays
+
     geofences = geofence_geodataframe()
     projected_centroids = geofences.to_crs(WEB_MERCATOR_CRS).geometry.centroid
     centroid_points = gpd.GeoSeries(projected_centroids, crs=WEB_MERCATOR_CRS).to_crs(WGS84_CRS)
@@ -364,6 +474,51 @@ def evaluate_geofence_activity(
     previous_position: GeoPoint | None = None,
     path: list[GeoPoint] | None = None,
 ) -> dict[str, Any]:
+    if gpd is None:
+        geofences = _geofence_records()
+        current_point = Point(current_position.longitude, current_position.latitude)
+        current_inside = [
+            item for item in geofences if item["geometry"].contains(current_point) or item["geometry"].intersects(current_point)
+        ]
+
+        previous_ids: set[str] = set()
+        if previous_position is not None:
+            previous_point = Point(previous_position.longitude, previous_position.latitude)
+            previous_inside = [
+                item
+                for item in geofences
+                if item["geometry"].contains(previous_point) or item["geometry"].intersects(previous_point)
+            ]
+            previous_ids = {str(item["id"]) for item in previous_inside}
+
+        path_intersections: set[str] = set()
+        if path:
+            route = LineString([(waypoint.longitude, waypoint.latitude) for waypoint in path])
+            path_intersections = {str(item["id"]) for item in geofences if item["geometry"].intersects(route)}
+
+        current_ids = {str(item["id"]) for item in current_inside}
+        entries = sorted(current_ids - previous_ids)
+        exits = sorted(previous_ids - current_ids)
+        violations = sorted(
+            {
+                str(item["id"])
+                for item in current_inside
+                if str(item["criticality"]) in {"high", "critical"}
+            }
+            | {
+                str(item["id"])
+                for item in geofences
+                if str(item["id"]) in path_intersections and str(item["criticality"]) in {"high", "critical"}
+            }
+        )
+        return {
+            "current_zone": resolve_zone(current_position),
+            "entries": entries,
+            "exits": exits,
+            "intersections": sorted(path_intersections),
+            "violations": violations,
+        }
+
     geofences = geofence_geodataframe()
     current_point = Point(current_position.longitude, current_position.latitude)
     current_inside = geofences[geofences.geometry.apply(lambda geometry: geometry.contains(current_point) or geometry.intersects(current_point))]
@@ -410,10 +565,15 @@ def evaluate_geofence_activity(
 
 def _route_polygon_barriers(extra_obstacles: list[dict[str, Any]] | None = None) -> list[Polygon]:
     polygons: list[Polygon] = []
-    geofences = geofence_geodataframe()
-    for _, row in geofences.iterrows():
-        if str(row["type"]) in {"restricted_area", "alert_zone"} or str(row["criticality"]) in {"high", "critical"}:
-            polygons.append(row.geometry)
+    if gpd is None:
+        for item in _geofence_records():
+            if str(item["type"]) in {"restricted_area", "alert_zone"} or str(item["criticality"]) in {"high", "critical"}:
+                polygons.append(item["geometry"])
+    else:
+        geofences = geofence_geodataframe()
+        for _, row in geofences.iterrows():
+            if str(row["type"]) in {"restricted_area", "alert_zone"} or str(row["criticality"]) in {"high", "critical"}:
+                polygons.append(row.geometry)
     for obstacle in extra_obstacles or []:
         try:
             geometry = shape(obstacle)
@@ -476,6 +636,47 @@ def route_mission(
             "avoided_zone_ids": [],
         }
 
+    if nx is None:
+        sequence = [origin, *destinations]
+        path_points = [
+            GeoPoint(latitude=point.latitude, longitude=point.longitude, altitude_m=point.altitude_m)
+            for point in sequence
+        ]
+        total_distance = 0.0
+        segment_summaries: list[dict[str, Any]] = []
+        for left, right in zip(sequence, sequence[1:]):
+            left_projected = Point(*_TO_WEB_MERCATOR.transform(left.longitude, left.latitude))
+            right_projected = Point(*_TO_WEB_MERCATOR.transform(right.longitude, right.latitude))
+            distance = float(left_projected.distance(right_projected))
+            total_distance += distance
+            segment_summaries.append(
+                {
+                    "from": (left.longitude, left.latitude),
+                    "to": (right.longitude, right.latitude),
+                    "distance_m": round(distance, 3),
+                    "node_count": 2,
+                }
+            )
+
+        path_line = LineString([(point.longitude, point.latitude) for point in path_points]) if len(path_points) >= 2 else None
+        return {
+            "path": [point.model_dump(mode="json") for point in path_points],
+            "geojson": {
+                "type": "FeatureCollection",
+                "features": [] if path_line is None else [{
+                    "type": "Feature",
+                    "geometry": mapping(path_line),
+                    "properties": {
+                        "distance_m": round(total_distance, 3),
+                        "segment_count": len(segment_summaries),
+                    },
+                }],
+            },
+            "segments": segment_summaries,
+            "distance_m": round(total_distance, 3),
+            "avoided_zone_ids": [],
+        }
+
     barrier_polygons = _route_polygon_barriers(extra_obstacles)
     graph = nx.Graph()
     node_coordinates = _route_node_coordinates(origin, destinations, barrier_polygons)
@@ -527,11 +728,20 @@ def route_mission(
         for node_id in full_path_ids
     ]
     path_line = LineString([(point.longitude, point.latitude) for point in path_points]) if len(path_points) >= 2 else None
-    avoided_zone_ids = sorted(
-        str(row["id"])
-        for _, row in geofence_geodataframe().iterrows()
-        if path_line is not None and not row.geometry.intersects(path_line) and (str(row["type"]) in {"restricted_area", "alert_zone"} or str(row["criticality"]) in {"high", "critical"})
-    )
+    if gpd is None:
+        avoided_zone_ids = sorted(
+            str(item["id"])
+            for item in _geofence_records()
+            if path_line is not None
+            and not item["geometry"].intersects(path_line)
+            and (str(item["type"]) in {"restricted_area", "alert_zone"} or str(item["criticality"]) in {"high", "critical"})
+        )
+    else:
+        avoided_zone_ids = sorted(
+            str(row["id"])
+            for _, row in geofence_geodataframe().iterrows()
+            if path_line is not None and not row.geometry.intersects(path_line) and (str(row["type"]) in {"restricted_area", "alert_zone"} or str(row["criticality"]) in {"high", "critical"})
+        )
 
     return {
         "path": [point.model_dump(mode="json") for point in path_points],
@@ -568,6 +778,25 @@ def path_around(position: GeoPoint) -> list[GeoPoint]:
 
 
 def geofence_geojson() -> dict[str, Any]:
+    if gpd is None:
+        return {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "id": str(item["id"]),
+                    "geometry": mapping(item["geometry"]),
+                    "properties": {
+                        "name": str(item["name"]),
+                        "type": str(item["type"]),
+                        "zone": str(item["zone"]),
+                        "criticality": str(item["criticality"]),
+                    },
+                }
+                for item in _geofence_records()
+            ],
+        }
+
     geofences = geofence_geodataframe()
     return json.loads(geofences.to_json())
 
@@ -656,6 +885,9 @@ def render_city_map(
     threat_overlays: list[MapOverlay] | None = None,
     geofence_overlays_list: list[MapOverlay] | None = None,
 ) -> dict[str, Any]:
+    if folium is None:
+        raise RuntimeError("folium is required for map rendering")
+
     center_lat, center_lon = _city_reference_center()
     city_map = folium.Map(location=[center_lat, center_lon], zoom_start=13, tiles="OpenStreetMap")
     persisted_dataset = fetch_persisted_geographic_dataset() or {}

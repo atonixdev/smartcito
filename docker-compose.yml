@@ -41,15 +41,10 @@ services:
     restart: unless-stopped
 
   orcaapi:
-<<<<<<< HEAD
     build:
       context: ./orcaapi
       image: atonixdev/api-gateway:1.0.0
     container_name: orca-orcaapi
-=======
-    image: atonixdev/api-gateway:1.0.0
-    container_name: smartcito-orcaapi
->>>>>>> 8333b84b1a6f4e32e279b0ae23fa79f344a520e1
     env_file: .env
     environment:
       PYTHONPATH: /app
@@ -80,15 +75,10 @@ services:
     restart: unless-stopped
 
   webapp:
-<<<<<<< HEAD
     build:
       context: ./webapp
       image: atonixdev/webapp:1.0.0
     container_name: orca-webapp
-=======
-    image: atonixdev/webapp:1.0.0
-    container_name: smartcito-webapp
->>>>>>> 8333b84b1a6f4e32e279b0ae23fa79f344a520e1
     env_file: .env
     ports:
       - "5173:80"
@@ -108,16 +98,11 @@ services:
     restart: unless-stopped
 
   drone-gateway:
-<<<<<<< HEAD
     build:
       context: .
       dockerfile: surveillance/Dockerfile
       image: atonixdev/drone-gateway:1.0.0
     container_name: orca-drone-gateway
-=======
-    image: atonixdev/drone-gateway:1.0.0
-    container_name: smartcito-drone-gateway
->>>>>>> 8333b84b1a6f4e32e279b0ae23fa79f344a520e1
     env_file: .env
     environment:
       PYTHONPATH: /app
@@ -134,16 +119,11 @@ services:
     restart: unless-stopped
 
   sensor-gateway:
-<<<<<<< HEAD
     build:
       context: .
       dockerfile: surveillance/Dockerfile
       image: atonixdev/sensor-gateway:1.0.0
     container_name: orca-sensor-gateway
-=======
-    image: atonixdev/sensor-gateway:1.0.0
-    container_name: smartcito-sensor-gateway
->>>>>>> 8333b84b1a6f4e32e279b0ae23fa79f344a520e1
     env_file: .env
     environment:
       PYTHONPATH: /app
@@ -158,16 +138,11 @@ services:
     restart: unless-stopped
 
   drone-camera-ingestion:
-<<<<<<< HEAD
     build:
       context: .
       dockerfile: surveillance/Dockerfile
       image: atonixdev/drone-camera-ingestion:1.0.0
     container_name: orca-drone-camera-ingestion
-=======
-    image: atonixdev/drone-camera-ingestion:1.0.0
-    container_name: smartcito-drone-camera-ingestion
->>>>>>> 8333b84b1a6f4e32e279b0ae23fa79f344a520e1
     env_file: .env
     environment:
       PYTHONPATH: /app
@@ -182,16 +157,11 @@ services:
     restart: unless-stopped
 
   threat-detection:
-<<<<<<< HEAD
     build:
       context: .
       dockerfile: surveillance/Dockerfile
       image: atonixdev/threat-detection:1.0.0
     container_name: orca-threat-detection
-=======
-    image: atonixdev/threat-detection:1.0.0
-    container_name: smartcito-threat-detection
->>>>>>> 8333b84b1a6f4e32e279b0ae23fa79f344a520e1
     env_file: .env
     environment:
       PYTHONPATH: /app
@@ -206,16 +176,11 @@ services:
     restart: unless-stopped
 
   mapping-geospatial:
-<<<<<<< HEAD
     build:
       context: .
       dockerfile: surveillance/Dockerfile
       image: atonixdev/mapping-geospatial:1.0.0
     container_name: orca-mapping-geospatial
-=======
-    image: atonixdev/mapping-geospatial:1.0.0
-    container_name: smartcito-mapping-geospatial
->>>>>>> 8333b84b1a6f4e32e279b0ae23fa79f344a520e1
     env_file: .env
     environment:
       PYTHONPATH: /app
@@ -230,16 +195,11 @@ services:
     restart: unless-stopped
 
   mission-control:
-<<<<<<< HEAD
     build:
       context: .
       dockerfile: surveillance/Dockerfile
       image: atonixdev/mission-control:1.0.0
     container_name: orca-mission-control
-=======
-    image: atonixdev/mission-control:1.0.0
-    container_name: smartcito-mission-control
->>>>>>> 8333b84b1a6f4e32e279b0ae23fa79f344a520e1
     env_file: .env
     environment:
       PYTHONPATH: /app
@@ -257,64 +217,44 @@ services:
     restart: unless-stopped
 
   camera-service:
-<<<<<<< HEAD
     build:
       context: .
       dockerfile: camera_module/Dockerfile
       image: atonixdev/camera-service:1.0.0
     container_name: orca-camera-service
-=======
-    image: atonixdev/camera-service:1.0.0
-    container_name: smartcito-camera-service
->>>>>>> 8333b84b1a6f4e32e279b0ae23fa79f344a520e1
     env_file: .env
     ports:
       - "8010:8010"
     restart: unless-stopped
 
   gps-service:
-<<<<<<< HEAD
     build:
       context: .
       dockerfile: gps_module/Dockerfile
       image: atonixdev/gps-service:1.0.0
     container_name: orca-gps-service
-=======
-    image: atonixdev/gps-service:1.0.0
-    container_name: smartcito-gps-service
->>>>>>> 8333b84b1a6f4e32e279b0ae23fa79f344a520e1
     env_file: .env
     ports:
       - "8011:8011"
     restart: unless-stopped
 
   ai-service:
-<<<<<<< HEAD
     build:
       context: .
       dockerfile: ai/ai_models/Dockerfile
       image: atonixdev/ai-service:1.0.0
     container_name: orca-ai-service
-=======
-    image: atonixdev/ai-service:1.0.0
-    container_name: smartcito-ai-service
->>>>>>> 8333b84b1a6f4e32e279b0ae23fa79f344a520e1
     env_file: .env
     ports:
       - "8012:8012"
     restart: unless-stopped
 
   security-service:
-<<<<<<< HEAD
     build:
       context: .
       dockerfile: security/Dockerfile
       image: atonixdev/security-service:1.0.0
     container_name: orca-security-service
-=======
-    image: atonixdev/security-service:1.0.0
-    container_name: smartcito-security-service
->>>>>>> 8333b84b1a6f4e32e279b0ae23fa79f344a520e1
     env_file: .env
     ports:
       - "8013:8013"
@@ -323,16 +263,11 @@ services:
     restart: unless-stopped
 
   hardware-agent:
-<<<<<<< HEAD
     build:
       context: .
       dockerfile: hardware/Dockerfile
       image: atonixdev/hardware-agent:1.0.0
     container_name: orca-hardware-agent
-=======
-    image: atonixdev/hardware-agent:1.0.0
-    container_name: smartcito-hardware-agent
->>>>>>> 8333b84b1a6f4e32e279b0ae23fa79f344a520e1
     env_file: .env
     ports:
       - "8014:8014"
@@ -364,13 +299,8 @@ services:
 
   kafka:
     # Single-node KRaft (no ZooKeeper) — fine for local dev only.
-<<<<<<< HEAD
     image: bitnami/kafka:3.7
     container_name: orca-kafka
-=======
-    image: apache/kafka:3.9.0
-    container_name: smartcito-kafka
->>>>>>> 8333b84b1a6f4e32e279b0ae23fa79f344a520e1
     environment:
       CLUSTER_ID: "5L6g3nShT-eMCtK--X86sw"
       KAFKA_NODE_ID: 1
@@ -405,15 +335,7 @@ services:
     container_name: orca-dash
     command: ["python", "-m", "app.dash_app.server"]
     environment:
-<<<<<<< HEAD
       ORCA_API_BASE: "http://api-router:8000/api/v1"
-=======
-      SMARTCITO_API_BASE: "http://api-router:8000/api/v1"
-      PYTHONPATH: /app
-    volumes:
-      - ./smartcito_shared:/app/smartcito_shared:ro
-      - ./hardware:/app/hardware:ro
->>>>>>> 8333b84b1a6f4e32e279b0ae23fa79f344a520e1
     ports:
       - "8050:8050"
     healthcheck:

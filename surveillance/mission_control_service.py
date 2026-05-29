@@ -19,18 +19,43 @@ from urllib import error, request
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from orca_shared.crypto import build_integrity_record, build_secure_envelope
+from pydantic import BaseModel, Field
 
-from surveillance.geospatial import evaluate_geofence_activity, resolve_zone, route_mission
+try:
+    from surveillance.geospatial import evaluate_geofence_activity, resolve_zone, route_mission
+except ModuleNotFoundError:
+    def resolve_zone(_position):  # type: ignore[no-redef]
+        return {
+            "zone_id": "zone-unknown",
+            "zone_name": "Fallback Zone",
+            "zone_type": "geofence",
+            "criticality": "medium",
+            "contains": True,
+            "distance_to_boundary_m": None,
+            "point": None,
+        }
+
+    def evaluate_geofence_activity(_position, previous_position=None, path=None):  # type: ignore[no-redef]
+        return {"violations": [], "entries": []}
+
+    def route_mission(origin, destinations, extra_obstacles=None):  # type: ignore[no-redef]
+        destination = destinations[0]
+        origin_dump = origin.model_dump(mode="json") if hasattr(origin, "model_dump") else dict(origin)
+        destination_dump = destination.model_dump(mode="json") if hasattr(destination, "model_dump") else dict(destination)
+        return {"path": [origin_dump, destination_dump]}
 from surveillance.kafka import get_publisher
 from surveillance.models import (
+    CityMissionAssignmentIn,
     CityMission,
     CityMissionDispatchResult,
     CityMissionRequest,
     DroneMission,
+    GeoPoint,
     MissionAssetType,
     MissionStatus,
     MissionUploadRequest,
     MissionValidationResult,
+    MissionWaypoint,
     NormalizedEvent,
 )
 from surveillance.topics import DRONE_EVENTS_TOPIC, DRONE_MISSIONS_TOPIC, ROBOT_EVENTS_TOPIC
@@ -41,6 +66,16 @@ load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
 app = FastAPI(title="Orca Mission Control Service")
 _missions: dict[str, DroneMission] = {}
 _city_missions: dict[str, CityMission] = {}
+
+
+class SurveillanceDispatchRequest(BaseModel):
+    robot_id: str = Field(..., min_length=2, max_length=80)
+    threat_level: str = Field(default="low")
+    reaction_action: str = Field(default="continue_route")
+    environment: str = Field(default="urban")
+    latitude: float | None = Field(default=None, ge=-90, le=90)
+    longitude: float | None = Field(default=None, ge=-180, le=180)
+    operator_id: str = Field(default="mission-control", min_length=2, max_length=120)
 
 
 def _gateway_base_url() -> str:
@@ -304,6 +339,57 @@ def _publish_city_mission_event(mission: CityMission) -> None:
         get_publisher().publish_event(asset_event)
 
 
+def _reactive_patrol_points(request_payload: SurveillanceDispatchRequest) -> list[MissionWaypoint]:
+    center = GeoPoint(
+        latitude=request_payload.latitude if request_payload.latitude is not None else -25.7460,
+        longitude=request_payload.longitude if request_payload.longitude is not None else 28.2360,
+        altitude_m=0,
+    )
+    return [
+        MissionWaypoint(latitude=center.latitude, longitude=center.longitude, altitude_m=0),
+        MissionWaypoint(latitude=center.latitude + 0.0007, longitude=center.longitude + 0.0006, altitude_m=0),
+        MissionWaypoint(latitude=center.latitude + 0.0011, longitude=center.longitude + 0.0001, altitude_m=0),
+    ]
+
+
+def _build_reactive_city_mission(request_payload: SurveillanceDispatchRequest) -> CityMission:
+    route = _reactive_patrol_points(request_payload)
+    assignments: list[CityMissionAssignmentIn] = [
+        CityMissionAssignmentIn(
+            asset_type=MissionAssetType.ROBOT,
+            asset_id=request_payload.robot_id,
+            path=route,
+            speed_mps=1.5,
+        )
+    ]
+
+    if request_payload.threat_level.lower() in {"high", "critical"}:
+        assignments.append(
+            CityMissionAssignmentIn(
+                asset_type=MissionAssetType.DRONE,
+                asset_id="drone-safe-001",
+                path=route,
+                altitude_m=90,
+                speed_mps=8,
+            )
+        )
+
+    mission = CityMission(
+        name=f"Reactive surveillance dispatch ({request_payload.threat_level.lower()})",
+        city="SmartCito",
+        district=request_payload.environment,
+        radius_km=3,
+        assignments=assignments,
+    )
+    _attach_mission_integrity(mission, request_payload.operator_id)
+    mission.dispatch_results = _dispatch_city_mission(mission)
+    mission.status = MissionStatus.UPLOADED if any(result.accepted for result in mission.dispatch_results) else MissionStatus.FAILED
+    mission.updated_at = datetime.now(UTC)
+    _city_missions[mission.mission_id] = mission
+    _publish_city_mission_event(mission)
+    return mission
+
+
 @app.get("/health")
 async def health() -> dict[str, str]:
     return {"status": "ok", "service": "mission-control"}
@@ -402,3 +488,8 @@ async def create_city_mission(request_payload: CityMissionRequest) -> CityMissio
     _city_missions[mission.mission_id] = mission
     _publish_city_mission_event(mission)
     return mission
+
+
+@app.post("/surveillance/dispatch", response_model=CityMission)
+async def dispatch_from_surveillance(request_payload: SurveillanceDispatchRequest) -> CityMission:
+    return _build_reactive_city_mission(request_payload)

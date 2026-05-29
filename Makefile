@@ -20,7 +20,7 @@ KAGGLE_PRIVATE_FLAG := $(if $(filter 1,$(KAGGLE_PRIVATE)),--private,)
 KAGGLE_UPDATE_FLAG := $(if $(filter 1,$(KAGGLE_UPDATE)),--update,)
 KAGGLE_DRY_RUN_FLAG := $(if $(filter 1,$(KAGGLE_DRY_RUN)),--dry-run,)
 
-.PHONY: ai-help ai-prepare ai-package ai-train-lora ai-train-qlora ai-evaluate ai-report ai-publish-kaggle ai-full openstack-env k8s-backend-secret
+.PHONY: ai-help ai-prepare ai-package ai-train-lora ai-train-qlora ai-evaluate ai-report ai-publish-kaggle ai-full openstack-env k8s-backend-secret repo-check repo-help workflow-help workflow-preflight workflow-test workflow-local workflow-docker workflow-full
 
 ai-help:
 	@printf '%s\n' 'Orca AI workflow targets:'
@@ -56,8 +56,38 @@ ai-publish-kaggle:
 
 ai-full: ai-package ai-prepare ai-evaluate
 
+repo-help:
+	@printf '%s\n' 'Repository organization targets:'
+	@printf '%s\n' '  make repo-check                     Validate required directory structure and guardrails'
+
+repo-check:
+	bash scripts/repo_check.sh
+
 openstack-env:
 	bash infra/openstack/export-openstack-env.sh $(ENV_FILE)
 
 k8s-backend-secret:
 	bash infra/kubernetes/apply-backend-secret.sh $(ENV_FILE)
+
+workflow-help:
+	@printf '%s\n' 'Unified workflow targets:'
+	@printf '%s\n' '  make workflow-preflight             Validate local prerequisites and required files'
+	@printf '%s\n' '  make workflow-test                  Run focused integration tests'
+	@printf '%s\n' '  make workflow-local                 Start local FastAPI stack, smoke check, and stop'
+	@printf '%s\n' '  make workflow-docker                Start docker-compose.services.yml and smoke check'
+	@printf '%s\n' '  make workflow-full                  Preflight + tests + local stack smoke check'
+
+workflow-preflight:
+	$(PYTHON) scripts/project_workflow.py preflight
+
+workflow-test:
+	$(PYTHON) scripts/project_workflow.py test
+
+workflow-local:
+	$(PYTHON) scripts/project_workflow.py local --smoke-only
+
+workflow-docker:
+	$(PYTHON) scripts/project_workflow.py docker --compose-file docker-compose.services.yml
+
+workflow-full:
+	$(PYTHON) scripts/project_workflow.py full --mode local

@@ -132,6 +132,84 @@ def test_robot_gateway_discovers_capabilities_and_accepts_command() -> None:
     assert payload["event"]["event_type"] == "robot.command.set_waypoint"
 
 
+def test_robot_gateway_surveillance_architecture_contract() -> None:
+    client = TestClient(robot_app)
+    response = client.get("/surveillance/architecture")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert "sections" in payload
+    assert len(payload["sections"]) == 10
+    assert payload["sections"][0]["name"] == "system_overview"
+
+
+def test_robot_gateway_executes_surveillance_cycle() -> None:
+    client = TestClient(robot_app)
+    response = client.post(
+        "/surveillance/cycle",
+        json={
+            "robot_id": "robot-cap-001",
+            "environment": "critical-infrastructure",
+            "perception": {
+                "object_labels": ["human", "drone"],
+                "thermal_hotspots": 2,
+                "motion_score": 0.9,
+                "gas_level_ppm": 10.0,
+                "smoke_score": 0.1,
+                "radiation_level": 0.0,
+                "slope_deg": 8.0,
+                "obstacle_distance_m": 1.2,
+            },
+            "sensor_fusion": {
+                "lidar_confidence": 0.95,
+                "camera_confidence": 0.9,
+                "imu_confidence": 0.92,
+                "gps_confidence": 0.88,
+                "thermal_confidence": 0.91,
+                "acoustic_confidence": 0.83,
+                "rf_confidence": 0.84,
+                "environmental_confidence": 0.86,
+            },
+            "tracking": {
+                "target_speed_mps": 7.0,
+                "target_heading_deg": 64.0,
+                "target_distance_m": 30.0,
+                "optical_flow_score": 0.82,
+            },
+            "cloud": {
+                "openstack": True,
+                "kubernetes": True,
+                "live_streaming": True,
+                "mission_control": True,
+                "multi_robot_coordination": True,
+            },
+            "security": {
+                "encrypted_telemetry": True,
+                "secure_boot": True,
+                "identity_verified": True,
+                "tamper_detected": False,
+                "cloud_auth_ok": True,
+            },
+        },
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    event_payload = payload["event"]["payload"]
+    assert event_payload["robot_id"] == "robot-cap-001"
+    assert "perception" in event_payload
+    assert "intelligence" in event_payload
+    assert "autonomy" in event_payload
+    assert "sensor_fusion" in event_payload
+    assert "threat_detection" in event_payload
+    assert "tracking_interception" in event_payload
+    assert "cloud_integration" in event_payload
+    assert "security_encryption" in event_payload
+    assert "workflow" in event_payload
+    assert "reaction" in event_payload
+    assert payload["publish"]["topic"] == "orca.robot.events"
+
+
 def test_sensor_gateway_splits_alert_topics() -> None:
     client = TestClient(sensor_app)
     response = client.post(

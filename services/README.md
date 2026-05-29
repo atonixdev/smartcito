@@ -13,6 +13,8 @@ local compose-based testing. The main backend application lives in
 - `camera-service/`
 - `gps-service/`
 - `ai-service/`
+- `gpuops-service/`
+- `robot-service/`
 - `security-service/`
 
 ## Local Run
