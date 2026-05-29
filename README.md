@@ -88,6 +88,29 @@ That now brings up the main API, web dashboard, drone gateway, mission control,
 mapping, drone camera ingestion, threat detection, observability surfaces, and
 their local proxy routes in one stack.
 
+### Unified Project Workflow
+
+Use the workflow runner to execute preflight checks, focused tests, and stack
+smoke checks from one interface.
+
+```bash
+make workflow-help
+make workflow-preflight
+make workflow-test
+make workflow-local
+make workflow-full
+```
+
+Direct script usage:
+
+```bash
+python3 scripts/project_workflow.py preflight
+python3 scripts/project_workflow.py test
+python3 scripts/project_workflow.py local --smoke-only
+python3 scripts/project_workflow.py full --mode local
+python3 scripts/project_workflow.py docker --compose-file docker-compose.services.yml --build
+```
+
 ### Local Orca API Development
 
 ```bash

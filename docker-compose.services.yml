@@ -24,7 +24,7 @@ services:
   orcaapi-blue:
     build:
       context: ./orcaapi
-      image: ${ORCAAPI_IMAGE:-atonixdev/api-gateway:1.0.0}
+    image: ${ORCAAPI_IMAGE:-atonixdev/api-gateway:1.0.0}
     container_name: orca-orcaapi-blue
     env_file: .env
     depends_on:
@@ -53,7 +53,7 @@ services:
   orcaapi-green:
     build:
       context: ./orcaapi
-      image: ${ORCAAPI_IMAGE:-atonixdev/api-gateway:1.0.0}
+    image: ${ORCAAPI_IMAGE:-atonixdev/api-gateway:1.0.0}
     container_name: orca-orcaapi-green
     env_file: .env
     depends_on:
@@ -122,7 +122,7 @@ services:
     build:
       context: .
       dockerfile: ingestion/Dockerfile
-      image: ${INGESTION_KAFKA_PRODUCER_IMAGE:-atonixdev/ingestion-kafka-producer:1.0.0}
+    image: ${INGESTION_KAFKA_PRODUCER_IMAGE:-atonixdev/ingestion-kafka-producer:1.0.0}
     container_name: orca-ingestion-kafka-producer
     env_file: .env
     command: ["uvicorn", "ingestion.kafka_producer_service:app", "--host", "0.0.0.0", "--port", "8100"]
@@ -145,7 +145,7 @@ services:
     build:
       context: .
       dockerfile: ingestion/Dockerfile.spark
-      image: ${INGESTION_SPARK_IMAGE:-atonixdev/ingestion-spark:1.0.0}
+    image: ${INGESTION_SPARK_IMAGE:-atonixdev/ingestion-spark:1.0.0}
     container_name: orca-ingestion-spark
     env_file: .env
     environment:
@@ -162,7 +162,7 @@ services:
     build:
       context: .
       dockerfile: camera_module/Dockerfile
-      image: ${CAMERA_IMAGE:-atonixdev/camera-service:1.0.0}
+    image: ${CAMERA_IMAGE:-atonixdev/camera-service:1.0.0}
     container_name: orca-camera-service
     env_file: .env
     ports:
@@ -174,7 +174,7 @@ services:
     build:
       context: .
       dockerfile: gps_module/Dockerfile
-      image: ${GPS_IMAGE:-atonixdev/gps-service:1.0.0}
+    image: ${GPS_IMAGE:-atonixdev/gps-service:1.0.0}
     container_name: orca-gps-service
     env_file: .env
     ports:
@@ -186,7 +186,7 @@ services:
     build:
       context: .
       dockerfile: ai/ai_models/Dockerfile
-      image: ${AI_IMAGE:-atonixdev/ai-service:1.0.0}
+    image: ${AI_IMAGE:-atonixdev/ai-service:1.0.0}
     container_name: orca-ai-service
     env_file: .env
     ports:
@@ -202,7 +202,7 @@ services:
     build:
       context: .
       dockerfile: gpuops/Dockerfile
-      image: ${GPUOPS_IMAGE:-atonixdev/gpuops-service:1.0.0}
+    image: ${GPUOPS_IMAGE:-atonixdev/gpuops-service:1.0.0}
     container_name: orca-gpuops-service
     env_file: .env
     ports:
@@ -214,7 +214,7 @@ services:
     build:
       context: .
       dockerfile: robot/Dockerfile
-      image: ${ROBOT_IMAGE:-atonixdev/robot-service:1.0.0}
+    image: ${ROBOT_IMAGE:-atonixdev/robot-service:1.0.0}
     container_name: orca-robot-service
     env_file: .env
     ports:
@@ -229,7 +229,7 @@ services:
     build:
       context: .
       dockerfile: security/Dockerfile
-      image: ${SECURITY_IMAGE:-atonixdev/security-service:1.0.0}
+    image: ${SECURITY_IMAGE:-atonixdev/security-service:1.0.0}
     container_name: orca-security-service
     env_file: .env
     ports:
@@ -243,7 +243,7 @@ services:
     build:
       context: .
       dockerfile: hardware/Dockerfile
-      image: ${HARDWARE_IMAGE:-atonixdev/hardware-agent:1.0.0}
+    image: ${HARDWARE_IMAGE:-atonixdev/hardware-agent:1.0.0}
     container_name: orca-hardware-agent
     env_file: .env
     ports:
@@ -255,7 +255,7 @@ services:
     build:
       context: .
       dockerfile: surveillance/Dockerfile
-      image: ${DRONE_GATEWAY_IMAGE:-atonixdev/drone-gateway:1.0.0}
+    image: ${DRONE_GATEWAY_IMAGE:-atonixdev/drone-gateway:1.0.0}
     container_name: orca-drone-gateway
     env_file: .env
     command: ["uvicorn", "surveillance.drone_gateway_service:app", "--host", "0.0.0.0", "--port", "8020"]
@@ -271,7 +271,7 @@ services:
     build:
       context: .
       dockerfile: surveillance/Dockerfile
-      image: ${SENSOR_GATEWAY_IMAGE:-atonixdev/sensor-gateway:1.0.0}
+    image: ${SENSOR_GATEWAY_IMAGE:-atonixdev/sensor-gateway:1.0.0}
     container_name: orca-sensor-gateway
     env_file: .env
     command: ["uvicorn", "surveillance.sensor_gateway_service:app", "--host", "0.0.0.0", "--port", "8021"]
@@ -286,7 +286,7 @@ services:
     build:
       context: .
       dockerfile: surveillance/Dockerfile
-      image: ${DRONE_CAMERA_IMAGE:-atonixdev/drone-camera-ingestion:1.0.0}
+    image: ${DRONE_CAMERA_IMAGE:-atonixdev/drone-camera-ingestion:1.0.0}
     container_name: orca-drone-camera-ingestion
     env_file: .env
     command: ["uvicorn", "surveillance.drone_camera_service:app", "--host", "0.0.0.0", "--port", "8022"]
@@ -301,7 +301,7 @@ services:
     build:
       context: .
       dockerfile: surveillance/Dockerfile
-      image: ${MISSION_CONTROL_IMAGE:-atonixdev/mission-control:1.0.0}
+    image: ${MISSION_CONTROL_IMAGE:-atonixdev/mission-control:1.0.0}
     container_name: orca-mission-control
     env_file: .env
     command: ["uvicorn", "surveillance.mission_control_service:app", "--host", "0.0.0.0", "--port", "8025"]
@@ -317,7 +317,7 @@ services:
     build:
       context: .
       dockerfile: surveillance/Dockerfile
-      image: ${THREAT_DETECTION_IMAGE:-atonixdev/threat-detection:1.0.0}
+    image: ${THREAT_DETECTION_IMAGE:-atonixdev/threat-detection:1.0.0}
     container_name: orca-threat-detection
     env_file: .env
     command: ["uvicorn", "surveillance.threat_detection_service:app", "--host", "0.0.0.0", "--port", "8023"]
@@ -332,7 +332,7 @@ services:
     build:
       context: .
       dockerfile: surveillance/Dockerfile
-      image: ${MAPPING_GEOSPATIAL_IMAGE:-atonixdev/mapping-geospatial:1.0.0}
+    image: ${MAPPING_GEOSPATIAL_IMAGE:-atonixdev/mapping-geospatial:1.0.0}
     container_name: orca-mapping-geospatial
     env_file: .env
     command: ["uvicorn", "surveillance.mapping_service:app", "--host", "0.0.0.0", "--port", "8024"]
@@ -402,7 +402,7 @@ services:
     logging: *stdout-logging
 
   kafka:
-    image: bitnami/kafka:3.7
+    image: docker.io/bitnami/kafka:4.3
     container_name: orca-kafka
     environment:
       KAFKA_CFG_NODE_ID: 1
@@ -431,7 +431,7 @@ services:
   webapp:
     build:
       context: ./webapp
-      image: ${WEBAPP_IMAGE:-atonixdev/webapp:1.0.0}
+    image: ${WEBAPP_IMAGE:-atonixdev/webapp:1.0.0}
     container_name: orca-webapp
     env_file: .env
     ports:
