@@ -264,6 +264,8 @@ EOF
 cat > "$ROOTFS_DIR/etc/orca/system/init/profile.conf" <<'EOF'
 default_target=orca-core.target
 retry_deferred_services=true
+service_graph_retries=2
+enabled_services=net,vision,core,security,update
 EOF
 
 cat > "$ROOTFS_DIR/etc/orca/system/power/profile.conf" <<'EOF'

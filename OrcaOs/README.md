@@ -147,6 +147,9 @@ On boot you should see:
 - The observed multiboot magic value and the staged initramfs module address range
 - An initramfs scan result showing a valid `newc` archive with `init` and `/usr/share/orca/rootfs.manifest`
 - A runtime handoff table showing which extracted initramfs files are ready for later boot stages
+- The active boot policy parsed from `/etc/orca/system/init/profile.conf`
+- A successful on-demand initramfs lookup for a non-curated file such as `/etc/hostname`
+- A config-driven ORCA-Net runtime policy derived from `/etc/orca/network/orca-net.conf`
 - The three ORCA OS layers with their first anchored component
 - A Layer 1 driver registry with readiness state
 - A Layer 2 service table showing stage, required drivers, dependencies, and status
@@ -168,6 +171,10 @@ Inside the generated image, `/init` now hands control to a small ORCA supervisor
 
 The kernel now inspects the multiboot module list, parses the staged initramfs as a `newc` archive, and promotes a selected set of shipped files into a runtime handoff table for later boot stages.
 
+Later boot code can now consume those extracted files by semantic helper instead of raw pointers, and can also query arbitrary initramfs paths on demand through the in-kernel lookup API.
+
+The handoff layer now includes a tiny config reader that can query `key=value` and simple `key: value` settings from initramfs-backed files without each subsystem reimplementing its own line parser.
+
 The current handoff table captures:
 
 - `init`
@@ -176,6 +183,12 @@ The current handoff table captures:
 - `/etc/orca/network/orca-net.conf`
 - `/etc/orca/updater/ota.conf`
 - `/etc/orca/system/init/profile.conf`
+
+The current init implementation reads `/etc/orca/system/init/profile.conf` from the extracted handoff data and uses it to derive the active boot policy, including the preferred service ordering target and whether deferred services should be retried across multiple boot passes.
+
+That init profile now also supports explicit retry budgets and enabled-service masks, so the boot graph can be constrained by shipped policy rather than only hard-coded defaults.
+
+`ORCA-Net` now consumes `/etc/orca/network/orca-net.conf` during service startup and derives its runtime mode, socket path, and feature flags from the extracted config instead of starting as a fixed stub.
 
 For host portability, the supported validation path is the generated GRUB ISO plus QEMU. Native direct-kernel boot is not the compatibility contract; the portable contract is the bootable ISO artifact and the documented Docker/QEMU build flow.
 

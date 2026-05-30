@@ -5,6 +5,7 @@
 #include "orca_handoff.h"
 #include "orca_init.h"
 #include "orca_platform.h"
+#include "services/orca_net.h"
 
 #define MULTIBOOT_BOOTLOADER_MAGIC 0x2BADB002u
 #define MULTIBOOT_INFO_FLAG_MODULES (1u << 3)
@@ -521,6 +522,96 @@ static void serial_write_decimal(uint32_t value) {
     serial_write_string(&buffer[i]);
 }
 
+static size_t render_boot_policy(size_t start_row) {
+    const orca_init_boot_policy* policy = orca_get_init_boot_policy();
+
+    write_string_at("Boot policy:", start_row, 2, 0x1E);
+    write_string_at(policy->default_target, start_row, 16, 0x1F);
+    write_string_at(policy->retry_deferred_services != 0u ? "retry" : "single", start_row, 38, policy->retry_deferred_services != 0u ? 0x1A : 0x4F);
+    write_uint_decimal((uint32_t)policy->max_boot_passes, start_row, 48, 0x1F);
+
+    serial_write_string("boot policy target=");
+    serial_write_string(policy->default_target);
+    serial_write_string(" retry=");
+    serial_write_string(policy->retry_deferred_services != 0u ? "yes" : "no");
+    serial_write_string(" passes=");
+    serial_write_decimal((uint32_t)policy->max_boot_passes);
+    serial_write_string("\n");
+
+    return 1;
+}
+
+static size_t render_initramfs_lookup(size_t start_row) {
+    orca_initramfs_file_view lookup;
+
+    write_string_at("Initramfs lookup:", start_row, 2, 0x1E);
+    if (orca_initramfs_lookup_file("etc/hostname", &lookup) != 0 && lookup.found != 0u) {
+        write_string_at("etc/hostname", start_row, 20, 0x1F);
+        write_string_at("ready", start_row, 40, 0x1A);
+        write_uint_decimal(lookup.size, start_row, 48, 0x1F);
+
+        serial_write_string("initramfs lookup path=");
+        serial_write_string(lookup.path);
+        serial_write_string(" state=ready size=");
+        serial_write_decimal(lookup.size);
+        serial_write_string("\n");
+    } else {
+        write_string_at("etc/hostname", start_row, 20, 0x1F);
+        write_string_at("miss", start_row, 40, 0x4F);
+        serial_write_line("initramfs lookup path=etc/hostname state=miss size=0");
+    }
+
+    return 1;
+}
+
+static size_t render_network_policy(const orca_service_boot_record* records, size_t record_count, size_t start_row) {
+    const orca_net_runtime_policy* policy = orca_net_get_runtime_policy();
+    orca_config_value_view mode_lookup;
+    const char* service_state = "missing";
+    size_t i = 0;
+
+    for (i = 0; i < record_count; ++i) {
+        if (records[i].service->id == ORCA_SERVICE_NET) {
+            service_state = service_status_text(records[i].status);
+            break;
+        }
+    }
+
+    (void)orca_handoff_lookup_config_value(ORCA_HANDOFF_FILE_NET_CONFIG, "mode", &mode_lookup);
+
+    if (start_row < VGA_HEIGHT) {
+        write_string_at("ORCA-Net policy:", start_row, 2, 0x1E);
+        write_string_at(policy->mode, start_row, 20, 0x1F);
+        write_string_at(policy->mesh_enabled != 0u ? "mesh" : "no-mesh", start_row, 32, policy->mesh_enabled != 0u ? 0x1A : 0x4F);
+        write_string_at(policy->vpn_enabled != 0u ? "vpn" : "no-vpn", start_row, 42, policy->vpn_enabled != 0u ? 0x1A : 0x4F);
+    }
+
+    serial_write_string("orca-net runtime mode=");
+    serial_write_string(policy->mode);
+    serial_write_string(" mesh=");
+    serial_write_string(policy->mesh_enabled != 0u ? "yes" : "no");
+    serial_write_string(" satellite=");
+    serial_write_string(policy->satellite_enabled != 0u ? "yes" : "no");
+    serial_write_string(" vpn=");
+    serial_write_string(policy->vpn_enabled != 0u ? "yes" : "no");
+    serial_write_string(" socket=");
+    serial_write_string(policy->control_socket);
+    serial_write_string(" service=");
+    serial_write_string(service_state);
+    serial_write_string(" lookup=");
+    if (mode_lookup.found != 0u) {
+        size_t j = 0;
+        for (j = 0; j < mode_lookup.size; ++j) {
+            serial_write_char((char)mode_lookup.value[j]);
+        }
+    } else {
+        serial_write_string("miss");
+    }
+    serial_write_string("\n");
+
+    return 1;
+}
+
 static size_t render_runtime_handoff(size_t start_row) {
     const orca_runtime_handoff* handoff = orca_get_runtime_handoff();
     size_t i = 0;
@@ -647,7 +738,9 @@ void kernel_main(uint32_t multiboot_magic, uint32_t multiboot_info_ptr) {
     size_t booted_services = 0;
     size_t phase_count = 0;
     size_t module_rows = 0;
+    size_t policy_rows = 0;
     size_t handoff_rows = 0;
+    size_t lookup_rows = 0;
     const orca_driver_descriptor* drivers = orca_get_registered_drivers(&driver_count);
     const orca_layer_descriptor* layers = orca_get_platform_layers(&layer_count);
     orca_service_boot_record service_records[ORCA_MAX_SYSTEM_SERVICES];
@@ -671,23 +764,25 @@ void kernel_main(uint32_t multiboot_magic, uint32_t multiboot_info_ptr) {
     serial_write_string("\n");
 
     module_rows = render_multiboot_modules(multiboot_info_ptr, 4);
-    handoff_rows = render_runtime_handoff(5 + module_rows);
+    policy_rows = render_boot_policy(5 + module_rows);
+    handoff_rows = render_runtime_handoff(6 + module_rows + policy_rows);
+    lookup_rows = render_initramfs_lookup(7 + module_rows + policy_rows + handoff_rows);
 
-    write_string_at("3-layer ORCA OS scaffold loaded:", 6 + module_rows + handoff_rows, 2, 0x1E);
+    write_string_at("3-layer ORCA OS scaffold loaded:", 8 + module_rows + policy_rows + handoff_rows + lookup_rows, 2, 0x1E);
 
     if (layer_count > 0) {
-        write_layer_row(&layers[0], 7 + module_rows + handoff_rows, 0x1E);
+        write_layer_row(&layers[0], 9 + module_rows + policy_rows + handoff_rows + lookup_rows, 0x1E);
     }
     if (layer_count > 1) {
-        write_layer_row(&layers[1], 8 + module_rows + handoff_rows, 0x1E);
+        write_layer_row(&layers[1], 10 + module_rows + policy_rows + handoff_rows + lookup_rows, 0x1E);
     }
     if (layer_count > 2) {
-        write_layer_row(&layers[2], 9 + module_rows + handoff_rows, 0x1E);
+        write_layer_row(&layers[2], 11 + module_rows + policy_rows + handoff_rows + lookup_rows, 0x1E);
     }
 
-    write_string_at("Layer 1 driver registry:", 11 + module_rows + handoff_rows, 2, 0x1E);
-    for (size_t i = 0; i < driver_count && 12 + module_rows + handoff_rows + i < VGA_HEIGHT; ++i) {
-        write_driver_row(&drivers[i], 12 + module_rows + handoff_rows + i);
+    write_string_at("Layer 1 driver registry:", 13 + module_rows + policy_rows + handoff_rows + lookup_rows, 2, 0x1E);
+    for (size_t i = 0; i < driver_count && 14 + module_rows + policy_rows + handoff_rows + lookup_rows + i < VGA_HEIGHT; ++i) {
+        write_driver_row(&drivers[i], 14 + module_rows + policy_rows + handoff_rows + lookup_rows + i);
     }
 
     booted_services = orca_boot_system_services(
@@ -698,19 +793,21 @@ void kernel_main(uint32_t multiboot_magic, uint32_t multiboot_info_ptr) {
         &phase_count
     );
 
-    write_string_at("Boot phases:", 17 + module_rows + handoff_rows, 2, 0x1E);
-    for (size_t i = 0; i < phase_count && 18 + module_rows + handoff_rows + i < VGA_HEIGHT; ++i) {
-        write_phase_row(&phase_records[i], 18 + module_rows + handoff_rows + i);
+    render_network_policy(service_records, booted_services, 23);
+
+    write_string_at("Boot phases:", 19 + module_rows + policy_rows + handoff_rows + lookup_rows, 2, 0x1E);
+    for (size_t i = 0; i < phase_count && 20 + module_rows + policy_rows + handoff_rows + lookup_rows + i < VGA_HEIGHT; ++i) {
+        write_phase_row(&phase_records[i], 20 + module_rows + policy_rows + handoff_rows + lookup_rows + i);
     }
 
-    write_string_at("Layer 2 service table:", 17 + module_rows + handoff_rows, 44, 0x1E);
-    write_string_at("svc           stage       drv         dep       ph   status", 18 + module_rows + handoff_rows, 20, 0x1F);
-    for (size_t i = 0; i < booted_services && 19 + module_rows + handoff_rows + i < VGA_HEIGHT; ++i) {
-        write_service_row(&service_records[i], 19 + module_rows + handoff_rows + i);
+    write_string_at("Layer 2 service table:", 19 + module_rows + policy_rows + handoff_rows + lookup_rows, 44, 0x1E);
+    write_string_at("svc           stage       drv         dep       ph   status", 20 + module_rows + policy_rows + handoff_rows + lookup_rows, 20, 0x1F);
+    for (size_t i = 0; i < booted_services && 21 + module_rows + policy_rows + handoff_rows + lookup_rows + i < VGA_HEIGHT; ++i) {
+        write_service_row(&service_records[i], 21 + module_rows + policy_rows + handoff_rows + lookup_rows + i);
     }
 
-    if (booted_services > 0 && 19 + module_rows + handoff_rows + booted_services < VGA_HEIGHT) {
-        write_service_note_row(&service_records[booted_services - 1], 19 + module_rows + handoff_rows + booted_services);
+    if (booted_services > 0 && 21 + module_rows + policy_rows + handoff_rows + lookup_rows + booted_services < VGA_HEIGHT) {
+        write_service_note_row(&service_records[booted_services - 1], 21 + module_rows + policy_rows + handoff_rows + lookup_rows + booted_services);
     }
 
     write_string_at("Next: interrupts, memory, scheduler, user-mode runtime.", 24, 2, 0x1E);

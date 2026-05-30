@@ -52,8 +52,18 @@ typedef struct {
     size_t services_deferred;
 } orca_boot_phase_record;
 
+typedef struct {
+    const char* default_target;
+    size_t max_boot_passes;
+    uint8_t retry_deferred_services;
+    orca_service_dependency_mask enabled_service_mask;
+    orca_service_id preferred_order[ORCA_MAX_SYSTEM_SERVICES];
+    size_t preferred_order_count;
+} orca_init_boot_policy;
+
 const orca_component_descriptor* orca_get_system_service_components(size_t* component_count);
 const orca_service_descriptor* const* orca_get_system_services(size_t* service_count);
+const orca_init_boot_policy* orca_get_init_boot_policy(void);
 size_t orca_boot_system_services(
     orca_service_boot_record* records,
     size_t capacity,
