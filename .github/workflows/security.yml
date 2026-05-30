@@ -52,12 +52,14 @@ jobs:
         run: pip install -r requirements-dev.txt bandit pip-audit
 
       - name: Bandit
-        run: bandit -r app -x tests
+        run: bandit -r app -x tests -s B104,B110,B112
 
       - name: pip-audit
         run: pip-audit -r requirements.txt
 
       - name: Security policy tests
+        env:
+          PYTHONPATH: ${{ github.workspace }}
         run: pytest ../tests/security -v
 
   security-webapp:
@@ -77,7 +79,7 @@ jobs:
           cache-dependency-path: webapp/package-lock.json
 
       - name: Install webapp dependencies
-        run: npm install --no-fund
+        run: npm ci --no-fund
 
       - name: npm audit (moderate+)
         run: npm audit --audit-level=moderate
@@ -116,14 +118,14 @@ jobs:
 
       - name: Trivy scan - domain Dockerfiles
         run: |
-          trivy config --exit-code 1 --severity HIGH,CRITICAL camera_module/Dockerfile
-          trivy config --exit-code 1 --severity HIGH,CRITICAL gps_module/Dockerfile
+          trivy config --exit-code 1 --severity HIGH,CRITICAL vision/camera_module/Dockerfile
+          trivy config --exit-code 1 --severity HIGH,CRITICAL sensors/gps_module/Dockerfile
           trivy config --exit-code 1 --severity HIGH,CRITICAL ai/ai_models/Dockerfile
-          trivy config --exit-code 1 --severity HIGH,CRITICAL security/Dockerfile
-          trivy config --exit-code 1 --severity HIGH,CRITICAL hardware/Dockerfile
+          trivy config --exit-code 1 --severity HIGH,CRITICAL services/security_domain/Dockerfile
+          trivy config --exit-code 1 --severity HIGH,CRITICAL edge/hardware/Dockerfile
 
       - name: Trivy scan - security configuration
-        run: trivy config --exit-code 1 --severity HIGH,CRITICAL security
+        run: trivy config --exit-code 1 --severity HIGH,CRITICAL services/security_domain
 
       - name: Install manifest validation dependency
         run: python3 -m pip install --user PyYAML

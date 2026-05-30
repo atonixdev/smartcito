@@ -5,7 +5,8 @@ from pathlib import Path
 def test_audit_schema_has_hash_chain() -> None:
     schema_path = (
         Path(__file__).resolve().parents[2]
-        / "security"
+        / "services"
+        / "security_domain"
         / "audit"
         / "audit_log_schema.json"
     )
@@ -20,7 +21,8 @@ def test_audit_schema_has_hash_chain() -> None:
 def test_audit_schema_requires_actor_and_request() -> None:
     schema_path = (
         Path(__file__).resolve().parents[2]
-        / "security"
+        / "services"
+        / "security_domain"
         / "audit"
         / "audit_log_schema.json"
     )

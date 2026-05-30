@@ -185,9 +185,9 @@ infra/openstack/orca-os/scripts/upload_to_glance.sh \
 
 ## Promotion Into Terraform
 
-Once validated, set the image in [infra/openstack/terraform.tfvars.example](/home/atonixdev/orca/infra/openstack/terraform.tfvars.example) and real environment tfvars to the promoted Orca OS image name.
+Once validated, set the image in [infra/openstack/terraform.tfvars.example](../terraform.tfvars.example) and real environment tfvars to the promoted Orca OS image name.
 
-This repository also includes an auto-loaded Terraform image override in [infra/openstack/zz-orca-os.auto.tfvars](/home/atonixdev/orca/infra/openstack/zz-orca-os.auto.tfvars) so the promoted image name is selected by default without copying secrets into version control.
+This repository also includes an auto-loaded Terraform image override in [infra/openstack/zz-orca-os.auto.tfvars](../zz-orca-os.auto.tfvars) so the promoted image name is selected by default without copying secrets into version control.
 
 Recommended pattern:
 

@@ -112,29 +112,28 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install black flake8 mypy pytest httpx
-          pip install -r orcaapi/requirements.txt
+          pip install -r orcaapi/requirements-dev.txt black flake8 mypy pytest httpx pytest-cov
           pip install -r ai/ai_models/requirements.txt
-          pip install -r camera_module/requirements.txt
-          pip install -r gps_module/requirements.txt
+          pip install -r vision/camera_module/requirements.txt
+          pip install -r sensors/gps_module/requirements.txt
           pip install -r ingestion/requirements.txt
-          pip install -r security/requirements.txt
-          pip install -r hardware/requirements.txt
+          pip install -r services/security_domain/requirements.txt
+          pip install -r edge/hardware/requirements.txt
 
       - name: Black
-        run: black --check ai/ai_models camera_module gps_module ingestion security/service.py hardware/service.py ai/ai_models/tests camera_module/tests gps_module/tests ingestion/tests security/tests hardware/tests
+        run: black --check ai/ai_models vision/camera_module sensors/gps_module ingestion services/security_domain/service.py edge/hardware/service.py ai/ai_models/tests vision/camera_module/tests sensors/gps_module/tests ingestion/tests services/security_domain/tests edge/hardware/tests
 
       - name: Flake8
-        run: flake8 ai/ai_models camera_module gps_module ingestion security/service.py hardware/service.py ai/ai_models/tests camera_module/tests gps_module/tests ingestion/tests security/tests hardware/tests
+        run: flake8 ai/ai_models vision/camera_module sensors/gps_module ingestion services/security_domain/service.py edge/hardware/service.py ai/ai_models/tests vision/camera_module/tests sensors/gps_module/tests ingestion/tests services/security_domain/tests edge/hardware/tests
 
       - name: Mypy
-        run: mypy --ignore-missing-imports ai/ai_models camera_module gps_module ingestion security/service.py hardware/service.py ai/ai_models/tests camera_module/tests gps_module/tests ingestion/tests security/tests hardware/tests
+        run: mypy --ignore-missing-imports ai/ai_models vision/camera_module sensors/gps_module ingestion services/security_domain/service.py edge/hardware/service.py ai/ai_models/tests vision/camera_module/tests sensors/gps_module/tests ingestion/tests services/security_domain/tests edge/hardware/tests
 
       - name: Pytest
         env:
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/orcaapi
           MEMCACHED_SERVERS: memcached:11211
-        run: pytest ai/ai_models/tests camera_module/tests gps_module/tests ingestion/tests security/tests hardware/tests
+        run: pytest ai/ai_models/tests vision/camera_module/tests sensors/gps_module/tests ingestion/tests services/security_domain/tests edge/hardware/tests
 
   security-tests:
     name: Security Policy Tests
@@ -148,7 +147,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install test dependencies
-        run: pip install pytest pyyaml
+        run: pip install pytest pyyaml cryptography
 
       - name: Run security policy tests
         env:
@@ -172,7 +171,7 @@ jobs:
           cache-dependency-path: webapp/package-lock.json
 
       - name: Install dependencies
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
 
       - name: Lint
         run: npm run lint

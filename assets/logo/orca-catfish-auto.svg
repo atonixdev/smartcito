@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">ORCA catfish mark</title>
+  <desc id="desc">A geometric aquatic predator mark with shield framing, catfish whiskers, and precision technology styling.</desc>
+  <style>
+    :root {
+      --orca-black: #000000;
+      --orca-blue: #003b73;
+      --orca-cyan: #00e5ff;
+      --orca-white: #ffffff;
+      --field: #eef7fb;
+      --ring: rgba(0, 59, 115, 0.14);
+      --primary: var(--orca-blue);
+      --secondary: var(--orca-cyan);
+      --eye: var(--orca-black);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --field: #03111f;
+        --ring: rgba(0, 229, 255, 0.16);
+        --primary: #0b5d9d;
+        --secondary: var(--orca-cyan);
+        --eye: var(--orca-white);
+      }
+    }
+  </style>
+  <defs>
+    <linearGradient id="orca-body-auto" x1="112" y1="92" x2="384" y2="408" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="var(--secondary)"/>
+      <stop offset="0.52" stop-color="var(--primary)"/>
+      <stop offset="1" stop-color="var(--orca-black)"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="124" fill="var(--field)"/>
+  <path d="M256 48 401 111c28 12 47 39 49 69v80c0 105-68 165-194 204C130 425 62 365 62 260v-80c2-30 21-57 49-69Z" fill="var(--ring)"/>
+  <path d="M256 76 380 129c20 8 34 27 36 49v74c0 87-54 136-160 175-106-39-160-88-160-175v-74c2-22 16-41 36-49Z" fill="none" stroke="var(--secondary)" stroke-width="16" stroke-linejoin="round"/>
+  <path d="M152 305c26-29 54-44 87-52-28-20-42-46-43-77 0-54 41-94 102-94 22 0 45 5 69 15-32 3-60 20-75 43 35 9 58 34 58 68 0 40-30 73-77 87 31 9 56 25 79 50-26-8-54-11-82-9-24 31-61 52-114 62 23-24 37-50 42-77-20-1-35-4-46-16Z" fill="url(#orca-body-auto)"/>
+  <circle cx="275" cy="181" r="7" fill="var(--eye)"/>
+  <circle cx="316" cy="177" r="6" fill="var(--eye)" opacity="0.88"/>
+  <path d="M173 231c-36 8-63 26-80 57 35-10 64-11 90-6" fill="none" stroke="var(--secondary)" stroke-width="10" stroke-linecap="round"/>
+  <path d="M183 249c-46 14-75 39-89 77 44-17 81-22 110-15" fill="none" stroke="var(--primary)" stroke-width="8" stroke-linecap="round" opacity="0.9"/>
+  <path d="M335 231c37 8 64 26 81 57-35-10-65-11-91-6" fill="none" stroke="var(--secondary)" stroke-width="10" stroke-linecap="round"/>
+  <path d="M327 249c45 14 74 39 88 77-44-17-80-22-109-15" fill="none" stroke="var(--primary)" stroke-width="8" stroke-linecap="round" opacity="0.9"/>
+  <path d="M255 402c-29 14-58 24-89 32 16-16 28-36 34-59" fill="none" stroke="var(--primary)" stroke-width="9" stroke-linecap="round"/>
+</svg>

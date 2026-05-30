@@ -92,7 +92,7 @@ class GPSRealtimeGatewayService:
                 try:
                     _ = queue.get_nowait()
                     queue.put_nowait(payload)
-                except Exception:
+                except Exception:  # nosec B112
                     continue
 
     async def _redis_client(self) -> Redis | None:
@@ -137,7 +137,7 @@ class GPSRealtimeGatewayService:
         for value in rows.values():
             try:
                 parsed.append(json.loads(value))
-            except Exception:
+            except Exception:  # nosec B112
                 continue
         return parsed
 

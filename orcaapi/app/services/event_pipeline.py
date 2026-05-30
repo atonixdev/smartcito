@@ -151,7 +151,9 @@ class EventPipelineService:
             "category": "general",
             "severity": "high" if anomaly_score >= 0.95 else "medium",
             "confidence": anomaly_score,
-            "recommended_action": "Escalate to mission control and request operator acknowledgement.",
+            "recommended_action": (
+                "Escalate to mission control and request operator acknowledgement."
+            ),
             "requires_human_review": True,
         }
         summary = f"Anomaly score {anomaly_score:.2f} for {clean_event.entity_id}"
@@ -181,7 +183,7 @@ class EventPipelineService:
                 },
                 max_sentences=2,
             )
-        except Exception:  # noqa: BLE001
+        except Exception:  # noqa: BLE001  # nosec B110
             pass
 
         alert = AlertEvent(

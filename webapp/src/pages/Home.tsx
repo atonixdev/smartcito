@@ -9,6 +9,8 @@
 
 import { Link } from "react-router-dom";
 
+import OrcaLogo from "../components/OrcaLogo";
+
 const coreFeatures = [
   {
     title: "Local CLI",
@@ -54,18 +56,24 @@ const architectureLayers = [
   "Documentation and developer guides",
 ];
 
+const platformOverviewAsset = `${import.meta.env.BASE_URL}assets/platform-overview.svg`;
+
 export default function Home() {
   return (
     <div className="home-page">
       <section className="landing-hero">
         <div className="hero-copy">
-          <span className="eyebrow">Open smart city infrastructure</span>
+          <div className="hero-brand-row">
+            <OrcaLogo className="hero-mark" title="ORCA platform mark" />
+            <span className="eyebrow">Open smart city infrastructure</span>
+          </div>
           <h2>Orca</h2>
           <p>
             Orca is a local-first robotics and device operations platform. It
             centers on CLI, TUI, SDK, and local-agent workflows, uses
             firmware-burned UUIDs instead of user accounts, and keeps backend
-            services focused on registry, firmware, telemetry, and optional map data.
+            services focused on registry, firmware, telemetry, and optional map
+            data.
           </p>
 
           <div className="foundation-strip" aria-label="Project positioning">
@@ -112,13 +120,23 @@ export default function Home() {
           <p className="section-copy">
             ORCA now follows a local-first operations model: public
             architecture, installable tools, UUID-based devices, validated
-            runtime paths, and optional backend services rather than browser dashboards.
+            runtime paths, and optional backend services rather than browser
+            dashboards.
           </p>
         </div>
         <div className="statement-list">
-          <p>Run ORCA locally with a CLI, terminal dashboard, SDK, and local agent.</p>
-          <p>Use firmware-burned UUIDs instead of user accounts, passwords, or browser sessions.</p>
-          <p>Keep backend services focused on registry, updates, telemetry, and optional map data.</p>
+          <p>
+            Run ORCA locally with a CLI, terminal dashboard, SDK, and local
+            agent.
+          </p>
+          <p>
+            Use firmware-burned UUIDs instead of user accounts, passwords, or
+            browser sessions.
+          </p>
+          <p>
+            Keep backend services focused on registry, updates, telemetry, and
+            optional map data.
+          </p>
         </div>
       </section>
 
@@ -133,7 +151,8 @@ export default function Home() {
             <p>
               ORCA is positioned as open infrastructure with a serious
               operator-facing look and feel inspired by OpenStack, Kubernetes,
-              and Operator Lifecycle Manager, but centered on local tools instead of cloud dashboards.
+              and Operator Lifecycle Manager, but centered on local tools
+              instead of cloud dashboards.
             </p>
           </article>
           <div className="governance-list">
@@ -177,7 +196,7 @@ export default function Home() {
         </div>
         <img
           className="wide-visual"
-          src="/assets/platform-overview.svg"
+          src={platformOverviewAsset}
           alt="Orca platform overview"
         />
       </section>
@@ -187,10 +206,10 @@ export default function Home() {
           <span className="eyebrow">Community</span>
           <h3>Built so every discipline has a real place to contribute.</h3>
           <p>
-            Developers can contribute CLI commands, SDKs, local agents,
-            hardware services, firmware flows, and documentation. Designers can
-            improve downloads, docs, diagrams, and infrastructure-style
-            presentation without maintaining browser dashboards.
+            Developers can contribute CLI commands, SDKs, local agents, hardware
+            services, firmware flows, and documentation. Designers can improve
+            downloads, docs, diagrams, and infrastructure-style presentation
+            without maintaining browser dashboards.
           </p>
         </div>
         <div className="outcome-panel">
@@ -200,7 +219,9 @@ export default function Home() {
             installable, operationally serious, and ready to evolve around CLI,
             TUI, SDK, firmware, and device registry flows.
           </p>
-          <Link className="text-link" to="/community">View contribution paths</Link>
+          <Link className="text-link" to="/community">
+            View contribution paths
+          </Link>
         </div>
       </section>
     </div>

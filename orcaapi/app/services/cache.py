@@ -112,7 +112,11 @@ class MemcachedCacheService:
         effective_policy = policy or self._policies.default
         try:
             payload = json.dumps(value, separators=(",", ":")).encode("utf-8")
-            self._client.set(key, payload, expire=effective_policy.ttl_seconds)  # type: ignore[union-attr]
+            self._client.set(
+                key,
+                payload,
+                expire=effective_policy.ttl_seconds,
+            )  # type: ignore[union-attr]
             CACHE_STORES.labels(purpose=effective_policy.purpose).inc()
             logger.info(
                 "cache store key=%s ttl=%s purpose=%s",

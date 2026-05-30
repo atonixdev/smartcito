@@ -16,6 +16,7 @@ concurrency:
 
 jobs:
   build:
+    name: Build Pages artifact
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -32,14 +33,16 @@ jobs:
         working-directory: webapp
         run: npm ci --no-audit --no-fund
 
-      - name: Build dashboard
+      - name: Build webapp for GitHub Pages
         working-directory: webapp
         env:
           GITHUB_PAGES: "true"
         run: npm run build
 
-      - name: Add SPA fallback
-        run: cp webapp/dist/index.html webapp/dist/404.html
+      - name: Prepare Pages artifact
+        run: |
+          cp webapp/dist/index.html webapp/dist/404.html
+          touch webapp/dist/.nojekyll
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -50,6 +53,7 @@ jobs:
           path: webapp/dist
 
   deploy:
+    name: Deploy Pages site
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

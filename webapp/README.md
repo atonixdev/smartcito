@@ -26,6 +26,32 @@ The dev server proxies `/api` to `http://localhost:8000`, so start the
 backend API with `uvicorn app.main:app --reload` from [`../orcaapi/`](../orcaapi/)
 in another shell, or use `docker compose up` from the repo root.
 
+## GitHub Pages Deployment
+
+The production deployment target for this site is GitHub Pages:
+
+- Repository URL: `https://github.com/AtonixCorp/Orca`
+- Pages URL: `https://atonixcorp.github.io/Orca/`
+- Workflow: `.github/workflows/deploy-github-pages.yml`
+
+Deployment behavior:
+
+- Pushes to `main` run the Pages workflow automatically.
+- The workflow builds the Vite app with `GITHUB_PAGES=true`, so the correct
+  base path is generated for the repository slug.
+- The workflow copies `index.html` to `404.html` so deep links continue to work
+  on GitHub Pages.
+
+Repository setting required once:
+
+- In GitHub, open **Settings > Pages** and set **Source** to **GitHub Actions**.
+
+Local validation command:
+
+```bash
+GITHUB_PAGES=true GITHUB_REPOSITORY=AtonixCorp/Orca npm run build
+```
+
 ## Project Layout
 
 ```

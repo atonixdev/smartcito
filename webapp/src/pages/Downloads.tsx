@@ -44,7 +44,9 @@ export default function Downloads() {
           <article className="feature-card" key={item.title}>
             <h3>{item.title}</h3>
             <p>{item.body}</p>
-            <p><strong>{item.install}</strong></p>
+            <p>
+              <strong>{item.install}</strong>
+            </p>
           </article>
         ))}
       </div>

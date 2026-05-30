@@ -36,6 +36,8 @@ describe("App", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByText(/CLI, SDK, TUI, and local agent deliverables/i)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/CLI, SDK, TUI, and local agent deliverables/i),
+    ).toBeInTheDocument();
   });
 });

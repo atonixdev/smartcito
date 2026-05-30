@@ -48,22 +48,22 @@ jobs:
             dockerfile: ./webapp/Dockerfile
           - image: camera-service
             context: .
-            dockerfile: ./camera_module/Dockerfile
+            dockerfile: ./vision/camera_module/Dockerfile
           - image: gps-service
             context: .
-            dockerfile: ./gps_module/Dockerfile
+            dockerfile: ./sensors/gps_module/Dockerfile
           - image: ai-service
             context: .
             dockerfile: ./ai/ai_models/Dockerfile
           - image: security-service
             context: .
-            dockerfile: ./security/Dockerfile
+            dockerfile: ./services/security_domain/Dockerfile
           - image: hardware-agent
             context: .
-            dockerfile: ./hardware/Dockerfile
+            dockerfile: ./edge/hardware/Dockerfile
           - image: usb-module
             context: .
-            dockerfile: ./hardware/usb_module/Dockerfile
+            dockerfile: ./edge/hardware/usb_module/Dockerfile
           - image: ingestion-kafka-producer
             context: .
             dockerfile: ./ingestion/Dockerfile

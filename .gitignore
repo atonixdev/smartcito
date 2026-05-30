@@ -9,12 +9,15 @@
 !.env.example
 infra/terraform/.terraform/
 infra/terraform/terraform.tfvars
+infra/openstack/clouds.yaml
+infra/terraform/orca-key.pem
 
 # ---- Python ----
 __pycache__/
 *.py[cod]
 *.egg-info/
 .venv/
+.venv-keras/
 venv/
 .pytest_cache/
 .mypy_cache/

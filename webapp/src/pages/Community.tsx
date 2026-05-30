@@ -28,7 +28,9 @@ export default function Community() {
   return (
     <section className="page-shell narrative-page">
       <span className="eyebrow">Developer guides and contribution</span>
-      <h2>Open to everyone who wants cities to be safer and more transparent.</h2>
+      <h2>
+        Open to everyone who wants cities to be safer and more transparent.
+      </h2>
       <p className="lead-text">
         Orca is built for practical contribution. The repo contains active
         backend code, installable tooling, hardware modules, security services,
@@ -48,22 +50,22 @@ export default function Community() {
         <div>
           <h3>How collaboration stays grounded</h3>
           <p>
-            Contributions should connect back to a real platform surface:
-            a service endpoint, a CLI or SDK module, a local agent workflow,
-            a hardware validation path, or documentation that helps people run
-            and understand the system locally.
+            Contributions should connect back to a real platform surface: a
+            service endpoint, a CLI or SDK module, a local agent workflow, a
+            hardware validation path, or documentation that helps people run and
+            understand the system locally.
           </p>
         </div>
         <div className="outcome-panel">
           <h4>Repository surfaces</h4>
           <p>
-            Backend, webapp, hardware, security, infrastructure, scripts,
-            native extensions, and docs all have working entry points for
-            focused contributions.
+            Backend, webapp, hardware, security, infrastructure, scripts, native
+            extensions, and docs all have working entry points for focused
+            contributions.
           </p>
           <a
             className="text-link"
-            href="https://github.com/atonixdev/orca"
+            href="https://github.com/AtonixCorp/Orca"
             target="_blank"
             rel="noreferrer"
           >

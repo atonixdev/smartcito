@@ -37,7 +37,7 @@ def _xor_checksum(buf: bytes) -> int:
     return c
 
 
-def parse_frame(buf: bytes) -> ParsedFrame:
+def _parse_frame_python(buf: bytes) -> ParsedFrame:
     """Parse a 17-byte Orca sensor frame.
 
     Raises:
@@ -60,6 +60,9 @@ def parse_frame(buf: bytes) -> ParsedFrame:
         timestamp_ms=timestamp_ms,
         value=float(value),
     )
+
+
+parse_frame = _parse_frame_python
 
 
 # Prefer the C accelerator when it's been compiled and installed.

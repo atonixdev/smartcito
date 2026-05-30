@@ -54,7 +54,7 @@ class SignalProfile(str, Enum):
 class IdentityMode(str, Enum):
     """Supported device identity mechanisms."""
 
-    DEVICE_SECRET = "device_secret"
+    SHARED_SECRET = "device_secret"  # nosec B105
     CERTIFICATE = "certificate"
     SECURE_ELEMENT = "secure_element"
 

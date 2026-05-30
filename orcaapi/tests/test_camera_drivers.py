@@ -14,8 +14,8 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))
 
-from camera_module.drivers.onvif_driver import _parse_device_information
-from camera_module.drivers.rtsp_driver import _parse_rtsp_response
+from camera_module.drivers.onvif_driver import _parse_device_information  # noqa: E402
+from camera_module.drivers.rtsp_driver import _parse_rtsp_response  # noqa: E402
 
 
 def test_parse_onvif_device_information_extracts_core_fields() -> None:

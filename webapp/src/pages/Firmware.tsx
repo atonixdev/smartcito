@@ -26,10 +26,10 @@ export default function Firmware() {
       <span className="eyebrow">Firmware updates</span>
       <h2>Signed update channels tied to device UUIDs.</h2>
       <p className="lead-text">
-        ORCA firmware distribution is one of the few backend-dependent
-        workflows that remains central to the platform. Devices are tracked by
-        UUID, updates are delivered locally, and optional backend sync records
-        the rollout state.
+        ORCA firmware distribution is one of the few backend-dependent workflows
+        that remains central to the platform. Devices are tracked by UUID,
+        updates are delivered locally, and optional backend sync records the
+        rollout state.
       </p>
 
       <div className="roadmap-track">

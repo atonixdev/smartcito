@@ -24,7 +24,7 @@ Examples implemented in this repo:
 
 ## TTL policy
 
-The default environment contract is defined in [.env.example](/home/atonixdev/orca/.env.example).
+The default environment contract is defined in [.env.example](../.env.example).
 
 - API responses: `MEMCACHED_API_TTL_SECONDS=60`
 - Dashboard summaries: `MEMCACHED_DASHBOARD_TTL_SECONDS=45`
@@ -39,18 +39,18 @@ No cache entry is configured with infinite TTL.
 
 ### Backend / API
 
-- [control_plane.py](/home/atonixdev/orca/orcaapi/app/services/control_plane.py): caches dashboard overview, map overview, and scene overview.
-- [sensors.py](/home/atonixdev/orca/orcaapi/app/api/v1/endpoints/sensors.py): caches recent sensor responses by requested limit.
-- [auth.py](/home/atonixdev/orca/orcaapi/app/api/v1/endpoints/auth.py): caches short-lived session token reuse and caller profile responses.
+- [control_plane.py](../orcaapi/app/services/control_plane.py): caches dashboard overview, map overview, and scene overview.
+- [sensors.py](../orcaapi/app/api/v1/endpoints/sensors.py): caches recent sensor responses by requested limit.
+- [auth.py](../orcaapi/app/api/v1/endpoints/auth.py): caches short-lived session token reuse and caller profile responses.
 
 ### AI / ML
 
-- [ai_client.py](/home/atonixdev/orca/orcaapi/app/services/ai_client.py): caches anomaly-scoring results by hashed feature vector.
+- [ai_client.py](../orcaapi/app/services/ai_client.py): caches anomaly-scoring results by hashed feature vector.
 
 ### Data engineering / streaming
 
-- [streaming_job.py](/home/atonixdev/orca/ingestion/streaming_job.py): caches per-batch metadata and device metadata derived by Spark Structured Streaming.
-- [spark_job.py](/home/atonixdev/orca/ingestion/spark_job.py): advertises Memcached as part of the streaming contract.
+- [streaming_job.py](../ingestion/streaming_job.py): caches per-batch metadata and device metadata derived by Spark Structured Streaming.
+- [spark_job.py](../ingestion/spark_job.py): advertises Memcached as part of the streaming contract.
 
 ## Invalidation rules
 
@@ -62,9 +62,9 @@ No cache entry is configured with infinite TTL.
 
 ## Infrastructure
 
-- Docker Compose service stack deploys a three-node Memcached cluster and exporter in [docker-compose.services.yml](/home/atonixdev/orca/docker-compose.services.yml).
-- Kubernetes deploys a three-pod Memcached StatefulSet plus exporter in [memcached-cluster.yaml](/home/atonixdev/orca/infra/kubernetes/memcached-cluster.yaml).
-- OpenStack networking allows Memcached only on the internal services network in [main.tf](/home/atonixdev/orca/infra/openstack/networking/main.tf).
+- Docker Compose service stack deploys a three-node Memcached cluster and exporter in [docker-compose.services.yml](../docker-compose.services.yml).
+- Kubernetes deploys a three-pod Memcached StatefulSet plus exporter in [memcached-cluster.yaml](../infra/kubernetes/memcached-cluster.yaml).
+- OpenStack networking allows Memcached only on the internal services network in [main.tf](../infra/openstack/networking/main.tf).
 
 ## Constraints
 

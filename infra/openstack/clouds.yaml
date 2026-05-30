@@ -3,7 +3,7 @@ clouds:
     auth:
       auth_url: http://172.27.112.36/identity/v3
       username: admin
-      password: 48c95fc91bc43dee13634ee574af3ee8
+      password: change-me
       project_id: b4e15aaf3bcd41c69934f585febaa845
       project_name: demo
       user_domain_name: Default

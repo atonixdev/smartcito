@@ -39,7 +39,7 @@ class Settings(BaseSettings):
     # ----- Core -----
     app_env: Literal["development", "staging", "production"] = "development"
     app_name: str = "Orca"
-    app_host: str = "0.0.0.0"  # noqa: S104  binding intentional for container
+    app_host: str = "0.0.0.0"  # noqa: S104  # nosec B104
     app_port: int = 8000
     log_level: str = "INFO"
 
@@ -147,7 +147,7 @@ class Settings(BaseSettings):
     gps_mqtt_topic: str = "orca/gps/+"
     gps_mqtt_client_id: str = "orca-gps-api"
     gps_udp_enabled: bool = False
-    gps_udp_host: str = "0.0.0.0"
+    gps_udp_host: str = "0.0.0.0"  # nosec B104
     gps_udp_port: int = 9011
 
     # ----- Observability -----

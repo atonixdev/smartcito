@@ -27,11 +27,13 @@ export default function Roadmap() {
   return (
     <section className="page-shell narrative-page">
       <span className="eyebrow">Roadmap</span>
-      <h2>From local-first device operations to advanced infrastructure platform.</h2>
+      <h2>
+        From local-first device operations to advanced infrastructure platform.
+      </h2>
       <p className="lead-text">
         The roadmap keeps near-term engineering grounded while leaving room for
-        the larger vision: a transparent, installable, collaborative platform for
-        secure smart city and robotics infrastructure.
+        the larger vision: a transparent, installable, collaborative platform
+        for secure smart city and robotics infrastructure.
       </p>
 
       <div className="roadmap-track">

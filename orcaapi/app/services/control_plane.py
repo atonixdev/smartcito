@@ -241,7 +241,10 @@ class ControlPlaneService:
             OperatorControl(
                 id="sensor-gateway",
                 name="Sensor Gateway",
-                description="Publishes fixed and mobile sensor readings into the surveillance stream.",
+                description=(
+                    "Publishes fixed and mobile sensor readings into the "
+                    "surveillance stream."
+                ),
                 state=self._controls["sensor-gateway"],
                 policy_mode="schema-validated",
                 action_label=self._action_label(self._controls["sensor-gateway"]),
@@ -428,7 +431,10 @@ class ControlPlaneService:
                 "drone-patrols",
                 "threat-zones",
             ],
-            security_policy="verified devices only; trust score must be greater than 80; drone, sensor, camera, and map updates are audited",
+            security_policy=(
+                "verified devices only; trust score must be greater than 80; "
+                "drone, sensor, camera, and map updates are audited"
+            ),
         )
         cache_service.set_json(
             self._map_cache_key,
@@ -462,7 +468,8 @@ class ControlPlaneService:
                 label=f"AI watch zone: {device.sensor_type}",
             )
             for device in scene_devices
-            if (device.sensor_value or 0) >= 0.7 or device.device_type == DeviceCategory.CAMERA
+            if (device.sensor_value or 0) >= 0.7
+            or device.device_type == DeviceCategory.CAMERA
         ]
         await self._record_scene_audit(
             session,
@@ -478,9 +485,18 @@ class ControlPlaneService:
                 for device in map_overview.devices
                 if device.device_type == DeviceCategory.CAMERA
             ],
-            layers=["city-map", "iot-devices", "gps-paths", "camera-overlays", "threat-waves"],
+            layers=[
+                "city-map",
+                "iot-devices",
+                "gps-paths",
+                "camera-overlays",
+                "threat-waves",
+            ],
             camera_overlay_mode="popup-texture-ready",
-            security_policy="JWT + RBAC required; objects are color-coded by trust score and visible only after map trust policy validation",
+            security_policy=(
+                "JWT + RBAC required; objects are color-coded by trust score "
+                "and visible only after map trust policy validation"
+            ),
         )
         cache_service.set_json(
             self._scene_cache_key,

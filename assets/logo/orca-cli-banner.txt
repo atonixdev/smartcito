@@ -1,0 +1,9 @@
+  ____  _____   ____    _    
+ / __ \/ ___/  / __ \  / |   
+| |  | \__ \  | |  | |/  |   
+| |  | |__/ / | |  | / /| |  
+| |__| / __/  | |__|/ ___ |  
+ \____/____/   \____/_/  |_| 
+
+ORCA :: AQUATIC SECURITY STACK
+Catfish-inspired systems mark for TUI and CLI launch surfaces.

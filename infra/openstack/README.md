@@ -31,8 +31,8 @@ The root Terraform module in this directory composes the child modules under
 
 Use the official Orca OS image as the `image_name` for compute nodes.
 The build instructions, Packer template, validation helper, and Glance upload
-workflow live in [infra/openstack/orca-os/README.md](/home/atonixdev/orca/infra/openstack/orca-os/README.md).
-The promoted default image is auto-loaded from [infra/openstack/zz-orca-os.auto.tfvars](/home/atonixdev/orca/infra/openstack/zz-orca-os.auto.tfvars).
+workflow live in [infra/openstack/orca-os/README.md](orca-os/README.md).
+The promoted default image is auto-loaded from [infra/openstack/zz-orca-os.auto.tfvars](zz-orca-os.auto.tfvars).
 
 ## Apply Flow
 

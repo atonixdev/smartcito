@@ -14,13 +14,19 @@ def test_emit_pipeline_events_enriches_alert_with_ai(monkeypatch) -> None:
             "category": "intrusion",
             "severity": "high",
             "confidence": 0.91,
-            "recommended_action": "Lock the affected perimeter zone and route live video to an operator.",
+            "recommended_action": (
+                "Lock the affected perimeter zone and route live video to an "
+                "operator."
+            ),
             "requires_human_review": True,
         }
 
     async def fake_summarize_event(**kwargs) -> str:
         assert kwargs["classification"] == "intrusion"
-        return "Intrusion alert at gate-7. Primary signals: Anomaly score 0.91; Sensor kind motion."
+        return (
+            "Intrusion alert at gate-7. Primary signals: Anomaly score 0.91; "
+            "Sensor kind motion."
+        )
 
     monkeypatch.setattr(event_pipeline_module.ai_client, "classify_alert", fake_classify_alert)
     monkeypatch.setattr(event_pipeline_module.ai_client, "summarize_event", fake_summarize_event)

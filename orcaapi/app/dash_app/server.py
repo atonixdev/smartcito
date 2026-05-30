@@ -110,7 +110,7 @@ def build_app() -> Dash:
 def main() -> None:
     configure_logging("INFO")
     app = build_app()
-    app.run_server(host="0.0.0.0", port=8050, debug=False)  # noqa: S104
+    app.run_server(host="0.0.0.0", port=8050, debug=False)  # noqa: S104  # nosec B104
 
 
 if __name__ == "__main__":

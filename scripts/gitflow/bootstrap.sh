@@ -8,7 +8,7 @@
 
 set -euo pipefail
 
-repo="${1:-atonixdev/orca}"
+repo="${1:-AtonixCorp/Orca}"
 remote="${2:-origin}"
 
 if ! command -v gh >/dev/null 2>&1; then

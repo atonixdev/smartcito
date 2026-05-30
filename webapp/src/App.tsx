@@ -10,6 +10,7 @@
 
 import { Link, Navigate, Route, Routes } from "react-router-dom";
 
+import OrcaLogo from "./components/OrcaLogo";
 import Home from "./pages/Home";
 import Architecture from "./pages/Architecture";
 import Community from "./pages/Community";
@@ -23,7 +24,15 @@ export default function App() {
   return (
     <div className="app-shell">
       <header className="app-header">
-        <h1 className="app-title">Orca</h1>
+        <div className="brand-lockup">
+          <OrcaLogo className="brand-mark" title="Official ORCA symbol" />
+          <div className="brand-copy">
+            <h1 className="app-title">Orca</h1>
+            <span className="app-title-sub">
+              Local-first robotics and security
+            </span>
+          </div>
+        </div>
         <nav className="app-nav">
           <Link to="/home">Home</Link>
           <Link to="/downloads">Downloads</Link>
@@ -53,7 +62,7 @@ export default function App() {
         <small>
           Orca · Local-first device operations · Apache 2.0 ·{" "}
           <a
-            href="https://github.com/atonixdev/orca"
+            href="https://github.com/AtonixCorp/Orca"
             target="_blank"
             rel="noreferrer"
           >

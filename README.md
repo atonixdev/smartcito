@@ -73,6 +73,10 @@ Main local endpoints after startup:
 | Mapping geospatial | http://localhost:8024 | Map and geofence service |
 | Mission control | http://localhost:8025 | Mission validation and upload |
 
+The static documentation and downloads site is also configured for GitHub Pages
+deployment at `https://atonixcorp.github.io/Orca/`. Pushes to `main` trigger the
+Pages workflow in `.github/workflows/deploy-github-pages.yml`.
+
 To stop the stack:
 
 ```bash
@@ -106,6 +110,10 @@ cd webapp
 npm install
 npm run dev
 ```
+
+For the hosted static site, enable GitHub Pages with **Source: GitHub Actions**
+in the repository settings. The existing workflow builds `webapp/`, publishes
+`webapp/dist`, and adds a `404.html` SPA fallback for client-side routes.
 
 ### Root package, CLI, and SDK
 
