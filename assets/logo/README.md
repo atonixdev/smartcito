@@ -22,6 +22,23 @@ Deliverables included here:
 - `orca-catfish-concepts.svg`
 - `orca-cli-banner.txt`
 
+PNG exports:
+
+- `png/orca-catfish-auto-{256,512,1024,2048}.png`
+- `png/orca-catfish-dark-{256,512,1024,2048}.png`
+- `png/orca-catfish-light-{256,512,1024,2048}.png`
+- `png/orca-catfish-mono-{256,512,1024,2048}.png`
+- `png/orca-catfish-inverted-{256,512,1024,2048}.png`
+- `png/orca-catfish-outline-{256,512,1024,2048}.png`
+- `png/orca-catfish-app-icon-{32,64,128,256,512}.png`
+
+Recommended brand usage:
+
+- `orca-catfish-auto.svg` or `png/orca-catfish-auto-2048.png` for the primary brand mark
+- `orca-catfish-dark.svg` or `png/orca-catfish-dark-2048.png` for dark presentation surfaces
+- `orca-catfish-light.svg` or `png/orca-catfish-light-2048.png` for light presentation surfaces
+- `orca-catfish-app-icon.svg` or `png/orca-catfish-app-icon-512.png` for square app/icon use
+
 Color system:
 
 - `#000000` ORCA black
