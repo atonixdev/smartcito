@@ -1,13 +1,25 @@
 stages:
   - build
   - test
+  - secret-detection
   - package
   - deploy-staging
   - deploy-production
 
+include:
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
+
+sast:
+  stage: test
+
 variables:
   DOCKER_TLS_CERTDIR: "/certs"
   IMAGE_TAG: "$CI_COMMIT_SHA"
+  SECRET_DETECTION_ENABLED: 'true'
+
+secret_detection:
+  stage: secret-detection
 
 build:docker-images:
   stage: build
