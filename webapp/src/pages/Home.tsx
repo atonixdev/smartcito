@@ -13,8 +13,8 @@ import OrcaLogo from "../components/OrcaLogo";
 
 const platformFeatures = [
   {
-    title: "Local-first",
-    body: "Operate from trusted local environments instead of depending on cloud-only control flows.",
+    title: "Operator-controlled",
+    body: "Operate from trusted environments with direct control instead of depending on cloud-only control flows.",
   },
   {
     title: "Secure",
@@ -45,9 +45,9 @@ export default function Home() {
         <div className="company-hero-copy">
           <div className="hero-brand-row">
             <OrcaLogo className="hero-mark" title="ORCA platform mark" />
-            <span className="eyebrow">Local-first robotics foundation</span>
+            <span className="eyebrow">Robotics and drone platform</span>
           </div>
-          <h2>ORCA is a secure, local-first robotics and drone control platform.</h2>
+          <h2>ORCA is a secure robotics and drone control platform.</h2>
           <p>
             ORCA delivers a professional control surface for robotics, drones,
             sensors, and edge infrastructure with enterprise-grade operational

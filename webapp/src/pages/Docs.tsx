@@ -1,14 +1,14 @@
 /**
  * ============================================================================
  * File: webapp/src/pages/Docs.tsx
- * Purpose: Documentation landing page for local-first Orca operations.
+ * Purpose: Documentation landing page for ORCA platform operations.
  * ============================================================================
  */
 
 const docSections = [
   {
     title: "Platform Overview",
-    body: "Understand the local-first ORCA architecture, including CLI, TUI, SDK, local agent, UUID identity, and optional OpenStack integration.",
+    body: "Understand the ORCA platform architecture, including CLI, TUI, SDK, local agent, UUID identity, and optional OpenStack integration.",
   },
   {
     title: "Developer Guides",

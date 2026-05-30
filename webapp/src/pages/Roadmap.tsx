@@ -28,7 +28,7 @@ export default function Roadmap() {
     <section className="page-shell narrative-page">
       <span className="eyebrow">Roadmap</span>
       <h2>
-        From local-first device operations to advanced infrastructure platform.
+        From secure device operations to advanced infrastructure platform.
       </h2>
       <p className="lead-text">
         The roadmap keeps near-term engineering grounded while leaving room for

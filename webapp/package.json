@@ -7,7 +7,7 @@
   "name": "orca-webapp",
   "private": true,
   "version": "0.1.0",
-  "description": "Orca local-first documentation and downloads site.",
+  "description": "Orca robotics and drone control platform documentation and downloads site.",
   "type": "module",
   "license": "Apache-2.0",
   "scripts": {

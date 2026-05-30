@@ -1,7 +1,7 @@
 /**
  * ============================================================================
  * File: webapp/src/pages/Firmware.tsx
- * Purpose: Firmware and device update page for the local-first Orca platform.
+ * Purpose: Firmware and device update page for the ORCA platform.
  * ============================================================================
  */
 

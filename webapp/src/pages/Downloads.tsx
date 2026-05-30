@@ -1,7 +1,7 @@
 /**
  * ============================================================================
  * File: webapp/src/pages/Downloads.tsx
- * Purpose: Download and install page for local-first ORCA tooling.
+ * Purpose: Download and install page for ORCA platform tooling.
  * ============================================================================
  */
 
