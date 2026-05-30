@@ -1,10 +1,10 @@
 # Orca Adapter Evaluation Report
 
 - Model: Orca Model
-- Base model: meta-llama/Meta-Llama-3-8B-Instruct
+- Base model: None
 - Backend: merged-local
-- Dataset: datasets/sample_evaluation_data.json
-- Adapter path: output/orca-lora
+- Dataset: ai/datasets/sample_evaluation_data.json
+- Adapter path: ai/output/orca-lora
 - Average overall score: 0.8178
 - Pass rate: 1.0000
 - Records: 3
