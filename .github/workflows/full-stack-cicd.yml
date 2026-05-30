@@ -102,10 +102,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check deploy configuration
+        id: deploy_config
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_HOST: ${{ secrets.STAGING_DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.STAGING_DEPLOY_USER }}
+          DEPLOY_PATH: ${{ secrets.STAGING_DEPLOY_PATH }}
+        run: |
+          if [ -n "$DEPLOY_SSH_KEY" ] && [ -n "$DEPLOY_HOST" ] && [ -n "$DEPLOY_USER" ] && [ -n "$DEPLOY_PATH" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "Deploy secrets are not fully configured; skipping staging deployment."
+          fi
+
       - name: Install SSH client
+        if: steps.deploy_config.outputs.configured == 'true'
         run: sudo apt-get update && sudo apt-get install -y openssh-client
 
       - name: Configure SSH key
+        if: steps.deploy_config.outputs.configured == 'true'
         env:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
         run: |
@@ -114,6 +131,7 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
 
       - name: Deploy staging stack
+        if: steps.deploy_config.outputs.configured == 'true'
         env:
           DEPLOY_ENVIRONMENT: staging
           DEPLOY_HOST: ${{ secrets.STAGING_DEPLOY_HOST }}
@@ -134,10 +152,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check deploy configuration
+        id: deploy_config
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_HOST: ${{ secrets.PRODUCTION_DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.PRODUCTION_DEPLOY_USER }}
+          DEPLOY_PATH: ${{ secrets.PRODUCTION_DEPLOY_PATH }}
+        run: |
+          if [ -n "$DEPLOY_SSH_KEY" ] && [ -n "$DEPLOY_HOST" ] && [ -n "$DEPLOY_USER" ] && [ -n "$DEPLOY_PATH" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "Deploy secrets are not fully configured; skipping production deployment."
+          fi
+
       - name: Install SSH client
+        if: steps.deploy_config.outputs.configured == 'true'
         run: sudo apt-get update && sudo apt-get install -y openssh-client
 
       - name: Configure SSH key
+        if: steps.deploy_config.outputs.configured == 'true'
         env:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
         run: |
@@ -146,6 +181,7 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
 
       - name: Deploy production stack
+        if: steps.deploy_config.outputs.configured == 'true'
         env:
           DEPLOY_ENVIRONMENT: production
           DEPLOY_HOST: ${{ secrets.PRODUCTION_DEPLOY_HOST }}

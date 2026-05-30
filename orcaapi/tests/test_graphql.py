@@ -104,7 +104,10 @@ def test_graphql_exposes_recent_sensor_readings_and_control_plane(client: TestCl
     assert body["data"]["viewerRole"] == "viewer"
     assert body["data"]["recentSensorReadings"][0]["sensorId"] == "graphql-traffic-001"
     assert body["data"]["recentSensorReadings"][0]["metadata"]["source"] == "graphql-test"
-    assert body["data"]["controlPlaneOverview"]["security"]["quantumSafeStatus"] == "ml-kem + qkd ingest ready"
+    assert (
+        body["data"]["controlPlaneOverview"]["security"]["quantumSafeStatus"]
+        == "ml-kem + qkd ingest ready"
+    )
     assert {control["id"] for control in body["data"]["controlPlaneOverview"]["controls"]} >= {
         "camera-service",
         "usb-service",

@@ -16,8 +16,15 @@ import react from "@vitejs/plugin-react";
 import cesium from "vite-plugin-cesium";
 import path from "node:path";
 
+const githubRepository = process.env.GITHUB_REPOSITORY ?? "";
+const githubRepoName = githubRepository.split("/")[1] ?? "";
+const githubPagesBase =
+  githubRepoName && !githubRepoName.toLowerCase().endsWith(".github.io")
+    ? `/${githubRepoName}/`
+    : "/";
+
 export default defineConfig({
-  base: process.env.GITHUB_PAGES === "true" ? "/orca/" : "/",
+  base: process.env.GITHUB_PAGES === "true" ? githubPagesBase : "/",
   plugins: [react(), cesium()],
   resolve: {
     alias: {

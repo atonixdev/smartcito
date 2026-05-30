@@ -63,12 +63,19 @@ def build_app() -> Dash:
     app = Dash(__name__, title="Orca · Analytics")
 
     app.layout = html.Div(
-        style={"fontFamily": "system-ui", "padding": "1.5rem", "background": "#0f172a",
-               "color": "#e2e8f0", "minHeight": "100vh"},
+        style={
+            "fontFamily": "system-ui",
+            "padding": "1.5rem",
+            "background": "#0f172a",
+            "color": "#e2e8f0",
+            "minHeight": "100vh",
+        },
         children=[
             html.H2("Orca Live Analytics"),
-            html.P("Streaming view of recent sensor readings. Refreshes every "
-                   f"{REFRESH_MS // 1000}s."),
+            html.P(
+                "Streaming view of recent sensor readings. Refreshes every "
+                f"{REFRESH_MS // 1000}s."
+            ),
             dcc.Interval(id="tick", interval=REFRESH_MS, n_intervals=0),
             dcc.Graph(id="ts-chart"),
             html.Div(id="summary", style={"marginTop": "1rem"}),

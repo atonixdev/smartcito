@@ -58,8 +58,12 @@ class Settings(BaseSettings):
         validation_alias=AliasChoices("AUTH_AUDIENCE"),
     )
     jwt_algorithm: str = "HS256"
-    jwt_private_key_pem: str | None = Field(default=None, validation_alias=AliasChoices("JWT_PRIVATE_KEY_PEM"))
-    jwt_public_key_pem: str | None = Field(default=None, validation_alias=AliasChoices("JWT_PUBLIC_KEY_PEM"))
+    jwt_private_key_pem: str | None = Field(
+        default=None, validation_alias=AliasChoices("JWT_PRIVATE_KEY_PEM")
+    )
+    jwt_public_key_pem: str | None = Field(
+        default=None, validation_alias=AliasChoices("JWT_PUBLIC_KEY_PEM")
+    )
     jwt_access_token_expires_minutes: int = 60
     cors_allowed_origins: str = "http://localhost:5173"
 
@@ -164,11 +168,21 @@ class Settings(BaseSettings):
     realtime_snapshot_interval_seconds: float = 2.0
 
     # ----- Infra / deploy -----
-    openstack_auth_url: str | None = Field(default=None, validation_alias=AliasChoices("OPENSTACK_AUTH_URL"))
-    openstack_project: str | None = Field(default=None, validation_alias=AliasChoices("OPENSTACK_PROJECT"))
-    openstack_user: str | None = Field(default=None, validation_alias=AliasChoices("OPENSTACK_USER"))
-    openstack_password: str | None = Field(default=None, validation_alias=AliasChoices("OPENSTACK_PASSWORD"))
-    openstack_region: str | None = Field(default=None, validation_alias=AliasChoices("OPENSTACK_REGION"))
+    openstack_auth_url: str | None = Field(
+        default=None, validation_alias=AliasChoices("OPENSTACK_AUTH_URL")
+    )
+    openstack_project: str | None = Field(
+        default=None, validation_alias=AliasChoices("OPENSTACK_PROJECT")
+    )
+    openstack_user: str | None = Field(
+        default=None, validation_alias=AliasChoices("OPENSTACK_USER")
+    )
+    openstack_password: str | None = Field(
+        default=None, validation_alias=AliasChoices("OPENSTACK_PASSWORD")
+    )
+    openstack_region: str | None = Field(
+        default=None, validation_alias=AliasChoices("OPENSTACK_REGION")
+    )
 
     # ---------- Computed / convenience helpers ----------
 

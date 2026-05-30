@@ -12,7 +12,7 @@ DEFAULT_OUTPUT = REPO_ROOT / "dist" / "orca_ai_kaggle"
 FOLDERS_TO_COPY = ("ai_models", "training", "datasets", "assets")
 FILES_TO_COPY = ("LICENSE",)
 DOCS_TO_COPY = ("MODEL_CARD.md", "OPERATIONAL_FLOW.md", "KAGGLE_USAGE.md")
-EXAMPLE_FILES_TO_COPY = ("orca_training_demo.ipynb", "orca_inference_demo.ipynb")
+EXAMPLE_FILES_TO_COPY = ("Orca_Training_Demo.ipynb", "orca_inference_demo.ipynb")
 PROHIBITED_WEIGHT_PATTERNS = (
     "*.bin",
     "*.ckpt",

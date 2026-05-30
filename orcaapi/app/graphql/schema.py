@@ -175,7 +175,9 @@ def _control_plane_overview_type(overview: ControlPlaneOverview) -> ControlPlane
 
 @strawberry.type
 class Query:
-    @strawberry.field(description="Return recent sensor readings through the GraphQL integration surface")
+    @strawberry.field(
+        description="Return recent sensor readings through the GraphQL integration surface"
+    )
     async def recent_sensor_readings(
         self,
         info: strawberry.Info[GraphQLContext, Any],

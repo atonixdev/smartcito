@@ -39,7 +39,9 @@ class CachePolicies:
         self.default = CachePolicy(settings.memcached_default_ttl_seconds, "general")
         self.api = CachePolicy(settings.memcached_api_ttl_seconds, "api-response")
         self.dashboard = CachePolicy(settings.memcached_dashboard_ttl_seconds, "dashboard-summary")
-        self.device_metadata = CachePolicy(settings.memcached_device_metadata_ttl_seconds, "device-metadata")
+        self.device_metadata = CachePolicy(
+            settings.memcached_device_metadata_ttl_seconds, "device-metadata"
+        )
         self.ai = CachePolicy(settings.memcached_ai_ttl_seconds, "ai-inference")
         self.session = CachePolicy(settings.memcached_session_ttl_seconds, "session-token")
 

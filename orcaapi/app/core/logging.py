@@ -29,7 +29,7 @@ def configure_logging(level: str = "INFO") -> None:
     handler.setFormatter(
         logging.Formatter(
             fmt='{"ts":"%(asctime)s","lvl":"%(levelname)s",'
-                '"logger":"%(name)s","msg":"%(message)s"}',
+            '"logger":"%(name)s","msg":"%(message)s"}',
             datefmt="%Y-%m-%dT%H:%M:%S%z",
         )
     )

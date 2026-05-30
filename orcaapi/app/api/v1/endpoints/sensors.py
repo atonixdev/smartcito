@@ -38,7 +38,9 @@ def _recent_cache_key(limit: int) -> str:
 def _invalidate_recent_sensor_cache(limit: int) -> None:
     candidate_limits = set(RECENT_SENSOR_CACHE_LIMITS)
     candidate_limits.add(limit)
-    cache_service.delete_many([_recent_cache_key(candidate_limit) for candidate_limit in sorted(candidate_limits)])
+    cache_service.delete_many(
+        [_recent_cache_key(candidate_limit) for candidate_limit in sorted(candidate_limits)]
+    )
 
 
 @router.post(

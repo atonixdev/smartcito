@@ -38,8 +38,15 @@ class RealtimeBusService:
             map_payload = map_overview.model_dump(mode="json")
         except Exception:
             overview_payload = {
-                "device_manager": {"devices": [], "summary": {"camera": 0, "sensor": 0, "gps": 0, "iot": 0}},
-                "security": {"status": "degraded", "alerts": [], "audit_pipeline_status": "degraded"},
+                "device_manager": {
+                    "devices": [],
+                    "summary": {"camera": 0, "sensor": 0, "gps": 0, "iot": 0},
+                },
+                "security": {
+                    "status": "degraded",
+                    "alerts": [],
+                    "audit_pipeline_status": "degraded",
+                },
                 "traffic": {"active_incidents": [], "alerts": [], "congestion_score": 0.0},
                 "data_flow": [],
                 "timestamp": datetime.now(UTC).isoformat(),
@@ -57,8 +64,12 @@ class RealtimeBusService:
         filtered_surveillance = surveillance
         filtered_map = map_payload
         filtered_control_plane = overview_payload
-        filtered_events = [event.model_dump(mode="json") for event in event_pipeline_service.live_events(limit=20)]
-        filtered_alerts = [alert.model_dump(mode="json") for alert in event_pipeline_service.alerts(limit=20)]
+        filtered_events = [
+            event.model_dump(mode="json") for event in event_pipeline_service.live_events(limit=20)
+        ]
+        filtered_alerts = [
+            alert.model_dump(mode="json") for alert in event_pipeline_service.alerts(limit=20)
+        ]
 
         if channel == "drone":
             filtered_surveillance = {
@@ -76,7 +87,11 @@ class RealtimeBusService:
                 "threat_alerts": surveillance.get("threat_alerts", []),
                 "mapping_overlays": surveillance.get("mapping_overlays", {}),
             }
-            filtered_events = [event for event in filtered_events if str(event.get("source", "")).startswith("robot")]
+            filtered_events = [
+                event
+                for event in filtered_events
+                if str(event.get("source", "")).startswith("robot")
+            ]
         elif channel == "city":
             filtered_surveillance = {
                 "drones": surveillance.get("drones", {}),
@@ -147,17 +162,41 @@ class RealtimeBusService:
             "mapping_overlays": overlays,
         }
 
-    async def _gather_surveillance(self, client: httpx.AsyncClient) -> tuple[dict[str, Any], list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
-        drones = await self._safe_get_json(client, self._settings.drone_gateway_url, "/drones", fallback={"drones": [], "registry": []})
-        missions = await self._safe_get_json(client, self._settings.mission_control_url, "/missions", fallback=[])
-        feeds = await self._safe_get_json(client, self._settings.drone_camera_url, "/feeds", fallback=[])
-        threats = await self._safe_get_json(client, self._settings.threat_detection_url, "/alerts", fallback=[])
-        overlays = await self._safe_get_json(client, self._settings.mapping_geospatial_url, "/overlays", fallback={"drones": [], "sensors": [], "threats": [], "geofences": []})
+    async def _gather_surveillance(self, client: httpx.AsyncClient) -> tuple[
+        dict[str, Any],
+        list[dict[str, Any]],
+        list[dict[str, Any]],
+        list[dict[str, Any]],
+        dict[str, Any],
+    ]:
+        drones = await self._safe_get_json(
+            client,
+            self._settings.drone_gateway_url,
+            "/drones",
+            fallback={"drones": [], "registry": []},
+        )
+        missions = await self._safe_get_json(
+            client, self._settings.mission_control_url, "/missions", fallback=[]
+        )
+        feeds = await self._safe_get_json(
+            client, self._settings.drone_camera_url, "/feeds", fallback=[]
+        )
+        threats = await self._safe_get_json(
+            client, self._settings.threat_detection_url, "/alerts", fallback=[]
+        )
+        overlays = await self._safe_get_json(
+            client,
+            self._settings.mapping_geospatial_url,
+            "/overlays",
+            fallback={"drones": [], "sensors": [], "threats": [], "geofences": []},
+        )
         if isinstance(threats, dict):
             threats = threats.get("alerts", [])
         return drones, missions, feeds, threats, overlays
 
-    async def _safe_get_json(self, client: httpx.AsyncClient, base_url: str, path: str, *, fallback: Any) -> Any:
+    async def _safe_get_json(
+        self, client: httpx.AsyncClient, base_url: str, path: str, *, fallback: Any
+    ) -> Any:
         try:
             response = await client.get(f"{base_url}{path}")
             response.raise_for_status()

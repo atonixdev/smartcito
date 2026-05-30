@@ -19,7 +19,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
 from app.db.models import AuditEventORM, CameraDeviceORM
-from app.schemas.camera import CameraDeviceOut, CameraRegistrationIn, CameraTelemetryIn, StreamStatus
+from app.schemas.camera import (
+    CameraDeviceOut,
+    CameraRegistrationIn,
+    CameraTelemetryIn,
+    StreamStatus,
+)
 from app.services.cache import CacheKeyBuilder, cache_service
 
 
@@ -250,7 +255,11 @@ class CameraRegistryService:
 
     def _invalidate_camera_cache(self, *device_ids: str) -> None:
         keys = [self._fleet_cache_key]
-        keys.extend(CacheKeyBuilder.build("device", "metadata", device_id) for device_id in device_ids if device_id)
+        keys.extend(
+            CacheKeyBuilder.build("device", "metadata", device_id)
+            for device_id in device_ids
+            if device_id
+        )
         cache_service.delete_many(keys)
 
 

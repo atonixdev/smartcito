@@ -41,11 +41,7 @@ def test_parse_onvif_device_information_extracts_core_fields() -> None:
 
 
 def test_parse_rtsp_response_extracts_status_and_server() -> None:
-    raw = (
-        b"RTSP/1.0 200 OK\r\n"
-        b"CSeq: 1\r\n"
-        b"Server: SmartCam/9.1\r\n\r\n"
-    )
+    raw = b"RTSP/1.0 200 OK\r\n" b"CSeq: 1\r\n" b"Server: SmartCam/9.1\r\n\r\n"
 
     probe = _parse_rtsp_response(raw, "rtsp://camera-a/stream/main")
     assert probe.status_code == 200

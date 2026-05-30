@@ -101,4 +101,6 @@ def test_scene_overview_returns_3d_ready_devices_and_threats(client: TestClient)
     first_device = body["devices"][0]
     assert {"x", "y", "z", "gps_path_3d", "status_color"} <= set(first_device)
     first_corridor = body["camera_corridors"][0]
-    assert {"id", "source_device_id", "label", "polygon_3d", "coverage_score"} <= set(first_corridor)
+    assert {"id", "source_device_id", "label", "polygon_3d", "coverage_score"} <= set(
+        first_corridor
+    )

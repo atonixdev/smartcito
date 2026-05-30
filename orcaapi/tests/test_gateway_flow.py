@@ -52,12 +52,24 @@ def test_auth_chain_token_and_role_enforcement() -> None:
 
     viewer_res = client.post(
         "/api/v1/ingest/gps",
-        json={"device_id": "orca_unit_01", "lat": -26.2041, "lon": 28.0473, "speed": 12.3, "heading": 90},
+        json={
+            "device_id": "orca_unit_01",
+            "lat": -26.2041,
+            "lon": 28.0473,
+            "speed": 12.3,
+            "heading": 90,
+        },
         headers={"Authorization": f"Bearer {viewer}"},
     )
     operator_res = client.post(
         "/api/v1/ingest/gps",
-        json={"device_id": "orca_unit_01", "lat": -26.2041, "lon": 28.0473, "speed": 12.3, "heading": 90},
+        json={
+            "device_id": "orca_unit_01",
+            "lat": -26.2041,
+            "lon": 28.0473,
+            "speed": 12.3,
+            "heading": 90,
+        },
         headers={"Authorization": f"Bearer {operator}"},
     )
 

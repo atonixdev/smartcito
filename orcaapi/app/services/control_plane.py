@@ -64,7 +64,9 @@ class ControlPlaneService:
             "threat-detection": OperatorControlState.RUNNING,
         }
         self._map_devices: dict[str, MapDevice] = {}
-        self._overview_cache_key = CacheKeyBuilder.build("api", "dashboard-summary", "control-plane-overview")
+        self._overview_cache_key = CacheKeyBuilder.build(
+            "api", "dashboard-summary", "control-plane-overview"
+        )
         self._map_cache_key = CacheKeyBuilder.build("dashboard", "summary", "map-overview")
         self._scene_cache_key = CacheKeyBuilder.build("dashboard", "summary", "scene-overview")
 
@@ -83,7 +85,9 @@ class ControlPlaneService:
                 name=device.device_id,
                 category=DeviceCategory.CAMERA,
                 trust_level=(
-                    DeviceTrustLevel.BLOCKED if device.tamper_detected else DeviceTrustLevel.VERIFIED
+                    DeviceTrustLevel.BLOCKED
+                    if device.tamper_detected
+                    else DeviceTrustLevel.VERIFIED
                 ),
                 driver_container="camera-service",
                 endpoint=f"rtsp://fleet/{device.device_id}",
@@ -112,7 +116,9 @@ class ControlPlaneService:
         )
 
         alert_count = await session.scalar(
-            select(func.count()).select_from(AuditEventORM).where(AuditEventORM.action.like("%telemetry%"))
+            select(func.count())
+            .select_from(AuditEventORM)
+            .where(AuditEventORM.action.like("%telemetry%"))
         )
         alerts = [
             SecurityAlert(
@@ -414,7 +420,14 @@ class ControlPlaneService:
             devices=devices,
             heatmap=heatmap,
             camera_corridors=camera_corridors,
-            visible_layers=["verified-devices", "camera-overlays", "gps-paths", "sensor-heatmap", "drone-patrols", "threat-zones"],
+            visible_layers=[
+                "verified-devices",
+                "camera-overlays",
+                "gps-paths",
+                "sensor-heatmap",
+                "drone-patrols",
+                "threat-zones",
+            ],
             security_policy="verified devices only; trust score must be greater than 80; drone, sensor, camera, and map updates are audited",
         )
         cache_service.set_json(
@@ -545,11 +558,13 @@ class ControlPlaneService:
         await session.commit()
 
     def _invalidate_dashboard_caches(self) -> None:
-        cache_service.delete_many([
-            self._overview_cache_key,
-            self._map_cache_key,
-            self._scene_cache_key,
-        ])
+        cache_service.delete_many(
+            [
+                self._overview_cache_key,
+                self._map_cache_key,
+                self._scene_cache_key,
+            ]
+        )
 
     def _action_label(self, state: OperatorControlState) -> str:
         return "stop" if state == OperatorControlState.RUNNING else "start"
@@ -574,7 +589,9 @@ class ControlPlaneService:
             return DeviceTrustLevel.UNVERIFIED
         return DeviceTrustLevel.BLOCKED
 
-    def _camera_location(self, location: dict[str, float] | None, index: int) -> tuple[float, float]:
+    def _camera_location(
+        self, location: dict[str, float] | None, index: int
+    ) -> tuple[float, float]:
         if location and "lat" in location and "lon" in location:
             return float(location["lat"]), float(location["lon"])
         demo_locations = [(-25.7479, 28.2293), (-26.2041, 28.0473)]
@@ -592,10 +609,14 @@ class ControlPlaneService:
         ]
 
     def _camera_corridor(self, device: MapDevice) -> MapCameraCorridor:
-        target_latitude, target_longitude = device.gps_path[0] if device.gps_path else (device.latitude + 0.0012, device.longitude + 0.0018)
+        target_latitude, target_longitude = (
+            device.gps_path[0]
+            if device.gps_path
+            else (device.latitude + 0.0012, device.longitude + 0.0018)
+        )
         delta_latitude = target_latitude - device.latitude
         delta_longitude = target_longitude - device.longitude
-        length = max((delta_latitude ** 2 + delta_longitude ** 2) ** 0.5, 0.0008)
+        length = max((delta_latitude**2 + delta_longitude**2) ** 0.5, 0.0008)
         normal_latitude = -delta_longitude / length
         normal_longitude = delta_latitude / length
         width = 0.00045
@@ -605,10 +626,22 @@ class ControlPlaneService:
             source_device_id=device.device_id,
             label=f"{device.name} corridor",
             polygon=[
-                (device.latitude + normal_latitude * width, device.longitude + normal_longitude * width),
-                (device.latitude - normal_latitude * width, device.longitude - normal_longitude * width),
-                (target_latitude - normal_latitude * width * 1.6, target_longitude - normal_longitude * width * 1.6),
-                (target_latitude + normal_latitude * width * 1.6, target_longitude + normal_longitude * width * 1.6),
+                (
+                    device.latitude + normal_latitude * width,
+                    device.longitude + normal_longitude * width,
+                ),
+                (
+                    device.latitude - normal_latitude * width,
+                    device.longitude - normal_longitude * width,
+                ),
+                (
+                    target_latitude - normal_latitude * width * 1.6,
+                    target_longitude - normal_longitude * width * 1.6,
+                ),
+                (
+                    target_latitude + normal_latitude * width * 1.6,
+                    target_longitude + normal_longitude * width * 1.6,
+                ),
             ],
             coverage_score=min(max((device.sensor_value or 0.72), 0.2), 1),
         )
@@ -643,7 +676,10 @@ class ControlPlaneService:
             id=corridor.id,
             source_device_id=corridor.source_device_id,
             label=corridor.label,
-            polygon_3d=[self._scene_coordinates(latitude, longitude) for latitude, longitude in corridor.polygon],
+            polygon_3d=[
+                self._scene_coordinates(latitude, longitude)
+                for latitude, longitude in corridor.polygon
+            ],
             coverage_score=corridor.coverage_score,
         )
 

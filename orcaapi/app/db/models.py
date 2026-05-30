@@ -78,9 +78,7 @@ class GPSPointORM(Base):
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False
     )
 
-    __table_args__ = (
-        Index("ix_gps_points_device_ts", "device_id", "ts"),
-    )
+    __table_args__ = (Index("ix_gps_points_device_ts", "device_id", "ts"),)
 
 
 class CameraDeviceORM(Base):
@@ -156,9 +154,7 @@ class GeoFeatureORM(Base):
         DateTime(timezone=True), default=datetime.utcnow, nullable=False
     )
 
-    __table_args__ = (
-        Index("ix_geo_features_type_zone", "feature_type", "zone"),
-    )
+    __table_args__ = (Index("ix_geo_features_type_zone", "feature_type", "zone"),)
 
 
 class AuditEventORM(Base):

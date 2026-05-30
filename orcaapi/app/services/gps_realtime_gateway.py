@@ -100,7 +100,9 @@ class GPSRealtimeGatewayService:
             return self._redis
 
         try:
-            self._redis = Redis.from_url(self._settings.redis_url, encoding="utf-8", decode_responses=True)
+            self._redis = Redis.from_url(
+                self._settings.redis_url, encoding="utf-8", decode_responses=True
+            )
             await self._redis.ping()
             return self._redis
         except Exception:
@@ -114,7 +116,9 @@ class GPSRealtimeGatewayService:
 
         try:
             device_id = str(payload["device_id"])
-            await redis.hset("orca:gps:live", device_id, json.dumps(payload, separators=(",", ":"), default=str))
+            await redis.hset(
+                "orca:gps:live", device_id, json.dumps(payload, separators=(",", ":"), default=str)
+            )
             await redis.expire("orca:gps:live", 24 * 60 * 60)
         except Exception:
             return

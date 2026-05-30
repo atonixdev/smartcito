@@ -98,25 +98,34 @@ def test_gps_ingest_and_last_position(client: TestClient) -> None:
 
 def test_gps_track_and_live_fleet(client: TestClient) -> None:
     now = datetime.now(timezone.utc)
-    _post_point(client, {
-        "device_id": "drone-001",
-        "lat": -26.2041,
-        "lon": 28.0473,
-        "ts": _iso(now - timedelta(minutes=4)),
-    })
-    _post_point(client, {
-        "device_id": "drone-001",
-        "lat": -26.2045,
-        "lon": 28.0480,
-        "speed": 13.0,
-        "ts": _iso(now - timedelta(minutes=2)),
-    })
-    _post_point(client, {
-        "device_id": "drone-002",
-        "lat": -25.7479,
-        "lon": 28.2293,
-        "ts": _iso(now - timedelta(minutes=90)),
-    })
+    _post_point(
+        client,
+        {
+            "device_id": "drone-001",
+            "lat": -26.2041,
+            "lon": 28.0473,
+            "ts": _iso(now - timedelta(minutes=4)),
+        },
+    )
+    _post_point(
+        client,
+        {
+            "device_id": "drone-001",
+            "lat": -26.2045,
+            "lon": 28.0480,
+            "speed": 13.0,
+            "ts": _iso(now - timedelta(minutes=2)),
+        },
+    )
+    _post_point(
+        client,
+        {
+            "device_id": "drone-002",
+            "lat": -25.7479,
+            "lon": 28.2293,
+            "ts": _iso(now - timedelta(minutes=90)),
+        },
+    )
 
     track_res = client.get(
         f"/api/v1/devices/drone-001/track?from={_iso(now - timedelta(minutes=5))}&to={_iso(now)}",

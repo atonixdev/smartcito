@@ -200,11 +200,17 @@ def test_camera_listing_is_cached_and_invalidated(db_client: TestClient) -> None
                 "local_encrypted_storage": True,
             },
             "network": {"transport": "5g", "signal_profile": "mobile"},
-            "security": {"identity_mode": "secure_element", "tls_required": True, "storage_encryption": "aes-256"},
+            "security": {
+                "identity_mode": "secure_element",
+                "tls_required": True,
+                "storage_encryption": "aes-256",
+            },
             "mounting": {"magnetic_base": True, "mount_sensor_type": "hall_effect"},
         }
 
-        create_res = db_client.post("/api/v1/cameras/register", json=registration, headers=_auth_headers("operator"))
+        create_res = db_client.post(
+            "/api/v1/cameras/register", json=registration, headers=_auth_headers("operator")
+        )
         assert create_res.status_code == 201
 
         first_list = db_client.get("/api/v1/cameras", headers=_auth_headers("viewer"))
@@ -289,8 +295,12 @@ def test_ai_object_detection_results_are_cached(monkeypatch) -> None:
         import httpx
 
         monkeypatch.setattr(httpx, "AsyncClient", FakeAIAsyncClient)
-        first = asyncio.run(ai_client.detect_objects(image_b64="AA==", labels=["vehicle"], threshold=0.5))
-        second = asyncio.run(ai_client.detect_objects(image_b64="AA==", labels=["vehicle"], threshold=0.5))
+        first = asyncio.run(
+            ai_client.detect_objects(image_b64="AA==", labels=["vehicle"], threshold=0.5)
+        )
+        second = asyncio.run(
+            ai_client.detect_objects(image_b64="AA==", labels=["vehicle"], threshold=0.5)
+        )
 
         assert first["detections"][0]["label"] == "vehicle"
         assert second["detections"][0]["confidence"] == 0.91

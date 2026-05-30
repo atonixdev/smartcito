@@ -26,7 +26,9 @@ router = APIRouter()
     dependencies=[Depends(require_role("operator"))],
     summary="Create or update a persisted geographic feature",
 )
-async def upsert_geo_feature(feature: GeoFeatureIn, session: AsyncSession = Depends(get_session)) -> GeoFeatureOut:
+async def upsert_geo_feature(
+    feature: GeoFeatureIn, session: AsyncSession = Depends(get_session)
+) -> GeoFeatureOut:
     return await geospatial_registry_service.upsert_feature(session, feature)
 
 
@@ -59,8 +61,12 @@ async def get_geo_dataset(session: AsyncSession = Depends(get_session)) -> GeoDa
     dependencies=[Depends(require_role("operator"))],
     summary="Delete a persisted geographic feature",
 )
-async def delete_geo_feature(feature_id: str, session: AsyncSession = Depends(get_session)) -> Response:
+async def delete_geo_feature(
+    feature_id: str, session: AsyncSession = Depends(get_session)
+) -> Response:
     deleted = await geospatial_registry_service.delete_feature(session, feature_id)
     if not deleted:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="geographic feature not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="geographic feature not found"
+        )
     return Response(status_code=status.HTTP_204_NO_CONTENT)

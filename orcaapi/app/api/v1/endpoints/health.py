@@ -102,7 +102,9 @@ def _check_realtime_configuration() -> DependencyStatus:
 def _check_configured_dependencies() -> list[DependencyStatus]:
     return [
         DependencyStatus(name="redis-configured", ok=bool(get_settings().redis_url.strip())),
-        DependencyStatus(name="kafka-configured", ok=bool(get_settings().kafka_bootstrap_servers.strip())),
+        DependencyStatus(
+            name="kafka-configured", ok=bool(get_settings().kafka_bootstrap_servers.strip())
+        ),
         _check_realtime_configuration(),
     ]
 

@@ -19,14 +19,22 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import get_settings
 from app.core.crypto import build_integrity_record
 from app.db.models import GeoFeatureORM
-from app.schemas.geospatial import GeoDatasetOut, GeoFeatureCollection, GeoFeatureIn, GeoFeatureOut, GeoFeatureType
+from app.schemas.geospatial import (
+    GeoDatasetOut,
+    GeoFeatureCollection,
+    GeoFeatureIn,
+    GeoFeatureOut,
+    GeoFeatureType,
+)
 
 
 class GeospatialRegistryService:
     """Persistence layer for geographic assets shared across Orca."""
 
     async def upsert_feature(self, session: AsyncSession, feature: GeoFeatureIn) -> GeoFeatureOut:
-        record = await session.scalar(select(GeoFeatureORM).where(GeoFeatureORM.feature_id == feature.feature_id))
+        record = await session.scalar(
+            select(GeoFeatureORM).where(GeoFeatureORM.feature_id == feature.feature_id)
+        )
         geometry_geojson = feature.geometry.model_dump(mode="json")
         geometry_value = self._geometry_value(session, geometry_geojson)
         now = datetime.utcnow()
@@ -62,7 +70,9 @@ class GeospatialRegistryService:
         await session.commit()
         return self._to_schema(record)
 
-    async def list_features(self, session: AsyncSession, *, feature_type: GeoFeatureType | None = None) -> list[GeoFeatureOut]:
+    async def list_features(
+        self, session: AsyncSession, *, feature_type: GeoFeatureType | None = None
+    ) -> list[GeoFeatureOut]:
         statement = select(GeoFeatureORM).order_by(GeoFeatureORM.updated_at.desc())
         if feature_type is not None:
             statement = statement.where(GeoFeatureORM.feature_type == feature_type.value)
@@ -73,7 +83,9 @@ class GeospatialRegistryService:
         return await self.seed_demo_features(session)
 
     async def delete_feature(self, session: AsyncSession, feature_id: str) -> bool:
-        record = await session.scalar(select(GeoFeatureORM).where(GeoFeatureORM.feature_id == feature_id))
+        record = await session.scalar(
+            select(GeoFeatureORM).where(GeoFeatureORM.feature_id == feature_id)
+        )
         if record is None:
             return False
         await session.delete(record)
@@ -112,7 +124,9 @@ class GeospatialRegistryService:
 
         count = await session.scalar(select(func.count()).select_from(GeoFeatureORM))
         if count and count > 0:
-            rows = await session.scalars(select(GeoFeatureORM).order_by(GeoFeatureORM.updated_at.desc()))
+            rows = await session.scalars(
+                select(GeoFeatureORM).order_by(GeoFeatureORM.updated_at.desc())
+            )
             return [self._to_schema(record) for record in rows.all()]
 
         demo_features = [
@@ -121,7 +135,18 @@ class GeospatialRegistryService:
                 name="CBD Operations Zone",
                 feature_type=GeoFeatureType.GEOFENCE,
                 zone="cbd",
-                geometry={"type": "Polygon", "coordinates": [[[28.2180, -25.7550], [28.2360, -25.7550], [28.2360, -25.7420], [28.2180, -25.7420], [28.2180, -25.7550]]]},
+                geometry={
+                    "type": "Polygon",
+                    "coordinates": [
+                        [
+                            [28.2180, -25.7550],
+                            [28.2360, -25.7550],
+                            [28.2360, -25.7420],
+                            [28.2180, -25.7420],
+                            [28.2180, -25.7550],
+                        ]
+                    ],
+                },
                 properties={"criticality": "high"},
                 source_service="system:demo-seed",
             ),
@@ -130,7 +155,18 @@ class GeospatialRegistryService:
                 name="Transport Corridor",
                 feature_type=GeoFeatureType.ZONE,
                 zone="transport",
-                geometry={"type": "Polygon", "coordinates": [[[28.1700, -25.7600], [28.2050, -25.7600], [28.2050, -25.7350], [28.1700, -25.7350], [28.1700, -25.7600]]]},
+                geometry={
+                    "type": "Polygon",
+                    "coordinates": [
+                        [
+                            [28.1700, -25.7600],
+                            [28.2050, -25.7600],
+                            [28.2050, -25.7350],
+                            [28.1700, -25.7350],
+                            [28.1700, -25.7600],
+                        ]
+                    ],
+                },
                 properties={"criticality": "medium"},
                 source_service="system:demo-seed",
             ),
@@ -157,7 +193,15 @@ class GeospatialRegistryService:
                 name="CBD perimeter patrol",
                 feature_type=GeoFeatureType.MISSION_ROUTE,
                 zone="cbd",
-                geometry={"type": "LineString", "coordinates": [[28.2281, -25.7490], [28.2293, -25.7479], [28.2361, -25.7461], [28.2438, -25.7454]]},
+                geometry={
+                    "type": "LineString",
+                    "coordinates": [
+                        [28.2281, -25.7490],
+                        [28.2293, -25.7479],
+                        [28.2361, -25.7461],
+                        [28.2438, -25.7454],
+                    ],
+                },
                 properties={"asset_type": "drone", "asset_id": "drone-patrol-001"},
                 source_service="system:demo-seed",
             ),
@@ -166,8 +210,20 @@ class GeospatialRegistryService:
                 name="Drone patrol live path",
                 feature_type=GeoFeatureType.DRONE_PATH,
                 zone="cbd",
-                geometry={"type": "LineString", "coordinates": [[28.2275, -25.7495], [28.2310, -25.7481], [28.2388, -25.7460], [28.2438, -25.7454]]},
-                properties={"asset_type": "drone", "asset_id": "drone-patrol-001", "path_kind": "live"},
+                geometry={
+                    "type": "LineString",
+                    "coordinates": [
+                        [28.2275, -25.7495],
+                        [28.2310, -25.7481],
+                        [28.2388, -25.7460],
+                        [28.2438, -25.7454],
+                    ],
+                },
+                properties={
+                    "asset_type": "drone",
+                    "asset_id": "drone-patrol-001",
+                    "path_kind": "live",
+                },
                 source_service="system:demo-seed",
             ),
             GeoFeatureIn(
@@ -175,8 +231,20 @@ class GeospatialRegistryService:
                 name="Robot perimeter live path",
                 feature_type=GeoFeatureType.ROBOT_PATH,
                 zone="cbd",
-                geometry={"type": "LineString", "coordinates": [[28.2287, -25.7488], [28.2299, -25.7481], [28.2322, -25.7474], [28.2346, -25.7467]]},
-                properties={"asset_type": "robot", "asset_id": "robot-cap-001", "path_kind": "live"},
+                geometry={
+                    "type": "LineString",
+                    "coordinates": [
+                        [28.2287, -25.7488],
+                        [28.2299, -25.7481],
+                        [28.2322, -25.7474],
+                        [28.2346, -25.7467],
+                    ],
+                },
+                properties={
+                    "asset_type": "robot",
+                    "asset_id": "robot-cap-001",
+                    "path_kind": "live",
+                },
                 source_service="system:demo-seed",
             ),
         ]
@@ -213,7 +281,9 @@ class GeospatialRegistryService:
             properties=record.properties,
             source_service=record.source_service,
             timestamp=record.timestamp,
-            integrity=build_integrity_record(signable_payload, signer_id="orcaapi-geospatial-registry"),
+            integrity=build_integrity_record(
+                signable_payload, signer_id="orcaapi-geospatial-registry"
+            ),
             created_at=record.created_at,
             updated_at=record.updated_at,
         )

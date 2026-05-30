@@ -40,7 +40,7 @@ from app.services.ingestion import ingestion_service
 logger = logging.getLogger(__name__)
 
 # Override via env var MQTT_TOPIC if desired.
-DEFAULT_TOPIC = "orca/sensors/+"   # `+` = single-level wildcard
+DEFAULT_TOPIC = "orca/sensors/+"  # `+` = single-level wildcard
 
 
 class MqttIngestor:
@@ -124,6 +124,7 @@ class MqttIngestor:
 # --------------------------------------------------------------------------- #
 # Standalone entrypoint                                                       #
 # --------------------------------------------------------------------------- #
+
 
 async def _main() -> None:
     settings = get_settings()

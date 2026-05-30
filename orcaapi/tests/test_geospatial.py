@@ -106,7 +106,10 @@ def test_geospatial_feature_delete_removes_persisted_feature(client: TestClient)
             "name": "Custom Drone Path",
             "feature_type": "drone_path",
             "zone": "cbd",
-            "geometry": {"type": "LineString", "coordinates": [[28.24, -25.746], [28.245, -25.744]]},
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [[28.24, -25.746], [28.245, -25.744]],
+            },
             "properties": {"asset_id": "drone-custom-001", "path_kind": "history"},
             "source_service": "test-suite",
         },

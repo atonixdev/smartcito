@@ -32,16 +32,16 @@ def _selected_consumers() -> list[tuple[str, ConsumerFn]]:
     if mode == "all":
         return list(consumers.items())
     if mode not in consumers:
-        raise ValueError(
-            "EVENT_CONSUMER_MODE must be one of: all, raw, clean, alerts"
-        )
+        raise ValueError("EVENT_CONSUMER_MODE must be one of: all, raw, clean, alerts")
     return [(mode, consumers[mode])]
 
 
 async def _run() -> None:
     configure_logging(os.getenv("LOG_LEVEL", "INFO"))
     configured = _selected_consumers()
-    logger.info("Starting event consumer runner with modes: %s", ", ".join(name for name, _ in configured))
+    logger.info(
+        "Starting event consumer runner with modes: %s", ", ".join(name for name, _ in configured)
+    )
     await asyncio.gather(*(consumer() for _, consumer in configured))
 
 

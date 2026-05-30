@@ -56,6 +56,11 @@ jobs:
     name: Unit Tests and Quality (orcaapi)
     runs-on: ubuntu-latest
     needs: memcached-smoke
+    services:
+      memcached:
+        image: memcached:1.6-alpine
+        ports:
+          - 11211:11211
     defaults:
       run:
         working-directory: orcaapi
@@ -92,6 +97,11 @@ jobs:
     needs:
       - memcached-smoke
       - ai-offline-smoke
+    services:
+      memcached:
+        image: memcached:1.6-alpine
+        ports:
+          - 11211:11211
     steps:
       - uses: actions/checkout@v4
 
@@ -141,6 +151,8 @@ jobs:
         run: pip install pytest pyyaml
 
       - name: Run security policy tests
+        env:
+          PYTHONPATH: ${{ github.workspace }}
         run: pytest tests/security -v
 
   webapp:

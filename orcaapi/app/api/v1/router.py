@@ -12,7 +12,18 @@ from __future__ import annotations
 
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import auth, cameras, control_plane, events, geospatial, gps, health, quantum, sensors, traffic
+from app.api.v1.endpoints import (
+    auth,
+    cameras,
+    control_plane,
+    events,
+    geospatial,
+    gps,
+    health,
+    quantum,
+    sensors,
+    traffic,
+)
 
 api_router = APIRouter()
 

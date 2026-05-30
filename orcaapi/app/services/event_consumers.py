@@ -55,13 +55,19 @@ async def consume_raw_events() -> None:
                 kind=SensorKind(str(payload.get("kind", SensorKind.OTHER.value))),
                 value=float(payload.get("value", 0.0)),
                 unit=str(payload.get("unit", "unknown")),
-                latitude=float(payload["latitude"]) if payload.get("latitude") is not None else None,
-                longitude=float(payload["longitude"]) if payload.get("longitude") is not None else None,
+                latitude=(
+                    float(payload["latitude"]) if payload.get("latitude") is not None else None
+                ),
+                longitude=(
+                    float(payload["longitude"]) if payload.get("longitude") is not None else None
+                ),
                 observed_at=event.occurred_at,
                 metadata={key: str(value) for key, value in event.metadata.items()},
             )
             async with AsyncSessionLocal() as session:
-                await event_pipeline_service.process_sensor_reading(session, reading=reading, publisher=publisher)
+                await event_pipeline_service.process_sensor_reading(
+                    session, reading=reading, publisher=publisher
+                )
     finally:
         await publisher.stop()
         await consumer.stop()

@@ -37,7 +37,9 @@ def test_emit_pipeline_events_enriches_alert_with_ai(monkeypatch) -> None:
         metadata={"processed_by": "test"},
     )
 
-    alert = asyncio.run(service.emit_pipeline_events(clean_event=event, anomaly_score=0.91, publisher=None))
+    alert = asyncio.run(
+        service.emit_pipeline_events(clean_event=event, anomaly_score=0.91, publisher=None)
+    )
 
     assert alert is not None
     assert alert.severity == "high"
@@ -59,6 +61,8 @@ def test_emit_pipeline_events_skips_low_scores() -> None:
         metadata={},
     )
 
-    alert = asyncio.run(service.emit_pipeline_events(clean_event=event, anomaly_score=0.42, publisher=None))
+    alert = asyncio.run(
+        service.emit_pipeline_events(clean_event=event, anomaly_score=0.42, publisher=None)
+    )
 
     assert alert is None

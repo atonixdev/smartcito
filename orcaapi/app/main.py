@@ -103,8 +103,12 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
             client_id=settings.mqtt_client_id,
         )
         app.state.mqtt_task = asyncio.create_task(ingestor.run(), name="mqtt-ingestor")
-        logger.info("MQTT bridge started → %s:%s [%s]",
-                    settings.mqtt_host, settings.mqtt_port, settings.mqtt_topic)
+        logger.info(
+            "MQTT bridge started → %s:%s [%s]",
+            settings.mqtt_host,
+            settings.mqtt_port,
+            settings.mqtt_topic,
+        )
 
     # ---- GPS MQTT bridge ---------------------------------------------------
     if settings.gps_mqtt_enabled:
@@ -128,7 +132,9 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
             host=settings.gps_udp_host,
             port=settings.gps_udp_port,
         )
-        app.state.gps_udp_task = asyncio.create_task(gps_udp_ingestor.run(), name="gps-udp-ingestor")
+        app.state.gps_udp_task = asyncio.create_task(
+            gps_udp_ingestor.run(), name="gps-udp-ingestor"
+        )
         logger.info(
             "GPS UDP ingestor started → %s:%s",
             settings.gps_udp_host,
