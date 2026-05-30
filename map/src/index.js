@@ -9,5 +9,5 @@ module.exports = {
   ...ip,
   ...gps,
   ...fusion,
-  ...atp
+  ...atp,
 };

@@ -35,7 +35,7 @@ jobs:
 
       - name: Run Memcached smoke test
         env:
-          MEMCACHED_SERVERS: memcached:11211
+          MEMCACHED_SERVERS: 127.0.0.1:11211
         run: python scripts/ci/memcached_smoke.py
 
   ai-offline-smoke:

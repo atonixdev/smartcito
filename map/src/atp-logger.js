@@ -2,7 +2,8 @@ const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 
-const LEDGER_DIR = process.env.ATP_LEDGER_DIR || path.join(__dirname, '..', 'ledger');
+const LEDGER_DIR =
+  process.env.ATP_LEDGER_DIR || path.join(__dirname, '..', 'ledger');
 const ATP_SECRET = process.env.ATP_SECRET || 'orca-dev-secret';
 
 function ensureLedger() {
@@ -20,7 +21,8 @@ function signEvent(payload) {
 
 function logLocationEvent({ deviceId, authenticated, fused, sources }) {
   if (!deviceId) throw new Error('deviceId is required');
-  if (!authenticated) throw new Error('Device must be authenticated before logging');
+  if (!authenticated)
+    throw new Error('Device must be authenticated before logging');
   if (!fused) throw new Error('No fused location available');
 
   ensureLedger();
@@ -29,7 +31,7 @@ function logLocationEvent({ deviceId, authenticated, fused, sources }) {
     deviceId,
     fused,
     sources,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 
   event.signature = signEvent(event);

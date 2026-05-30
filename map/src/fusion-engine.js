@@ -5,7 +5,7 @@ const SOURCE_WEIGHTS = {
   gps: 1.0,
   ip: 0.6,
   areaCode: 0.4,
-  userSelected: 0.3
+  userSelected: 0.3,
 };
 
 function gpsConfidence(gps) {
@@ -41,7 +41,7 @@ function fuseLocation(input) {
     sources.push({
       source: 'gps',
       confidence: gpsConfidence(gps) * SOURCE_WEIGHTS.gps,
-      data: gps
+      data: gps,
     });
   }
 
@@ -49,18 +49,25 @@ function fuseLocation(input) {
     sources.push({
       source: 'ip',
       confidence: ipConfidence(input.ip) * SOURCE_WEIGHTS.ip,
-      data: input.ip
+      data: input.ip,
     });
   }
 
   let areaResolved = null;
-  if (input.userSelected && input.userSelected.country && input.userSelected.areaCode) {
-    areaResolved = resolveAreaCode(input.userSelected.country, input.userSelected.areaCode);
+  if (
+    input.userSelected &&
+    input.userSelected.country &&
+    input.userSelected.areaCode
+  ) {
+    areaResolved = resolveAreaCode(
+      input.userSelected.country,
+      input.userSelected.areaCode,
+    );
     if (areaResolved) {
       sources.push({
         source: 'areaCode',
         confidence: areaCodeConfidence(areaResolved) * SOURCE_WEIGHTS.areaCode,
-        data: areaResolved
+        data: areaResolved,
       });
     }
   }
@@ -68,8 +75,10 @@ function fuseLocation(input) {
   if (input.userSelected) {
     sources.push({
       source: 'userSelected',
-      confidence: userSelectedConfidence(input.userSelected) * SOURCE_WEIGHTS.userSelected,
-      data: input.userSelected
+      confidence:
+        userSelectedConfidence(input.userSelected) *
+        SOURCE_WEIGHTS.userSelected,
+      data: input.userSelected,
     });
   }
 
@@ -94,7 +103,7 @@ function fuseLocation(input) {
     city: best.data.city || null,
     latitude: best.data.latitude ?? null,
     longitude: best.data.longitude ?? null,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 
   return { fused, sources };

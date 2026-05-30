@@ -1,6 +1,10 @@
 const test = require('node:test');
 const assert = require('node:assert');
-const { getCountries, getRegions, resolveAreaCode } = require('../src/datasets');
+const {
+  getCountries,
+  getRegions,
+  resolveAreaCode,
+} = require('../src/datasets');
 
 test('Loads ISO-3166 countries', () => {
   const list = getCountries();

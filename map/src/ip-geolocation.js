@@ -1,4 +1,5 @@
-const fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
+const fetch = (...args) =>
+  import('node-fetch').then(({ default: f }) => f(...args));
 
 const PROVIDER_URL = process.env.IP_GEO_URL || 'https://ipapi.co';
 
@@ -27,7 +28,7 @@ async function lookupIP(ip) {
     latitude: data.latitude ?? null,
     longitude: data.longitude ?? null,
     asn: data.asn || null,
-    isp: data.org || null
+    isp: data.org || null,
   };
 }
 

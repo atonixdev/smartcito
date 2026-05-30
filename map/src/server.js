@@ -5,7 +5,7 @@ const {
   getAreaCodes,
   lookupIP,
   fuseLocation,
-  logLocationEvent
+  logLocationEvent,
 } = require('./index');
 
 const app = express();

@@ -3,9 +3,15 @@ const path = require('path');
 
 const dataDir = path.join(__dirname, '..', 'data');
 
-const countries = JSON.parse(fs.readFileSync(path.join(dataDir, 'countries.json'), 'utf8'));
-const regions = JSON.parse(fs.readFileSync(path.join(dataDir, 'regions.json'), 'utf8'));
-const areaCodes = JSON.parse(fs.readFileSync(path.join(dataDir, 'area-codes.json'), 'utf8'));
+const countries = JSON.parse(
+  fs.readFileSync(path.join(dataDir, 'countries.json'), 'utf8'),
+);
+const regions = JSON.parse(
+  fs.readFileSync(path.join(dataDir, 'regions.json'), 'utf8'),
+);
+const areaCodes = JSON.parse(
+  fs.readFileSync(path.join(dataDir, 'area-codes.json'), 'utf8'),
+);
 
 function getCountries() {
   return countries;
@@ -28,7 +34,7 @@ function resolveAreaCode(iso2, code) {
     region: entry.region,
     city: entry.city,
     latitude: entry.lat,
-    longitude: entry.lon
+    longitude: entry.lon,
   };
 }
 
@@ -36,5 +42,5 @@ module.exports = {
   getCountries,
   getRegions,
   getAreaCodes,
-  resolveAreaCode
+  resolveAreaCode,
 };
