@@ -1,18 +1,16 @@
 <!--
 ================================================================================
- Orca — Urban Data Backbone for Smart Cities
+ Orca Installation And Usage Guide
 ================================================================================
  File: README.md
  Purpose:
-   Top-level entry point for the Orca project. This document gives
-   contributors, city stakeholders, and researchers a fast, complete overview
-   of WHAT the project is, WHY it exists, HOW it is organized, and HOW to
-   participate.
+   Top-level installation, startup, and project-usage guide for the local-first
+   Orca platform.
 
  Audience:
-   - New developers evaluating the project on GitHub.
-   - City IT / innovation teams considering a pilot.
-   - Researchers studying smart-city data backbones.
+   - Operators bringing up the local container stack.
+   - Developers installing the API, CLI, SDK, and web documentation site.
+   - Contributors looking for the main project entry points.
 
  Conventions:
    - Every file in this repository starts with a documentation header similar
@@ -22,105 +20,86 @@
 
 # Orca
 
-**Secure edge-intelligence platform for cities and infrastructure.**
+Orca is a local-first device operations platform for drones, robots, sensors,
+camera systems, and edge infrastructure. The main user surfaces are local CLI,
+SDK, terminal-first workflows, and a documentation/downloads website.
 
-Orca unifies IoT, GPS, cameras, 2D/3D maps, AI, cryptography, and secure edge compute into a single auditable operations dashboard.
+## What You Install
 
-The repository now also includes a Kaggle-ready fine-tuning pipeline for the Orca Model, with LoRA and QLoRA workflows for Orca operational intelligence.
+The repository contains these main runtime surfaces:
 
-This bundle does not include LLaMA-3 weights. It only ships Orca code, LoRA or QLoRA adapters, and synthetic or private datasets. Users must obtain any compatible base model from official provider sources.
+| Surface | Path | Purpose |
+| ------ | ------ | ------- |
+| API | `orcaapi/` | FastAPI backend for device registry, telemetry, maps, firmware, and service orchestration |
+| Web site | `webapp/` | Documentation and downloads site |
+| Drone services | `surveillance/` | Drone gateway, mission control, mapping, threat detection, and camera ingestion |
+| CLI | `orca` + `cli/orca_cli/` | Local operational commands and template export |
+| Python SDK | `sdk/python/orca_sdk/` | Local programmatic client for API workflows |
+| AI runtime | `ai/` | Training, inference, datasets, and model workflow assets |
 
----
+## Installation Prerequisites
 
-## Operational Overview
+Install these tools on the host before using the repo:
 
-![Orca Operational Flow](docs/diagrams/orca-architecture.svg)
+- Docker with Compose support
+- Python 3.11+ and `pip`
+- Node.js 20+ and `npm`
+- GNU Make
 
-End-to-end flow:
-**Edge Devices → Edge Compute → Location Fusion + ATP Ledger → Operator Dashboard**
+Optional but useful:
 
----
+- `uvicorn` for direct API development
+- a Python virtual environment tool such as `venv`
 
-## Edge Data Flow
+## Quick Start With Containers
 
-![Orca Edge Data Flow](docs/diagrams/edge-data-flow.svg)
-
-Every hop is authenticated, encrypted, and logged to the ATP ledger.
-
----
-
-## Location Intelligence (Map Module)
-
-The **Map module** (`/map`) powers Orca's location intelligence: country selection, region/area-code mapping, IP geolocation, GPS validation, and multi-source fusion with confidence scoring.
-
-![Location Fusion Engine](docs/diagrams/location-fusion.svg)
-
-| Source | Weight | Notes |
-| ------ | ------ | ----- |
-| GPS | 1.0 | Highest accuracy when available |
-| IP Geolocation | 0.6 | ASN + ISP + city |
-| Area Code | 0.4 | Country → region → city → coords |
-| User Selection | 0.3 | Country / region fallback |
-
-
-See [`map/README.md`](map/README.md) for full API and usage.
-
-| Service     | URL                        | Purpose                       |
-|-------------|----------------------------|-------------------------------|
-| Webapp    | http://localhost:5173      | React dashboard               |
-| Orca API | http://localhost:8000      | FastAPI backend (OpenAPI at `/docs`)  |
-| Drone Gateway | http://localhost:8020      | MAVLink / drone telemetry and command gateway |
-| Mission Control | http://localhost:8025      | Mission validation, upload, and monitoring |
-| Mapping Geospatial | http://localhost:8024   | Drone path, geofence, and overlay service |
-| Drone Camera | http://localhost:8022      | RTSP/WebRTC registration and frame metadata |
-| Threat Detection | http://localhost:8023    | AI alert correlation surface |
-| PostgreSQL  | localhost:5432             | Relational store              |
-| Redis       | localhost:6379             | Cache & pub/sub               |
-| Kafka       | localhost:9092             | Event streaming               |
-
-### One-Command Full Dashboard Stack
+The fastest way to run Orca is the root Docker Compose stack.
 
 ```bash
-docker compose up --build
+docker compose build
+docker compose up -d
 ```
 
-That now brings up the main API, web dashboard, drone gateway, mission control,
-mapping, drone camera ingestion, threat detection, observability surfaces, and
-their local proxy routes in one stack.
+Main local endpoints after startup:
 
-### Unified Project Workflow
+| Service | URL | Purpose |
+| ------ | ------ | ------- |
+| Web site | http://localhost:5173 | Documentation and downloads |
+| API router | http://localhost:8000 | Main API entrypoint |
+| Drone gateway | http://localhost:8020 | Drone telemetry and command gateway |
+| Sensor gateway | http://localhost:8021 | Sensor ingestion gateway |
+| Drone camera ingestion | http://localhost:8022 | Camera stream registration |
+| Threat detection | http://localhost:8023 | AI alert correlation service |
+| Mapping geospatial | http://localhost:8024 | Map and geofence service |
+| Mission control | http://localhost:8025 | Mission validation and upload |
 
-Use the workflow runner to execute preflight checks, focused tests, and stack
-smoke checks from one interface.
+To stop the stack:
 
 ```bash
-make workflow-help
-make workflow-preflight
-make workflow-test
-make workflow-local
-make workflow-full
+docker compose down
 ```
 
-Direct script usage:
+To rebuild everything from scratch again:
 
 ```bash
-python3 scripts/project_workflow.py preflight
-python3 scripts/project_workflow.py test
-python3 scripts/project_workflow.py local --smoke-only
-python3 scripts/project_workflow.py full --mode local
-python3 scripts/project_workflow.py docker --compose-file docker-compose.services.yml --build
+docker compose down
+docker compose build --no-cache
+docker compose up -d
 ```
 
-### Local Orca API Development
+## Local Development Installation
+
+### API
 
 ```bash
 cd orcaapi
-python -m venv .venv && source .venv/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-### Local Webapp Development
+### Web site
 
 ```bash
 cd webapp
@@ -128,95 +107,104 @@ npm install
 npm run dev
 ```
 
-Detailed walkthroughs live in [`docs/`](docs/).
+### Root package, CLI, and SDK
 
-Repository ownership and folder responsibilities are defined in
-[`docs/REPOSITORY_STRUCTURE.md`](docs/REPOSITORY_STRUCTURE.md).
+Install the repository package from the root to get the `orca` command and
+packaged Python modules:
 
-Quick placement guide for contributors is in
-[`docs/WORKSPACE_ORGANIZATION.md`](docs/WORKSPACE_ORGANIZATION.md).
+```bash
+python3 -m pip install .
+```
 
-Run `make repo-check` to validate repository structure guardrails.
+Install service extras when you need the full local backend dependency set:
 
-For a single wiki-style project entry point, start with [`docs/WIKI.md`](docs/WIKI.md).
+```bash
+python3 -m pip install .[services]
+```
 
-For pilot or hardware-backed deployments, see [`docs/DOCKER_DEPLOYMENT.md`](docs/DOCKER_DEPLOYMENT.md)
-and [`hardware/`](hardware/).
+## Project Usage
 
-For the official OpenStack and Kubernetes node image, see [`infra/openstack/orca-os/README.md`](infra/openstack/orca-os/README.md).
+### Use The CLI
 
+The root package installs the `orca` command.
 
----
+```bash
+orca --help
+orca workspace template-write-all --output-dir ./orca-templates
+```
 
-## Dashboard — 2D / 3D Map View
+### Use The Python SDK
 
-![Orca Dashboard Map View](docs/diagrams/dashboard-map-view.svg)
+```python
+from orca_sdk.client import OrcaClient
 
-The dashboard renders:
+client = OrcaClient("http://localhost:8000")
+status = client.health_live()
+print(status)
+```
 
-- Authenticated device pins (IoT, cameras, GPS, edge Pis)
-- Live camera popups linked to GPS coordinates
-- Confidence-scored unified location
-- 3D operational scene (`webapp/src/components/ThreeDashboardPanel.tsx`)
+### Use The API Directly
 
-## Drone and Surveillance Layer
+```bash
+curl http://localhost:8000/api/v1/health/live
+```
 
-The drone and surveillance layer adds deployable services for drone telemetry,
-drone commands, drone camera frame metadata, fixed/mobile sensor readings,
-geospatial enrichment, and AI threat detection. These services publish to Kafka,
-feed Spark Streaming and storage, and surface drone patrols, sensors, camera
-links, heatmaps, and threat zones in the operator dashboard.
+### Use The Workflow Helpers
 
-The Drone Gateway is the single drone-facing service. It discovers drone
-capabilities, syncs the PostgreSQL Drone Registry, streams normalized telemetry,
-validates Mission Control commands, and dispatches those commands through
-vendor-agnostic adapters.
+The repo includes make targets and workflow scripts for repeatable checks.
 
-See [surveillance/README.md](surveillance/README.md) for service APIs,
-Kafka topics, Kubernetes deployment, Docker Compose usage, and validation steps.
+```bash
+make workflow-help
+make workflow-preflight
+make workflow-test
+make workflow-local
+make workflow-docker
+```
 
-## Robot Stack
+Equivalent direct script entrypoints:
 
-The robot stack now lives in [robot/](robot/). It provides the modular
-building blocks for ground-robot motion, traction, sensor fusion, perception,
-navigation, cloud contracts, and ROS2 integration.
+```bash
+python3 scripts/project_workflow.py preflight
+python3 scripts/project_workflow.py test
+python3 scripts/project_workflow.py local --smoke-only
+python3 scripts/project_workflow.py docker --compose-file docker-compose.services.yml --build
+```
 
-Start with [robot/README.md](robot/README.md) for the layout and validation
-entry points.
+## Project Structure
 
----
+Use these paths as the main entry points when navigating the repository:
 
-## Repository Layout
+| Path | Use |
+| ---- | --- |
+| `orcaapi/` | Backend API application |
+| `webapp/` | Web documentation and downloads site |
+| `surveillance/` | Drone and field-device service layer |
+| `services/` | Separately deployable service domains |
+| `hardware/` | Hardware integrations and support modules |
+| `ai/` | AI, model training, datasets, and runtime workflows |
+| `robot/` | Ground robotics stack |
+| `map/` | Location intelligence module |
+| `docs/` | Architecture, deployment, and reference docs |
+| `scripts/` | Build, validation, and developer helper scripts |
 
-| Folder | Purpose |
-| ------ | ------- |
-| `ai/` | Consolidated home for AI inference, training, datasets, notebooks, runtime code, and model artifacts |
-| `gpuops/` | JAX-first intelligence engine modules for physics, robotics, mapping, distance, camera, solvers, and optimization |
-| `robot/` | Robot autonomy stack for physics, perception, navigation, cloud integration, and ROS2 workspace contracts |
-| `orcaapi/` | Primary FastAPI application, schemas, services, and migrations |
-| `ingestion/` | External data ingestion pipelines and connectors |
-| `services/` | Deployable microservice workspace for separately scoped services |
-| `surveillance/` | Drone gateway, sensor gateway, drone camera ingestion, mapping, and threat services |
-| `database/` | Shared database bootstrap and initialization assets |
-| `webapp/` | Primary React frontend for operators |
-| `map/` | Location intelligence and mapping subsystem |
-| `security/` | Security services, policy, crypto, IAM, and audit assets |
-| `infra/` | Kubernetes, Terraform, monitoring, and infrastructure code |
-| `hardware/` | Edge hardware integrations and support assets |
-| `scripts/` | Development and operational helper scripts |
-| `tests/` | Cross-module integration and security tests |
-| `docs/` | Architecture, diagrams, runbooks, and reference docs |
+## Additional Documentation
 
-Current backend rule: `orcaapi/` is the backend API application.
-Use `services/` for separately deployable capabilities.
+Use these documents next, depending on what you are doing:
 
-AI-specific folders are consolidated under `ai/`. Use the `ai/` tree directly for model, dataset, training, runtime, and artifact workflows.
+- `docs/DOCKER_DEPLOYMENT.md` for deployment details
+- `docs/REPOSITORY_STRUCTURE.md` for ownership and directory intent
+- `docs/WORKSPACE_ORGANIZATION.md` for placement rules
+- `docs/WIKI.md` for a broad documentation hub
+- `infra/openstack/orca-os/README.md` for the OpenStack and Kubernetes node image
 
-## Orca Model
+## Validation Commands
 
-The Orca Model pipeline supports LoRA and QLoRA fine-tuning workflows and exports adapter-only artifacts to `ai/output/orca-lora/`.
+These are the most useful quick checks after installation:
 
-The repository also now includes a Orca runtime pipeline for ingestion, versioned training, deployment, and inference without bundling third-party foundation-model weights.
+```bash
+make repo-check
+python3 -m py_compile orcaapi/app/core/security.py orcaapi/app/api/v1/router.py
+```
 
 - Dataset schema: [ai/training/dataset_format.md](ai/training/dataset_format.md)
 - Training scripts: [ai/training/lora_training.py](ai/training/lora_training.py) and [ai/training/qlora_training.py](ai/training/qlora_training.py)
@@ -242,6 +230,40 @@ The repository also now includes a Orca runtime pipeline for ingestion, versione
 - The active deployed model is tracked via `ai/models/active_model.json`
 - FastAPI inference exposes Orca task endpoints under `/orca/*`
 - The project CLI supports `orca ingest`, `orca train`, `orca deploy`, and `orca dataset export`
+- The packaged CLI now lives in `cli/orca_cli/` while `./orca` remains the stable launcher
+- The repository now ships a Python SDK in `sdk/python/orca_sdk/` for health, fleet, camera, and control-plane calls
+- Domain indexes under `domains/` group air, robotics, vision, sensors, platform, and AI surfaces without relocating existing runtime paths
+- The drone and surveillance Python stack now lives under `air/surveillance/` with a compatibility shim at `surveillance/`
+- The robotics Python stack now lives under `robotics/robot/` with a compatibility shim at `robot/`
+- The camera service now lives under `vision/camera_module/` with a compatibility shim at `camera_module/`
+- The GPS service now lives under `sensors/gps_module/` with a compatibility shim at `gps_module/`
+- The GPU intelligence service now lives under `ai/gpuops/` with a compatibility shim at `gpuops/`
+- The security domain package now lives under `services/security_domain/` with a compatibility shim at `security/`
+- The hardware domain package now lives under `edge/hardware/` with a compatibility shim at `hardware/`
+- The repository now has root packaging metadata so `pip install -e .` exposes the `orca` CLI and bundled SDK packages
+- Bundled JSON payload templates can be inspected with `orca workspace templates` and `orca workspace template <name>`
+- Bundled JSON payload templates can also be written directly to disk with `orca workspace template-write <name> --output path.json`
+- Bundled JSON payload templates can be written as a starter directory with `orca workspace template-write-all --output-dir templates/`
+
+### Install
+
+Install the repository package in non-editable mode with:
+
+```bash
+python3 -m pip install .
+```
+
+Install it with the service runtime extras needed for the lightweight FastAPI service roots with:
+
+```bash
+python3 -m pip install ".[services]"
+```
+
+Build a distributable wheel with:
+
+```bash
+python3 -m pip wheel . --no-deps -w dist/
+```
 
 Important: the repository does not ship base foundation-model weights. Contributors should only publish LoRA adapters generated from Orca training runs.
 

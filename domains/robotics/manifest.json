@@ -1,0 +1,12 @@
+{
+  "id": "robotics",
+  "name": "Robotics And Autonomy",
+  "summary": "Ground robotics, perception, navigation, and ROS2-adjacent autonomy surfaces.",
+  "paths": [
+    "robotics/robot/",
+    "robotics/robot/navigation/",
+    "robotics/robot/perception/",
+    "robotics/robot/ros2_ws/",
+    "tests/test_surveillance_pipeline_execution.py"
+  ]
+}

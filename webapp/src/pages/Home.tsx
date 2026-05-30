@@ -2,8 +2,8 @@
  * ============================================================================
  * File: webapp/src/pages/Home.tsx
  * Purpose:
- *   Landing page describing what Orca is and pointing visitors at the
- *   dashboard, docs, and GitHub.
+ *   Landing page describing what Orca is and pointing visitors at
+ *   downloads, docs, and GitHub.
  * ============================================================================
  */
 
@@ -11,31 +11,31 @@ import { Link } from "react-router-dom";
 
 const coreFeatures = [
   {
-    title: "Camera Integration",
-    body: "Secure ingestion for RTSP and ONVIF streams, camera registration, stream telemetry, and tamper-aware field devices.",
+    title: "Local CLI",
+    body: "Primary local control surface for UUID device discovery, connection management, firmware checks, and operational workflows.",
   },
   {
-    title: "GPS and IoT Modules",
-    body: "USB, GPS, NMEA, MQTT, and sensor adapters normalize city device events into one operational backbone.",
+    title: "Terminal Dashboard",
+    body: "A local TUI focused on device state, firmware, telemetry, and diagnostics without depending on a cloud-hosted browser dashboard.",
   },
   {
-    title: "Cloud Orchestration",
-    body: "Kubernetes, Terraform, Docker Compose, and hardware-aware CI/CD support repeatable deployments from lab to cloud.",
+    title: "UUID Device Identity",
+    body: "Each drone or robot is identified by firmware-burned UUIDs instead of user accounts, passwords, or browser sessions.",
   },
   {
-    title: "Quantum-Safe Security",
-    body: "RBAC, JWT, AES-GCM, audit trails, and post-quantum envelope services prepare the platform for future cryptography needs.",
+    title: "OpenStack-aligned Backend",
+    body: "OpenStack services remain available for device registry, firmware delivery, optional telemetry storage, and optional map data synchronization.",
   },
   {
-    title: "Operator Dashboard",
-    body: "The React control plane brings devices, security posture, data flow, and operator actions into one live interface.",
+    title: "Developer SDK",
+    body: "Python SDK and local agent surfaces give developers consistent device operations without routing everything through a browser UI.",
   },
 ];
 
 const proofPoints = [
   { value: "5", label: "architecture layers" },
-  { value: "4", label: "dashboard control modules" },
-  { value: "PQC", label: "quantum-ready security" },
+  { value: "UUID", label: "device identity root" },
+  { value: "TUI", label: "local operator surface" },
   { value: "CI", label: "hardware-aware validation" },
 ];
 
@@ -43,15 +43,15 @@ const governanceSignals = [
   "Apache 2.0 open-source licensing",
   "GitFlow branch governance and CI checks",
   "Security posture documented with audit trails",
-  "Hardware, cloud, and dashboard modules validated together",
+  "Hardware, CLI, SDK, and local agent modules validated together",
 ];
 
 const architectureLayers = [
-  "City devices and systems",
+  "Device UUID and firmware identity",
+  "Local CLI, TUI, and local agent",
   "Ingestion and protocol adapters",
-  "Storage and event backbone",
-  "Security and audit controls",
-  "SmartEdge dashboard",
+  "Optional OpenStack services",
+  "Documentation and developer guides",
 ];
 
 export default function Home() {
@@ -62,34 +62,34 @@ export default function Home() {
           <span className="eyebrow">Open smart city infrastructure</span>
           <h2>Orca</h2>
           <p>
-            Orca is an open project dedicated to building secure,
-            quantum-ready smart city infrastructure. It connects cameras, GPS,
-            IoT devices, hardware services, and cloud systems into one unified
-            backbone designed for transparency, security, and innovation.
+            Orca is a local-first robotics and device operations platform. It
+            centers on CLI, TUI, SDK, and local-agent workflows, uses
+            firmware-burned UUIDs instead of user accounts, and keeps backend
+            services focused on registry, firmware, telemetry, and optional map data.
           </p>
 
           <div className="foundation-strip" aria-label="Project positioning">
-            <span>Open foundation ambition</span>
-            <span>Security-first engineering</span>
-            <span>City-scale control plane</span>
+            <span>Local-first operations</span>
+            <span>OpenStack-grade visual language</span>
+            <span>Kubernetes and OLM inspired platform posture</span>
           </div>
 
           <div className="hero-actions">
-            <Link className="btn primary" to="/dashboard">
-              Open dashboard
+            <Link className="btn primary" to="/downloads">
+              Get Orca tools
             </Link>
-            <Link className="btn" to="/architecture">
-              Explore architecture
+            <Link className="btn" to="/docs">
+              Read docs
             </Link>
           </div>
         </div>
 
         <div className="city-scene" aria-hidden="true">
           <div className="scene-grid" />
-          <div className="scene-node node-camera">CAM</div>
-          <div className="scene-node node-gps">GPS</div>
-          <div className="scene-node node-iot">IOT</div>
-          <div className="scene-core">SmartEdge</div>
+          <div className="scene-node node-camera">CLI</div>
+          <div className="scene-node node-gps">TUI</div>
+          <div className="scene-node node-iot">SDK</div>
+          <div className="scene-core">UUID</div>
           <div className="scene-line line-a" />
           <div className="scene-line line-b" />
           <div className="scene-line line-c" />
@@ -110,15 +110,15 @@ export default function Home() {
           <span className="eyebrow">Mission</span>
           <h3>Open, collaborative, and future-proof by design.</h3>
           <p className="section-copy">
-            The project is shaped like a professional open infrastructure
-            program: public architecture, validated code paths, documented
-            security posture, and a dashboard that operators can actually use.
+            ORCA now follows a local-first operations model: public
+            architecture, installable tools, UUID-based devices, validated
+            runtime paths, and optional backend services rather than browser dashboards.
           </p>
         </div>
         <div className="statement-list">
-          <p>Create a foundation for smart cities that is open, collaborative, and future-proof.</p>
-          <p>Ensure data security with post-quantum cryptography and strong audit controls.</p>
-          <p>Empower developers, governments, and communities with open dashboards and APIs.</p>
+          <p>Run ORCA locally with a CLI, terminal dashboard, SDK, and local agent.</p>
+          <p>Use firmware-burned UUIDs instead of user accounts, passwords, or browser sessions.</p>
+          <p>Keep backend services focused on registry, updates, telemetry, and optional map data.</p>
         </div>
       </section>
 
@@ -131,9 +131,9 @@ export default function Home() {
           <article className="governance-panel primary-panel">
             <h4>Open governance baseline</h4>
             <p>
-              Orca is positioned as an open project with clear contribution
-              surfaces, visible security controls, modular infrastructure, and
-              documentation that can grow into a foundation-style program.
+              ORCA is positioned as open infrastructure with a serious
+              operator-facing look and feel inspired by OpenStack, Kubernetes,
+              and Operator Lifecycle Manager, but centered on local tools instead of cloud dashboards.
             </p>
           </article>
           <div className="governance-list">
@@ -150,7 +150,7 @@ export default function Home() {
       <section className="content-section">
         <div className="section-heading">
           <span className="eyebrow">Core features</span>
-          <h3>Everything the platform has grown into.</h3>
+          <h3>What the platform is centered on now.</h3>
         </div>
         <div className="feature-grid">
           {coreFeatures.map((feature) => (
@@ -165,7 +165,7 @@ export default function Home() {
       <section className="content-section architecture-preview">
         <div className="section-heading">
           <span className="eyebrow">Architecture overview</span>
-          <h3>A layered backbone for real city operations.</h3>
+          <h3>A layered backbone for local-first device operations.</h3>
         </div>
         <div className="layer-stack">
           {architectureLayers.map((layer, index) => (
@@ -187,18 +187,18 @@ export default function Home() {
           <span className="eyebrow">Community</span>
           <h3>Built so every discipline has a real place to contribute.</h3>
           <p>
-            Developers can contribute services and containers. Designers can
-            improve diagrams and Wiki visuals. Cloud engineers can expand
-            infrastructure modules. Security experts can strengthen encryption,
-            auditability, and compliance posture.
+            Developers can contribute CLI commands, SDKs, local agents,
+            hardware services, firmware flows, and documentation. Designers can
+            improve downloads, docs, diagrams, and infrastructure-style
+            presentation without maintaining browser dashboards.
           </p>
         </div>
         <div className="outcome-panel">
           <h4>Outcome</h4>
           <p>
-            Orca now reads as a personal open project with foundation-level
-            ambition: transparent, visual, collaborative, and ready to evolve
-            into a professional smart city infrastructure initiative.
+            ORCA reads as a local-first infrastructure platform: transparent,
+            installable, operationally serious, and ready to evolve around CLI,
+            TUI, SDK, firmware, and device registry flows.
           </p>
           <Link className="text-link" to="/community">View contribution paths</Link>
         </div>

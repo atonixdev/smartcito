@@ -2,17 +2,18 @@
 ================================================================================
  File: orcaapi/app/core/security.py
  Purpose:
-   Authentication and authorization primitives for the Orca API.
+     Authentication and authorization primitives for the Orca API.
 
-   Provides:
-     - Password hashing (bcrypt via passlib).
-     - JWT issuance and verification (python-jose).
-     - A FastAPI dependency to extract the current user from a Bearer token.
+     Provides:
+         - Password hashing (bcrypt via passlib) for legacy token flows.
+         - JWT issuance and verification when explicit tokens are used.
+         - A FastAPI dependency that defaults to local-first access when no token
+             is supplied.
 
  Security notes:
-   - Tokens use HS256 by default for simplicity; switch to RS256 in
-     multi-service production deployments and load keys from a KMS.
-   - Passwords are NEVER logged or returned in API responses.
+     - Tokens use HS256 by default for simplicity; switch to RS256 in
+         multi-service production deployments and load keys from a KMS.
+     - Passwords are NEVER logged or returned in API responses.
 ================================================================================
 """
 
@@ -33,8 +34,13 @@ from app.core.config import get_settings
 # bcrypt is intentionally slow → safe against brute force on stolen hashes.
 _pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# The tokenUrl points at the OAuth2 password flow endpoint exposed by the API.
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/token")
+# Token parsing remains available for explicit bearer-token integrations, but
+# local installs no longer require user login or account-backed sessions.
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/token", auto_error=False)
+
+LOCAL_SYSTEM_SUBJECT = "local-device"
+LOCAL_SYSTEM_ROLE = "admin"
+LOCAL_SYSTEM_EXP = 4102444800
 
 
 class TokenPayload(BaseModel):
@@ -99,8 +105,14 @@ def decode_token(token: str) -> TokenPayload:
         ) from exc
 
 
-def get_current_user(token: str = Depends(oauth2_scheme)) -> TokenPayload:
-    """FastAPI dependency that yields the authenticated user's claims."""
+def get_current_user(token: str | None = Depends(oauth2_scheme)) -> TokenPayload:
+    """FastAPI dependency that yields local-first caller claims.
+
+    If no bearer token is present, ORCA assumes a local install flow and
+    grants an in-process system identity instead of requiring login.
+    """
+    if token is None or not token.strip():
+        return TokenPayload(sub=LOCAL_SYSTEM_SUBJECT, role=LOCAL_SYSTEM_ROLE, exp=LOCAL_SYSTEM_EXP)
     return decode_token(token)
 
 

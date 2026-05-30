@@ -20,11 +20,11 @@ const layers = [
   },
   {
     title: "Security and Audit Controls",
-    body: "JWT, RBAC, AES-GCM, audit events, security policies, and quantum-ready envelopes protect control-plane operations.",
+    body: "AES-GCM, audit events, firmware integrity, policy controls, and quantum-ready envelopes protect local and backend workflows.",
   },
   {
-    title: "SmartEdge Dashboard",
-    body: "React pages expose the device manager, security monitor, data-flow view, traffic summaries, and operator controls.",
+    title: "Local Tooling Layer",
+    body: "CLI, terminal dashboard, SDK, and local agent surfaces operate against device UUIDs and optional OpenStack-backed services.",
   },
 ];
 
@@ -32,11 +32,11 @@ export default function Architecture() {
   return (
     <section className="page-shell narrative-page">
       <span className="eyebrow">Architecture overview</span>
-      <h2>Layered from field devices to operator decisions.</h2>
+      <h2>Layered from device firmware to local operator tooling.</h2>
       <p className="lead-text">
         Orca is built as a layered architecture so protocol adapters,
-        storage, security, cloud orchestration, and dashboards can evolve
-        independently while still operating as one backbone.
+        storage, security, firmware distribution, local tooling, and optional
+        backend services can evolve independently while still operating as one backbone.
       </p>
 
       <img
@@ -61,7 +61,6 @@ export default function Architecture() {
         <img src="/assets/ingestion-protocols.svg" alt="Ingestion protocol adapters" />
         <img src="/assets/storage-backbone.svg" alt="Storage and event backbone" />
         <img src="/assets/security-quantum.svg" alt="Security and quantum-safe controls" />
-        <img src="/assets/dashboard-views.svg" alt="Dashboard and operator views" />
       </div>
     </section>
   );

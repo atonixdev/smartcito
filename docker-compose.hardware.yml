@@ -128,7 +128,7 @@ services:
   camera-simulator:
     build:
       context: .
-      dockerfile: camera_module/Dockerfile
+      dockerfile: services/camera-service/Dockerfile
       image: atonixdev/orca-camera-simulator:1.0.0
     container_name: orca-camera-simulator
     env_file: .env
@@ -150,7 +150,7 @@ services:
   gps-simulator:
     build:
       context: .
-      dockerfile: gps_module/Dockerfile
+      dockerfile: services/gps-service/Dockerfile
       image: atonixdev/orca-gps-simulator:1.0.0
     container_name: orca-gps-simulator
     env_file: .env
@@ -172,7 +172,7 @@ services:
   hardware-agent:
     build:
       context: .
-      dockerfile: hardware/Dockerfile
+      dockerfile: edge/hardware/Dockerfile
       image: atonixdev/orca-hardware-agent:1.0.0
     container_name: orca-hardware-agent
     env_file: .env
@@ -192,7 +192,7 @@ services:
   usb-module:
     build:
       context: .
-      dockerfile: hardware/usb_module/Dockerfile
+      dockerfile: edge/hardware/usb_module/Dockerfile
       image: atonixdev/orca-usb-module:1.0.0
     container_name: orca-usb-module
     env_file: .env
@@ -234,7 +234,7 @@ services:
   security-service:
     build:
       context: .
-      dockerfile: security/Dockerfile
+      dockerfile: services/security-service/Dockerfile
       image: atonixdev/orca-security-service:1.0.0
     container_name: orca-security-service
     env_file: .env

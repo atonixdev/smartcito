@@ -1,0 +1,14 @@
+{
+  "device_id": "orca-unit-01",
+  "latitude": -26.2041,
+  "longitude": 28.0473,
+  "altitude": 24.0,
+  "speed": 8.4,
+  "heading": 180.0,
+  "timestamp": "2026-05-30T11:30:00Z",
+  "name": "Downtown Patrol One",
+  "device_type": "drone",
+  "icon": "quadcopter",
+  "color": "#57c7d4",
+  "status": "active"
+}

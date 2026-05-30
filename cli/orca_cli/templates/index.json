@@ -1,0 +1,34 @@
+{
+  "templates": [
+    {
+      "name": "camera-register",
+      "description": "Sample payload for POST /api/v1/cameras/register",
+      "file": "camera-register.json"
+    },
+    {
+      "name": "camera-telemetry",
+      "description": "Sample payload for POST /api/v1/cameras/{device_id}/telemetry",
+      "file": "camera-telemetry.json"
+    },
+    {
+      "name": "gps-ingest",
+      "description": "Sample payload for POST /api/v1/ingest/gps",
+      "file": "gps-ingest.json"
+    },
+    {
+      "name": "gps-gateway-ingest",
+      "description": "Sample payload for POST /api/v1/gps/gateway/ingest",
+      "file": "gps-gateway-ingest.json"
+    },
+    {
+      "name": "map-device-register",
+      "description": "Sample payload for POST /api/v1/control-plane/map/register",
+      "file": "map-device-register.json"
+    },
+    {
+      "name": "operator-control-update",
+      "description": "Sample payload semantics for POST /api/v1/control-plane/operator-controls/{control_id}",
+      "file": "operator-control-update.json"
+    }
+  ]
+}

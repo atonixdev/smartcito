@@ -1,0 +1,4 @@
+include README.md
+include LICENSE
+recursive-include cli/orca_cli/templates *.json
+recursive-include cli/orca_cli/domain_manifests *.json

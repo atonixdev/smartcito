@@ -8,18 +8,18 @@
 const roadmap = [
   {
     horizon: "Short term",
-    title: "Containerization, CI/CD, hardware validation",
-    body: "Keep the Docker, GitFlow, security scanning, hardware simulation, and dashboard validation path reliable.",
+    title: "CLI, TUI, local agent, firmware delivery",
+    body: "Keep the local tooling stack, UUID device flows, firmware packaging, and hardware validation path reliable.",
   },
   {
     horizon: "Mid term",
-    title: "AI model registry, blockchain audit trail, IoT expansion",
-    body: "Add richer analytics, durable audit proofs, broader field-device coverage, and stronger operator workflows.",
+    title: "Device registry, telemetry storage, map synchronization",
+    body: "Expand OpenStack-backed registry, optional telemetry persistence, map data services, and offline-first workflows.",
   },
   {
     horizon: "Long term",
-    title: "Quantum computing, satellite feeds, digital twin simulation",
-    body: "Explore next-generation cryptography, external data feeds, city-scale simulation, and advanced decision support.",
+    title: "Quantum-safe operations, satellite feeds, digital twin simulation",
+    body: "Explore next-generation cryptography, external data feeds, city-scale simulation, and advanced device-side decision support.",
   },
 ];
 
@@ -27,11 +27,11 @@ export default function Roadmap() {
   return (
     <section className="page-shell narrative-page">
       <span className="eyebrow">Roadmap</span>
-      <h2>From practical foundation to advanced smart city platform.</h2>
+      <h2>From local-first device operations to advanced infrastructure platform.</h2>
       <p className="lead-text">
         The roadmap keeps near-term engineering grounded while leaving room for
-        the larger vision: a transparent, visual, collaborative platform for
-        secure smart city infrastructure.
+        the larger vision: a transparent, installable, collaborative platform for
+        secure smart city and robotics infrastructure.
       </p>
 
       <div className="roadmap-track">

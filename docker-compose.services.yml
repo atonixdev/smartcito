@@ -161,7 +161,7 @@ services:
   camera-service:
     build:
       context: .
-      dockerfile: camera_module/Dockerfile
+      dockerfile: services/camera-service/Dockerfile
     image: ${CAMERA_IMAGE:-atonixdev/orca-camera-service:1.0.0}
     container_name: orca-camera-service
     env_file: .env
@@ -173,7 +173,7 @@ services:
   gps-service:
     build:
       context: .
-      dockerfile: gps_module/Dockerfile
+      dockerfile: services/gps-service/Dockerfile
     image: ${GPS_IMAGE:-atonixdev/orca-gps-service:1.0.0}
     container_name: orca-gps-service
     env_file: .env
@@ -201,7 +201,7 @@ services:
   gpuops-service:
     build:
       context: .
-      dockerfile: gpuops/Dockerfile
+      dockerfile: ai/gpuops/Dockerfile
     image: ${GPUOPS_IMAGE:-atonixdev/orca-gpuops-service:1.0.0}
     container_name: orca-gpuops-service
     env_file: .env
@@ -213,7 +213,7 @@ services:
   robot-service:
     build:
       context: .
-      dockerfile: robot/Dockerfile
+      dockerfile: robotics/robot/Dockerfile
     image: ${ROBOT_IMAGE:-atonixdev/orca-robot-service:1.0.0}
     container_name: orca-robot-service
     env_file: .env
@@ -228,7 +228,7 @@ services:
   security-service:
     build:
       context: .
-      dockerfile: security/Dockerfile
+      dockerfile: services/security-service/Dockerfile
     image: ${SECURITY_IMAGE:-atonixdev/orca-security-service:1.0.0}
     container_name: orca-security-service
     env_file: .env
@@ -242,7 +242,7 @@ services:
   hardware-agent:
     build:
       context: .
-      dockerfile: hardware/Dockerfile
+      dockerfile: edge/hardware/Dockerfile
     image: ${HARDWARE_IMAGE:-atonixdev/orca-hardware-agent:1.0.0}
     container_name: orca-hardware-agent
     env_file: .env
@@ -254,7 +254,7 @@ services:
   drone-gateway:
     build:
       context: .
-      dockerfile: surveillance/Dockerfile
+      dockerfile: air/surveillance/Dockerfile
     image: ${DRONE_GATEWAY_IMAGE:-atonixdev/orca-drone-gateway:1.0.0}
     container_name: orca-drone-gateway
     env_file: .env
@@ -270,7 +270,7 @@ services:
   sensor-gateway:
     build:
       context: .
-      dockerfile: surveillance/Dockerfile
+      dockerfile: air/surveillance/Dockerfile
     image: ${SENSOR_GATEWAY_IMAGE:-atonixdev/orca-sensor-gateway:1.0.0}
     container_name: orca-sensor-gateway
     env_file: .env
@@ -285,7 +285,7 @@ services:
   drone-camera-ingestion:
     build:
       context: .
-      dockerfile: surveillance/Dockerfile
+      dockerfile: air/surveillance/Dockerfile
     image: ${DRONE_CAMERA_IMAGE:-atonixdev/orca-drone-camera-ingestion:1.0.0}
     container_name: orca-drone-camera-ingestion
     env_file: .env
@@ -300,7 +300,7 @@ services:
   mission-control:
     build:
       context: .
-      dockerfile: surveillance/Dockerfile
+      dockerfile: air/surveillance/Dockerfile
     image: ${MISSION_CONTROL_IMAGE:-atonixdev/orca-mission-control:1.0.0}
     container_name: orca-mission-control
     env_file: .env
@@ -316,7 +316,7 @@ services:
   threat-detection:
     build:
       context: .
-      dockerfile: surveillance/Dockerfile
+      dockerfile: air/surveillance/Dockerfile
     image: ${THREAT_DETECTION_IMAGE:-atonixdev/orca-threat-detection:1.0.0}
     container_name: orca-threat-detection
     env_file: .env
@@ -331,7 +331,7 @@ services:
   mapping-geospatial:
     build:
       context: .
-      dockerfile: surveillance/Dockerfile
+      dockerfile: air/surveillance/Dockerfile
     image: ${MAPPING_GEOSPATIAL_IMAGE:-atonixdev/orca-mapping-geospatial:1.0.0}
     container_name: orca-mapping-geospatial
     env_file: .env

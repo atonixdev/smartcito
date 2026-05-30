@@ -1,0 +1,12 @@
+{
+  "id": "ai",
+  "name": "AI And Model Runtime",
+  "summary": "Model training, runtime inference, datasets, notebooks, and accelerator-facing code.",
+  "paths": [
+    "ai/",
+    "ai/gpuops/",
+    "training/",
+    "examples/",
+    "docs/ORCA_MODEL_RUNTIME.md"
+  ]
+}

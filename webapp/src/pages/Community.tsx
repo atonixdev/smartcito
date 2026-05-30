@@ -8,11 +8,11 @@
 const contributionPaths = [
   {
     title: "Developers",
-    body: "Contribute FastAPI endpoints, React panels, service containers, protocol adapters, tests, and SDK clients.",
+    body: "Contribute FastAPI endpoints, CLI commands, SDK clients, service containers, protocol adapters, tests, and local agent features.",
   },
   {
     title: "Designers",
-    body: "Improve dashboard layouts, Wiki visuals, operational diagrams, architecture pages, and contributor onboarding flows.",
+    body: "Improve documentation layouts, infrastructure-style visuals, operational diagrams, download flows, and contributor onboarding pages.",
   },
   {
     title: "Cloud Engineers",
@@ -27,11 +27,11 @@ const contributionPaths = [
 export default function Community() {
   return (
     <section className="page-shell narrative-page">
-      <span className="eyebrow">Community and contribution</span>
+      <span className="eyebrow">Developer guides and contribution</span>
       <h2>Open to everyone who wants cities to be safer and more transparent.</h2>
       <p className="lead-text">
         Orca is built for practical contribution. The repo contains active
-        backend code, frontend pages, hardware modules, security services,
+        backend code, installable tooling, hardware modules, security services,
         infrastructure automation, CI validation, and Wiki-ready documentation.
       </p>
 
@@ -49,9 +49,9 @@ export default function Community() {
           <h3>How collaboration stays grounded</h3>
           <p>
             Contributions should connect back to a real platform surface:
-            a service endpoint, a dashboard module, an infrastructure workflow,
+            a service endpoint, a CLI or SDK module, a local agent workflow,
             a hardware validation path, or documentation that helps people run
-            and understand the system.
+            and understand the system locally.
           </p>
         </div>
         <div className="outcome-panel">

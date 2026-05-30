@@ -1,0 +1,12 @@
+{
+  "id": "sensors",
+  "name": "Sensors And Edge Telemetry",
+  "summary": "GPS, ingest, and edge device sensor flows that feed the control plane.",
+  "paths": [
+    "sensors/gps_module/",
+    "ingestion/",
+    "hardware/gps_module/",
+    "hardware/gps_modules/",
+    "orcaapi/app/api/v1/endpoints/gps.py"
+  ]
+}

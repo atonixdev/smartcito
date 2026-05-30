@@ -19,7 +19,7 @@
   </defs>
   <rect width="1600" height="900" fill="url(#bg)"/>
   <text x="90" y="110" class="title">Orca Platform Overview</text>
-  <text x="90" y="155" class="subtitle">City devices, software services, hardware infrastructure, dashboards, and security operating as one governed backbone.</text>
+  <text x="90" y="155" class="subtitle">City devices, software services, hardware infrastructure, local tooling, and security operating as one governed backbone.</text>
   <rect x="95" y="240" width="270" height="160" class="box"/>
   <text x="130" y="295" class="label">City Devices</text>
   <text x="130" y="330" class="body">Cameras</text>
@@ -31,15 +31,15 @@
   <text x="485" y="360" class="body">ONVIF, NMEA</text>
   <text x="485" y="390" class="body">Protocol adapters</text>
   <rect x="825" y="220" width="320" height="190" class="box"/>
-  <text x="865" y="280" class="label">API and Control Plane</text>
-  <text x="865" y="320" class="body">FastAPI, auth, orchestration</text>
-  <text x="865" y="350" class="body">camera registry, quantum APIs</text>
+  <text x="865" y="280" class="label">API and Device Services</text>
+  <text x="865" y="320" class="body">FastAPI, orchestration, registry</text>
+  <text x="865" y="350" class="body">camera registry, firmware APIs</text>
   <text x="865" y="380" class="body">audit-aware operations</text>
   <rect x="1225" y="240" width="280" height="160" class="box"/>
-  <text x="1265" y="295" class="label">Dashboards</text>
-  <text x="1265" y="330" class="body">React</text>
-  <text x="1265" y="360" class="body">Dash</text>
-  <text x="1265" y="390" class="body">Grafana views</text>
+  <text x="1265" y="295" class="label">Local Tooling</text>
+  <text x="1265" y="330" class="body">CLI</text>
+  <text x="1265" y="360" class="body">TUI</text>
+  <text x="1265" y="390" class="body">SDK and agent</text>
   <rect x="460" y="520" width="300" height="160" class="box"/>
   <text x="500" y="575" class="label">Storage Backbone</text>
   <text x="500" y="610" class="body">PostgreSQL</text>
@@ -47,7 +47,7 @@
   <text x="500" y="670" class="body">Swift and Cinder alignment</text>
   <rect x="860" y="515" width="310" height="170" class="box"/>
   <text x="900" y="570" class="label">Security and Audit</text>
-  <text x="900" y="605" class="body">RBAC and encryption</text>
+  <text x="900" y="605" class="body">policy and encryption</text>
   <text x="900" y="635" class="body">audit trails</text>
   <text x="900" y="665" class="body">quantum-safe envelopes</text>
   <rect x="1195" y="520" width="310" height="170" class="box"/>

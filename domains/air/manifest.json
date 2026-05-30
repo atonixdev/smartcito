@@ -1,0 +1,12 @@
+{
+  "id": "air",
+  "name": "Air And Drone Systems",
+  "summary": "Drone-facing surfaces including flight telemetry, edge drone integrations, and aerial mission services.",
+  "paths": [
+    "air/surveillance/",
+    "gps_module/",
+    "hardware/drone_edge/",
+    "hardware/docs/drone_manufacturer_spec.md",
+    "webapp/src/api/dronegateway.ts"
+  ]
+}

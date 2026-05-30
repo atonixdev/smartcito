@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "orca-platform"
+version = "0.1.0"
+description = "Orca CLI and SDK packaging metadata"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+services = ["fastapi", "pydantic", "python-dotenv"]
+
+[project.scripts]
+orca = "orca_cli.main:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = [".", "cli", "sdk/python"]
+include = [
+    "air*",
+    "edge*",
+    "hardware*",
+    "vision*",
+    "camera_module*",
+    "robotics*",
+    "surveillance*",
+    "robot*",
+    "sensors*",
+    "gps_module*",
+    "ingestion*",
+    "ai*",
+    "gpuops*",
+    "services*",
+    "security*",
+    "orca_cli*",
+    "orca_sdk*",
+]
+
+[tool.setuptools.package-data]
+orca_cli = ["templates/*.json", "domain_manifests/*.json"]

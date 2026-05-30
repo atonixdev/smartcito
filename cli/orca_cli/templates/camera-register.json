@@ -1,0 +1,25 @@
+{
+  "device_id": "cam-001",
+  "device_type": "body_camera",
+  "firmware_version": "1.4.2",
+  "capabilities": {
+    "gps": true,
+    "tamper_detection": true,
+    "mount_detection": true,
+    "stream_protocols": ["rtsp", "webrtc"],
+    "local_encrypted_storage": true
+  },
+  "network": {
+    "transport": "wifi6",
+    "signal_profile": "mobile"
+  },
+  "security": {
+    "identity_mode": "certificate",
+    "tls_required": true,
+    "storage_encryption": "aes-256"
+  },
+  "mounting": {
+    "magnetic_base": true,
+    "mount_sensor_type": "hall_effect"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "device_id": "edge-node-001",
+  "device_type": "iot",
+  "name": "Perimeter Edge Node 1",
+  "latitude": -26.2041,
+  "longitude": 28.0473,
+  "trust_score": 92,
+  "camera_feed_url": "rtsp://edge-node-001.local/stream/main",
+  "sensor_type": "thermal",
+  "sensor_value": 21.4,
+  "mqtt_topic": "orca/edge/perimeter/001"
+}

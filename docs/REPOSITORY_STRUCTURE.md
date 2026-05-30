@@ -18,8 +18,90 @@ should follow these top-level ownership rules:
 - `orcaapi/` is the backend API application.
 - `services/` holds separately deployable service runtimes.
 - `webapp/` is the primary frontend application.
+- `domains/` is the contributor-facing grouping layer for air, robotics,
+  vision, sensors, platform, and AI discovery.
+- `air/` is the physical home for drone and surveillance Python packages.
+- `vision/` is the physical home for camera and vision service packages.
+- `robotics/` is the physical home for robotics Python packages.
+- `sensors/` is the physical home for GPS and sensor service packages.
+- `services/` now also contains the migrated Python security-domain package root.
+- `edge/` is the physical home for migrated hardware-domain packages.
+- `cli/` is the packaged command-line surface.
+- `sdk/` is the repository home for shipped developer SDKs.
 
 This document is the source of truth for those boundaries.
+
+## Grouping Layer
+
+The repository now includes a top-level `domains/` folder that groups related
+surfaces for discovery. Some groups are now also reflected in physical Python
+package roots such as `air/` and `robotics/`.
+
+Use `domains/` when you need a contributor-facing discovery map such as:
+
+- all drone and air-system paths in one place
+- all robotics and autonomy paths in one place
+- all camera and vision paths in one place
+- all platform, CLI, and SDK paths in one place
+
+Where migrations have already happened, compatibility shims stay behind at the
+old import roots so runtime code can transition without a flag day.
+
+### `air/`
+
+**Responsibility:** Drone, surveillance, and aerial mission Python packages.
+
+**Put here:**
+
+- Drone gateway, mission control, aerial camera, and related surveillance code.
+- Supporting drone-oriented models, Kafka publishers, and zone resolution code.
+
+### `vision/`
+
+**Responsibility:** Camera-facing Python packages and video service modules.
+
+**Put here:**
+
+- Camera service code and protocol driver helpers.
+- Standalone vision-side FastAPI services and related runtime assets.
+
+### `robotics/`
+
+**Responsibility:** Ground robotics, autonomy, physics, perception, and ROS2
+Python packages.
+
+**Put here:**
+
+- Robot service code.
+- Navigation, perception, physics, cloud, and ROS2 workspace packages.
+
+### `sensors/`
+
+**Responsibility:** GPS and sensor-oriented Python service packages.
+
+**Put here:**
+
+- GPS parsing services.
+- Sensor-edge FastAPI services and related runtime assets.
+
+### `services/`
+
+**Responsibility:** Deployable service assets and selected migrated Python
+service-domain packages.
+
+**Put here:**
+
+- Standalone service folders such as `ai-service/`, `camera-service/`, and `gps-service/`.
+- The migrated `security_domain/` Python package and related runtime assets.
+
+### `edge/`
+
+**Responsibility:** Hardware-facing Python packages and edge device validation helpers.
+
+**Put here:**
+
+- The migrated `hardware/` Python package.
+- Edge runtime helpers, device references, and hardware validation assets.
 
 ## Server Rule
 
@@ -146,6 +228,28 @@ layers.
 
 New general-purpose operator UI work should go to `webapp/`. Do not create a
 parallel frontend root for dashboard-only work.
+
+### `cli/`
+
+**Responsibility:** Packaged command-line entrypoints and operator/developer
+workflow commands.
+
+**Put here:**
+
+- Modular CLI code that is launched by stable entrypoints such as `./orca`.
+- SDK-backed operational commands that query running Orca control-plane APIs.
+- Workspace inspection commands that help contributors navigate the repo.
+
+### `sdk/`
+
+**Responsibility:** Shipped software development kits for external consumers,
+automation, and integration clients.
+
+**Put here:**
+
+- Language-specific SDK packages.
+- Lightweight API clients that follow the supported Orca backend contract.
+- Examples and README files for SDK consumers.
 
 ### `security/`
 

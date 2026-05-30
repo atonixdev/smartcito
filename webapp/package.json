@@ -1,13 +1,13 @@
 {
   "//header": "============================================================================",
   "//file": "webapp/package.json",
-  "//purpose": "NPM manifest for the Orca React dashboard (Vite + TypeScript).",
+  "//purpose": "NPM manifest for the Orca React docs and downloads site (Vite + TypeScript).",
   "//note": "Comment keys above are ignored by npm and serve as inline documentation.",
   "//footer": "============================================================================",
   "name": "orca-webapp",
   "private": true,
   "version": "0.1.0",
-  "description": "Orca Urban Data Backbone — operator dashboard.",
+  "description": "Orca local-first documentation and downloads site.",
   "type": "module",
   "license": "Apache-2.0",
   "scripts": {

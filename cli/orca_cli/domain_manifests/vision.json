@@ -1,0 +1,12 @@
+{
+  "id": "vision",
+  "name": "Vision And Camera Fleet",
+  "summary": "Camera device integrations, video feeds, and visual surveillance services.",
+  "paths": [
+    "vision/camera_module/",
+    "hardware/body_cameras/",
+    "hardware/micro_cameras/",
+    "air/surveillance/",
+    "orcaapi/app/api/v1/endpoints/cameras.py"
+  ]
+}

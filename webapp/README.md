@@ -1,18 +1,18 @@
 <!--
 ================================================================================
  File: webapp/README.md
- Purpose: Dev quickstart for the Orca React dashboard.
+ Purpose: Dev quickstart for the Orca React docs and downloads site.
 ================================================================================
 -->
 
 # Orca Webapp (React + Vite)
 
-The operator dashboard for the Urban Data Backbone.
+The local-first documentation and downloads site for ORCA.
 
 ## Container Image
 
 - Build file: `webapp/Dockerfile`
-- What the image does: builds the React dashboard with Vite and serves the production bundle from nginx on port `80`.
+- What the image does: builds the React docs site with Vite and serves the production bundle from nginx on port `80`.
 - What ships in the runtime image: compiled static assets, nginx config, and a copy of this README at `/usr/share/nginx/html/README.md`.
 
 ## Quickstart
@@ -38,8 +38,7 @@ webapp/
     ├── main.tsx               # React + providers entrypoint
     ├── App.tsx                # Shell + routes
     ├── pages/                 # One file per route
-    ├── components/            # Reusable UI building blocks
-    ├── api/                   # Typed API client + React Query hooks
+    ├── pages/                 # Documentation and download routes
     ├── styles/global.css      # Minimal design system
     └── test/setup.ts          # Vitest setup
 ```
@@ -47,9 +46,8 @@ webapp/
 ## Conventions
 
 - **Every file** opens with a documentation header (see existing files).
-- All HTTP calls go through `src/api/client.ts` so auth and error handling
-  stay centralized.
-- Data fetching uses **TanStack Query** — never useEffect for server data.
+- The webapp is now static-content oriented; avoid reintroducing dashboard-only
+  API clients or browser authentication flows.
 - TypeScript is strict; do not silence errors with `any`.
 
 ## Scripts

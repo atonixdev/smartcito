@@ -1,0 +1,11 @@
+{
+  "stream_status": "live",
+  "location": {
+    "lat": -26.2041,
+    "lon": 28.0473,
+    "accuracy_m": 4.5
+  },
+  "battery_level": 87,
+  "mounted": true,
+  "tamper_detected": false
+}

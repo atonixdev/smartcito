@@ -1,0 +1,15 @@
+{
+  "id": "platform",
+  "name": "Platform And Control Plane",
+  "summary": "Backend APIs, frontend control plane, deployment infrastructure, CLI, and SDK surfaces.",
+  "paths": [
+    "orcaapi/",
+    "services/",
+    "edge/hardware/",
+    "webapp/",
+    "infra/",
+    "services/security_domain/",
+    "cli/",
+    "sdk/"
+  ]
+}
