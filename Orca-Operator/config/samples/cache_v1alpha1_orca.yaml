@@ -1,0 +1,13 @@
+apiVersion: cache.example.com/v1alpha1
+kind: Orca
+metadata:
+  labels:
+    app.kubernetes.io/name: orca
+    app.kubernetes.io/instance: orca-sample
+    app.kubernetes.io/part-of: orca-operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: orca-operator
+  name: orca-sample
+spec:
+  image: nginx:1.27-alpine
+  replicas: 1

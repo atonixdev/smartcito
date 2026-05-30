@@ -1,0 +1,12 @@
+apiVersion: cache.example.com/v1alpha1
+kind: Orca-operator
+metadata:
+  labels:
+    app.kubernetes.io/name: orca-operator
+    app.kubernetes.io/instance: orca-operator-sample
+    app.kubernetes.io/part-of: orca-operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: orca-operator
+  name: orca-operator-sample
+spec:
+  # TODO(user): Add fields here

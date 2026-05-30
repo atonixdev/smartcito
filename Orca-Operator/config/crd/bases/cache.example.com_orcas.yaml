@@ -1,0 +1,92 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.17.3
+  name: orcas.cache.example.com
+spec:
+  group: cache.example.com
+  names:
+    kind: Orca
+    listKind: OrcaList
+    plural: orcas
+    singular: orca
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .spec.image
+      name: Image
+      type: string
+    - jsonPath: .status.readyReplicas
+      name: Ready
+      type: integer
+    - jsonPath: .status.phase
+      name: Phase
+      type: string
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: Orca is the Schema for the orcas API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: OrcaSpec defines the desired state of Orca
+            properties:
+              image:
+                description: Image is the container image used for the managed Orca
+                  workload.
+                minLength: 1
+                type: string
+              replicas:
+                default: 1
+                description: Replicas is the desired number of Orca workload replicas.
+                format: int32
+                minimum: 1
+                type: integer
+            required:
+            - image
+            type: object
+          status:
+            description: OrcaStatus defines the observed state of Orca
+            properties:
+              deploymentName:
+                description: DeploymentName is the name of the deployment managed
+                  for this Orca resource.
+                type: string
+              observedGeneration:
+                description: ObservedGeneration tracks the latest Orca generation
+                  processed by the controller.
+                format: int64
+                type: integer
+              phase:
+                description: Phase is a high-level summary of the managed workload
+                  state.
+                type: string
+              readyReplicas:
+                description: ReadyReplicas is the number of ready replicas observed
+                  on the managed deployment.
+                format: int32
+                type: integer
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
