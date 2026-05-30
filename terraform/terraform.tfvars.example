@@ -1,0 +1,118 @@
+openstack_enabled = false
+kubernetes_enabled = true
+
+# OpenStack provider settings
+# Prefer openstack_cloud with a matching entry in clouds.yaml when available.
+openstack_cloud               = "orca-prod"
+openstack_auth_url            = "https://openstack.example.com:5000/v3"
+openstack_region              = "RegionOne"
+openstack_project_name        = "orca"
+openstack_username            = "orca-terraform"
+openstack_password            = "replace-me"
+openstack_user_domain_name    = "Default"
+openstack_project_domain_name = "Default"
+
+openstack_network = {
+  enabled      = true
+  network_name = "orca-platform-network"
+  subnet_name  = "orca-platform-subnet"
+  subnet_cidr  = "10.42.0.0/24"
+}
+
+openstack_compute = {
+  control = {
+    enabled           = true
+    name_prefix       = "orca-control"
+    image_name        = "ubuntu-22.04"
+    flavor_name       = "m1.medium"
+    key_pair          = "orca-admin"
+    instance_count    = 1
+    security_groups   = ["default", "orca-control"]
+    metadata          = { role = "control-plane", stack = "orca", environment = "prod" }
+    availability_zone = "nova"
+    user_data         = ""
+    network_id        = ""
+  }
+  worker = {
+    enabled           = true
+    name_prefix       = "orca-worker"
+    image_name        = "ubuntu-22.04"
+    flavor_name       = "m1.large"
+    key_pair          = "orca-admin"
+    instance_count    = 2
+    security_groups   = ["default", "orca-worker"]
+    metadata          = { role = "worker", stack = "orca", environment = "prod" }
+    availability_zone = "nova"
+    user_data         = ""
+    network_id        = ""
+  }
+}
+
+# Kubernetes provider settings
+kubeconfig_path    = "~/.kube/config"
+kubeconfig_context = "kind-orca"
+
+# Optional direct Kubernetes API settings if you are not using kubeconfig.
+kubernetes_host                   = ""
+kubernetes_token                  = ""
+kubernetes_cluster_ca_certificate = ""
+
+namespaces     = ["orca-system", "orca-observability"]
+orca_namespace = "orca-system"
+
+orca_workloads = {
+  orca-telemetry = {
+    model_name     = "ORCA-Telemetry"
+    image          = "atonixdev/orca-drone-gateway:1.0.0"
+    replicas       = 2
+    service_port   = 8020
+    container_port = 8020
+    service_type   = "ClusterIP"
+    env            = {}
+    labels         = { component = "telemetry", tier = "edge-ingest" }
+  }
+  orca-mapping = {
+    model_name     = "ORCA-Mapping"
+    image          = "atonixdev/orca-mapping-geospatial:1.0.0"
+    replicas       = 1
+    service_port   = 8024
+    container_port = 8024
+    service_type   = "ClusterIP"
+    env            = {}
+    labels         = { component = "mapping", tier = "geospatial" }
+  }
+  orca-ai = {
+    model_name     = "ORCA-AI"
+    image          = "atonixdev/orca-ai-service:1.0.0"
+    replicas       = 1
+    service_port   = 8012
+    container_port = 8012
+    service_type   = "ClusterIP"
+    env            = {}
+    labels         = { component = "ai", tier = "inference" }
+  }
+  orca-gateway = {
+    model_name     = "ORCA-Gateway"
+    image          = "atonixdev/orca-api-gateway:1.0.0"
+    replicas       = 2
+    service_port   = 8000
+    container_port = 8000
+    service_type   = "ClusterIP"
+    env = {
+      AI_MODELS_URL          = "http://orca-ai.orca-system.svc.cluster.local:8012"
+      DRONE_GATEWAY_URL      = "http://orca-telemetry.orca-system.svc.cluster.local:8020"
+      MAPPING_GEOSPATIAL_URL = "http://orca-mapping.orca-system.svc.cluster.local:8024"
+    }
+    labels = { component = "gateway", tier = "api" }
+  }
+  orca-agent = {
+    model_name     = "ORCA-Agent"
+    image          = "atonixdev/orca-hardware-agent:1.0.0"
+    replicas       = 1
+    service_port   = 8014
+    container_port = 8014
+    service_type   = "ClusterIP"
+    env            = {}
+    labels         = { component = "agent", tier = "edge" }
+  }
+}

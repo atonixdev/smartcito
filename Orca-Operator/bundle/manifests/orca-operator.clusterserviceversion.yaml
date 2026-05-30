@@ -24,10 +24,10 @@ metadata:
         }
       ]
     capabilities: Basic Install
-    createdAt: "2026-05-30T14:44:55Z"
+    createdAt: "2026-05-30T14:49:22Z"
     operators.operatorframework.io/builder: operator-sdk-v1.34.1
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v4
-  name: orca-operator.v0.0.2
+  name: orca-operator.v0.0.1
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -152,7 +152,7 @@ spec:
                 - --leader-elect
                 command:
                 - /manager
-                image: atonixdev/orca-operator:0.0.2
+                image: atonixdev/orca-operator:0.0.1
                 livenessProbe:
                   httpGet:
                     path: /healthz
@@ -242,4 +242,4 @@ spec:
   minKubeVersion: 1.28.0
   provider:
     name: AtonixCorp
-  version: 0.0.2
+  version: 0.0.1

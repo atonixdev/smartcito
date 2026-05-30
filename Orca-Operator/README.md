@@ -47,7 +47,7 @@ Notes:
 make docker-build docker-push IMG=<some-registry>/orca-operator:tag
 ```
 
-Default local image naming now uses `atonixdev/orca-operator:0.0.2`.
+Default local image naming now uses `atonixdev/orca-operator:0.0.1`.
 
 If you want to use the project defaults directly:
 
