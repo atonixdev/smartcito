@@ -23,7 +23,39 @@ describe("App", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByText(/Get Orca tools/i)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/ORCA is a secure robotics and drone control platform\./i),
+    ).toBeInTheDocument();
+  });
+
+  it("shows a Discord invite on the home page", async () => {
+    const qc = new QueryClient();
+    render(
+      <QueryClientProvider client={qc}>
+        <MemoryRouter initialEntries={["/home"]}>
+          <App />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByRole("link", { name: /join discord/i }),
+    ).toHaveAttribute("href", "https://discord.gg/UgTSBBTu");
+  });
+
+  it("shows a Slack invite on the home page", async () => {
+    const qc = new QueryClient();
+    render(
+      <QueryClientProvider client={qc}>
+        <MemoryRouter initialEntries={["/home"]}>
+          <App />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByRole("link", { name: /join slack/i }),
+    ).toHaveAttribute("href", "https://orca-att6405.slack.com");
   });
 
   it("routes the downloads page", async () => {

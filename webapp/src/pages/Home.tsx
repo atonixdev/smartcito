@@ -62,6 +62,22 @@ export default function Home() {
             <Link className="btn" to="/docs">
               View Documentation
             </Link>
+            <a
+              className="btn"
+              href="https://discord.gg/UgTSBBTu"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Join Discord
+            </a>
+            <a
+              className="btn"
+              href="https://orca-att6405.slack.com"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Join Slack
+            </a>
           </div>
         </div>
 
