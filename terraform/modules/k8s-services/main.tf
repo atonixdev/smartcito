@@ -45,6 +45,8 @@ resource "kubernetes_deployment_v1" "workload" {
         container {
           name  = each.key
           image = each.value.image
+          image_pull_policy = each.value.image_pull_policy
+          command = each.value.command
 
           port {
             container_port = each.value.container_port

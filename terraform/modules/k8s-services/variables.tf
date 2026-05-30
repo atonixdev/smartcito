@@ -14,10 +14,12 @@ variable "workloads" {
   type = map(object({
     model_name     = string
     image          = string
+    image_pull_policy = string
     replicas       = number
     service_port   = number
     container_port = number
     service_type   = string
+    command        = list(string)
     env            = map(string)
     labels         = map(string)
   }))

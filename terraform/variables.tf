@@ -170,65 +170,79 @@ variable "orca_workloads" {
   type = map(object({
     model_name     = string
     image          = string
+    image_pull_policy = string
     replicas       = number
     service_port   = number
     container_port = number
     service_type   = string
+    command        = list(string)
     env            = map(string)
     labels         = map(string)
   }))
   default = {
     orca-telemetry = {
       model_name     = "ORCA-Telemetry"
-      image          = "atonixdev/orca-drone-gateway:1.0.0"
+      image          = "atonixdev/orca-drone-gateway:1.0.0-k8s"
+      image_pull_policy = "IfNotPresent"
       replicas       = 2
       service_port   = 8020
       container_port = 8020
       service_type   = "ClusterIP"
-      env            = {}
+      command        = ["uvicorn", "surveillance.drone_gateway_service:app", "--host", "0.0.0.0", "--port", "8020"]
+      env            = { PYTHONPATH = "/app" }
       labels         = { component = "telemetry", tier = "edge-ingest" }
     }
     orca-mapping = {
       model_name     = "ORCA-Mapping"
-      image          = "atonixdev/orca-mapping-geospatial:1.0.0"
+      image          = "atonixdev/orca-mapping-geospatial:1.0.0-k8s"
+      image_pull_policy = "IfNotPresent"
       replicas       = 1
       service_port   = 8024
       container_port = 8024
       service_type   = "ClusterIP"
-      env            = {}
+      command        = ["uvicorn", "surveillance.mapping_service:app", "--host", "0.0.0.0", "--port", "8024"]
+      env            = { PYTHONPATH = "/app" }
       labels         = { component = "mapping", tier = "geospatial" }
     }
     orca-ai = {
       model_name     = "ORCA-AI"
       image          = "atonixdev/orca-ai-service:1.0.0"
+      image_pull_policy = "IfNotPresent"
       replicas       = 1
       service_port   = 8012
       container_port = 8012
       service_type   = "ClusterIP"
+      command        = []
       env            = {}
       labels         = { component = "ai", tier = "inference" }
     }
     orca-gateway = {
       model_name     = "ORCA-Gateway"
-      image          = "atonixdev/orca-api-gateway:1.0.0"
+      image          = "atonixdev/orca-api-gateway:1.0.0-k8s"
+      image_pull_policy = "IfNotPresent"
       replicas       = 2
       service_port   = 8000
       container_port = 8000
       service_type   = "ClusterIP"
+      command        = []
       env = {
         AI_MODELS_URL          = "http://orca-ai.orca-system.svc.cluster.local:8012"
         DRONE_GATEWAY_URL      = "http://orca-telemetry.orca-system.svc.cluster.local:8020"
         MAPPING_GEOSPATIAL_URL = "http://orca-mapping.orca-system.svc.cluster.local:8024"
+        OBJECT_STORAGE_ENDPOINT = "file:///tmp/orca-object-storage"
+        PYTHONPATH              = "/app"
       }
       labels = { component = "gateway", tier = "api" }
     }
     orca-agent = {
       model_name     = "ORCA-Agent"
       image          = "atonixdev/orca-hardware-agent:1.0.0"
+      image_pull_policy = "IfNotPresent"
       replicas       = 1
       service_port   = 8014
       container_port = 8014
       service_type   = "ClusterIP"
+      command        = []
       env            = {}
       labels         = { component = "agent", tier = "edge" }
     }
