@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import importlib.resources as importlib_resources
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -14,6 +15,7 @@ if str(SDK_PYTHON_DIR) not in sys.path:
     sys.path.insert(0, str(SDK_PYTHON_DIR))
 
 from orca_sdk import OrcaClient
+from orca_shared.identity import LDAPIdentityDirectory, generate_upi, identity_posture
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -96,6 +98,76 @@ def build_parser() -> argparse.ArgumentParser:
     camera_parser.add_argument("--payload-file", default=None)
     camera_parser.add_argument("--device-id", default=None)
 
+    admin_parser = subparsers.add_parser("admin", help="Administrative identity and directory operations")
+    admin_subparsers = admin_parser.add_subparsers(dest="admin_command", required=True)
+
+    identity_admin_parser = admin_subparsers.add_parser("identity", help="Inspect or update ORCA LDAP identity assignments")
+    identity_admin_parser.add_argument(
+        "--server",
+        default=os.getenv("ORCA_LDAP_SERVER", "ldap://localhost:389"),
+        help="LDAP server URI",
+    )
+    identity_admin_parser.add_argument(
+        "--bind-dn",
+        default=os.getenv("ORCA_LDAP_BIND_DN", "cn=admin,dc=orca,dc=internal"),
+        help="LDAP bind DN",
+    )
+    identity_admin_parser.add_argument(
+        "--bind-password",
+        default=os.getenv("ORCA_LDAP_BIND_PASSWORD"),
+        help="LDAP bind password",
+    )
+    identity_admin_parser.add_argument(
+        "--base-dn",
+        default=os.getenv("ORCA_LDAP_BASE_DN", "dc=orca,dc=internal"),
+        help="LDAP base DN",
+    )
+    identity_admin_subparsers = identity_admin_parser.add_subparsers(
+        dest="admin_identity_command",
+        required=True,
+    )
+
+    identity_inspect_parser = identity_admin_subparsers.add_parser(
+        "inspect",
+        help="Inspect one ORCA identity and its live role permissions",
+    )
+    identity_inspect_parser.add_argument("upi")
+
+    identity_update_role_parser = identity_admin_subparsers.add_parser(
+        "update-role",
+        help="Update the ORCA LDAP role assignment for one identity",
+    )
+    identity_update_role_parser.add_argument("upi")
+    identity_update_role_parser.add_argument("role")
+
+    identity_verify_parser = identity_admin_subparsers.add_parser(
+        "verify",
+        help="Verify one ORCA LDAP identity against an expected role and optional permission",
+    )
+    identity_verify_parser.add_argument("upi")
+    identity_verify_parser.add_argument("--expected-role", default=None)
+    identity_verify_parser.add_argument("--permission", default=None)
+
+    identity_role_permissions_parser = identity_admin_subparsers.add_parser(
+        "list-role-permissions",
+        help="List the live LDAP permissions assigned to one ORCA role",
+    )
+    identity_role_permissions_parser.add_argument("role")
+
+    identity_register_parser = identity_admin_subparsers.add_parser(
+        "register",
+        help="Create a new ORCA UPI and register the LDAP entry",
+    )
+    identity_register_parser.add_argument("--component-type", required=True)
+    identity_register_parser.add_argument("--role", required=True)
+    identity_register_parser.add_argument("--description", required=True)
+    identity_register_parser.add_argument("--upi", default=None)
+
+    identity_bootstrap_roles_parser = identity_admin_subparsers.add_parser(
+        "bootstrap-roles",
+        help="Seed the LDAP role entries and permission mappings",
+    )
+
     workspace_parser = subparsers.add_parser("workspace", help="Inspect the top-level domain grouping layer")
     workspace_subparsers = workspace_parser.add_subparsers(dest="workspace_command", required=True)
     workspace_subparsers.add_parser("domains", help="List grouped domain manifests for the repository")
@@ -138,6 +210,8 @@ def main() -> int:
         result = _run_dataset_export(args)
     elif args.command == "api":
         result = _run_api(args)
+    elif args.command == "admin":
+        result = _run_admin(args)
     elif args.command == "workspace" and args.workspace_command == "domains":
         result = _load_domain_manifests()
     elif args.command == "workspace" and args.workspace_command == "templates":
@@ -159,6 +233,99 @@ def main() -> int:
 
 def _build_sdk_client(args: argparse.Namespace) -> OrcaClient:
     return OrcaClient(base_url=args.base_url, token=args.token)
+
+
+def _build_ldap_identity_directory(args: argparse.Namespace) -> LDAPIdentityDirectory:
+    if not args.bind_password:
+        raise ValueError("LDAP admin commands require --bind-password or ORCA_LDAP_BIND_PASSWORD")
+    return LDAPIdentityDirectory(
+        server_uri=args.server,
+        bind_dn=args.bind_dn,
+        bind_password=args.bind_password,
+        ldap_base_dn=args.base_dn,
+    )
+
+
+def _run_admin(args: argparse.Namespace) -> Any:
+    if args.admin_command != "identity":
+        raise ValueError("unsupported admin command")
+
+    directory = _build_ldap_identity_directory(args)
+    if args.admin_identity_command == "inspect":
+        identity = directory.lookup_identity(args.upi)
+        if identity is None:
+            raise ValueError(f"identity not found in LDAP: {args.upi}")
+        posture = identity_posture(identity)
+        posture["live_role_permissions"] = sorted(directory.get_role_permissions(identity.role))
+        posture["ldap_verified"] = directory.verify_role_assignment(
+            args.upi,
+            expected_role=identity.role,
+        )
+        return posture
+
+    if args.admin_identity_command == "update-role":
+        previous_identity = directory.lookup_identity(args.upi)
+        previous_role = previous_identity.role if previous_identity is not None else None
+        updated_identity = directory.update_role_assignment(args.upi, args.role)
+        return {
+            "upi": updated_identity.upi,
+            "previous_role": previous_role,
+            "updated_role": updated_identity.role,
+            "ldap_dn": updated_identity.dn,
+            "live_role_permissions": sorted(directory.get_role_permissions(updated_identity.role)),
+            "ldap_verified": directory.verify_role_assignment(
+                args.upi,
+                expected_role=updated_identity.role,
+            ),
+        }
+
+    if args.admin_identity_command == "verify":
+        verified = directory.verify_role_assignment(
+            args.upi,
+            expected_role=args.expected_role,
+            permission=args.permission,
+        )
+        identity = directory.lookup_identity(args.upi)
+        current_role = identity.role if identity is not None else None
+        return {
+            "upi": args.upi,
+            "expected_role": args.expected_role,
+            "permission": args.permission,
+            "current_role": current_role,
+            "verified": verified,
+        }
+
+    if args.admin_identity_command == "list-role-permissions":
+        permissions = sorted(directory.get_role_permissions(args.role))
+        return {
+            "role": args.role,
+            "permissions": permissions,
+            "permission_count": len(permissions),
+        }
+
+    if args.admin_identity_command == "register":
+        identity = directory.register(
+            upi=args.upi or generate_upi(args.component_type),
+            description=args.description,
+            role=args.role,
+        )
+        posture = identity_posture(identity)
+        posture["live_role_permissions"] = sorted(directory.get_role_permissions(identity.role))
+        posture["ldap_verified"] = directory.verify_role_assignment(
+            identity.upi,
+            expected_role=identity.role,
+        )
+        return posture
+
+    if args.admin_identity_command == "bootstrap-roles":
+        created_dns = directory.ensure_role_seed()
+        return {
+            "ldap_base_dn": args.base_dn,
+            "created_dns": created_dns,
+            "seeded_roles": True,
+        }
+
+    raise ValueError("unsupported admin identity command")
 
 
 def _run_api(args: argparse.Namespace) -> Any:

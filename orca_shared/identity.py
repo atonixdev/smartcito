@@ -412,6 +412,44 @@ class LDAPIdentityDirectory:
         finally:
             connection.unbind()
 
+    def ensure_role_seed(self) -> list[str]:
+        ldap3, connection = self._connect()
+        created_dns: list[str] = []
+        role_ou_dn = f"ou=roles,{self.ldap_base_dn}"
+        try:
+            exists = connection.search(
+                search_base=role_ou_dn,
+                search_filter="(objectClass=organizationalUnit)",
+                search_scope=ldap3.BASE,
+                attributes=["ou"],
+            )
+            if not exists or not connection.entries:
+                ok = connection.add(
+                    role_ou_dn,
+                    ["top", "organizationalUnit"],
+                    {"ou": "roles"},
+                )
+                if not ok:
+                    raise RuntimeError(f"LDAP role OU bootstrap failed for {role_ou_dn}: {connection.result}")
+                created_dns.append(role_ou_dn)
+
+            for entry in build_role_ldap_entries(ldap_base_dn=self.ldap_base_dn):
+                exists = connection.search(
+                    search_base=entry.dn,
+                    search_filter="(cn=*)",
+                    search_scope=ldap3.BASE,
+                    attributes=["cn"],
+                )
+                if exists and connection.entries:
+                    continue
+                ok = connection.add(entry.dn, list(entry.object_classes), entry.attributes)
+                if not ok:
+                    raise RuntimeError(f"LDAP role seed failed for {entry.dn}: {connection.result}")
+                created_dns.append(entry.dn)
+        finally:
+            connection.unbind()
+        return created_dns
+
     def verify_role_assignment(self, upi: str, *, expected_role: str | None = None, permission: str | None = None) -> bool:
         identity = self.lookup_identity(upi)
         if identity is None:
@@ -474,22 +512,10 @@ class LDAPIdentityDirectory:
                 if not ok:
                     raise RuntimeError(f"LDAP bootstrap failed for {entry.dn}: {connection.result}")
                 created_dns.append(entry.dn)
-            if include_role_seed:
-                for entry in build_role_ldap_entries(ldap_base_dn=self.ldap_base_dn):
-                    exists = connection.search(
-                        search_base=entry.dn,
-                        search_filter="(cn=*)",
-                        search_scope=ldap3.BASE,
-                        attributes=["cn"],
-                    )
-                    if exists and connection.entries:
-                        continue
-                    ok = connection.add(entry.dn, list(entry.object_classes), entry.attributes)
-                    if not ok:
-                        raise RuntimeError(f"LDAP role seed failed for {entry.dn}: {connection.result}")
-                    created_dns.append(entry.dn)
         finally:
             connection.unbind()
+        if include_role_seed:
+            created_dns.extend(self.ensure_role_seed())
         return created_dns
 
     def authenticate(self, upi: str, password: str) -> bool:

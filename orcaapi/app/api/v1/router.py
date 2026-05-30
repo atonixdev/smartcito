@@ -19,6 +19,7 @@ from app.api.v1.endpoints import (
     geospatial,
     gps,
     health,
+    identity_admin,
     quantum,
     sensors,
     traffic,
@@ -27,6 +28,7 @@ from app.api.v1.endpoints import (
 api_router = APIRouter()
 
 api_router.include_router(health.router, prefix="/health", tags=["health"])
+api_router.include_router(identity_admin.router, prefix="/identity/admin", tags=["identity-admin"])
 api_router.include_router(cameras.router, prefix="/cameras", tags=["cameras"])
 api_router.include_router(control_plane.router, prefix="/control-plane", tags=["control-plane"])
 api_router.include_router(events.router, prefix="/events", tags=["events"])

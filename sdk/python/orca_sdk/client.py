@@ -36,6 +36,28 @@ class OrcaClient:
     def health_identity(self) -> dict[str, Any]:
         return self._request_json("GET", "/api/v1/health/identity")
 
+    def inspect_identity(self, upi: str) -> dict[str, Any]:
+        return self._request_json("GET", f"/api/v1/identity/admin/{urllib_parse.quote(upi)}")
+
+    def list_identity_role_permissions(self, role: str) -> dict[str, Any]:
+        return self._request_json("GET", f"/api/v1/identity/admin/roles/{urllib_parse.quote(role)}")
+
+    def register_identity(self, payload: dict[str, Any]) -> dict[str, Any]:
+        return self._request_json("POST", "/api/v1/identity/admin/register", payload=payload)
+
+    def verify_identity(self, upi: str, payload: dict[str, Any]) -> dict[str, Any]:
+        return self._request_json("POST", f"/api/v1/identity/admin/{urllib_parse.quote(upi)}/verify", payload=payload)
+
+    def update_identity_role(self, upi: str, role: str) -> dict[str, Any]:
+        return self._request_json(
+            "POST",
+            f"/api/v1/identity/admin/{urllib_parse.quote(upi)}/role",
+            payload={"role": role},
+        )
+
+    def bootstrap_identity_roles(self) -> dict[str, Any]:
+        return self._request_json("POST", "/api/v1/identity/admin/bootstrap-roles")
+
     def control_plane_overview(self) -> dict[str, Any]:
         return self._request_json("GET", "/api/v1/control-plane/overview")
 

@@ -98,6 +98,9 @@ The ORCA API reads these identity settings:
 - `ORCA_IDENTITY_ROLE`
 - `ORCA_IDENTITY_DESCRIPTION`
 - `ORCA_LDAP_BASE_DN`
+- `ORCA_LDAP_SERVER`
+- `ORCA_LDAP_BIND_DN`
+- `ORCA_LDAP_BIND_PASSWORD`
 
 If `ORCA_UPI` is not supplied, the API generates a valid UPI during startup and registers it in the in-process identity directory.
 
@@ -114,6 +117,8 @@ Additional rollout surfaces now included:
 - LDAP base tree bootstrap script: `python3 scripts/bootstrap_ldap_identity.py`
 - LDAP bootstrap now also seeds the required ORCA roles and their permission mappings under `ou=roles`
 - Live LDAP helpers can now search identities, verify role assignments, read seeded permissions, and update roles
+- CLI can now register identities, bootstrap LDAP roles, inspect live permissions, and verify assignments
+- API identity admin endpoints expose LDAP-backed identity operations for desktop operator tooling
 
 The remaining rollout work is service-by-service and should use the same shared module for:
 
@@ -137,6 +142,80 @@ Query the ORCA API identity posture:
 ```bash
 orca api health identity
 ```
+
+Inspect a live LDAP-backed ORCA identity from the CLI:
+
+```bash
+orca admin identity \
+    --server ldap://localhost:389 \
+    --bind-dn cn=admin,dc=orca,dc=internal \
+    --bind-password change-me \
+    inspect orca:service:550e8400-e29b-41d4-a716-446655440000
+```
+
+Update a live LDAP-backed ORCA role assignment from the CLI:
+
+```bash
+orca admin identity \
+    --server ldap://localhost:389 \
+    --bind-dn cn=admin,dc=orca,dc=internal \
+    --bind-password change-me \
+    update-role orca:service:550e8400-e29b-41d4-a716-446655440000 orca.admin
+```
+
+Verify a live LDAP-backed ORCA identity from the CLI:
+
+```bash
+orca admin identity \
+    --server ldap://localhost:389 \
+    --bind-dn cn=admin,dc=orca,dc=internal \
+    --bind-password change-me \
+    verify orca:service:550e8400-e29b-41d4-a716-446655440000 \
+    --expected-role orca.admin \
+    --permission telemetry.write
+```
+
+List the live LDAP permissions assigned to an ORCA role:
+
+```bash
+orca admin identity \
+    --server ldap://localhost:389 \
+    --bind-dn cn=admin,dc=orca,dc=internal \
+    --bind-password change-me \
+    list-role-permissions orca.admin
+```
+
+Create a new ORCA UPI and LDAP entry from the CLI:
+
+```bash
+orca admin identity \
+    --server ldap://localhost:389 \
+    --bind-dn cn=admin,dc=orca,dc=internal \
+    --bind-password change-me \
+    register \
+    --component-type service \
+    --role orca.service \
+    --description "ORCA gateway service"
+```
+
+Seed LDAP role entries directly from the CLI:
+
+```bash
+orca admin identity \
+    --server ldap://localhost:389 \
+    --bind-dn cn=admin,dc=orca,dc=internal \
+    --bind-password change-me \
+    bootstrap-roles
+```
+
+Desktop/UI-facing API endpoints:
+
+- `GET /api/v1/identity/admin/{upi}`
+- `GET /api/v1/identity/admin/roles/{role}`
+- `POST /api/v1/identity/admin/register`
+- `POST /api/v1/identity/admin/{upi}/verify`
+- `POST /api/v1/identity/admin/{upi}/role`
+- `POST /api/v1/identity/admin/bootstrap-roles`
 
 Render the LDAP bootstrap LDIF:
 

@@ -172,6 +172,18 @@ class Settings(BaseSettings):
         default="dc=orca,dc=internal",
         validation_alias=AliasChoices("ORCA_LDAP_BASE_DN"),
     )
+    ldap_server_uri: str = Field(
+        default="ldap://localhost:389",
+        validation_alias=AliasChoices("ORCA_LDAP_SERVER", "LDAP_SERVER_URI"),
+    )
+    ldap_bind_dn: str = Field(
+        default="cn=admin,dc=orca,dc=internal",
+        validation_alias=AliasChoices("ORCA_LDAP_BIND_DN", "LDAP_BIND_DN"),
+    )
+    ldap_bind_password: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("ORCA_LDAP_BIND_PASSWORD", "LDAP_BIND_PASSWORD"),
+    )
 
     # ----- AI / object storage -----
     ai_models_url: str = "http://ai-service:8012"
