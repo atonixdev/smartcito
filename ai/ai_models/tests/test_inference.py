@@ -20,6 +20,7 @@ def test_health(monkeypatch) -> None:
         "status": "ok",
         "service": "ai-models",
         "llama_stack": "not-configured",
+        "orca_model": "not-deployed",
     }
 
 
@@ -83,7 +84,7 @@ def test_generate_proxies_to_llama_stack(monkeypatch) -> None:
             "raw": {"choices": [{"message": {"content": "No anomalies detected."}}]},
         }
 
-    monkeypatch.setattr("ai_models.inference.generate_text", fake_generate_text)
+    monkeypatch.setattr("ai.ai_models.inference.generate_text", fake_generate_text)
 
     response = client.post(
         "/generate",
@@ -213,9 +214,16 @@ def test_detect_objects_returns_bounding_box_for_bright_region() -> None:
 
 
 def test_detect_objects_rejects_unknown_backend() -> None:
+    image = Image.new("L", (20, 20), color=0)
+    buffer = BytesIO()
+    image.save(buffer, format="PNG")
+
     response = client.post(
         "/detect_objects",
-        json={"image_b64": "AA==", "backend": "yolo"},
+        json={
+            "image_b64": __import__("base64").b64encode(buffer.getvalue()).decode("ascii"),
+            "backend": "unsupported-backend",
+        },
     )
 
     assert response.status_code == 400

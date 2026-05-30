@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -14,6 +15,13 @@ DEFAULT_SLUG = "orca-ai-kaggle-bundle"
 DEFAULT_TITLE = "Orca Kaggle Bundle"
 DEFAULT_LICENSE = "Apache-2.0"
 DEFAULT_DIR_MODE = "zip"
+
+
+def resolve_kaggle_command() -> list[str]:
+    kaggle_executable = shutil.which("kaggle")
+    if kaggle_executable:
+        return [kaggle_executable]
+    return [sys.executable, "-m", "kaggle.cli"]
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
@@ -73,9 +81,10 @@ def ensure_bundle(bundle_dir: Path) -> None:
 
 
 def ensure_kaggle_cli() -> None:
+    kaggle_command = resolve_kaggle_command()
     try:
         subprocess.run(
-            [sys.executable, "-m", "kaggle.cli", "--version"],
+            [*kaggle_command, "--version"],
             cwd=REPO_ROOT,
             check=True,
             stdout=subprocess.DEVNULL,
@@ -83,11 +92,12 @@ def ensure_kaggle_cli() -> None:
         )
     except (subprocess.CalledProcessError, FileNotFoundError):
         raise SystemExit(
-            "Kaggle CLI is not installed. Install it with `python3 -m pip install --user kaggle`."
+            "Kaggle CLI is not available. Install it in a virtual environment or expose the `kaggle` executable on PATH."
         )
 
 
 def ensure_kaggle_auth() -> None:
+    kaggle_command = resolve_kaggle_command()
     kaggle_config = Path.home() / ".kaggle" / "kaggle.json"
     kaggle_access_token = Path.home() / ".kaggle" / "access_token"
     if not kaggle_config.exists() and not kaggle_access_token.exists():
@@ -97,7 +107,7 @@ def ensure_kaggle_auth() -> None:
 
     try:
         subprocess.run(
-            [sys.executable, "-m", "kaggle.cli", "competitions", "list"],
+            [*kaggle_command, "competitions", "list"],
             cwd=REPO_ROOT,
             check=True,
             stdout=subprocess.DEVNULL,
@@ -112,12 +122,11 @@ def ensure_kaggle_auth() -> None:
 def publish_dataset(bundle_dir: Path, args: argparse.Namespace) -> None:
     ensure_kaggle_cli()
     ensure_kaggle_auth()
+    kaggle_command = resolve_kaggle_command()
 
     if args.update:
         command = [
-            sys.executable,
-            "-m",
-            "kaggle.cli",
+            *kaggle_command,
             "datasets",
             "version",
             "-p",
@@ -129,9 +138,7 @@ def publish_dataset(bundle_dir: Path, args: argparse.Namespace) -> None:
         ]
     else:
         command = [
-            sys.executable,
-            "-m",
-            "kaggle.cli",
+            *kaggle_command,
             "datasets",
             "create",
             "-p",
@@ -139,6 +146,8 @@ def publish_dataset(bundle_dir: Path, args: argparse.Namespace) -> None:
             "-r",
             args.dir_mode,
         ]
+        if not args.private:
+            command.append("-u")
 
     subprocess.run(command, cwd=REPO_ROOT, check=True)
 
